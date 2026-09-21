@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Aarav Patel
+Candidate ID: ITM-SLS-001
+Email: aaravpatel.1@example.com
+Phone: +91-90000-10000
+Location: Vadodara, Gujarat, India
+
+TARGET ROLE
+Software Developer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Tech in Computer Science background and 0.5 years of practical/project experience.
+Strong interest in software developer and hands-on experience with Python, Java, C++, SQL, Git. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Tech in Computer Science
+Graduation Year: 2022
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Python, Java, C++, SQL, Git, REST API, Django, Spring Boot
+
+PROJECTS
+1. Software project using Python and Java
+   - Designed and implemented the solution using Python, Java and C++.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using C++ and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on software developer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+0.5 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Software Developer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 78/100
+- Resume matching score: 82/100
+- Overall candidate score: 80.2/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: TechNova Solutions
+Role: Software Developer
+Status: Hired
+Indicative CTC: ₹3.2 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Python, Java, C++, SQL, Git, REST API, Django, Spring Boot, Software Developer, B.Tech in Computer Science, communication, problem solving, teamwork

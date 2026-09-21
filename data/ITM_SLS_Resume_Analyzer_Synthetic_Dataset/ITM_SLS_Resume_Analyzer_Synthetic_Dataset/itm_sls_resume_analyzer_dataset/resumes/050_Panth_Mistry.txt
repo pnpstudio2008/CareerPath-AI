@@ -1,0 +1,24 @@
+=======================================================
+RESUME: PANTH MISTRY
+=======================================================
+Email: panth.mistry.itm.alumni@gmail.com | Phone: +91-98765-43210 | Location: Vadodara, Gujarat, India
+Degree: B.Tech in Computer Science (Class of 2024)
+Institution: ITM SLS Baroda University, Vadodara, Gujarat
+
+CAREER OBJECTIVE:
+Dedicated and high-performing engineering graduate placed as SDE at Infosys with ₹5.5 LPA CTC package.
+
+TECHNICAL SKILLS:
+Python; Java; SQL; Git; REST API; DSA; Web Development
+
+INTERVIEW & PLACEMENT JOURNEY:
+Placed at: Infosys
+Role: SDE
+Package: ₹5.5 LPA
+
+PREPARATION STRATEGY:
+Consistent practice on coding platforms, strong conceptual revision of core subjects, and hands-on resume projects.
+
+ADVICE TO JUNIORS:
+Focus on clear fundamentals, build end-to-end practical projects, and communicate your thought process clearly during interviews.
+=======================================================

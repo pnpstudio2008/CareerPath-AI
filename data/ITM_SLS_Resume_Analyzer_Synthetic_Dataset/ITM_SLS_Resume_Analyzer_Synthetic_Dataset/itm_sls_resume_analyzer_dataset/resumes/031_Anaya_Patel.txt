@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Anaya Patel
+Candidate ID: ITM-SLS-031
+Email: anayapatel.31@example.com
+Phone: +91-90000-10030
+Location: Surat, Gujarat, India
+
+TARGET ROLE
+Frontend Developer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Tech in Computer Science background and 1.5 years of practical/project experience.
+Strong interest in frontend developer and hands-on experience with HTML, CSS, JavaScript, React, Git. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Tech in Computer Science
+Graduation Year: 2024
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+HTML, CSS, JavaScript, React, Git, TypeScript, Next.js
+
+PROJECTS
+1. Frontend project using HTML and CSS
+   - Designed and implemented the solution using HTML, CSS and JavaScript.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using JavaScript and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on frontend developer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+1.5 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Frontend Developer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 78/100
+- Resume matching score: 89/100
+- Overall candidate score: 84.1/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: TechNova Solutions
+Role: Frontend Developer
+Status: Hired
+Indicative CTC: ₹4.7 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+HTML, CSS, JavaScript, React, Git, TypeScript, Next.js, Frontend Developer, B.Tech in Computer Science, communication, problem solving, teamwork

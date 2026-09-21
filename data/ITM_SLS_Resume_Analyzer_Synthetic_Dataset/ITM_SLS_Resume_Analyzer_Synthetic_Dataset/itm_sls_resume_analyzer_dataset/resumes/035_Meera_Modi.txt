@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Meera Modi
+Candidate ID: ITM-SLS-035
+Email: meeramodi.35@example.com
+Phone: +91-90000-10034
+Location: Gandhinagar, Gujarat, India
+
+TARGET ROLE
+Business Analyst
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Sc. Computer Science background and 1.0 years of practical/project experience.
+Strong interest in business analyst and hands-on experience with Excel, SQL, Power BI, Data Analysis, Communication. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Sc. Computer Science
+Graduation Year: 2024
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Excel, SQL, Power BI, Data Analysis, Communication, Tableau, Python
+
+PROJECTS
+1. Business project using Excel and SQL
+   - Designed and implemented the solution using Excel, SQL and Power BI.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using Power BI and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on business analyst workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+1.0 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Business Analyst
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 85/100
+- Resume matching score: 82/100
+- Overall candidate score: 83.3/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: CloudBridge India
+Role: Business Analyst
+Status: Hired
+Indicative CTC: ₹6.2 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Excel, SQL, Power BI, Data Analysis, Communication, Tableau, Python, Business Analyst, B.Sc. Computer Science, communication, problem solving, teamwork

@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Nirav Bhatt
+Candidate ID: ITM-SLS-014
+Email: niravbhatt.14@example.com
+Phone: +91-90000-10013
+Location: Gandhinagar, Gujarat, India
+
+TARGET ROLE
+Backend Developer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Tech in IT background and 0.5 years of practical/project experience.
+Strong interest in backend developer and hands-on experience with Python, Java, SQL, REST API, Git. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Tech in IT
+Graduation Year: 2023
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Python, Java, SQL, REST API, Git, FastAPI, Django, Spring Boot
+
+PROJECTS
+1. Backend project using Python and Java
+   - Designed and implemented the solution using Python, Java and SQL.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using SQL and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on backend developer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+0.5 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Backend Developer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 85/100
+- Resume matching score: 89/100
+- Overall candidate score: 87.2/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: CodeCraft Technologies
+Role: Backend Developer
+Status: Hired
+Indicative CTC: ₹3.2 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Python, Java, SQL, REST API, Git, FastAPI, Django, Spring Boot, Backend Developer, B.Tech in IT, communication, problem solving, teamwork

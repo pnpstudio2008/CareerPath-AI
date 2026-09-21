@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Profile - AI Career Companion</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+    <link rel="apple-touch-icon" href="/static/images/favicon.png">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Chart.js for Visual Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+
+    <style>
+        .alumni-portal-header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .portal-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .alumni-hero-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(56, 189, 248, 0.1) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            box-shadow: var(--nm-raised);
+        }
+
+        .alumni-hero-profile {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .alumni-avatar-portal {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366F1, #38BDF8);
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .alumni-info-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+
+        .meta-pill {
+            background: var(--bg-base);
+            border: 1px solid var(--border-glass);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .portal-grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 960px) {
+            .portal-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .alumni-portal-header {
+                padding: 0.75rem 1rem;
+            }
+            .alumni-hero-card {
+                padding: 1.5rem 1.25rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .alumni-hero-card > div:last-child {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .alumni-hero-card > div:last-child .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .portal-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .alumni-portal-header {
+                padding: 0.5rem 0.75rem;
+            }
+            .portal-brand {
+                font-size: 0.95rem;
+                gap: 0.5rem;
+            }
+            .portal-brand img {
+                height: 30px !important;
+            }
+            .portal-brand-sub {
+                display: none;
+            }
+            .portal-nav-actions .btn-sm span {
+                display: none;
+            }
+            .portal-nav-actions .btn-sm {
+                padding: 0.45rem 0.65rem;
+                min-height: 38px;
+                min-width: 38px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .alumni-main-container {
+                padding: 0.75rem !important;
+            }
+            .alumni-hero-profile {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                width: 100%;
+                gap: 0.85rem;
+            }
+            .alumni-avatar-portal {
+                width: 68px;
+                height: 68px;
+                font-size: 1.7rem;
+            }
+            .alumni-hero-profile h1 {
+                font-size: 1.35rem !important;
+                justify-content: center;
+            }
+            .alumni-info-meta {
+                justify-content: center;
+            }
+            .meta-pill {
+                font-size: 0.76rem;
+                padding: 0.2rem 0.6rem;
+            }
+        }
+
+        .quick-action-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition-bounce);
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--nm-flat-sm);
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: var(--nm-raised);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        /* Inquiries Table & Filter styling matching student UI */
+        .inquiry-filter-tabs {
+            display: flex;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .inquiry-filter-btn {
+            background: var(--bg-base);
+            border: 1px solid var(--border-glass);
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-bounce);
+        }
+
+        .inquiry-filter-btn.active, .inquiry-filter-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+        }
+
+        .inquiry-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        .inquiry-table th {
+            text-align: left;
+            padding: 0.75rem 0.85rem;
+            border-bottom: 2px solid var(--border-glass);
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .inquiry-table td {
+            padding: 0.85rem;
+            border-bottom: 1px solid var(--border-glass);
+            vertical-align: middle;
+        }
+
+        .inquiry-table tr:hover {
+            background: rgba(99, 102, 241, 0.04);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation (Same as Student Portal) -->
+    <header class="alumni-portal-header">
+        <div class="portal-brand">
+            <img src="/static/images/logo.png" alt="AI Career Companion" style="height:36px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(99,102,241,0.3));">
+            <span>AI Career Companion<span class="portal-brand-sub"> • <span style="font-weight:600; color:var(--text-secondary); font-size:0.95rem;">Alumni Portal</span></span></span>
+        </div>
+        <div class="portal-nav-actions" style="display:flex; align-items:center; gap:0.5rem;">
+            <a href="/?view=platform" class="btn btn-outline btn-sm" title="Main Platform">
+                <i class="fa-solid fa-globe"></i> <span>Main Platform</span>
+            </a>
+            <a href="/api/alumni/logout" class="btn btn-danger-outline btn-sm" title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container alumni-main-container" style="max-width: 1200px; margin: 0 auto; padding: 1.5rem;">
+        
+        <!-- Welcome / Alumni Profile Banner -->
+        <div class="alumni-hero-card">
+            <div class="alumni-hero-profile">
+                <div class="alumni-avatar-portal">{{ alumni.initials or alumni.name[:2].upper() }}</div>
+                <div>
+                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;">{{ alumni.name }}</h1>
+                        <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Verified Alumni Mentor</span>
+                    </div>
+                    <div class="alumni-info-meta">
+                        <span class="meta-pill"><i class="fa-solid fa-id-card text-primary"></i> Roll No: {{ alumni.roll_no }}</span>
+                        <span class="meta-pill"><i class="fa-solid fa-building text-purple"></i> {{ alumni.company }}</span>
+                        <span class="meta-pill"><i class="fa-solid fa-briefcase text-emerald"></i> {{ alumni.role }}</span>
+                        <span class="meta-pill"><i class="fa-solid fa-indian-rupee-sign text-amber"></i> ₹{{ alumni.package_lpa }} LPA</span>
+                        <span class="meta-pill"><i class="fa-solid fa-calendar text-warning"></i> Class of {{ alumni.batch_year }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <a href="https://www.linkedin.com/search/results/all/?keywords={{ alumni.name|urlencode }}%20{{ alumni.company|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-linkedin-action">
+                    <i class="fa-brands fa-linkedin"></i> My LinkedIn Profile
+                </a>
+                <a href="/?view=platform#alumni" class="btn btn-outline">
+                    <i class="fa-solid fa-book-open"></i> Published Story
+                </a>
+            </div>
+        </div>
+
+        <!-- Metric KPI Cards (Outreach Analytics: Mail, LinkedIn, Total Reach, Upvotes) -->
+        <div class="kpi-grid mt-4">
+            <!-- KPI 1: Gmail Inquiries -->
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap" style="background:rgba(234, 67, 53, 0.12); color:#EA4335;">
+                    <i class="fa-brands fa-google"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Mail / Gmail Inquiries</span>
+                    <h2 class="kpi-value" style="color:#EA4335;">{{ metrics.gmail_inquiries }}</h2>
+                </div>
+            </div>
+
+            <!-- KPI 2: LinkedIn Approaches -->
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap" style="background:rgba(10, 102, 194, 0.12); color:#0A66C2;">
+                    <i class="fa-brands fa-linkedin"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">LinkedIn Approaches</span>
+                    <h2 class="kpi-value" style="color:#0A66C2;">{{ metrics.linkedin_approaches }}</h2>
+                </div>
+            </div>
+
+            <!-- KPI 3: Total Students Mentored -->
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-success-soft">
+                    <i class="fa-solid fa-users-rays"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Total Juniors Assisted</span>
+                    <h2 class="kpi-value" style="color:var(--accent-emerald);">{{ metrics.total_approached }}</h2>
+                </div>
+            </div>
+
+            <!-- KPI 4: Helpful Community Votes -->
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-warning-soft">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Helpful Story Votes</span>
+                    <h2 class="kpi-value" style="color:var(--accent-amber);">{{ metrics.story_upvotes }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2-Column Detail Layout (Same Structure as Student Portal) -->
+        <div class="portal-grid-2">
+            
+            <!-- Left Column: Personal Profile & Junior Student Outreach Inbox -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                
+                <!-- Card 1: Academic & Professional Record -->
+                <div class="card">
+                    <div class="card-header-flex mb-3">
+                        <h3><i class="fa-solid fa-address-card text-primary"></i> Senior Profile & Career Record</h3>
+                        <span class="badge badge-info">Verified Alumni</span>
+                    </div>
+
+                    <div class="student-card-details mt-2">
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-user"></i> Full Name</span>
+                            <span class="detail-val">{{ alumni.name }}</span>
+                        </div>
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-id-card"></i> Alumni User ID</span>
+                            <span class="detail-val">{{ alumni.roll_no }}</span>
+                        </div>
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-envelope"></i> Email Address</span>
+                            <span class="detail-val">{{ alumni.email }}</span>
+                        </div>
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-building-columns"></i> Branch / Department</span>
+                            <span class="detail-val">{{ alumni.branch }}</span>
+                        </div>
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-building"></i> Current Company</span>
+                            <span class="detail-val"><strong>{{ alumni.company }}</strong></span>
+                        </div>
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-briefcase"></i> Designation</span>
+                            <span class="detail-val">{{ alumni.role }}</span>
+                        </div>
+                        <div class="student-detail-row" style="padding:0.5rem 0;">
+                            <span class="detail-label"><i class="fa-solid fa-indian-rupee-sign"></i> Compensation</span>
+                            <span class="detail-val" style="color:var(--accent-emerald); font-weight:700;">₹{{ alumni.package_lpa }} LPA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Junior Student Inquiries & Mentorship Inbox -->
+                <div class="card">
+                    <div class="card-header-flex mb-3">
+                        <div>
+                            <h3 style="margin-bottom:0.25rem;"><i class="fa-solid fa-inbox text-primary"></i> Junior Student Mentorship Requests</h3>
+                            <p class="text-muted" style="font-size:0.85rem; margin:0;">Students who approached via Gmail and LinkedIn for guidance.</p>
+                        </div>
+                        <span class="badge badge-purple">{{ metrics.inquiries|length }} Total Requests</span>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="inquiry-filter-tabs">
+                        <button class="inquiry-filter-btn active" onclick="filterInquiries('all', this)">All</button>
+                        <button class="inquiry-filter-btn" onclick="filterInquiries('gmail', this)"><i class="fa-brands fa-google text-danger"></i> Gmail</button>
+                        <button class="inquiry-filter-btn" onclick="filterInquiries('linkedin', this)"><i class="fa-brands fa-linkedin text-info"></i> LinkedIn</button>
+                        <button class="inquiry-filter-btn" onclick="filterInquiries('Pending', this)">⏳ Pending</button>
+                        <button class="inquiry-filter-btn" onclick="filterInquiries('Replied', this)">✔️ Replied</button>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="data-table-container">
+                        <table class="inquiry-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Channel</th>
+                                    <th>Target Role</th>
+                                    <th>Query Topic</th>
+                                    <th>Status</th>
+                                    <th style="text-align:right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for inq in metrics.inquiries %}
+                                <tr class="inquiry-row" data-channel="{{ inq.channel }}" data-status="{{ inq.status }}">
+                                    <td>
+                                        <strong>{{ inq.student_name }}</strong>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ inq.student_branch }} ('{{ inq.student_batch[-2:] }}')</div>
+                                    </td>
+                                    <td>
+                                        {% if inq.channel == 'gmail' %}
+                                        <span class="badge" style="background:rgba(234,67,53,0.12); color:#EA4335; border:1px solid rgba(234,67,53,0.3); font-size:0.75rem;"><i class="fa-brands fa-google"></i> Gmail</span>
+                                        {% else %}
+                                        <span class="badge" style="background:rgba(10,102,194,0.12); color:#0A66C2; border:1px solid rgba(10,102,194,0.3); font-size:0.75rem;"><i class="fa-brands fa-linkedin"></i> LinkedIn</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span style="font-size:0.82rem; font-weight:600; color:var(--primary);">{{ inq.target_company }}</span>
+                                    </td>
+                                    <td style="max-width:260px;">
+                                        <div style="font-size:0.82rem; color:var(--text-secondary); line-height:1.35;">{{ inq.query_topic }}</div>
+                                    </td>
+                                    <td>
+                                        {% if inq.status == 'Pending' %}
+                                        <span class="badge badge-warning" id="status-tag-{{ inq.id }}"><i class="fa-solid fa-clock"></i> Pending</span>
+                                        {% elif inq.status == 'Replied' %}
+                                        <span class="badge badge-info" id="status-tag-{{ inq.id }}"><i class="fa-solid fa-check"></i> Replied</span>
+                                        {% else %}
+                                        <span class="badge badge-success" id="status-tag-{{ inq.id }}"><i class="fa-solid fa-circle-check"></i> Done</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align:right; white-space:nowrap;">
+                                        {% if inq.channel == 'gmail' %}
+                                        <a href="mailto:{{ inq.student_email }}?subject=Placement Guidance - {{ inq.target_company }}&body=Hi {{ inq.student_name }},%0D%0A%0D%0ARegarding your mentorship inquiry on {{ inq.query_topic }}..." class="btn btn-sm btn-primary" style="padding:0.25rem 0.55rem; font-size:0.76rem;" onclick="markReplied({{ inq.id }})">
+                                            <i class="fa-brands fa-google"></i> Reply
+                                        </a>
+                                        {% else %}
+                                        <a href="https://www.linkedin.com/search/results/all/?keywords={{ inq.student_name }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-linkedin-action" style="padding:0.25rem 0.55rem; font-size:0.76rem;" onclick="markReplied({{ inq.id }})">
+                                            <i class="fa-brands fa-linkedin"></i> Connect
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Card 3: Placement Test Questions Contributed -->
+                <div class="card">
+                    <div class="card-header-flex mb-3">
+                        <div>
+                            <h3 style="margin-bottom:0.25rem;"><i class="fa-solid fa-code-branch text-primary"></i> Contributed Placement Test Questions</h3>
+                            <p class="text-muted" style="font-size:0.85rem; margin:0;">Share technical MCQs and interview questions to help junior ongoing students practice.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openContributeQuestionModal()">
+                            <i class="fa-solid fa-plus"></i> Contribute Question
+                        </button>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="inquiry-table">
+                            <thead>
+                                <tr>
+                                    <th>Skill / Subject</th>
+                                    <th>Topic / Company</th>
+                                    <th>Question</th>
+                                    <th>Answer</th>
+                                    <th style="text-align:right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alumni-questions-tbody">
+                                <tr><td colspan="5" class="text-center p-3 text-muted"><div class="spinner"></div> Loading contributed questions...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Outreach Visual Breakdown & Fast Action Shortcuts -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                
+                <!-- Card 1: Channel Breakdown Chart -->
+                <div class="card">
+                    <div class="card-header-flex mb-2">
+                        <h3><i class="fa-solid fa-chart-pie text-primary"></i> Outreach Channels</h3>
+                    </div>
+                    <p class="text-muted" style="font-size:0.82rem; margin-bottom:1rem;">Distribution of student approaches via Mail vs LinkedIn.</p>
+
+                    <div style="height:180px; position:relative;">
+                        <canvas id="alumniChannelChart"></canvas>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-around; margin-top:1rem; font-size:0.82rem; font-weight:600;">
+                        <span style="color:#EA4335;"><i class="fa-solid fa-circle" style="font-size:0.7rem;"></i> Gmail: {{ metrics.gmail_inquiries }} ({{ metrics.channel_ratio.gmail_pct }}%)</span>
+                        <span style="color:#0A66C2;"><i class="fa-solid fa-circle" style="font-size:0.7rem;"></i> LinkedIn: {{ metrics.linkedin_approaches }} ({{ metrics.channel_ratio.linkedin_pct }}%)</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Fast Action Shortcuts (Identical design to Student Portal) -->
+                <div class="card">
+                    <h3><i class="fa-solid fa-rocket text-warning"></i> Fast Actions</h3>
+                    <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">Quick shortcuts to interact with the platform and manage mentorship.</p>
+
+                    <div style="display:flex; flex-direction:column; gap:1rem;">
+                        <a href="/?view=platform#alumni" class="quick-action-card">
+                            <div class="action-icon" style="background:#8B5CF6;">
+                                <i class="fa-solid fa-users-viewfinder"></i>
+                            </div>
+                            <div>
+                                <strong style="display:block; font-size:0.95rem;">Alumni Placement Hub</strong>
+                                <span class="text-muted" style="font-size:0.8rem;">Browse placement stories & interview round archives.</span>
+                            </div>
+                        </a>
+
+                        <a href="/?view=platform#analyzer" class="quick-action-card">
+                            <div class="action-icon bg-primary">
+                                <i class="fa-solid fa-file-arrow-up"></i>
+                            </div>
+                            <div>
+                                <strong style="display:block; font-size:0.95rem;">Resume ATS Benchmark</strong>
+                                <span class="text-muted" style="font-size:0.8rem;">Evaluate resumes against 45 company standards.</span>
+                            </div>
+                        </a>
+
+                        <a href="/?view=platform#prep" class="quick-action-card">
+                            <div class="action-icon" style="background:#10B981;">
+                                <i class="fa-solid fa-laptop-code"></i>
+                            </div>
+                            <div>
+                                <strong style="display:block; font-size:0.95rem;">Practice Test Bank</strong>
+                                <span class="text-muted" style="font-size:0.8rem;">Review technical MCQ questions and aptitude tests.</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL: CONTRIBUTE PRACTICE MCQ QUESTION     -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="contribute-question-modal-backdrop" onclick="closeContributeQuestionModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:700px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-laptop-code text-primary"></i> Contribute Placement Practice Question</h3>
+                <button class="modal-close-btn" onclick="closeContributeQuestionModal()">&times;</button>
+            </div>
+            <form id="alumni-question-form" onsubmit="submitContributeQuestionForm(event)">
+                <p class="text-muted mb-3" style="font-size:0.88rem;">
+                    Your question will appear in the ongoing student portal for junior students to practice with your mentorship credit.
+                </p>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-book"></i> Skill / Subject</label>
+                        <select id="al-q-subject" class="form-select" required>
+                            <option value="DSA" selected>DSA & Problem Solving</option>
+                            <option value="Python">Python</option>
+                            <option value="Java">Java & OOP</option>
+                            <option value="DBMS">DBMS & SQL</option>
+                            <option value="Operating Systems">Operating Systems</option>
+                            <option value="Computer Networks">Computer Networks</option>
+                            <option value="Aptitude">Quantitative Aptitude</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="AI & ML">AI & Machine Learning</option>
+                            <option value="Cloud & DevOps">Cloud & DevOps</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-tags"></i> Topic Name</label>
+                        <input type="text" id="al-q-topic" class="form-input" placeholder="e.g. Dynamic Programming, Trees" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-building"></i> Question Type / Company</label>
+                        <input type="text" id="al-q-company" class="form-input" placeholder="e.g. {{ alumni.company }}" value="{{ alumni.company }}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-circle-question"></i> Problem Statement / Question Text</label>
+                    <textarea id="al-q-text" class="form-textarea" rows="3" placeholder="Enter problem statement clearly..." required></textarea>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Option A</label>
+                        <input type="text" id="al-q-a" class="form-input" placeholder="Option A description" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Option B</label>
+                        <input type="text" id="al-q-b" class="form-input" placeholder="Option B description" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Option C</label>
+                        <input type="text" id="al-q-c" class="form-input" placeholder="Option C description" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Option D</label>
+                        <input type="text" id="al-q-d" class="form-input" placeholder="Option D description" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-circle-check text-success"></i> Correct Option</label>
+                        <select id="al-q-correct" class="form-select">
+                            <option value="A">Option A</option>
+                            <option value="B">Option B</option>
+                            <option value="C">Option C</option>
+                            <option value="D">Option D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-gauge-high"></i> Difficulty Level</label>
+                        <select id="al-q-difficulty" class="form-select">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-lightbulb text-warning"></i> Solution Explanation & Rationale</label>
+                    <textarea id="al-q-explanation" class="form-textarea" rows="2" placeholder="Explain the key intuition, time complexity, or reason why this option is correct..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closeContributeQuestionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Publish Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAlumniChart();
+            loadAlumniQuestions();
+        });
+
+        function renderAlumniChart() {
+            const ctx = document.getElementById('alumniChannelChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Gmail Inquiries', 'LinkedIn Approaches'],
+                    datasets: [{
+                        data: [{{ metrics.gmail_inquiries }}, {{ metrics.linkedin_approaches }}],
+                        backgroundColor: ['#EA4335', '#0A66C2'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function filterInquiries(filterKey, btn) {
+            document.querySelectorAll('.inquiry-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const rows = document.querySelectorAll('.inquiry-row');
+            rows.forEach(row => {
+                const ch = row.getAttribute('data-channel');
+                const st = row.getAttribute('data-status');
+
+                if (filterKey === 'all') {
+                    row.style.display = '';
+                } else if (filterKey === 'gmail' || filterKey === 'linkedin') {
+                    row.style.display = (ch === filterKey) ? '' : 'none';
+                } else if (filterKey === 'Pending' || filterKey === 'Replied' || filterKey === 'Completed') {
+                    row.style.display = (st === filterKey) ? '' : 'none';
+                }
+            });
+        }
+
+        async function markReplied(inqId) {
+            try {
+                await fetch(`/api/alumni/update-inquiry-status/${inqId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Replied' })
+                });
+                const tag = document.getElementById(`status-tag-${inqId}`);
+                if (tag) {
+                    tag.className = 'badge badge-info';
+                    tag.innerHTML = '<i class="fa-solid fa-check"></i> Replied';
+                }
+                const row = tag?.closest('.inquiry-row');
+                if (row) row.setAttribute('data-status', 'Replied');
+                showToast('Inquiry status updated to Replied.', 'info');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // ==========================================
+        // ALUMNI CONTRIBUTED QUESTIONS HANDLERS
+        // ==========================================
+        async function loadAlumniQuestions() {
+            const tbody = document.getElementById('alumni-questions-tbody');
+            if (!tbody) return;
+
+            try {
+                const res = await fetch('/api/alumni/questions');
+                const data = await res.json();
+                if (!data.success || !data.questions || data.questions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-muted"><i class="fa-solid fa-lightbulb"></i> You have not contributed any questions yet. Click "+ Contribute Question" above to help ongoing students.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.questions.forEach(q => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <span class="badge badge-primary">${q.subject || 'General'}</span>
+                            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${q.difficulty || 'Medium'}</div>
+                        </td>
+                        <td>
+                            <strong>${q.company || 'General'}</strong>
+                            <div style="font-size:0.75rem; color:var(--text-muted);">${q.topic || 'Interview MCQ'}</div>
+                        </td>
+                        <td style="max-width:320px;">
+                            <div style="font-weight:600; font-size:0.86rem; margin-bottom:4px;">${q.question.length > 80 ? q.question.substring(0, 80) + '...' : q.question}</div>
+                            <div style="font-size:0.78rem; color:var(--text-secondary); opacity:0.85;">A: ${q.option_a} | B: ${q.option_b}</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-success">Option ${q.correct_option}</span>
+                        </td>
+                        <td style="text-align:right;">
+                            <button class="btn btn-danger-outline btn-sm" onclick="deleteAlumniQuestion(${q.id})" title="Delete Question" style="padding:0.3rem 0.6rem; font-size:0.78rem;">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center p-4 text-danger">Failed to load questions: ${err.message}</td></tr>`;
+            }
+        }
+
+        function openContributeQuestionModal() {
+            const modal = document.getElementById('contribute-question-modal-backdrop');
+            if (modal) {
+                document.getElementById('alumni-question-form').reset();
+                document.getElementById('al-q-company').value = "{{ alumni.company }}";
+                modal.classList.add('active');
+            }
+        }
+
+        function closeContributeQuestionModal(event) {
+            if (event && event.target !== document.getElementById('contribute-question-modal-backdrop') && !event.target.classList.contains('modal-close-btn') && !event.target.classList.contains('btn-cancel')) {
+                return;
+            }
+            const modal = document.getElementById('contribute-question-modal-backdrop');
+            if (modal) modal.classList.remove('active');
+        }
+
+        async function submitContributeQuestionForm(event) {
+            event.preventDefault();
+
+            const payload = {
+                subject: document.getElementById('al-q-subject').value,
+                topic: document.getElementById('al-q-topic').value.trim() || 'General',
+                company: document.getElementById('al-q-company').value.trim() || "{{ alumni.company }}",
+                difficulty: document.getElementById('al-q-difficulty').value,
+                question: document.getElementById('al-q-text').value.trim(),
+                option_a: document.getElementById('al-q-a').value.trim(),
+                option_b: document.getElementById('al-q-b').value.trim(),
+                option_c: document.getElementById('al-q-c').value.trim(),
+                option_d: document.getElementById('al-q-d').value.trim(),
+                correct_option: document.getElementById('al-q-correct').value,
+                explanation: document.getElementById('al-q-explanation').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/alumni/questions/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    showToast(data.error || 'Failed to publish question.', 'error');
+                    return;
+                }
+
+                document.getElementById('contribute-question-modal-backdrop').classList.remove('active');
+                document.getElementById('alumni-question-form').reset();
+                showToast(data.message, 'success');
+                loadAlumniQuestions();
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+            }
+        }
+
+        async function deleteAlumniQuestion(questionId) {
+            if (!confirm(`Are you sure you want to remove question #${questionId}?`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/alumni/questions/delete/${questionId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || 'Question deleted.', 'success');
+                    loadAlumniQuestions();
+                } else {
+                    showToast(data.error || 'Failed to delete question.', 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 3500);
+        }
+    </script>
+</body>
+</html>

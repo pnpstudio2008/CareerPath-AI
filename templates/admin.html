@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin Portal - AI Career Companion</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+    <link rel="apple-touch-icon" href="/static/images/favicon.png">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+
+    <style>
+        .admin-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0.9rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-surface);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border-bottom: 1px solid var(--border-glass);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .admin-brand-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.2rem;
+        }
+
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-user-badge {
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary-soft);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 0.75rem 1rem;
+            }
+            .admin-main-container {
+                margin: 1rem auto;
+                padding: 0 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-header {
+                padding: 0.5rem 0.75rem;
+            }
+            .admin-brand {
+                font-size: 0.95rem;
+                gap: 0.5rem;
+            }
+            .admin-brand img {
+                height: 30px !important;
+            }
+            .admin-brand .badge {
+                display: none;
+            }
+            .admin-nav-right {
+                gap: 0.4rem;
+            }
+            .admin-user-badge {
+                display: none;
+            }
+            .admin-nav-right .btn-sm span {
+                display: none;
+            }
+            .admin-nav-right .btn-sm {
+                padding: 0.45rem 0.65rem;
+                min-height: 38px;
+                min-width: 38px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .admin-main-container {
+                margin: 0.75rem auto;
+                padding: 0 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dedicated Admin Top Bar -->
+    <header class="admin-header">
+        <div class="admin-brand">
+            <img src="/static/images/logo.png" alt="AI Career Companion Logo" style="height:38px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(99,102,241,0.3));">
+            <div>
+                <span>AI Career Companion</span>
+                <span class="badge badge-primary ml-2" style="font-size:0.75rem; vertical-align:middle;">Admin Portal</span>
+            </div>
+        </div>
+
+        <div class="admin-nav-right">
+            <div class="admin-user-badge">
+                <i class="fa-solid fa-circle-check text-success"></i> Logged in as {{ admin_user or 'Administrator' }}
+            </div>
+            <a href="/" class="btn btn-outline btn-sm" target="_blank" title="Student View">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> <span>Student View</span>
+            </a>
+            <button class="btn btn-danger-outline btn-sm" onclick="adminLogout()" title="Logout">
+                <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="admin-main-container">
+        
+        <div class="section-header mb-4">
+            <div class="section-badge"><i class="fa-solid fa-sliders"></i> Master Administration Console</div>
+            <h1 class="section-title">Cohort & Placement Management</h1>
+            <p class="section-desc">Manage student cohorts, track real-time placement progress, and supervise alumni records & verified mentors.</p>
+        </div>
+
+        <!-- Admin Live KPI Grid -->
+        <div class="kpi-grid">
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-primary-soft">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Total Cohort Students</span>
+                    <h2 class="kpi-value" id="admin-stat-students">--</h2>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-success-soft">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Successfully Placed</span>
+                    <h2 class="kpi-value" id="admin-stat-placed">--</h2>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-warning-soft">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Average ATS Score</span>
+                    <h2 class="kpi-value" id="admin-stat-ats">--%</h2>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-info-soft">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Alumni Mentors</span>
+                    <h2 class="kpi-value" id="admin-stat-alumni">--</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Management Tabs & Panels -->
+        <div class="card mt-4">
+            <div class="admin-tabs-nav">
+                <button class="admin-tab-btn active" data-tab="students" onclick="switchAdminTab('students')">
+                    <i class="fa-solid fa-graduation-cap"></i> Student Cohort & Progress
+                </button>
+                <button class="admin-tab-btn" data-tab="alumni" onclick="switchAdminTab('alumni')">
+                    <i class="fa-solid fa-users-viewfinder"></i> Manage Alumni Records
+                </button>
+            </div>
+
+            <!-- TAB 1: STUDENT MANAGEMENT -->
+            <div class="admin-tab-content active" id="admin-tab-students">
+                <div class="table-toolbar">
+                    <div class="table-filters">
+                        <input type="text" id="admin-student-search" class="form-input" placeholder="🔍 Search student name, roll no, or company..." oninput="debounceAdminStudentSearch()" style="max-width:280px;">
+                        
+                        <select id="admin-branch-filter" class="form-select" onchange="fetchAdminStudents()" style="max-width:180px;">
+                            <option value="all">All Branches</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Tech</option>
+                            <option value="AI & Data Science">AI & Data Science</option>
+                            <option value="Electronics & Comm">Electronics & Comm</option>
+                        </select>
+
+                        <select id="admin-status-filter" class="form-select" onchange="fetchAdminStudents()" style="max-width:160px;">
+                            <option value="all">All Placement Status</option>
+                            <option value="Placed">Placed</option>
+                            <option value="Interviewing">Interviewing</option>
+                            <option value="Not Placed">Not Placed</option>
+                        </select>
+
+                        <select id="admin-readiness-filter" class="form-select" onchange="fetchAdminStudents()" style="max-width:170px;">
+                            <option value="all">All Readiness</option>
+                            <option value="Placement Ready">Placement Ready</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Needs Improvement">Needs Improvement</option>
+                        </select>
+                    </div>
+
+                    <div class="table-actions">
+                        <button class="btn btn-primary" onclick="openCreateStudentLoginModal()" style="font-weight:700;">
+                            <i class="fa-solid fa-user-plus"></i> Add Ongoing Student
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student & Email</th>
+                                <th>Roll Number</th>
+                                <th>Branch / Batch</th>
+                                <th>ATS Score</th>
+                                <th>Readiness</th>
+                                <th>Practice Tests</th>
+                                <th>Placement Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-students-tbody">
+                            <!-- Dynamic rows from admin_panel.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: ALUMNI MANAGEMENT -->
+            <div class="admin-tab-content" id="admin-tab-alumni">
+                <div class="card-header-flex mb-3">
+                    <div>
+                        <h4><i class="fa-solid fa-users-viewfinder"></i> Verified Alumni Placement Archives</h4>
+                        <p class="text-muted">Review, moderate, directly register placed alumni accounts, or promote ongoing students.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openCreateAlumniLoginModal()" style="font-weight:700;">
+                        <i class="fa-solid fa-user-graduate"></i> Add Alumni Student
+                    </button>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Senior Name</th>
+                                <th>Email</th>
+                                <th>Company</th>
+                                <th>Role</th>
+                                <th>Offered CTC</th>
+                                <th>Helpful Votes</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-alumni-tbody">
+                            <!-- Dynamic rows from admin_panel.js -->
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL: ADD / EDIT STUDENT                  -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="student-modal-backdrop" onclick="closeStudentModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="student-modal-title"><i class="fa-solid fa-user-plus text-primary"></i> Add New Student</h3>
+                <button class="modal-close-btn" onclick="closeStudentModal()">&times;</button>
+            </div>
+            <form id="student-form" onsubmit="submitStudentForm(event)">
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="form-student-name" class="form-input" placeholder="e.g. Rahul Sharma" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Roll Number</label>
+                        <input type="text" id="form-student-roll" class="form-input" placeholder="e.g. 2025CS0150" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="form-student-email" class="form-input" placeholder="e.g. rahul@college.edu" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Branch / Department</label>
+                        <select id="form-student-branch" class="form-select">
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="AI & Data Science">AI & Data Science</option>
+                            <option value="Electronics & Comm">Electronics & Comm</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Graduation Batch</label>
+                        <input type="text" id="form-student-batch" class="form-input" placeholder="e.g. 2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target Company</label>
+                        <input type="text" id="form-student-target" class="form-input" placeholder="e.g. Amazon / TCS">
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">ATS Resume Score (%)</label>
+                        <input type="number" id="form-student-ats" class="form-input" min="0" max="100" step="0.5" placeholder="85.0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Placement Readiness</label>
+                        <select id="form-student-readiness" class="form-select">
+                            <option value="Placement Ready">Placement Ready</option>
+                            <option value="In Progress" selected>In Progress</option>
+                            <option value="Needs Improvement">Needs Improvement</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Practice Tests Completed</label>
+                        <input type="number" id="form-student-quizzes" class="form-input" min="0" placeholder="5">
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Placement Status</label>
+                        <select id="form-student-placement" class="form-select">
+                            <option value="Not Placed" selected>Not Placed</option>
+                            <option value="Interviewing">Interviewing</option>
+                            <option value="Placed">Placed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Placed Company (if placed)</label>
+                        <input type="text" id="form-student-company" class="form-input" placeholder="e.g. Google">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CTC Package (LPA)</label>
+                        <input type="number" id="form-student-package" class="form-input" min="0" step="0.5" placeholder="12.5">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closeStudentModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Student Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: CREATE STUDENT LOGIN PORTAL ACCOUNT -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="create-student-login-backdrop" onclick="closeCreateStudentLoginModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:760px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-shield text-primary"></i> Create Student Login Portal Account</h3>
+                <button class="modal-close-btn" onclick="closeCreateStudentLoginModal()">&times;</button>
+            </div>
+            <form id="create-student-login-form" onsubmit="submitCreateStudentLoginForm(event)">
+                <p class="text-muted mb-3" style="font-size:0.88rem;">
+                    Register a verified student login account. The student will use their <strong>Enrollment Number</strong> and <strong>Password</strong> to access their personal student dashboard.
+                </p>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-user"></i> Full Name</label>
+                        <input type="text" id="new-st-name" class="form-input" placeholder="e.g. Student Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-phone"></i> Contact Details (Phone)</label>
+                        <input type="tel" id="new-st-phone" class="form-input" placeholder="e.g. +91 98765 43210" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-envelope"></i> Email Address</label>
+                        <input type="email" id="new-st-email" class="form-input" placeholder="e.g. student@itm.ac.in" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-id-card"></i> Enrollment Number</label>
+                        <input type="text" id="new-st-enrollment" class="form-input" placeholder="e.g. 2025CS0155" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-building-columns"></i> Department</label>
+                        <select id="new-st-department" class="form-select" required>
+                            <option value="Computer Science & Engineering" selected>Computer Science & Engineering</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="AI & Data Science">AI & Data Science</option>
+                            <option value="Electronics & Communication">Electronics & Communication</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-users-rectangle"></i> CSE/IT Section</label>
+                        <select id="new-st-section" class="form-select" required>
+                            <option value="Section A" selected>Section A</option>
+                            <option value="Section B">Section B</option>
+                            <option value="Section C">Section C</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-key"></i> Login Password</label>
+                        <input type="text" id="new-st-password" class="form-input" placeholder="e.g. student@123" value="student@123" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-calendar"></i> Graduation Batch</label>
+                        <input type="text" id="new-st-batch" class="form-input" placeholder="e.g. 2025" value="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-bullseye"></i> Target Company / Career Track</label>
+                        <input type="text" id="new-st-target" class="form-input" placeholder="e.g. Amazon / SDE Full Stack">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closeCreateStudentLoginModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-check"></i> Create Student Login Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: CREATE ALUMNI LOGIN PORTAL ACCOUNT  -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="create-alumni-login-backdrop" onclick="closeCreateAlumniLoginModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:800px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-graduate text-primary"></i> Register Alumni Student & Create Login Account</h3>
+                <button class="modal-close-btn" onclick="closeCreateAlumniLoginModal()">&times;</button>
+            </div>
+            <form id="create-alumni-login-form" onsubmit="submitCreateAlumniLoginForm(event)">
+                <p class="text-muted mb-3" style="font-size:0.88rem;">
+                    Register a placed alumni student account with credentials and 2FA. The alumni will use their <strong>Alumni User ID</strong>, <strong>Password</strong>, and <strong>2FA Security Key</strong> to access their dedicated Alumni Portal.
+                </p>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-user"></i> Full Name</label>
+                        <input type="text" id="new-al-name" class="form-input" placeholder="e.g. Senior Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-id-badge"></i> Alumni User ID</label>
+                        <input type="text" id="new-al-id" class="form-input" placeholder="e.g. 24C11001" required oninput="document.getElementById('new-al-2fa').value = this.value.trim().toUpperCase()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-envelope"></i> Email (Gmail)</label>
+                        <input type="email" id="new-al-email" class="form-input" placeholder="e.g. senior@gmail.com" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-building"></i> Placed Company Name</label>
+                        <input type="text" id="new-al-company" class="form-input" placeholder="e.g. Amazon" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-briefcase"></i> Role / Designation</label>
+                        <input type="text" id="new-al-role" class="form-input" placeholder="e.g. Software Engineer" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-indian-rupee-sign"></i> Offered Package (₹ LPA)</label>
+                        <input type="number" id="new-al-package" class="form-input" min="0" step="0.5" placeholder="e.g. 15.0" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-building-columns"></i> Branch / Department</label>
+                        <select id="new-al-branch" class="form-select" required>
+                            <option value="Computer Science & Engineering" selected>Computer Science & Engineering</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="AI & Data Science">AI & Data Science</option>
+                            <option value="Electronics & Communication">Electronics & Communication</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-calendar"></i> Graduation Batch</label>
+                        <input type="text" id="new-al-batch" class="form-input" placeholder="e.g. 2025" value="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-phone"></i> Contact Phone</label>
+                        <input type="tel" id="new-al-phone" class="form-input" placeholder="e.g. +91 98765 43210">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-key"></i> Login Password</label>
+                        <input type="text" id="new-al-password" class="form-input" placeholder="Create Login Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-shield-halved"></i> 2FA Security Key</label>
+                        <input type="text" id="new-al-2fa" class="form-input" placeholder="2FA Security Key (matches User ID)" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-list-check"></i> Round-by-Round Interview Breakdown (Optional)</label>
+                    <textarea id="new-al-rounds" class="form-textarea" rows="3" placeholder="Round 1: Online Technical Assessment (DSA & Problem Solving)&#10;Round 2: Technical Live Coding & System Design&#10;Round 3: HR & Leadership Fitment"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-lightbulb"></i> Preparation Strategy & Golden Advice (Optional)</label>
+                    <textarea id="new-al-prep" class="form-textarea" rows="2" placeholder="Key tips and preparation advice for junior students..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closeCreateAlumniLoginModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-check"></i> Register Alumni & Publish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: ADMIN DIRECT PUBLISH ALUMNI STORY   -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="admin-experience-modal-backdrop" onclick="closeAdminAddExperienceModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:780px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-graduate text-primary"></i> Directly Add Alumni Placement Record</h3>
+                <button class="modal-close-btn" onclick="closeAdminAddExperienceModal()">&times;</button>
+            </div>
+            <form id="admin-experience-form" onsubmit="submitAdminExperienceForm(event)">
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Placed Candidate Name</label>
+                        <input type="text" id="admin-exp-name" class="form-input" placeholder="e.g. Senior Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Graduation Batch</label>
+                        <input type="text" id="admin-exp-batch" class="form-input" placeholder="e.g. 2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Email (Gmail)</label>
+                        <input type="email" id="admin-exp-email" class="form-input" placeholder="e.g. senior@gmail.com" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" id="admin-exp-company" class="form-input" placeholder="e.g. Google" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role / Designation</label>
+                        <input type="text" id="admin-exp-role" class="form-input" placeholder="e.g. Software Engineer" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Offered Package (LPA)</label>
+                        <input type="text" id="admin-exp-package" class="form-input" placeholder="e.g. 32.5" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Interview Difficulty</label>
+                        <select id="admin-exp-difficulty" class="form-select">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Placement Offer Mode</label>
+                        <select id="admin-exp-mode" class="form-select">
+                            <option value="On-Campus" selected>On-Campus Placement</option>
+                            <option value="Off-Campus">Off-Campus Referral / Contest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Round-by-Round Breakdown (One round per line)</label>
+                    <textarea id="admin-exp-rounds" class="form-textarea" rows="4" placeholder="Round 1: Online Coding (DSA & Algorithms)&#10;Round 2: System Design & Deep Coding&#10;Round 3: Leadership & Cultural Fit" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preparation Strategy & Key Resources</label>
+                    <textarea id="admin-exp-prep" class="form-textarea" rows="2" placeholder="Key topics and platforms recommended..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Golden Advice for Juniors</label>
+                    <textarea id="admin-exp-advice" class="form-textarea" rows="2" placeholder="Tips for juniors appearing for placements..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closeAdminAddExperienceModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-user-check"></i> Save & Publish Alumni Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: PROMOTE STUDENT TO ALUMNI HUB       -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="promote-modal-backdrop" onclick="closePromoteModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:760px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-graduation-cap text-success"></i> Promote Student to Alumni Placement Hub</h3>
+                <button class="modal-close-btn" onclick="closePromoteModal()">&times;</button>
+            </div>
+            <form id="promote-form" onsubmit="submitPromoteStudentForm(event)">
+                <input type="hidden" id="promote-student-id">
+                
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Student Name</label>
+                        <input type="text" id="form-promote-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Graduation Batch</label>
+                        <input type="text" id="form-promote-batch" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gmail for Junior Reachout</label>
+                        <input type="email" id="form-promote-email" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Hiring Company</label>
+                        <input type="text" id="form-promote-company" class="form-input" placeholder="e.g. Amazon, Google" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Offered Role / Designation</label>
+                        <input type="text" id="form-promote-role" class="form-input" placeholder="e.g. SDE-1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Offered CTC / Package (LPA)</label>
+                        <input type="number" id="form-promote-package" class="form-input" min="0" step="0.5" required>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label">Interview Difficulty</label>
+                        <select id="form-promote-difficulty" class="form-select">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Drive Mode</label>
+                        <select id="form-promote-mode" class="form-select">
+                            <option value="On-Campus" selected>On-Campus Drive</option>
+                            <option value="Off-Campus">Off-Campus Referral / Contest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Round-by-Round Breakdown (Rounds & Questions Asked)</label>
+                    <textarea id="form-promote-rounds" class="form-textarea" rows="3" placeholder="Round 1: Online Coding&#10;Round 2: Technical Interview&#10;Round 3: HR & Managerial" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preparation Strategy & Key Resources</label>
+                    <textarea id="form-promote-prep" class="form-textarea" rows="2" placeholder="Key topics and resources used..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Golden Advice for Juniors</label>
+                    <textarea id="form-promote-advice" class="form-textarea" rows="2" placeholder="Tips for juniors appearing for placements..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closePromoteModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-award"></i> Publish to Alumni Hub</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/static/js/admin_panel.js"></script>
+    <script>
+        // Init admin panel immediately on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdminPanel();
+        });
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 3500);
+        }
+
+        async function adminLogout() {
+            try {
+                const res = await fetch('/api/admin/logout', { method: 'POST' });
+                const data = await res.json();
+                window.location.href = data.redirect_url || '/admin';
+            } catch (err) {
+                window.location.href = '/admin';
+            }
+        }
+    </script>
+</body>
+</html>

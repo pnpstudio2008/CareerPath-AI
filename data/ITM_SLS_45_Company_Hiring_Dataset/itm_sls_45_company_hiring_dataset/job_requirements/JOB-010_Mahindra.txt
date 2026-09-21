@@ -1,0 +1,34 @@
+SYNTHETIC JOB REQUIREMENT — RESUME ANALYZER DEMO
+
+Company: Mahindra
+Job ID: JOB-010
+Role: Software Engineer
+Location: Vadodara / Ahmedabad / Remote (synthetic)
+Employment Type: Full-time
+Indicative CTC: ₹4.0-7.0 LPA
+
+About the role
+The candidate will work on technology, data, analytics, software or engineering tasks
+appropriate to the role. This job description is synthetic and exists only for testing
+resume-to-job matching.
+
+Required Skills
+Java; Python; SQL; REST API; Git
+
+Preferred Attributes
+- Problem solving
+- Communication
+- Team collaboration
+- Ability to learn new technologies
+- Understanding of software/data workflows
+
+Selection Pipeline
+1. Resume screening
+2. Aptitude / technical test
+3. Technical interview
+4. HR interview
+5. Offer decision
+
+Dataset status
+Synthetic demonstration record. It does not represent an actual open vacancy or hiring
+commitment by the named company.

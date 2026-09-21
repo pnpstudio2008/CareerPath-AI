@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Dhruv Patel
+Candidate ID: ITM-SLS-006
+Email: dhruvpatel.6@example.com
+Phone: +91-90000-10005
+Location: Bharuch, Gujarat, India
+
+TARGET ROLE
+Full Stack Developer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Tech in AI & ML background and 0.5 years of practical/project experience.
+Strong interest in full stack developer and hands-on experience with HTML, CSS, JavaScript, React, Node.js. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Tech in AI & ML
+Graduation Year: 2023
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+HTML, CSS, JavaScript, React, Node.js, SQL, MongoDB, Express.js, Next.js
+
+PROJECTS
+1. Full project using HTML and CSS
+   - Designed and implemented the solution using HTML, CSS and JavaScript.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using JavaScript and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on full stack developer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+0.5 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Full Stack Developer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 92/100
+- Resume matching score: 86/100
+- Overall candidate score: 88.7/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: Vertex Analytics
+Role: Full Stack Developer
+Status: Hired
+Indicative CTC: ₹5.1 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+HTML, CSS, JavaScript, React, Node.js, SQL, MongoDB, Express.js, Next.js, Full Stack Developer, B.Tech in AI & ML, communication, problem solving, teamwork

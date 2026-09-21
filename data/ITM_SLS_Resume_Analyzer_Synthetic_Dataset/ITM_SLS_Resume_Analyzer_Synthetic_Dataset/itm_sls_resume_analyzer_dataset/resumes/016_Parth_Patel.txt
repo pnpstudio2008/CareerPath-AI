@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Parth Patel
+Candidate ID: ITM-SLS-016
+Email: parthpatel.16@example.com
+Phone: +91-90000-10015
+Location: Ahmedabad, Gujarat, India
+
+TARGET ROLE
+AI Intern
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a MCA background and 2.0 years of practical/project experience.
+Strong interest in ai intern and hands-on experience with Python, Machine Learning, NLP, Pandas, SQL. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+MCA
+Graduation Year: 2025
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Python, Machine Learning, NLP, Pandas, SQL, TensorFlow, OpenCV, Transformers
+
+PROJECTS
+1. AI project using Python and Machine Learning
+   - Designed and implemented the solution using Python, Machine Learning and NLP.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using NLP and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on ai intern workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+2.0 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: AI Intern
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 78/100
+- Resume matching score: 94/100
+- Overall candidate score: 86.8/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: Vertex Analytics
+Role: AI Intern
+Status: Hired
+Indicative CTC: ₹4.0 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Python, Machine Learning, NLP, Pandas, SQL, TensorFlow, OpenCV, Transformers, AI Intern, MCA, communication, problem solving, teamwork

@@ -1,0 +1,24 @@
+=======================================================
+RESUME: TEST PROMO STUDENT
+=======================================================
+Email: testpromo@gmail.com | Phone: +91-98765-43210 | Location: Vadodara, Gujarat, India
+Degree: B.Tech in Computer Science (Class of 2025)
+Institution: ITM SLS Baroda University, Vadodara, Gujarat
+
+CAREER OBJECTIVE:
+Dedicated and high-performing engineering graduate placed as Systems Engineer at Infosys with ₹6.5 LPA CTC package.
+
+TECHNICAL SKILLS:
+Python; Java; SQL; Git; REST API; DSA; Web Development
+
+INTERVIEW & PLACEMENT JOURNEY:
+Placed at: Infosys
+Role: Systems Engineer
+Package: ₹6.5 LPA
+
+PREPARATION STRATEGY:
+Practice InfyTQ
+
+ADVICE TO JUNIORS:
+Start early.
+=======================================================

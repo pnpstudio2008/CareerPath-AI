@@ -1,0 +1,452 @@
+[
+  {
+    "job_id": "JOB-001",
+    "company": "Tata Consultancy Services",
+    "role": "Software Engineer",
+    "required_skills": "Python; Java; SQL; Git; REST API",
+    "indicative_ctc_range_lpa": "4.5-7.0",
+    "candidate_id": "ITM-SLS-001",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-001_TCS.txt"
+  },
+  {
+    "job_id": "JOB-002",
+    "company": "Wipro",
+    "role": "Project Engineer",
+    "required_skills": "Java; SQL; Python; Cloud; Git",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-002",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-002_Wipro.txt"
+  },
+  {
+    "job_id": "JOB-003",
+    "company": "Infosys",
+    "role": "Systems Engineer",
+    "required_skills": "Java; Python; SQL; OOP; Git",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-003",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-003_Infosys.txt"
+  },
+  {
+    "job_id": "JOB-004",
+    "company": "Amazon",
+    "role": "Software Development Engineer",
+    "required_skills": "Java; Python; DSA; AWS; SQL",
+    "indicative_ctc_range_lpa": "8.0-14.0",
+    "candidate_id": "ITM-SLS-004",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-004_Amazon.txt"
+  },
+  {
+    "job_id": "JOB-005",
+    "company": "Samsung",
+    "role": "Software Engineer",
+    "required_skills": "C++; Python; Data Structures; Linux; Git",
+    "indicative_ctc_range_lpa": "6.0-10.0",
+    "candidate_id": "ITM-SLS-005",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-005_Samsung.txt"
+  },
+  {
+    "job_id": "JOB-006",
+    "company": "Accenture",
+    "role": "Application Development Associate",
+    "required_skills": "Java; SQL; Python; Cloud; Agile",
+    "indicative_ctc_range_lpa": "4.5-7.0",
+    "candidate_id": "ITM-SLS-006",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-006_Accenture.txt"
+  },
+  {
+    "job_id": "JOB-007",
+    "company": "Larsen & Toubro",
+    "role": "Graduate Engineer Trainee",
+    "required_skills": "Python; SQL; Java; Problem Solving",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-007",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-007_L_T.txt"
+  },
+  {
+    "job_id": "JOB-008",
+    "company": "Capgemini",
+    "role": "Analyst",
+    "required_skills": "Java; SQL; Python; Testing; Git",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-008",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-008_Capgemini.txt"
+  },
+  {
+    "job_id": "JOB-009",
+    "company": "Reliance Jio",
+    "role": "Graduate Engineer Trainee",
+    "required_skills": "Java; Python; SQL; Linux; Networking",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-009",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-009_Reliance_Jio.txt"
+  },
+  {
+    "job_id": "JOB-010",
+    "company": "Mahindra",
+    "role": "Software Engineer",
+    "required_skills": "Java; Python; SQL; REST API; Git",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-010",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-010_Mahindra.txt"
+  },
+  {
+    "job_id": "JOB-011",
+    "company": "Maruti Suzuki",
+    "role": "IT Graduate Trainee",
+    "required_skills": "Python; SQL; Excel; Analytics; ERP",
+    "indicative_ctc_range_lpa": "4.0-6.0",
+    "candidate_id": "ITM-SLS-011",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-011_Maruti_Suzuki.txt"
+  },
+  {
+    "job_id": "JOB-012",
+    "company": "Tata Motors",
+    "role": "Digital Engineering Trainee",
+    "required_skills": "Python; SQL; Data Analytics; Git",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-012",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-012_Tata_Motors.txt"
+  },
+  {
+    "job_id": "JOB-013",
+    "company": "BYJU'S",
+    "role": "Academic Technology Specialist",
+    "required_skills": "Python; SQL; Communication; Analytics",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-013",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-013_BYJU_S.txt"
+  },
+  {
+    "job_id": "JOB-014",
+    "company": "Jaro Education",
+    "role": "Business Analyst",
+    "required_skills": "Excel; SQL; Power BI; Communication",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-014",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-014_Jaro_Education.txt"
+  },
+  {
+    "job_id": "JOB-015",
+    "company": "Amul",
+    "role": "Business/IT Trainee",
+    "required_skills": "Excel; SQL; Analytics; Communication",
+    "indicative_ctc_range_lpa": "3.5-5.5",
+    "candidate_id": "ITM-SLS-015",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-015_Amul.txt"
+  },
+  {
+    "job_id": "JOB-016",
+    "company": "Polycab",
+    "role": "IT Graduate Trainee",
+    "required_skills": "Python; SQL; ERP; Excel",
+    "indicative_ctc_range_lpa": "3.5-5.5",
+    "candidate_id": "ITM-SLS-016",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-016_Polycab.txt"
+  },
+  {
+    "job_id": "JOB-017",
+    "company": "Kent RO",
+    "role": "Software Trainee",
+    "required_skills": "Java; Python; SQL; Git",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-017",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-017_Kent_RO.txt"
+  },
+  {
+    "job_id": "JOB-018",
+    "company": "Matrix Comsec",
+    "role": "Software Engineer",
+    "required_skills": "C++; Java; SQL; Linux; Networking",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-018",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-018_Matrix_Comsec.txt"
+  },
+  {
+    "job_id": "JOB-019",
+    "company": "Hex Wireless",
+    "role": "Junior Software Engineer",
+    "required_skills": "JavaScript; React; Node.js; SQL; Git",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-019",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-019_Hex_Wireless.txt"
+  },
+  {
+    "job_id": "JOB-020",
+    "company": "Rishabh Software",
+    "role": "Software Engineer",
+    "required_skills": "Java; Python; SQL; AWS; Git",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-020",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-020_Rishabh_Software.txt"
+  },
+  {
+    "job_id": "JOB-021",
+    "company": "Synoverge Technologies",
+    "role": "Software Developer",
+    "required_skills": "Java; Python; SQL; React; Git",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-021",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-021_Synoverge_Technologies.txt"
+  },
+  {
+    "job_id": "JOB-022",
+    "company": "Proseon Technologies",
+    "role": "Junior Flutter Developer",
+    "required_skills": "Flutter; Dart; Firebase; Git",
+    "indicative_ctc_range_lpa": "3.0-5.5",
+    "candidate_id": "ITM-SLS-022",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-022_Proseon_Technologies.txt"
+  },
+  {
+    "job_id": "JOB-023",
+    "company": "WebOccult Technologies",
+    "role": "Frontend Developer",
+    "required_skills": "HTML; CSS; JavaScript; React; Git",
+    "indicative_ctc_range_lpa": "3.0-5.5",
+    "candidate_id": "ITM-SLS-023",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-023_WebOccult_Technologies.txt"
+  },
+  {
+    "job_id": "JOB-024",
+    "company": "Streebo Solutions",
+    "role": "Software Developer",
+    "required_skills": "Java; Python; REST API; SQL; Git",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-024",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-024_Streebo_Solutions.txt"
+  },
+  {
+    "job_id": "JOB-025",
+    "company": "eInfochips",
+    "role": "Embedded/Software Engineer",
+    "required_skills": "C++; Python; Linux; Git; SQL",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-025",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-025_eInfochips.txt"
+  },
+  {
+    "job_id": "JOB-026",
+    "company": "Collabera",
+    "role": "Technology Analyst",
+    "required_skills": "Java; SQL; Python; Testing; Agile",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-026",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-026_Collabera.txt"
+  },
+  {
+    "job_id": "JOB-027",
+    "company": "Shaligram Infotech",
+    "role": "Software Developer",
+    "required_skills": "PHP; Laravel; MySQL; JavaScript; Git",
+    "indicative_ctc_range_lpa": "3.0-5.5",
+    "candidate_id": "ITM-SLS-027",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-027_Shaligram_Infotech.txt"
+  },
+  {
+    "job_id": "JOB-028",
+    "company": "Beetonz Infotech",
+    "role": "Software Developer",
+    "required_skills": "PHP; MySQL; JavaScript; HTML; CSS",
+    "indicative_ctc_range_lpa": "3.0-5.0",
+    "candidate_id": "ITM-SLS-028",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-028_Beetonz_Infotech.txt"
+  },
+  {
+    "job_id": "JOB-029",
+    "company": "DeltaX",
+    "role": "Data/Technology Analyst",
+    "required_skills": "Python; SQL; Power BI; Statistics; Analytics",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-029",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-029_DeltaX.txt"
+  },
+  {
+    "job_id": "JOB-030",
+    "company": "L&T Technology Services",
+    "role": "Graduate Engineer Trainee",
+    "required_skills": "Python; C++; SQL; Git; Engineering",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-030",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-030_L_T_Technology_Services.txt"
+  },
+  {
+    "job_id": "JOB-031",
+    "company": "CIVICA",
+    "role": "Software Engineer",
+    "required_skills": "Java; SQL; Python; REST API; Git",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-031",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-031_CIVICA.txt"
+  },
+  {
+    "job_id": "JOB-032",
+    "company": "Sun Pharmaceutical Industries",
+    "role": "IT Graduate Trainee",
+    "required_skills": "SQL; Python; Excel; Analytics; ERP",
+    "indicative_ctc_range_lpa": "4.0-6.0",
+    "candidate_id": "ITM-SLS-032",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-032_Sun_Pharma.txt"
+  },
+  {
+    "job_id": "JOB-033",
+    "company": "IDFC FIRST Bank",
+    "role": "Technology Analyst",
+    "required_skills": "SQL; Python; Excel; Power BI; Analytics",
+    "indicative_ctc_range_lpa": "4.5-7.0",
+    "candidate_id": "ITM-SLS-033",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-033_IDFC_FIRST_Bank.txt"
+  },
+  {
+    "job_id": "JOB-034",
+    "company": "YES BANK",
+    "role": "Business Analyst",
+    "required_skills": "Excel; SQL; Power BI; Communication",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-034",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-034_YES_BANK.txt"
+  },
+  {
+    "job_id": "JOB-035",
+    "company": "HDFC Bank",
+    "role": "Data/Business Analyst",
+    "required_skills": "SQL; Excel; Power BI; Python",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-035",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-035_HDFC_Bank.txt"
+  },
+  {
+    "job_id": "JOB-036",
+    "company": "ICICI Bank",
+    "role": "Technology Analyst",
+    "required_skills": "SQL; Python; Excel; Analytics",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-036",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-036_ICICI_Bank.txt"
+  },
+  {
+    "job_id": "JOB-037",
+    "company": "Axis Bank",
+    "role": "Data Analyst",
+    "required_skills": "SQL; Python; Excel; Power BI",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-037",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-037_Axis_Bank.txt"
+  },
+  {
+    "job_id": "JOB-038",
+    "company": "Motilal Oswal",
+    "role": "Technology/Research Analyst",
+    "required_skills": "Python; SQL; Excel; Statistics",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-038",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-038_Motilal_Oswal.txt"
+  },
+  {
+    "job_id": "JOB-039",
+    "company": "Jhaveri Securities",
+    "role": "Business Analyst",
+    "required_skills": "Excel; SQL; Financial Analysis; Power BI",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-039",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-039_Jhaveri_Securities.txt"
+  },
+  {
+    "job_id": "JOB-040",
+    "company": "Numerator",
+    "role": "Data Analyst",
+    "required_skills": "Python; SQL; Statistics; Excel; Power BI",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-040",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-040_Numerator.txt"
+  },
+  {
+    "job_id": "JOB-041",
+    "company": "Banco Products",
+    "role": "IT/Analytics Trainee",
+    "required_skills": "Python; SQL; Excel; ERP",
+    "indicative_ctc_range_lpa": "3.5-5.5",
+    "candidate_id": "ITM-SLS-041",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-041_Banco_Products.txt"
+  },
+  {
+    "job_id": "JOB-042",
+    "company": "INOX India",
+    "role": "Graduate Engineer Trainee",
+    "required_skills": "Python; SQL; CAD/Engineering; Excel",
+    "indicative_ctc_range_lpa": "4.0-6.5",
+    "candidate_id": "ITM-SLS-042",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-042_INOX_India.txt"
+  },
+  {
+    "job_id": "JOB-043",
+    "company": "Gujarat Fluorochemicals",
+    "role": "IT/Analytics Trainee",
+    "required_skills": "Python; SQL; Excel; Power BI",
+    "indicative_ctc_range_lpa": "3.5-6.0",
+    "candidate_id": "ITM-SLS-043",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-043_Gujarat_Fluorochemicals.txt"
+  },
+  {
+    "job_id": "JOB-044",
+    "company": "TechNova Labs",
+    "role": "AI/ML Engineer",
+    "required_skills": "Python; Machine Learning; Pandas; Scikit-learn; SQL",
+    "indicative_ctc_range_lpa": "5.0-8.0",
+    "candidate_id": "ITM-SLS-044",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-044_TechNova_Labs.txt"
+  },
+  {
+    "job_id": "JOB-045",
+    "company": "Vadodara Digital Systems",
+    "role": "Full Stack Developer",
+    "required_skills": "React; Node.js; JavaScript; SQL; Git",
+    "indicative_ctc_range_lpa": "4.0-7.0",
+    "candidate_id": "ITM-SLS-045",
+    "hiring_status": "Hired (synthetic)",
+    "job_requirement_file": "job_requirements/JOB-045_Vadodara_Digital_Systems.txt"
+  }
+]

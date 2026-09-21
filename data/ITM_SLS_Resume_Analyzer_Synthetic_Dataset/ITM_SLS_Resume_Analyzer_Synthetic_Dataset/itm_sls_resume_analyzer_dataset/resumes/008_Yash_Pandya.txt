@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Yash Pandya
+Candidate ID: ITM-SLS-008
+Email: yashpandya.8@example.com
+Phone: +91-90000-10007
+Location: Vadodara, Gujarat, India
+
+TARGET ROLE
+Business Analyst
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Tech in IT background and 1.5 years of practical/project experience.
+Strong interest in business analyst and hands-on experience with Excel, SQL, Power BI, Data Analysis, Communication. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Tech in IT
+Graduation Year: 2025
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Excel, SQL, Power BI, Data Analysis, Communication, Tableau, Python, Jira
+
+PROJECTS
+1. Business project using Excel and SQL
+   - Designed and implemented the solution using Excel, SQL and Power BI.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using Power BI and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on business analyst workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+1.5 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Business Analyst
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 85/100
+- Resume matching score: 91/100
+- Overall candidate score: 88.3/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: NextGen Software
+Role: Business Analyst
+Status: Hired
+Indicative CTC: ₹5.8 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Excel, SQL, Power BI, Data Analysis, Communication, Tableau, Python, Jira, Business Analyst, B.Tech in IT, communication, problem solving, teamwork

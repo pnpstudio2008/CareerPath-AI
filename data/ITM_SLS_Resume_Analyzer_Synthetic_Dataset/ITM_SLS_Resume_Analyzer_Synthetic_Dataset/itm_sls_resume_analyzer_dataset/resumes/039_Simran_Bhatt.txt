@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Simran Bhatt
+Candidate ID: ITM-SLS-039
+Email: simranbhatt.39@example.com
+Phone: +91-90000-10038
+Location: Rajkot, Gujarat, India
+
+TARGET ROLE
+ML Engineer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a BCA background and 1.0 years of practical/project experience.
+Strong interest in ml engineer and hands-on experience with Python, Machine Learning, SQL, Pandas, NumPy. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+BCA
+Graduation Year: 2024
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Python, Machine Learning, SQL, Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch
+
+PROJECTS
+1. ML project using Python and Machine Learning
+   - Designed and implemented the solution using Python, Machine Learning and SQL.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using SQL and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on ml engineer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+1.0 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: ML Engineer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 92/100
+- Resume matching score: 92/100
+- Overall candidate score: 92.0/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: AlgoVista
+Role: ML Engineer
+Status: Hired
+Indicative CTC: ₹7.7 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Python, Machine Learning, SQL, Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, ML Engineer, BCA, communication, problem solving, teamwork

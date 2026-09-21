@@ -1,0 +1,24 @@
+=======================================================
+RESUME: TEST STUDENT
+=======================================================
+Email: test.student.itm.alumni@gmail.com | Phone: +91-98765-43210 | Location: Vadodara, Gujarat, India
+Degree: B.Tech in Computer Science & Engineering (Class of 2024)
+Institution: ITM SLS Baroda University, Vadodara, Gujarat
+
+CAREER OBJECTIVE:
+Dedicated and high-performing engineering graduate placed as Cloud Engineer at Google with ₹18.0 LPA CTC package.
+
+TECHNICAL SKILLS:
+Python; Java; SQL; Git; REST API; DSA; Web Development
+
+INTERVIEW & PLACEMENT JOURNEY:
+Placed at: Google
+Role: Cloud Engineer
+Package: ₹18.0 LPA
+
+PREPARATION STRATEGY:
+Coding practice
+
+ADVICE TO JUNIORS:
+Keep learning
+=======================================================

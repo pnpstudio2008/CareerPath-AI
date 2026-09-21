@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Tanya Patel
+Candidate ID: ITM-SLS-036
+Email: tanyapatel.36@example.com
+Phone: +91-90000-10035
+Location: Vadodara, Gujarat, India
+
+TARGET ROLE
+Cloud/DevOps Engineer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a B.Tech in AI & ML background and 1.5 years of practical/project experience.
+Strong interest in cloud/devops engineer and hands-on experience with Linux, Git, Docker, AWS, Python. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+B.Tech in AI & ML
+Graduation Year: 2025
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Linux, Git, Docker, AWS, Python, Kubernetes, CI/CD, Terraform
+
+PROJECTS
+1. Cloud/DevOps project using Linux and Git
+   - Designed and implemented the solution using Linux, Git and Docker.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using Docker and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on cloud/devops engineer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+1.5 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Cloud/DevOps Engineer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 92/100
+- Resume matching score: 93/100
+- Overall candidate score: 92.6/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: Vertex Analytics
+Role: Cloud/DevOps Engineer
+Status: Hired
+Indicative CTC: ₹6.5 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Linux, Git, Docker, AWS, Python, Kubernetes, CI/CD, Terraform, Cloud/DevOps Engineer, B.Tech in AI & ML, communication, problem solving, teamwork

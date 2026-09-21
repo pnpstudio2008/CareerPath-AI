@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Harsh Bhatt
+Candidate ID: ITM-SLS-009
+Email: harshbhatt.9@example.com
+Phone: +91-90000-10008
+Location: Ahmedabad, Gujarat, India
+
+TARGET ROLE
+Cloud/DevOps Engineer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a BCA background and 0.0 years of practical/project experience.
+Strong interest in cloud/devops engineer and hands-on experience with Linux, Git, Docker, AWS, Python. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+BCA
+Graduation Year: 2022
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Linux, Git, Docker, AWS, Python, Kubernetes, CI/CD
+
+PROJECTS
+1. Cloud/DevOps project using Linux and Git
+   - Designed and implemented the solution using Linux, Git and Docker.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using Docker and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on cloud/devops engineer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+0.0 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Cloud/DevOps Engineer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 92/100
+- Resume matching score: 85/100
+- Overall candidate score: 88.2/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: AlgoVista
+Role: Cloud/DevOps Engineer
+Status: Hired
+Indicative CTC: ₹6.2 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Linux, Git, Docker, AWS, Python, Kubernetes, CI/CD, Cloud/DevOps Engineer, BCA, communication, problem solving, teamwork

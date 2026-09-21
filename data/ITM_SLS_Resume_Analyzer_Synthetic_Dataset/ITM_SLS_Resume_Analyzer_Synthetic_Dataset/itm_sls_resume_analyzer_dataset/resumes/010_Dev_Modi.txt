@@ -1,0 +1,56 @@
+DUMMY / SYNTHETIC RESUME — FOR RESUME ANALYZER DEMO ONLY
+
+Candidate: Dev Modi
+Candidate ID: ITM-SLS-010
+Email: devmodi.10@example.com
+Phone: +91-90000-10009
+Location: Surat, Gujarat, India
+
+TARGET ROLE
+Software Developer
+
+PROFESSIONAL SUMMARY
+Motivated technology professional with a MCA background and 1.0 years of practical/project experience.
+Strong interest in software developer and hands-on experience with Python, Java, C++, SQL, Git. Comfortable working in collaborative,
+deadline-driven environments and learning new technologies quickly.
+
+EDUCATION
+MCA
+Graduation Year: 2023
+Institution: ITM SLS Baroda University (synthetic dataset record)
+
+TECHNICAL SKILLS
+Python, Java, C++, SQL, Git, REST API, Django, Spring Boot, Node.js
+
+PROJECTS
+1. Software project using Python and Java
+   - Designed and implemented the solution using Python, Java and C++.
+   - Added testing, documentation and basic performance evaluation.
+
+2. Dashboard/automation project using C++ and SQL
+   - Built reusable components and documented the workflow.
+   - Used Git for version control and followed a structured development process.
+
+3. Academic capstone focused on software developer workflows
+   - Defined requirements, implemented a prototype and presented results.
+   - Focused on accuracy, usability and maintainability.
+
+EXPERIENCE
+1.0 years equivalent practical experience through internships, projects and freelance/academic work.
+Recent target role: Software Developer
+
+ACHIEVEMENTS
+- Completed the Resume Analyzer assessment.
+- Assessment score: 78/100
+- Resume matching score: 96/100
+- Overall candidate score: 87.9/100
+- Selected for a job opportunity in the synthetic hiring dataset.
+
+EMPLOYMENT OUTCOME
+Employer: WebMatrix Labs
+Role: Software Developer
+Status: Hired
+Indicative CTC: ₹6.5 LPA
+
+KEYWORDS FOR NLP / RESUME MATCHING
+Python, Java, C++, SQL, Git, REST API, Django, Spring Boot, Node.js, Software Developer, MCA, communication, problem solving, teamwork

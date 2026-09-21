@@ -1,0 +1,24 @@
+=======================================================
+RESUME: MEERA IYER
+=======================================================
+Email: meera.iyer.itm.alumni@gmail.com | Phone: +91-98765-43210 | Location: Vadodara, Gujarat, India
+Degree: B.Tech in Information Technology (Class of 2025)
+Institution: ITM SLS Baroda University, Vadodara, Gujarat
+
+CAREER OBJECTIVE:
+Dedicated and high-performing engineering graduate placed as Cloud Support Associate at Amazon Web Services with ₹14.5 LPA CTC package.
+
+TECHNICAL SKILLS:
+Python; Java; SQL; Git; REST API; DSA; Web Development
+
+INTERVIEW & PLACEMENT JOURNEY:
+Placed at: Amazon Web Services
+Role: Cloud Support Associate
+Package: ₹14.5 LPA
+
+PREPARATION STRATEGY:
+Practiced AWS Cloud Practitioner and Linux fundamentals along with Python scripting.
+
+ADVICE TO JUNIORS:
+Focus on Linux internals, networking concepts, and AWS core services.
+=======================================================

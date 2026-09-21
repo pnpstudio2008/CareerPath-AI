@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Companion - AI-Powered Placement & Career Platform</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+    <link rel="apple-touch-icon" href="/static/images/favicon.png">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+</head>
+<body>
+    <!-- Background Glow Accents -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand" onclick="navigateTo('home')">
+                <img src="/static/images/logo.png" alt="AI Career Companion Logo" class="brand-logo-img">
+                <div class="brand-text">
+                    <span class="brand-title">AI Career Companion</span>
+                    <span class="brand-subtitle">By Riya Modi & Diksha Durgapal</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Links -->
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link active" onclick="navigateTo('home')">
+                    <i class="fa-solid fa-house"></i> <span>Overview</span>
+                </a>
+                <a href="#analyzer" class="nav-link" onclick="navigateTo('analyzer')">
+                    <i class="fa-solid fa-file-invoice"></i> <span>Resume ATS</span>
+                </a>
+                <a href="#mocktest" class="nav-link" onclick="navigateTo('mocktest')">
+                    <i class="fa-solid fa-clipboard-check"></i> <span>Mock - Test</span>
+                </a>
+                <a href="#prep" class="nav-link" onclick="navigateTo('prep')">
+                    <i class="fa-solid fa-laptop-code"></i> <span>Practice</span>
+                </a>
+                <a href="#alumni" class="nav-link" onclick="navigateTo('alumni')">
+                    <i class="fa-solid fa-users-viewfinder"></i> <span>Alumni Hub</span>
+                </a>
+            </nav>
+
+            <!-- Nav Actions -->
+            <div class="nav-actions">
+                {% if user %}
+                    {% if user.type == 'admin' %}
+                    <a href="/admin" class="btn btn-outline btn-sm" title="Master Admin Console">
+                        <i class="fa-solid fa-shield-halved text-purple"></i> <span>Admin Console</span>
+                    </a>
+                    <a href="/api/admin/logout" class="btn btn-outline btn-sm" title="Logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+                    </a>
+                    {% elif user.type == 'alumni' %}
+                    <a href="/alumni/profile" class="btn btn-primary btn-sm" title="My Alumni Profile" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
+                        <i class="fa-solid fa-user-tie"></i> <span>{{ user.name }}</span>
+                    </a>
+                    <a href="/api/alumni/logout" class="btn btn-outline btn-sm" title="Logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+                    </a>
+                    {% else %}
+                    <a href="/student/profile" class="btn btn-primary btn-sm" title="My Student Profile">
+                        <i class="fa-solid fa-user-graduate"></i> <span>{{ user.name }}</span>
+                    </a>
+                    <a href="/api/student/logout" class="btn btn-outline btn-sm" title="Logout">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
+                    </a>
+                    {% endif %}
+                {% else %}
+                    <a href="/login" class="btn btn-primary btn-sm" title="Portal Login">
+                        <i class="fa-solid fa-right-to-bracket"></i> <span>Login</span>
+                    </a>
+                {% endif %}
+                <button class="mobile-menu-toggle" id="mobile-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area (Single Page App Navigation) -->
+    <main class="main-content">
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: HOME & HERO OVERVIEW           -->
+        <!-- ========================================== -->
+        <section id="section-home" class="app-section active">
+            <div class="hero-container">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Placement & Career AI
+                </div>
+                <h1 class="hero-title">
+                    Empowering Students with <span class="gradient-text">AI Career Guidance</span> & Placement Readiness
+                </h1>
+                <p class="hero-desc">
+                    A unified intelligent ecosystem combining automated resume analysis, subject-wise placement practice, authentic alumni interview archives, and faculty placement insights.
+                </p>
+
+                <!-- Quick Action Bar -->
+                <div class="hero-cta-group">
+                    <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Resume
+                    </button>
+                    <button class="btn btn-primary btn-lg" onclick="navigateTo('mocktest')" style="background: linear-gradient(135deg, #10B981, #059669);">
+                        <i class="fa-solid fa-clipboard-check"></i> Skill Mock Test
+                    </button>
+                    <button class="btn btn-outline btn-lg" onclick="navigateTo('prep')">
+                        <i class="fa-solid fa-circle-play"></i> Practice Quizzes
+                    </button>
+                    <button class="btn btn-glass btn-lg" onclick="navigateTo('alumni')">
+                        <i class="fa-solid fa-users"></i> Explore Alumni Hub
+                    </button>
+                </div>
+
+                <!-- Platform Highlights Grid -->
+                <div class="features-grid">
+                    <div class="feature-card" onclick="navigateTo('analyzer')">
+                        <div class="feature-icon icon-cyan">
+                            <i class="fa-solid fa-file-code"></i>
+                        </div>
+                        <h3>1. AI Resume Analysis</h3>
+                        <p>Extracts deep technical skills, calculates ATS compatibility score, identifies formatting gaps, and suggests suitable career tracks.</p>
+                        <span class="feature-link">Explore Analyzer <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <div class="feature-card" onclick="navigateTo('prep')">
+                        <div class="feature-icon icon-emerald">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3>2. Placement Preparation</h3>
+                        <p>Practice topic-wise MCQs, company-specific test banks (TCS, Infosys, Amazon, Google), and detailed solution explanations.</p>
+                        <span class="feature-link">Practice Now <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+
+                    <div class="feature-card" onclick="navigateTo('alumni')">
+                        <div class="feature-icon icon-amber">
+                            <i class="fa-solid fa-building-user"></i>
+                        </div>
+                        <h3>3. Alumni Experience Hub</h3>
+                        <p>Access authentic, round-by-round interview journeys, coding questions, salary packages, and preparation advice shared by placed alumni.</p>
+                        <span class="feature-link">Read Experiences <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </div>
+
+                <!-- Campus Value Proposition Banner -->
+                <div class="stats-banner">
+                    <div class="stat-item">
+                        <div class="stat-num">95%</div>
+                        <div class="stat-label">ATS Accuracy</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-num">1,000+</div>
+                        <div class="stat-label">Tech Skill Taxonomy</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-num">8+</div>
+                        <div class="stat-label">Top Hiring Tech Profiles</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-num">100%</div>
+                        <div class="stat-label">Free & Campus Ready</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: AI RESUME PDF ANALYZER         -->
+        <!-- ========================================== -->
+        <section id="section-analyzer" class="app-section">
+            <div class="section-header">
+                <div class="section-badge"><i class="fa-solid fa-file-pdf"></i> Module 1</div>
+                <h2 class="section-title">AI Resume PDF Analyzer & 45-Company Matcher</h2>
+                <p class="section-desc">Upload your resume PDF to extract skills, evaluate ATS readiness, and compare directly against 45 company hiring requirements and candidate cohort benchmarks.</p>
+            </div>
+
+            <!-- PDF Upload Container -->
+            <div class="card analyzer-input-card">
+                <div class="pdf-upload-header">
+                    <div class="pdf-upload-title-wrap">
+                        <div class="pdf-upload-badge"><i class="fa-solid fa-file-pdf"></i> PDF Document Upload</div>
+                        <span class="text-muted" style="font-size:0.85rem;">Standard PDF Resume format supported (up to 16MB)</span>
+                    </div>
+
+                    <div class="sample-loader-dropdown">
+                        <button class="btn btn-outline btn-sm" onclick="toggleSampleMenu()">
+                            <i class="fa-solid fa-bolt"></i> Load Sample PDF Resume <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="sample-menu">
+                            <div class="dropdown-item" onclick="loadSampleResume('fullstack')">
+                                <i class="fa-solid fa-layer-group"></i> Full Stack Developer (React / Node)
+                            </div>
+                            <div class="dropdown-item" onclick="loadSampleResume('aiml')">
+                                <i class="fa-solid fa-brain"></i> AI / ML &amp; Data Science Aspirant
+                            </div>
+                            <div class="dropdown-item" onclick="loadSampleResume('fresher_dsa')">
+                                <i class="fa-solid fa-code"></i> Fresher SDE (DSA &amp; C++/Java)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                     SECURITY STATUS BAR — Always visible, confirms protections ON
+                     ============================================================ -->
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.85rem; margin-bottom:0.2rem; align-items:center;">
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem; background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.35); color:#EF4444; font-size:0.78rem; font-weight:700; padding:0.3rem 0.75rem; border-radius:999px; letter-spacing:0.01em;">
+                        <i class="fa-solid fa-shield-halved"></i>&nbsp;Malware Protection: .DOCX&nbsp;Blocked
+                    </span>
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem; background:rgba(16,185,129,0.10); border:1px solid rgba(16,185,129,0.35); color:#10B981; font-size:0.78rem; font-weight:700; padding:0.3rem 0.75rem; border-radius:999px; letter-spacing:0.01em;">
+                        <i class="fa-solid fa-magnifying-glass-chart"></i>&nbsp;AI Resume Verifier: Active
+                    </span>
+                    <span style="display:inline-flex; align-items:center; gap:0.4rem; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.30); color:#6366F1; font-size:0.78rem; font-weight:700; padding:0.3rem 0.75rem; border-radius:999px; letter-spacing:0.01em;">
+                        <i class="fa-solid fa-file-pdf"></i>&nbsp;PDF Only Accepted
+                    </span>
+                </div>
+
+                <!-- Drag & Drop PDF Box -->
+                <div class="drop-zone mt-3" id="drop-zone" onclick="document.getElementById('resume-file-input').click()">
+                    <input type="file" id="resume-file-input" accept=".pdf,application/pdf" style="display:none" onchange="handleFileSelected(event)">
+                    <div class="drop-zone-icon">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </div>
+                    <h4>Drag &amp; Drop your Resume PDF here</h4>
+                    <p>or <span class="browse-link">browse from your computer</span> &mdash; <strong>PDF only</strong> &nbsp;|&nbsp; .docx &amp; Word files are blocked</p>
+                    <div id="selected-file-info" class="selected-file-info" style="display:none;"></div>
+                </div>
+
+                <div class="action-bar-right mt-3">
+                    <button class="btn btn-primary btn-lg" id="btn-analyze-resume" onclick="submitResumeAnalysis()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Resume PDF & Match 45 Recruiters
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analysis Loading Indicator -->
+            <div id="analyzer-loading" class="loading-container" style="display:none;">
+                <div class="spinner"></div>
+                <h3>AI is verifying and parsing your resume PDF...</h3>
+                <p>Running authenticity verification, extracting skills, evaluating ATS score, and matching across all 45 company hiring requirements in the dataset.</p>
+            </div>
+
+            <!-- Resume Authenticity Verification Rejection Banner -->
+            <div id="analyzer-verification-error" class="card mt-4" style="display:none; border:2px solid #EF4444; background:rgba(239, 68, 68, 0.05); text-align:center; padding:2.25rem 1.5rem;">
+                <div style="width:68px; height:68px; border-radius:50%; background:rgba(239, 68, 68, 0.12); color:#EF4444; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1rem; box-shadow:0 6px 16px rgba(239,68,68,0.25);">
+                    <i class="fa-solid fa-file-circle-xmark"></i>
+                </div>
+                <h3 style="color:#EF4444; font-size:1.35rem; font-weight:800; margin-bottom:0.5rem;" id="verif-error-title">
+                    Resume Authenticity Verification Failed
+                </h3>
+                <p id="verif-error-msg" style="color:var(--text-primary); font-size:0.95rem; max-width:640px; margin:0 auto 1.25rem; line-height:1.6;">
+                    The uploaded document does not appear to be an authentic resume or CV.
+                </p>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-glass); border-radius:12px; padding:1rem 1.25rem; max-width:560px; margin:0 auto 1.25rem; text-align:left; font-size:0.86rem; box-shadow:var(--nm-inset-sm);">
+                    <strong style="display:block; margin-bottom:0.4rem; color:var(--text-primary);">
+                        <i class="fa-solid fa-shield-halved text-danger"></i> What our Resume Verifier expects:
+                    </strong>
+                    <ul style="margin:0; padding-left:1.2rem; color:var(--text-secondary); line-height:1.55;">
+                        <li><strong>Education & Degree:</strong> College, branch, GPA/CGPA, or academic coursework.</li>
+                        <li><strong>Technical Skills:</strong> Programming languages, frameworks, databases, or tools.</li>
+                        <li><strong>Projects / Experience:</strong> Practical applications, coding projects, or internships.</li>
+                        <li><strong>Candidate Contact Details:</strong> Email address, phone number, or GitHub/LinkedIn.</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" onclick="document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth' })">
+                    <i class="fa-solid fa-arrow-up"></i> Select & Upload Genuine Resume PDF
+                </button>
+            </div>
+
+            <!-- Analysis Results View -->
+            <div id="analyzer-results" class="analyzer-results-wrapper" style="display:none;">
+                
+                <!-- Row 1: ATS Score Meter & Overview Summary -->
+                <div class="results-grid-2">
+                    <div class="card ats-score-card">
+                        <div class="card-header-flex mb-2">
+                            <h3>ATS Compatibility Score</h3>
+                            <span class="badge badge-success" id="resume-verified-badge" style="display:none;"><i class="fa-solid fa-shield-check"></i> Verified Resume</span>
+                        </div>
+                        <div class="ats-gauge-container">
+                            <div class="circular-progress" id="ats-gauge">
+                                <span class="progress-value" id="ats-gauge-num">0%</span>
+                            </div>
+                            <div class="ats-rating-badge" id="ats-rating-badge">Evaluating...</div>
+                        </div>
+                        <p class="ats-feedback" id="ats-feedback-text"></p>
+                        
+                        <div class="ats-metrics-row">
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-word-count">0</div>
+                                <div class="metric-lbl">Total Words</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-skills-count">0</div>
+                                <div class="metric-lbl">Skills Found</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-verbs-count">0</div>
+                                <div class="metric-lbl">Action Verbs</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-metrics-count">0</div>
+                                <div class="metric-lbl">Measurable Metrics</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card section-audit-card">
+                        <h3><i class="fa-solid fa-list-check"></i> Section Completeness Audit</h3>
+                        <div class="section-checklist" id="section-checklist"></div>
+
+                        <h4 class="mt-4"><i class="fa-solid fa-lightbulb"></i> Recommended ATS Fixes</h4>
+                        <ul class="recommendation-list" id="recommendation-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Row 2: Extracted Skills Taxonomy Breakdown -->
+                <div class="card mt-4">
+                    <div class="card-header-flex">
+                        <h3><i class="fa-solid fa-microchip"></i> Identified Technical & Soft Skills</h3>
+                        <span class="badge badge-info" id="skills-total-badge">0 Skills Detected</span>
+                    </div>
+                    <div class="skills-taxonomy-grid" id="skills-taxonomy-container"></div>
+                </div>
+
+                <!-- Row 3: Career Path Recommendations -->
+                <div class="card mt-4">
+                    <h3><i class="fa-solid fa-compass"></i> Recommended Career Roles</h3>
+                    <p class="text-muted">Based on your extracted skills profile, here is how well you match target technology career tracks:</p>
+                    <div class="career-roles-grid" id="career-roles-container"></div>
+                </div>
+
+                <!-- Row 4: 45-Company Recruiter Fit & Candidate Dataset Benchmark -->
+                <div class="card mt-4 dataset-matching-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fa-solid fa-building-circle-check text-primary"></i> 45-Company Hiring Dataset Matching & Recruiter Fit</h3>
+                            <p class="text-muted">Directly comparing your resume against 45 company hiring requirements and synthetic candidate benchmarks.</p>
+                        </div>
+                        <span class="badge badge-primary" id="dataset-evaluated-badge">45 Recruiters Evaluated</span>
+                    </div>
+
+                    <!-- Candidate Cohort Benchmark Banner -->
+                    <div class="cohort-benchmark-banner" id="cohort-benchmark-banner">
+                        <div class="benchmark-icon-box">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="benchmark-info">
+                            <div class="benchmark-headline" id="benchmark-headline">Top Benchmark Performance</div>
+                            <p class="benchmark-subtext" id="benchmark-subtext">Calculating candidate cohort comparison...</p>
+                        </div>
+                    </div>
+
+                    <!-- Filter / Search Toolbar for 45 Companies -->
+                    <div class="company-matches-toolbar mt-3">
+                        <div class="table-filters" style="margin-bottom:0.5rem;">
+                            <input type="text" id="company-match-search" class="form-input" placeholder="🔍 Search company name, role, or skill..." oninput="filterCompanyMatches()" style="max-width:280px;">
+                            <select id="company-tier-filter" class="form-select" onchange="filterCompanyMatches()" style="max-width:180px;">
+                                <option value="all">All Fit Levels</option>
+                                <option value="Strong Match">Strong Match (>= 75%)</option>
+                                <option value="Moderate Fit">Moderate Fit (50-74%)</option>
+                                <option value="Skill Gap">Skill Gap (< 50%)</option>
+                            </select>
+                        </div>
+                        <span class="text-muted" style="font-size:0.85rem;" id="company-matches-count">Showing 15 of 45 Recruiters</span>
+                    </div>
+
+                    <!-- Company Match Cards Grid -->
+                    <div class="company-matches-grid mt-3" id="company-matches-container">
+                        <!-- Populated by resume_analyzer.js -->
+                    </div>
+
+                    <!-- Bottom Refresh / Load Next 15 Companies Action Bar -->
+                    <div class="company-refresh-bottom-bar mt-4">
+                        <div class="refresh-status-badge" id="company-batch-indicator">
+                            <i class="fa-solid fa-layer-group text-primary"></i> Batch 1 of 3 &bull; 15 Recruiters Loaded
+                        </div>
+                        <button class="btn btn-primary btn-lg refresh-companies-bottom-btn" id="btn-refresh-companies-bottom" onclick="refreshCompanyMatches()">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh & Load Next 15 Companies
+                        </button>
+                        <p class="text-muted mt-2 mb-0" style="font-size:0.82rem;">
+                            Discover another mixed set of 15 recruiters across top product companies, IT giants, and core engineering firms.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Row 5: Tailored Skill & Certification Mock Test Callout -->
+                <div class="card mt-4 tailored-mock-test-cta-card" id="resume-mock-test-cta-card">
+                    <div class="mock-cta-flex">
+                        <div class="mock-cta-badge-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="mock-cta-info">
+                            <span class="badge badge-primary"><i class="fa-solid fa-sparkles"></i> Adaptive Skill Assessment</span>
+                            <h3 class="mt-2">🎯 Test Your Skills with a Personalized Mock Test</h3>
+                            <p class="text-muted mb-2">
+                                We've extracted your core technical skills and certifications. Take a live 10–15 question technical assessment tailored specifically to your profile to benchmark your placement readiness.
+                            </p>
+                            <div class="skills-preview-tags" id="resume-mock-skills-tags"></div>
+                        </div>
+                        <div class="mock-cta-btn-wrapper">
+                            <button class="btn btn-primary btn-lg" onclick="launchTailoredMockTestFromResume()" style="background: linear-gradient(135deg, #10B981, #059669); white-space:nowrap;">
+                                <i class="fa-solid fa-play"></i> Start Tailored Mock Test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Personalized Interview Questions Generator -->
+                <div class="card mt-4">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fa-solid fa-circle-question"></i> AI-Generated Tailored Interview Questions</h3>
+                            <p class="text-muted">Interview questions crafted specifically for the technologies & frameworks found in your resume.</p>
+                        </div>
+                    </div>
+                    <div class="questions-accordion" id="resume-questions-container"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: PLACEMENT PREPARATION HUB      -->
+        <!-- ========================================== -->
+        <section id="section-prep" class="app-section">
+            <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem;">
+                <div>
+                    <div class="section-badge"><i class="fa-solid fa-laptop-code"></i> Module 2</div>
+                    <h2 class="section-title">Placement Preparation & Practice Quizzes</h2>
+                    <p class="section-desc">Subject-wise MCQs, company-specific test papers, and theoretical question banks with instant evaluation and detailed explanations.</p>
+                </div>
+                <div style="display:flex; gap:0.65rem; flex-wrap:wrap; margin-bottom:0.5rem;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('alumni-contributed-prep-section').scrollIntoView({ behavior: 'smooth' })" style="background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.3); color:#8B5CF6;">
+                        <i class="fa-solid fa-graduation-cap"></i> Jump to Alumni Questions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Best Scorers' Benchmark Showcase (Hall of Fame) -->
+            <div class="card top-scorers-showcase">
+                <div class="card-header-flex">
+                    <div>
+                        <h3><i class="fa-solid fa-crown text-amber"></i> Best Scorers' Challenge Tests (Hall of Fame)</h3>
+                        <p class="text-muted">Solve curated mock test sets cleared with perfect 100% scores by our top placed alumni seniors.</p>
+                    </div>
+                    <span class="badge badge-warning"><i class="fa-solid fa-fire"></i> Top Benchmarks</span>
+                </div>
+                <div class="top-scorers-grid" id="top-scorers-grid">
+                    <!-- Dynamic Top Scorer Cards populated by placement_prep.js -->
+                </div>
+            </div>
+
+            <!-- Quiz Setup Bar -->
+            <div class="card quiz-filter-card">
+                <div class="filter-row">
+                    <div class="filter-col">
+                        <label class="form-label"><i class="fa-solid fa-book"></i> Select Subject / Category</label>
+                        <select id="quiz-subject-select" class="form-select">
+                            <option value="all">All Subjects (Comprehensive Mock)</option>
+                            <option value="DSA">Data Structures & Algorithms (DSA)</option>
+                            <option value="Python">Python Programming</option>
+                            <option value="Java">Java & OOP Principles</option>
+                            <option value="DBMS">DBMS & SQL</option>
+                            <option value="Operating Systems">Operating Systems</option>
+                            <option value="Computer Networks">Computer Networks</option>
+                            <option value="Aptitude">Quantitative & Logical Aptitude</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-col">
+                        <label class="form-label"><i class="fa-solid fa-building"></i> Company Focus</label>
+                        <select id="quiz-company-select" class="form-select">
+                            <option value="all">All Companies</option>
+                            <option value="Amazon">Amazon</option>
+                            <option value="Google">Google</option>
+                            <option value="TCS">TCS NQT / Digital</option>
+                            <option value="Infosys">Infosys (SP / InfyTQ)</option>
+                            <option value="Microsoft">Microsoft</option>
+                            <option value="Accenture">Accenture</option>
+                            <option value="Wipro">Wipro</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-col">
+                        <label class="form-label"><i class="fa-solid fa-trophy"></i> Best Scorer Preset</label>
+                        <select id="quiz-top-scorer-select" class="form-select" onchange="loadTopScorerChallengeFromDropdown()">
+                            <option value="">-- Custom Test (Standard) --</option>
+                            <option value="aarav">Aarav Sharma (Amazon SDE-1 - 100%)</option>
+                            <option value="sneha">Sneha Kulkarni (Google SWE - 100%)</option>
+                            <option value="priya">Priya Patel (Infosys SP - 100%)</option>
+                            <option value="rohan">Rohan Deshmukh (TCS Digital - 100%)</option>
+                            <option value="ananya">Ananya Gupta (Microsoft Cloud - 100%)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-col-btn">
+                        <button class="btn btn-primary" onclick="startNewQuiz()">
+                            <i class="fa-solid fa-play"></i> Start Practice Test
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Idle / Welcome State (Manual Start) -->
+            <div id="quiz-idle-prompt" class="card mt-4 text-center p-5">
+                <div style="width:70px; height:70px; border-radius:50%; background:rgba(99,102,241,0.12); color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1.25rem;">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h3>Placement Practice & Mock Assessment</h3>
+                <p class="text-muted" style="max-width:540px; margin:0.5rem auto 1.5rem;">
+                    Configure your subject and target company above, or choose an alumni senior challenge from the Hall of Fame. Click the button below when you are ready to begin the timed test.
+                </p>
+                <div>
+                    <button class="btn btn-primary btn-lg" onclick="startNewQuiz()">
+                        <i class="fa-solid fa-play"></i> Start Practice Assessment (10 Questions &bull; 10 Mins)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Active Interface (Hidden until user clicks Start) -->
+            <div id="quiz-active-wrapper" class="card mt-4 quiz-container" style="display:none;">
+                <!-- Previous Best Scorer Live Banner -->
+                <div class="best-scorer-banner" id="quiz-scorer-banner">
+                    <div class="scorer-badge-crown">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                    <div class="scorer-details">
+                        <div class="scorer-top-row">
+                            <span class="scorer-pill"><i class="fa-solid fa-trophy"></i> Previous Best Scorer Benchmark</span>
+                            <span class="scorer-score-pill"><i class="fa-solid fa-star"></i> Record: <strong id="scorer-banner-score">100% (10/10)</strong> in <strong id="scorer-banner-time">4m 12s</strong></span>
+                        </div>
+                        <div class="scorer-profile">
+                            <h3 id="scorer-banner-name">Aarav Sharma</h3>
+                            <span class="scorer-designation" id="scorer-banner-designation">Software Development Engineer (SDE-1) at Amazon (₹44.5 LPA)</span>
+                        </div>
+                        <p class="scorer-tip" id="scorer-banner-tip">
+                            <i class="fa-solid fa-quote-left"></i> <span id="scorer-banner-quote">Always think about memory constraints & worst-case time complexity before locking answers!</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="quiz-status-header">
+                    <div class="quiz-progress-text">
+                        Question <span id="quiz-current-idx">1</span> of <span id="quiz-total-count">10</span>
+                        <span class="badge badge-outline ml-2" id="quiz-topic-badge">DSA</span>
+                    </div>
+                    <div class="quiz-timer" id="quiz-timer">
+                        <i class="fa-regular fa-clock"></i> <span id="quiz-timer-text">10:00</span>
+                    </div>
+                </div>
+
+                <div class="quiz-question-box">
+                    <h3 id="quiz-question-text">Loading question...</h3>
+                </div>
+
+                <div class="quiz-options-grid" id="quiz-options-container"></div>
+
+                <div class="quiz-nav-footer">
+                    <button class="btn btn-outline" id="quiz-btn-prev" onclick="prevQuizQuestion()" disabled>
+                        <i class="fa-solid fa-arrow-left"></i> Previous
+                    </button>
+                    <div class="quiz-indicators" id="quiz-indicator-pills"></div>
+                    <button class="btn btn-outline" id="quiz-btn-next" onclick="nextQuizQuestion()">
+                        Next <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-primary" id="quiz-btn-submit" onclick="submitQuizAnswers()" style="display:none;">
+                        <i class="fa-solid fa-check-double"></i> Submit Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Results Modal / View -->
+            <div id="quiz-results-wrapper" class="card mt-4" style="display:none;">
+                <div class="card-header-flex">
+                    <h2><i class="fa-solid fa-trophy text-amber"></i> Practice Assessment Results</h2>
+                    <button class="btn btn-outline btn-sm" onclick="startNewQuiz()">
+                        <i class="fa-solid fa-rotate-right"></i> Retake Practice Test
+                    </button>
+                </div>
+
+                <div class="results-grid-2 mt-3">
+                    <div class="quiz-score-summary">
+                        <div class="score-circle">
+                            <span class="score-num" id="quiz-result-score-pct">0%</span>
+                            <span class="score-sub" id="quiz-result-fraction">0 / 0</span>
+                        </div>
+                        <h4 id="quiz-result-headline" class="mt-3">Assessment Completed</h4>
+                    </div>
+
+                    <div>
+                        <h4>Subject Accuracy Breakdown</h4>
+                        <div id="quiz-topic-breakdown-list" class="topic-breakdown-list"></div>
+                    </div>
+                </div>
+
+                <!-- Benchmark Record Comparison -->
+                <div class="benchmark-compare-box" id="quiz-benchmark-compare">
+                    <div class="benchmark-compare-icon"><i class="fa-solid fa-medal"></i></div>
+                    <div>
+                        <h4 id="benchmark-compare-title">Benchmark Target vs Previous Best Scorer</h4>
+                        <p id="benchmark-compare-desc" style="font-size:0.88rem; color:var(--text-secondary); margin-top:0.2rem;">Comparing your score against top placed alumni records.</p>
+                    </div>
+                </div>
+
+                <h3 class="mt-4"><i class="fa-solid fa-book-open"></i> Detailed Question Review & Explanations</h3>
+                <div id="quiz-review-list" class="quiz-review-accordion mt-3"></div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SUB-SECTION: ALUMNI CONTRIBUTED QUESTIONS -->
+            <!-- ========================================== -->
+            <div class="alumni-contributed-prep-section" id="alumni-contributed-prep-section">
+                <div class="card p-4">
+                    <div class="card-header-flex mb-2" style="flex-wrap:wrap; gap:0.75rem;">
+                        <div>
+                            <div class="section-badge mb-2" style="background:rgba(139, 92, 246, 0.12); color:#8B5CF6; border:1px solid rgba(139, 92, 246, 0.3);">
+                                <i class="fa-solid fa-graduation-cap"></i> Senior Mentorship Contribution
+                            </div>
+                            <h3 style="font-size:1.35rem; font-weight:800; margin:0 0 0.25rem 0; display:flex; align-items:center; gap:0.5rem;">
+                                <i class="fa-solid fa-code-pull-request text-primary"></i> Placement Test Questions Contributed by Placed Alumni
+                            </h3>
+                            <p class="text-muted" style="font-size:0.88rem; margin:0;">
+                                Practice real technical interview questions and placement MCQs contributed directly by verified alumni mentors.
+                            </p>
+                        </div>
+                        <div class="stats-pill-group">
+                            <span class="stats-pill"><i class="fa-solid fa-layer-group text-primary"></i> Available: <strong id="main-prep-q-total">0</strong></span>
+                            <span class="stats-pill"><i class="fa-solid fa-circle-check text-success"></i> Score: <strong id="main-prep-q-correct" style="color:var(--accent-emerald);">0</strong> / <span id="main-prep-q-answered">0</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Multi-Filter Bar Card -->
+                    <div class="filter-bar-card mt-3">
+                        <div class="filter-controls-group">
+                            <!-- Skill Filter -->
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.25rem; text-transform:uppercase;">
+                                    <i class="fa-solid fa-code"></i> Select Skill / Subject
+                                </label>
+                                <select id="main-prep-filter-skill" class="filter-select" onchange="loadMainAlumniPracticeQuestions()">
+                                    <option value="all">🌟 All Skills & Subjects</option>
+                                    <option value="DSA">DSA & Problem Solving</option>
+                                    <option value="Python">Python</option>
+                                    <option value="Java">Java & OOP</option>
+                                    <option value="DBMS">DBMS & SQL</option>
+                                    <option value="Operating Systems">Operating Systems</option>
+                                    <option value="Computer Networks">Computer Networks</option>
+                                    <option value="Aptitude">Quantitative Aptitude</option>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="AI & ML">AI & Machine Learning</option>
+                                    <option value="Cloud & DevOps">Cloud & DevOps</option>
+                                </select>
+                            </div>
+
+                            <!-- Question Type / Company Filter -->
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.25rem; text-transform:uppercase;">
+                                    <i class="fa-solid fa-building"></i> Question Type / Company
+                                </label>
+                                <select id="main-prep-filter-company" class="filter-select" onchange="loadMainAlumniPracticeQuestions()">
+                                    <option value="all">🏢 All Companies & Types</option>
+                                    <option value="Amazon">Amazon</option>
+                                    <option value="Google">Google</option>
+                                    <option value="Microsoft">Microsoft</option>
+                                    <option value="TCS">TCS</option>
+                                    <option value="Infosys">Infosys</option>
+                                    <option value="Wipro">Wipro</option>
+                                    <option value="Accenture">Accenture</option>
+                                    <option value="General">General Technical</option>
+                                </select>
+                            </div>
+
+                            <!-- Difficulty Filter -->
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.25rem; text-transform:uppercase;">
+                                    <i class="fa-solid fa-gauge-high"></i> Difficulty
+                                </label>
+                                <select id="main-prep-filter-difficulty" class="filter-select" onchange="loadMainAlumniPracticeQuestions()">
+                                    <option value="all">⚡ Any Difficulty</option>
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
+                            </div>
+
+                            <!-- Alumni Mentor Filter (Placed beside Difficulty) -->
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:0.25rem; text-transform:uppercase;">
+                                    <i class="fa-solid fa-user-graduate"></i> Alumni Mentor
+                                </label>
+                                <select id="main-prep-filter-alumni" class="filter-select" onchange="loadMainAlumniPracticeQuestions()">
+                                    <option value="all">🌟 All Alumni Mentors</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:0.5rem; align-items:flex-end;">
+                            <button class="btn btn-outline btn-sm" onclick="shuffleMainAlumniPracticeQuestions()" title="Shuffle Questions">
+                                <i class="fa-solid fa-shuffle"></i> <span>Shuffle</span>
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="resetMainAlumniPracticeFilters()" title="Reset Filters">
+                                <i class="fa-solid fa-rotate-left"></i> <span>Reset</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Questions Container -->
+                    <div id="main-alumni-questions-list">
+                        <div class="text-center p-4 text-muted">
+                            <div class="spinner"></div> Loading placement questions contributed by alumni mentors...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: ALUMNI EXPERIENCE PORTAL       -->
+        <!-- ========================================== -->
+        <section id="section-alumni" class="app-section">
+            <div class="section-header">
+                <div class="section-badge"><i class="fa-solid fa-users-viewfinder"></i> Module 3</div>
+                <h2 class="section-title">Alumni Placement & Interview Experience Hub</h2>
+                <p class="section-desc">Learn from real campus and off-campus placement journeys, round-by-round interview breakdowns, and preparation advice shared by placed alumni.</p>
+            </div>
+
+            <!-- Filter & Search Bar -->
+            <div class="card alumni-filter-card">
+                <div class="filter-row">
+                    <div class="filter-col-search">
+                        <div class="search-input-wrap">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="alumni-search-input" class="form-input" placeholder="Search by company, role, topics (e.g. Amazon, SDE, LeetCode, AWS)..." oninput="debounceAlumniSearch()">
+                        </div>
+                    </div>
+
+                    <div class="filter-col">
+                        <select id="alumni-company-filter" class="form-select" onchange="fetchAlumniExperiences()">
+                            <option value="all">All Companies</option>
+                            <option value="Amazon">Amazon</option>
+                            <option value="Google">Google</option>
+                            <option value="TCS">TCS</option>
+                            <option value="Infosys">Infosys</option>
+                            <option value="Accenture">Accenture</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-col">
+                        <select id="alumni-difficulty-filter" class="form-select" onchange="fetchAlumniExperiences()">
+                            <option value="all">All Difficulties</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alumni Experiences Feed Container -->
+            <div class="alumni-feed-grid mt-4" id="alumni-feed-container"></div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- SECTION 4: MOCK - TEST (ADAPTIVE SKILL)    -->
+        <!-- ========================================== -->
+        <section id="section-mocktest" class="app-section">
+            <div class="section-header">
+                <div class="section-badge"><i class="fa-solid fa-clipboard-check"></i> Personalized Skill Test</div>
+                <h2 class="section-title">Adaptive Skill & Certification Mock Test</h2>
+                <p class="section-desc">Real-time online technical assessments dynamically synthesized from your extracted resume skills, certifications, and live internet test question feeds.</p>
+            </div>
+
+            <!-- 1. Mock Test Setup & Skill Summary Card -->
+            <div id="mocktest-config-wrapper" class="card p-4">
+                <div class="card-header-flex">
+                    <div>
+                        <h3><i class="fa-solid fa-sliders text-primary"></i> Assessment Parameters & Skill Scope</h3>
+                        <p class="text-muted mb-0">Customize your question set or let AI evaluate your parsed resume profile.</p>
+                    </div>
+                    <div class="detected-skills-summary-pill">
+                        <i class="fa-solid fa-microchip text-primary"></i> <span id="mocktest-skills-count-text">Ready for Skill Test</span>
+                    </div>
+                </div>
+
+                <div class="mock-skills-box mt-4 p-3" style="background:var(--bg-base); border-radius:var(--radius-lg);">
+                    <div class="form-label font-bold mb-2"><i class="fa-solid fa-tags"></i> Active Target Skills & Certifications for this Test:</div>
+                    <div class="mocktest-tags-container" id="mocktest-tags-container" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <!-- Tags populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="form-grid-3 mt-4">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-list-ol"></i> Question Count</label>
+                        <select id="mocktest-count-select" class="form-select">
+                            <option value="10">10 Questions (Quick 10-Minute Assessment)</option>
+                            <option value="12" selected>12 Questions (Standard 12-Minute Mock)</option>
+                            <option value="15">15 Questions (Full Comprehensive 15-Minute Mock)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-gauge-high"></i> Difficulty Level</label>
+                        <select id="mocktest-difficulty-select" class="form-select">
+                            <option value="all" selected>Adaptive / Mixed (All Levels)</option>
+                            <option value="Easy">Foundation / Easy</option>
+                            <option value="Medium">Interview Standard (Medium)</option>
+                            <option value="Hard">Advanced / High Bar (Hard)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-briefcase"></i> Target Career Track</label>
+                        <select id="mocktest-role-select" class="form-select">
+                            <option value="Software Engineer" selected>Software Development Engineer (SDE)</option>
+                            <option value="Full Stack Developer">Full Stack Web Developer</option>
+                            <option value="Backend Developer">Backend Engineer (Python / Java / Node)</option>
+                            <option value="AI / ML Engineer">AI / ML & Data Science Engineer</option>
+                            <option value="Cloud & DevOps">Cloud & DevOps Engineer</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--border-color);">
+                    <button class="btn btn-outline" onclick="navigateTo('analyzer')">
+                        <i class="fa-solid fa-file-pdf"></i> Upload / Re-scan Resume PDF
+                    </button>
+                    <button class="btn btn-primary btn-lg" id="btn-start-mocktest" onclick="generateAndStartMockTest()" style="background: linear-gradient(135deg, #10B981, #059669);">
+                        <i class="fa-solid fa-play"></i> Start Mock Test (10–15 Questions)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Loading State -->
+            <div id="mocktest-loading" class="card mt-4 p-5 text-center" style="display:none;">
+                <div class="spinner mb-3" style="margin:0 auto;"></div>
+                <h3>Fetching & Synthesizing 10–15 Tailored Questions...</h3>
+                <p class="text-muted">Querying verified online technical question feeds and structuring questions around your resume skills & certifications.</p>
+            </div>
+
+            <!-- 3. Live Active Exam Interface -->
+            <div id="mocktest-active-wrapper" class="card mt-4 p-4" style="display:none;">
+                <div class="mocktest-exam-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; padding-bottom:1rem; border-bottom:1px solid var(--border-color);">
+                    <div class="exam-status-left" style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                        <span class="badge badge-primary" id="mock-q-category">Python</span>
+                        <span class="badge badge-outline" id="mock-q-difficulty">Medium</span>
+                        <span class="exam-progress-text ml-2">Question <strong id="mock-current-q-num">1</strong> of <strong id="mock-total-q-num">12</strong></span>
+                    </div>
+                    <div class="exam-timer-box" id="mocktest-timer-box">
+                        <i class="fa-regular fa-clock"></i> <span id="mocktest-timer-display">12:00</span>
+                    </div>
+                </div>
+
+                <!-- Question Body -->
+                <div class="mocktest-question-body mt-4">
+                    <h3 id="mocktest-question-text" class="question-title" style="font-size:1.25rem; line-height:1.5;">Loading question...</h3>
+                </div>
+
+                <!-- Options Grid -->
+                <div class="mocktest-options-grid mt-4" id="mocktest-options-container">
+                    <!-- Options A, B, C, D rendered dynamically -->
+                </div>
+
+                <!-- Action Controls -->
+                <div class="mocktest-nav-controls mt-4 pt-3" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; border-top:1px solid var(--border-color);">
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <button class="btn btn-outline" id="mock-btn-prev" onclick="prevMockQuestion()">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </button>
+                        <button class="btn btn-outline" id="mock-btn-clear" onclick="clearMockOptionSelection()">
+                            <i class="fa-solid fa-eraser"></i> Clear Choice
+                        </button>
+                        <button class="btn btn-outline" id="mock-btn-flag" onclick="toggleFlagMockQuestion()">
+                            <i class="fa-solid fa-flag"></i> <span id="mock-flag-text">Mark for Review</span>
+                        </button>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <button class="btn btn-primary" id="mock-btn-next" onclick="nextMockQuestion()">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button class="btn btn-success" id="mock-btn-submit" onclick="confirmSubmitMockTest()" style="background: linear-gradient(135deg, #10B981, #059669); color:#FFF; font-weight:700;">
+                            <i class="fa-solid fa-check-double"></i> Submit Test
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Palette / Grid -->
+                <div class="mocktest-palette-section mt-4 pt-3" style="border-top:1px solid var(--border-color);">
+                    <div class="palette-header mb-3" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+                        <span class="font-bold text-sm"><i class="fa-solid fa-table-cells"></i> Question Palette:</span>
+                        <div class="palette-legend" style="display:flex; gap:0.85rem; font-size:0.8rem; flex-wrap:wrap;">
+                            <span class="legend-item"><span class="legend-dot current"></span> Current</span>
+                            <span class="legend-item"><span class="legend-dot answered"></span> Answered</span>
+                            <span class="legend-item"><span class="legend-dot flagged"></span> Flagged</span>
+                            <span class="legend-item"><span class="legend-dot unattempted"></span> Unanswered</span>
+                        </div>
+                    </div>
+                    <div class="mocktest-palette-grid" id="mocktest-palette-container"></div>
+                </div>
+            </div>
+
+            <!-- 4. Post-Test Scorecard & In-Depth Review -->
+            <div id="mocktest-scorecard-wrapper" class="card mt-4" style="display:none;">
+                <!-- Rendered dynamically by mock_test.js -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- ALUMNI STORY FULLSCREEN DETAIL MODAL       -->
+    <!-- ========================================== -->
+    <div id="alumni-detail-modal" class="modal-backdrop" onclick="closeAlumniDetailModal(event)">
+        <div class="modal-card alumni-detail-modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="alumni-modal-header-profile">
+                    <div class="alumni-modal-avatar" id="alumni-detail-avatar">AP</div>
+                    <div>
+                        <div class="alumni-modal-name-row">
+                            <h2 id="alumni-detail-name">Aarav Patel</h2>
+                            <span class="badge badge-success" id="alumni-detail-status">Selected</span>
+                        </div>
+                        <p class="text-muted mb-0" id="alumni-detail-subtitle" style="font-size:0.88rem;">Batch of 2022 • On-Campus Placement</p>
+                    </div>
+                </div>
+                <button class="modal-close" onclick="closeAlumniDetailModal()">&times;</button>
+            </div>
+
+            <div class="modal-body alumni-detail-modal-body" id="alumni-detail-body">
+                <!-- Dynamically populated by alumni_hub.js -->
+            </div>
+
+            <div class="modal-footer alumni-detail-modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeAlumniDetailModal()">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Grid
+                </button>
+                <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                    <button class="upvote-btn" id="alumni-detail-upvote-btn">
+                        <i class="fa-solid fa-heart"></i> <span id="alumni-detail-upvote-count" class="upvote-count">0</span> Helpful
+                    </button>
+                    <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="btn btn-linkedin-action" id="alumni-detail-linkedin-btn" title="Open LinkedIn Profile">
+                        <i class="fa-brands fa-linkedin"></i> LinkedIn
+                    </a>
+                    <button class="btn btn-primary btn-gmail-action" id="alumni-detail-gmail-btn">
+                        <i class="fa-brands fa-google"></i> Contact Senior via Gmail
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-brand" style="display:flex; align-items:center; gap:0.65rem;">
+                    <img src="/static/images/logo.png" alt="AI Career Companion" style="height:38px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(99,102,241,0.3));">
+                    <span>AI Career Companion</span>
+                </div>
+                <p>Designed and Developed by <strong>Riya Modi & Diksha Durgapal</strong> for student career guidance and placement excellence.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#analyzer" onclick="navigateTo('analyzer')">Resume ATS</a>
+                <a href="#mocktest" onclick="navigateTo('mocktest')">Mock - Test</a>
+                <a href="#prep" onclick="navigateTo('prep')">Practice Tests</a>
+                <a href="#alumni" onclick="navigateTo('alumni')">Alumni Hub</a>
+                {% if user %}
+                    {% if user.type == 'admin' %}
+                    <a href="/admin">Admin Console</a>
+                    <a href="/api/admin/logout">Logout</a>
+                    {% elif user.type == 'alumni' %}
+                    <a href="/alumni/profile">Alumni Profile</a>
+                    <a href="/api/alumni/logout">Logout</a>
+                    {% else %}
+                    <a href="/student/profile">My Profile</a>
+                    <a href="/api/student/logout">Logout</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/resume_analyzer.js"></script>
+    <script src="/static/js/mock_test.js"></script>
+    <script src="/static/js/placement_prep.js"></script>
+    <script src="/static/js/alumni_hub.js"></script>
+</body>
+</html>

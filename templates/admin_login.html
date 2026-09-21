@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Companion - Unified Portal Login</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+    <link rel="apple-touch-icon" href="/static/images/favicon.png">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-base);
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 2.25rem 2rem;
+            box-shadow: var(--nm-raised), 0 25px 50px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* 3-Tab Segmented Portal Navigation */
+        .portal-nav-switcher {
+            display: flex;
+            background: var(--bg-base);
+            padding: 0.35rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-glass);
+            margin-bottom: 1.75rem;
+            box-shadow: var(--nm-inset-sm);
+            gap: 0.3rem;
+        }
+
+        .portal-tab-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.65rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .portal-tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .portal-tab-btn.active.tab-student {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+        }
+
+        .portal-tab-btn.active.tab-alumni {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.35);
+        }
+
+        .portal-tab-btn.active.tab-admin {
+            background: linear-gradient(135deg, #6366F1, #4F46E5);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-icon-box {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .login-icon-box.icon-student {
+            background: linear-gradient(135deg, #10B981, #059669);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+        }
+
+        .login-icon-box.icon-alumni {
+            background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+        }
+
+        .login-icon-box.icon-admin {
+            background: linear-gradient(135deg, #6366F1, #4F46E5);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .login-title {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .login-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+
+        .security-banner-2fa {
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem;
+            margin-bottom: 1.25rem;
+            text-align: center;
+        }
+
+        .security-banner-2fa.banner-student {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+
+        .security-banner-2fa.banner-alumni {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.25);
+        }
+
+        /* Center-aligned Action Buttons */
+        .btn-center-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn-center-action {
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0 auto;
+            border-radius: var(--radius-md);
+        }
+
+        .login-footer-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        .login-footer-actions a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .login-footer-actions a:hover {
+            color: var(--primary-soft);
+            text-decoration: underline;
+        }
+
+        .step-transition {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        
+        <!-- Official 3D Mascot Logo -->
+        <div style="text-align: center; margin-bottom: 1.25rem;">
+            <img src="/static/images/logo.png" alt="AI Career Companion Logo" style="height: 68px; width: auto; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(99, 102, 241, 0.35));">
+        </div>
+
+        <!-- 1. TOP PORTAL NAVIGATION SWITCHER (STUDENT | ALUMNI | ADMIN) -->
+        <nav class="portal-nav-switcher" aria-label="Portal Selection">
+            <button type="button" class="portal-tab-btn tab-student" id="tab-btn-student" onclick="selectPortalTab('student')">
+                <i class="fa-solid fa-user-graduate"></i> Student
+            </button>
+            <button type="button" class="portal-tab-btn tab-alumni" id="tab-btn-alumni" onclick="selectPortalTab('alumni')">
+                <i class="fa-solid fa-user-tie"></i> Alumni
+            </button>
+            <button type="button" class="portal-tab-btn active tab-admin" id="tab-btn-admin" onclick="selectPortalTab('admin')">
+                <i class="fa-solid fa-shield-halved"></i> Admin
+            </button>
+        </nav>
+
+        <!-- ========================================== -->
+        <!-- SECTION 1: STUDENT LOGIN SECTION           -->
+        <!-- ========================================== -->
+        <div id="portal-student-container" style="display:none;">
+            
+            <!-- Student Step 1: Credentials -->
+            <div id="student-step-1" class="step-transition">
+                <div class="login-header">
+                    <div class="login-icon-box icon-student">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <h1 class="login-title">Student Portal</h1>
+                    <p class="login-subtitle">Sign in to access your placement dashboard and resume ATS</p>
+                </div>
+
+                <form id="student-login-form" onsubmit="handleStudentStep1(event)">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="student-identifier">
+                            <i class="fa-solid fa-id-card"></i> Enrollment Number
+                        </label>
+                        <input 
+                            type="text" 
+                            id="student-identifier" 
+                            class="form-input" 
+                            placeholder="Enter your enrollment number" 
+                            required 
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label" for="student-password">
+                            <i class="fa-solid fa-lock"></i> Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="student-password" 
+                            class="form-input" 
+                            placeholder="Enter your password" 
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <div class="btn-center-wrapper">
+                        <button type="submit" class="btn btn-primary btn-center-action" id="student-btn-1">
+                            <i class="fa-solid fa-arrow-right"></i> Verify Credentials
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Student Step 2: 2FA Security Key -->
+            <div id="student-step-2" class="step-transition" style="display:none;">
+                <div class="login-header">
+                    <div class="login-icon-box icon-student">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <h1 class="login-title">Student 2FA Security</h1>
+                    <p class="login-subtitle">Enter your 2FA security key to access your dashboard</p>
+                </div>
+
+                <div class="security-banner-2fa banner-student">
+                    <div style="font-size:0.88rem; color:var(--text-secondary);">
+                        <i class="fa-solid fa-shield-halved text-emerald"></i> <strong>2FA Authorization Required</strong>
+                    </div>
+                    <div style="font-size:0.82rem; color:var(--text-primary); margin-top:0.25rem;">
+                        Please enter your 2FA Security Key below to complete login.
+                    </div>
+                </div>
+
+                <form id="student-2fa-form" onsubmit="handleStudentVerify2FA(event)">
+                    <div class="form-group">
+                        <label class="form-label" style="text-align:center; display:block;">
+                            <i class="fa-solid fa-key"></i> Enter 2FA Security Key
+                        </label>
+                        <input 
+                            type="password" 
+                            id="student-otp-input" 
+                            class="form-input" 
+                            style="text-align:center; font-weight:700; font-size:1.25rem; letter-spacing:4px; padding:0.75rem 1rem;"
+                            placeholder="" 
+                            required 
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="btn-center-wrapper">
+                        <button type="submit" class="btn btn-primary btn-center-action" id="student-btn-2">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Verify & Access Platform
+                        </button>
+                    </div>
+                </form>
+
+                <div class="login-footer-actions">
+                    <a href="#" onclick="backToStudentStep1(event)">
+                        <i class="fa-solid fa-arrow-left"></i> Change Student Account
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: ALUMNI LOGIN SECTION (MIDDLE)   -->
+        <!-- ========================================== -->
+        <div id="portal-alumni-container" style="display:none;">
+            
+            <!-- Alumni Step 1: Credentials -->
+            <div id="alumni-step-1" class="step-transition">
+                <div class="login-header">
+                    <div class="login-icon-box icon-alumni">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h1 class="login-title">Alumni Portal</h1>
+                    <p class="login-subtitle">Sign in to share interview experiences and mentor juniors</p>
+                </div>
+
+                <form id="alumni-login-form" onsubmit="handleAlumniStep1(event)">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="alumni-identifier">
+                            <i class="fa-solid fa-id-badge"></i> Alumni User ID
+                        </label>
+                        <input 
+                            type="text" 
+                            id="alumni-identifier" 
+                            class="form-input" 
+                            placeholder="Enter your alumni ID" 
+                            required 
+                            autocomplete="username"
+                        >
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label" for="alumni-password">
+                            <i class="fa-solid fa-lock"></i> Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="alumni-password" 
+                            class="form-input" 
+                            placeholder="Enter your password" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <div class="btn-center-wrapper">
+                        <button type="submit" class="btn btn-primary btn-center-action" id="alumni-btn-1" style="background:linear-gradient(135deg, #3B82F6, #1D4ED8);">
+                            <i class="fa-solid fa-arrow-right"></i> Verify Credentials
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Alumni Step 2: 2FA Security Key -->
+            <div id="alumni-step-2" class="step-transition" style="display:none;">
+                <div class="login-header">
+                    <div class="login-icon-box icon-alumni">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <h1 class="login-title">Alumni 2FA Security</h1>
+                    <p class="login-subtitle">Enter your 2FA security key to access the alumni dashboard</p>
+                </div>
+
+                <div class="security-banner-2fa banner-alumni">
+                    <div style="font-size:0.88rem; color:var(--text-secondary);">
+                        <i class="fa-solid fa-shield-halved text-primary"></i> <strong>2FA Authorization Required</strong>
+                    </div>
+                    <div style="font-size:0.82rem; color:var(--text-primary); margin-top:0.25rem;">
+                        Please enter your 2FA Security Key below to complete login.
+                    </div>
+                </div>
+
+                <form id="alumni-2fa-form" onsubmit="handleAlumniVerify2FA(event)">
+                    <div class="form-group">
+                        <label class="form-label" style="text-align:center; display:block;">
+                            <i class="fa-solid fa-key"></i> Enter 2FA Security Key
+                        </label>
+                        <input 
+                            type="password" 
+                            id="alumni-otp-input" 
+                            class="form-input" 
+                            style="text-align:center; font-weight:700; font-size:1.25rem; letter-spacing:4px; padding:0.75rem 1rem;"
+                            placeholder="" 
+                            required 
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="btn-center-wrapper">
+                        <button type="submit" class="btn btn-primary btn-center-action" id="alumni-btn-2" style="background:linear-gradient(135deg, #3B82F6, #1D4ED8);">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Verify & Access Platform
+                        </button>
+                    </div>
+                </form>
+
+                <div class="login-footer-actions">
+                    <a href="#" onclick="backToAlumniStep1(event)">
+                        <i class="fa-solid fa-arrow-left"></i> Change Alumni Account
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: ADMIN LOGIN SECTION             -->
+        <!-- ========================================== -->
+        <div id="portal-admin-container">
+            
+            <!-- Admin Step 1: Credentials -->
+            <div id="admin-step-1" class="step-transition">
+                <div class="login-header">
+                    <div class="login-icon-box icon-admin">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h1 class="login-title">Admin Control Portal</h1>
+                    <p class="login-subtitle">Sign in to manage student cohorts, placements, and question banks</p>
+                </div>
+
+                <form id="admin-login-form" onsubmit="handleAdminStep1(event)">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="login-username">
+                            <i class="fa-solid fa-user"></i> Admin Username
+                        </label>
+                        <input 
+                            type="text" 
+                            id="login-username" 
+                            class="form-input" 
+                            placeholder="Enter admin username" 
+                            required 
+                            autocomplete="username"
+                            autofocus
+                        >
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label" for="login-password">
+                            <i class="fa-solid fa-lock"></i> Password
+                        </label>
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            class="form-input" 
+                            placeholder="Enter admin password" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <div class="btn-center-wrapper">
+                        <button type="submit" class="btn btn-primary btn-center-action" id="login-btn-1" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">
+                            <i class="fa-solid fa-arrow-right"></i> Verify Credentials
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Admin Step 2: 2FA Master Security Key -->
+            <div id="admin-step-2" class="step-transition" style="display:none;">
+                <div class="login-header">
+                    <div class="login-icon-box icon-admin">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <h1 class="login-title">Admin 2FA Security</h1>
+                    <p class="login-subtitle">Enter the Master 2FA Security Key to unlock administrative access</p>
+                </div>
+
+                <div class="security-banner-2fa">
+                    <div style="font-size:0.88rem; color:var(--text-secondary);">
+                        <i class="fa-solid fa-shield-virus text-purple"></i> <strong>Master 2FA Authorization Required</strong>
+                    </div>
+                    <div style="font-size:0.82rem; color:var(--text-primary); margin-top:0.25rem;">
+                        Please enter the Master 2FA Security Key below to authorize console access.
+                    </div>
+                </div>
+
+                <form id="admin-2fa-form" onsubmit="handleAdminVerify2FA(event)">
+                    <div class="form-group">
+                        <label class="form-label" style="text-align:center; display:block;">
+                            <i class="fa-solid fa-lock-open"></i> Enter 2FA Master Security Key
+                        </label>
+                        <input 
+                            type="password" 
+                            id="admin-otp-input" 
+                            class="form-input" 
+                            style="text-align:center; font-weight:700; font-size:1.25rem; letter-spacing:4px; padding:0.75rem 1rem;"
+                            placeholder="" 
+                            required 
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="btn-center-wrapper">
+                        <button type="submit" class="btn btn-primary btn-center-action" id="login-btn-2" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">
+                            <i class="fa-solid fa-lock-open"></i> Verify & Access Admin Console
+                        </button>
+                    </div>
+                </form>
+
+                <div class="login-footer-actions">
+                    <a href="#" onclick="backToAdminStep1(event)">
+                        <i class="fa-solid fa-arrow-left"></i> Change Admin Account
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        // ----------------------------------------------------
+        // 3-WAY PORTAL SWITCHER LOGIC
+        // ----------------------------------------------------
+        function selectPortalTab(type) {
+            const btnStudent = document.getElementById('tab-btn-student');
+            const btnAlumni = document.getElementById('tab-btn-alumni');
+            const btnAdmin = document.getElementById('tab-btn-admin');
+            const contStudent = document.getElementById('portal-student-container');
+            const contAlumni = document.getElementById('portal-alumni-container');
+            const contAdmin = document.getElementById('portal-admin-container');
+
+            // Reset all
+            btnStudent.className = 'portal-tab-btn tab-student';
+            btnAlumni.className = 'portal-tab-btn tab-alumni';
+            btnAdmin.className = 'portal-tab-btn tab-admin';
+            contStudent.style.display = 'none';
+            contAlumni.style.display = 'none';
+            contAdmin.style.display = 'none';
+
+            if (type === 'alumni') {
+                btnAlumni.className = 'portal-tab-btn active tab-alumni';
+                contAlumni.style.display = 'block';
+                document.getElementById('alumni-identifier').focus();
+                window.history.replaceState({}, '', '/student/login?role=alumni');
+            } else if (type === 'student') {
+                btnStudent.className = 'portal-tab-btn active tab-student';
+                contStudent.style.display = 'block';
+                document.getElementById('student-identifier').focus();
+                window.history.replaceState({}, '', '/student/login');
+            } else {
+                btnAdmin.className = 'portal-tab-btn active tab-admin';
+                contAdmin.style.display = 'block';
+                document.getElementById('login-username').focus();
+                window.history.replaceState({}, '', '/admin');
+            }
+        }
+
+        // Initialize active tab based on URL path or query
+        window.addEventListener('DOMContentLoaded', () => {
+            const path = window.location.pathname;
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('role') === 'alumni' || path.includes('alumni')) {
+                selectPortalTab('alumni');
+            } else if (path.includes('student') || params.get('role') === 'student') {
+                selectPortalTab('student');
+            } else {
+                selectPortalTab('admin');
+            }
+        });
+
+        // ----------------------------------------------------
+        // 1. STUDENT LOGIN HANDLERS
+        // ----------------------------------------------------
+        async function handleStudentStep1(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('student-identifier').value.trim();
+            const password = document.getElementById('student-password').value.trim();
+            const btn = document.getElementById('student-btn-1');
+
+            if (!identifier || !password) {
+                showToast('Please enter both enrollment number and password.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking credentials...';
+
+            try {
+                const res = await fetch('/api/student/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.require_2fa) {
+                    showToast(`Password verified for ${data.student_name}! Please enter your 2FA security key.`, 'success');
+                    document.getElementById('student-step-1').style.display = 'none';
+                    document.getElementById('student-step-2').style.display = 'block';
+                    document.getElementById('student-otp-input').value = '';
+                    document.getElementById('student-otp-input').focus();
+                } else {
+                    showToast(data.error || 'Invalid credentials. Please check your credentials.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+                }
+            } catch (err) {
+                showToast('Connection error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+            }
+        }
+
+        async function handleStudentVerify2FA(e) {
+            e.preventDefault();
+            const code = document.getElementById('student-otp-input').value.trim();
+            const btn = document.getElementById('student-btn-2');
+
+            if (!code) {
+                showToast('Please enter your 2FA Security Key.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authorizing 2FA...';
+
+            try {
+                const res = await fetch('/api/student/verify-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('2FA Verified! Redirecting to platform...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/';
+                    }, 600);
+                } else {
+                    showToast(data.error || 'Incorrect 2FA code. Please check and try again.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Verify & Access Platform';
+                }
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Verify & Access Platform';
+            }
+        }
+
+        function backToStudentStep1(e) {
+            if (e) e.preventDefault();
+            document.getElementById('student-step-2').style.display = 'none';
+            document.getElementById('student-step-1').style.display = 'block';
+            document.getElementById('student-btn-1').disabled = false;
+            document.getElementById('student-btn-1').innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+        }
+
+        // ----------------------------------------------------
+        // 2. ALUMNI LOGIN HANDLERS
+        // ----------------------------------------------------
+        async function handleAlumniStep1(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('alumni-identifier').value.trim();
+            const password = document.getElementById('alumni-password').value.trim();
+            const btn = document.getElementById('alumni-btn-1');
+
+            if (!identifier || !password) {
+                showToast('Please enter Alumni User ID and Password.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking credentials...';
+
+            try {
+                const res = await fetch('/api/alumni/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.require_2fa) {
+                    showToast(`Credentials verified for ${data.alumni_name}! Please enter 2FA security key.`, 'success');
+                    document.getElementById('alumni-step-1').style.display = 'none';
+                    document.getElementById('alumni-step-2').style.display = 'block';
+                    document.getElementById('alumni-otp-input').value = '';
+                    document.getElementById('alumni-otp-input').focus();
+                } else {
+                    showToast(data.error || 'Invalid Alumni ID or Password.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+                }
+            } catch (err) {
+                showToast('Connection error. Please try again.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+            }
+        }
+
+        async function handleAlumniVerify2FA(e) {
+            e.preventDefault();
+            const code = document.getElementById('alumni-otp-input').value.trim();
+            const btn = document.getElementById('alumni-btn-2');
+
+            if (!code) {
+                showToast('Please enter your 2FA Security Key.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authorizing 2FA...';
+
+            try {
+                const res = await fetch('/api/alumni/verify-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('2FA Verified! Welcome to the Alumni Portal...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/alumni/profile';
+                    }, 600);
+                } else {
+                    showToast(data.error || 'Incorrect 2FA code. Please check and try again.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Verify & Access Platform';
+                }
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Verify & Access Platform';
+            }
+        }
+
+        function backToAlumniStep1(e) {
+            if (e) e.preventDefault();
+            document.getElementById('alumni-step-2').style.display = 'none';
+            document.getElementById('alumni-step-1').style.display = 'block';
+            document.getElementById('alumni-btn-1').disabled = false;
+            document.getElementById('alumni-btn-1').innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+        }
+
+        // ----------------------------------------------------
+        // 3. ADMIN LOGIN HANDLERS
+        // ----------------------------------------------------
+        async function handleAdminStep1(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const btn = document.getElementById('login-btn-1');
+
+            if (!username || !password) {
+                showToast('Please enter both username and password.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking credentials...';
+
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.require_2fa) {
+                    showToast('Admin credentials verified! Please enter the 2FA Master Key.', 'success');
+                    document.getElementById('admin-step-1').style.display = 'none';
+                    document.getElementById('admin-step-2').style.display = 'block';
+                    document.getElementById('admin-otp-input').value = '';
+                    document.getElementById('admin-otp-input').focus();
+                } else {
+                    showToast(data.error || 'Authentication failed. Please check your credentials.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+                }
+            } catch (err) {
+                showToast('Connection error: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+            }
+        }
+
+        async function handleAdminVerify2FA(e) {
+            e.preventDefault();
+            const code = document.getElementById('admin-otp-input').value.trim();
+            const btn = document.getElementById('login-btn-2');
+
+            if (!code) {
+                showToast('Please enter the 2FA Master Security Key.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authorizing 2FA...';
+
+            try {
+                const res = await fetch('/api/admin/verify-2fa', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('2FA Master Key Verified! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/admin';
+                    }, 600);
+                } else {
+                    showToast(data.error || 'Invalid 2FA Master Key. Please try again.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify & Access Admin Console';
+                }
+            } catch (err) {
+                showToast('Network error: ' + err.message, 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify & Access Admin Console';
+            }
+        }
+
+        function backToAdminStep1(e) {
+            if (e) e.preventDefault();
+            document.getElementById('admin-step-2').style.display = 'none';
+            document.getElementById('admin-step-1').style.display = 'block';
+            document.getElementById('login-btn-1').disabled = false;
+            document.getElementById('login-btn-1').innerHTML = '<i class="fa-solid fa-arrow-right"></i> Verify Credentials';
+        }
+
+        // ----------------------------------------------------
+        // TOAST NOTIFICATIONS
+        // ----------------------------------------------------
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            const icon = type === 'success' ? 'fa-circle-check' : (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info');
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 3500);
+        }
+    </script>
+</body>
+</html>

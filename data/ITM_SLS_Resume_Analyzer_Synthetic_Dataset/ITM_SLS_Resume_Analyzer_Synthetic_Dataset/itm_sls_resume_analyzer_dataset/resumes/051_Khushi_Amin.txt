@@ -1,0 +1,24 @@
+=======================================================
+RESUME: KHUSHI AMIN
+=======================================================
+Email: aminkhushi2009@gmail.com | Phone: +91-98765-43210 | Location: Vadodara, Gujarat, India
+Degree: B.Tech in Computer Science & Engineering (Class of 2025)
+Institution: ITM SLS Baroda University, Vadodara, Gujarat
+
+CAREER OBJECTIVE:
+Dedicated and high-performing engineering graduate placed as Software Development Engineer (SDE-1) at Infosis with ₹12.0 LPA CTC package.
+
+TECHNICAL SKILLS:
+Python; Java; SQL; Git; REST API; DSA; Web Development
+
+INTERVIEW & PLACEMENT JOURNEY:
+Placed at: Infosis
+Role: Software Development Engineer (SDE-1)
+Package: ₹12.0 LPA
+
+PREPARATION STRATEGY:
+Prepared with AI Career Companion Practice MCQs, LeetCode top interview 150, and Core CS revision.
+
+ADVICE TO JUNIORS:
+Be confident, clarify requirements before coding, and master your resume projects thoroughly.
+=======================================================

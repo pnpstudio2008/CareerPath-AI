@@ -1,0 +1,46 @@
+job_id,company,role,required_skills,indicative_ctc_range_lpa,candidate_id,hiring_status,job_requirement_file
+JOB-001,Tata Consultancy Services,Software Engineer,Python; Java; SQL; Git; REST API,4.5-7.0,ITM-SLS-001,Hired (synthetic),job_requirements/JOB-001_TCS.txt
+JOB-002,Wipro,Project Engineer,Java; SQL; Python; Cloud; Git,4.0-6.5,ITM-SLS-002,Hired (synthetic),job_requirements/JOB-002_Wipro.txt
+JOB-003,Infosys,Systems Engineer,Java; Python; SQL; OOP; Git,4.0-6.5,ITM-SLS-003,Hired (synthetic),job_requirements/JOB-003_Infosys.txt
+JOB-004,Amazon,Software Development Engineer,Java; Python; DSA; AWS; SQL,8.0-14.0,ITM-SLS-004,Hired (synthetic),job_requirements/JOB-004_Amazon.txt
+JOB-005,Samsung,Software Engineer,C++; Python; Data Structures; Linux; Git,6.0-10.0,ITM-SLS-005,Hired (synthetic),job_requirements/JOB-005_Samsung.txt
+JOB-006,Accenture,Application Development Associate,Java; SQL; Python; Cloud; Agile,4.5-7.0,ITM-SLS-006,Hired (synthetic),job_requirements/JOB-006_Accenture.txt
+JOB-007,Larsen & Toubro,Graduate Engineer Trainee,Python; SQL; Java; Problem Solving,4.0-6.5,ITM-SLS-007,Hired (synthetic),job_requirements/JOB-007_L_T.txt
+JOB-008,Capgemini,Analyst,Java; SQL; Python; Testing; Git,4.0-6.5,ITM-SLS-008,Hired (synthetic),job_requirements/JOB-008_Capgemini.txt
+JOB-009,Reliance Jio,Graduate Engineer Trainee,Java; Python; SQL; Linux; Networking,4.0-7.0,ITM-SLS-009,Hired (synthetic),job_requirements/JOB-009_Reliance_Jio.txt
+JOB-010,Mahindra,Software Engineer,Java; Python; SQL; REST API; Git,4.0-7.0,ITM-SLS-010,Hired (synthetic),job_requirements/JOB-010_Mahindra.txt
+JOB-011,Maruti Suzuki,IT Graduate Trainee,Python; SQL; Excel; Analytics; ERP,4.0-6.0,ITM-SLS-011,Hired (synthetic),job_requirements/JOB-011_Maruti_Suzuki.txt
+JOB-012,Tata Motors,Digital Engineering Trainee,Python; SQL; Data Analytics; Git,4.0-7.0,ITM-SLS-012,Hired (synthetic),job_requirements/JOB-012_Tata_Motors.txt
+JOB-013,BYJU'S,Academic Technology Specialist,Python; SQL; Communication; Analytics,3.5-6.0,ITM-SLS-013,Hired (synthetic),job_requirements/JOB-013_BYJU_S.txt
+JOB-014,Jaro Education,Business Analyst,Excel; SQL; Power BI; Communication,4.0-6.5,ITM-SLS-014,Hired (synthetic),job_requirements/JOB-014_Jaro_Education.txt
+JOB-015,Amul,Business/IT Trainee,Excel; SQL; Analytics; Communication,3.5-5.5,ITM-SLS-015,Hired (synthetic),job_requirements/JOB-015_Amul.txt
+JOB-016,Polycab,IT Graduate Trainee,Python; SQL; ERP; Excel,3.5-5.5,ITM-SLS-016,Hired (synthetic),job_requirements/JOB-016_Polycab.txt
+JOB-017,Kent RO,Software Trainee,Java; Python; SQL; Git,3.5-6.0,ITM-SLS-017,Hired (synthetic),job_requirements/JOB-017_Kent_RO.txt
+JOB-018,Matrix Comsec,Software Engineer,C++; Java; SQL; Linux; Networking,4.0-7.0,ITM-SLS-018,Hired (synthetic),job_requirements/JOB-018_Matrix_Comsec.txt
+JOB-019,Hex Wireless,Junior Software Engineer,JavaScript; React; Node.js; SQL; Git,3.5-6.0,ITM-SLS-019,Hired (synthetic),job_requirements/JOB-019_Hex_Wireless.txt
+JOB-020,Rishabh Software,Software Engineer,Java; Python; SQL; AWS; Git,4.0-7.0,ITM-SLS-020,Hired (synthetic),job_requirements/JOB-020_Rishabh_Software.txt
+JOB-021,Synoverge Technologies,Software Developer,Java; Python; SQL; React; Git,3.5-6.0,ITM-SLS-021,Hired (synthetic),job_requirements/JOB-021_Synoverge_Technologies.txt
+JOB-022,Proseon Technologies,Junior Flutter Developer,Flutter; Dart; Firebase; Git,3.0-5.5,ITM-SLS-022,Hired (synthetic),job_requirements/JOB-022_Proseon_Technologies.txt
+JOB-023,WebOccult Technologies,Frontend Developer,HTML; CSS; JavaScript; React; Git,3.0-5.5,ITM-SLS-023,Hired (synthetic),job_requirements/JOB-023_WebOccult_Technologies.txt
+JOB-024,Streebo Solutions,Software Developer,Java; Python; REST API; SQL; Git,3.5-6.0,ITM-SLS-024,Hired (synthetic),job_requirements/JOB-024_Streebo_Solutions.txt
+JOB-025,eInfochips,Embedded/Software Engineer,C++; Python; Linux; Git; SQL,4.0-7.0,ITM-SLS-025,Hired (synthetic),job_requirements/JOB-025_eInfochips.txt
+JOB-026,Collabera,Technology Analyst,Java; SQL; Python; Testing; Agile,4.0-6.5,ITM-SLS-026,Hired (synthetic),job_requirements/JOB-026_Collabera.txt
+JOB-027,Shaligram Infotech,Software Developer,PHP; Laravel; MySQL; JavaScript; Git,3.0-5.5,ITM-SLS-027,Hired (synthetic),job_requirements/JOB-027_Shaligram_Infotech.txt
+JOB-028,Beetonz Infotech,Software Developer,PHP; MySQL; JavaScript; HTML; CSS,3.0-5.0,ITM-SLS-028,Hired (synthetic),job_requirements/JOB-028_Beetonz_Infotech.txt
+JOB-029,DeltaX,Data/Technology Analyst,Python; SQL; Power BI; Statistics; Analytics,4.0-7.0,ITM-SLS-029,Hired (synthetic),job_requirements/JOB-029_DeltaX.txt
+JOB-030,L&T Technology Services,Graduate Engineer Trainee,Python; C++; SQL; Git; Engineering,4.0-7.0,ITM-SLS-030,Hired (synthetic),job_requirements/JOB-030_L_T_Technology_Services.txt
+JOB-031,CIVICA,Software Engineer,Java; SQL; Python; REST API; Git,4.0-7.0,ITM-SLS-031,Hired (synthetic),job_requirements/JOB-031_CIVICA.txt
+JOB-032,Sun Pharmaceutical Industries,IT Graduate Trainee,SQL; Python; Excel; Analytics; ERP,4.0-6.0,ITM-SLS-032,Hired (synthetic),job_requirements/JOB-032_Sun_Pharma.txt
+JOB-033,IDFC FIRST Bank,Technology Analyst,SQL; Python; Excel; Power BI; Analytics,4.5-7.0,ITM-SLS-033,Hired (synthetic),job_requirements/JOB-033_IDFC_FIRST_Bank.txt
+JOB-034,YES BANK,Business Analyst,Excel; SQL; Power BI; Communication,4.0-6.5,ITM-SLS-034,Hired (synthetic),job_requirements/JOB-034_YES_BANK.txt
+JOB-035,HDFC Bank,Data/Business Analyst,SQL; Excel; Power BI; Python,4.0-7.0,ITM-SLS-035,Hired (synthetic),job_requirements/JOB-035_HDFC_Bank.txt
+JOB-036,ICICI Bank,Technology Analyst,SQL; Python; Excel; Analytics,4.0-7.0,ITM-SLS-036,Hired (synthetic),job_requirements/JOB-036_ICICI_Bank.txt
+JOB-037,Axis Bank,Data Analyst,SQL; Python; Excel; Power BI,4.0-7.0,ITM-SLS-037,Hired (synthetic),job_requirements/JOB-037_Axis_Bank.txt
+JOB-038,Motilal Oswal,Technology/Research Analyst,Python; SQL; Excel; Statistics,4.0-7.0,ITM-SLS-038,Hired (synthetic),job_requirements/JOB-038_Motilal_Oswal.txt
+JOB-039,Jhaveri Securities,Business Analyst,Excel; SQL; Financial Analysis; Power BI,3.5-6.0,ITM-SLS-039,Hired (synthetic),job_requirements/JOB-039_Jhaveri_Securities.txt
+JOB-040,Numerator,Data Analyst,Python; SQL; Statistics; Excel; Power BI,4.0-7.0,ITM-SLS-040,Hired (synthetic),job_requirements/JOB-040_Numerator.txt
+JOB-041,Banco Products,IT/Analytics Trainee,Python; SQL; Excel; ERP,3.5-5.5,ITM-SLS-041,Hired (synthetic),job_requirements/JOB-041_Banco_Products.txt
+JOB-042,INOX India,Graduate Engineer Trainee,Python; SQL; CAD/Engineering; Excel,4.0-6.5,ITM-SLS-042,Hired (synthetic),job_requirements/JOB-042_INOX_India.txt
+JOB-043,Gujarat Fluorochemicals,IT/Analytics Trainee,Python; SQL; Excel; Power BI,3.5-6.0,ITM-SLS-043,Hired (synthetic),job_requirements/JOB-043_Gujarat_Fluorochemicals.txt
+JOB-044,TechNova Labs,AI/ML Engineer,Python; Machine Learning; Pandas; Scikit-learn; SQL,5.0-8.0,ITM-SLS-044,Hired (synthetic),job_requirements/JOB-044_TechNova_Labs.txt
+JOB-045,Vadodara Digital Systems,Full Stack Developer,React; Node.js; JavaScript; SQL; Git,4.0-7.0,ITM-SLS-045,Hired (synthetic),job_requirements/JOB-045_Vadodara_Digital_Systems.txt

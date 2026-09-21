@@ -1,0 +1,24 @@
+=======================================================
+RESUME: ROHAN MEHTA
+=======================================================
+Email: rohan.mehta@gmail.com | Phone: +91-98765-43210 | Location: Vadodara, Gujarat, India
+Degree: B.Tech in Computer Science & Engineering (Class of 2025)
+Institution: ITM SLS Baroda University, Vadodara, Gujarat
+
+CAREER OBJECTIVE:
+Dedicated and high-performing engineering graduate placed as Software Development Engineer at Microsoft with ₹42.0 LPA CTC package.
+
+TECHNICAL SKILLS:
+Python; Java; SQL; Git; REST API; DSA; Web Development
+
+INTERVIEW & PLACEMENT JOURNEY:
+Placed at: Microsoft
+Role: Software Development Engineer
+Package: ₹42.0 LPA
+
+PREPARATION STRATEGY:
+LeetCode top questions and OS fundamentals.
+
+ADVICE TO JUNIORS:
+Stay consistent with data structures.
+=======================================================
