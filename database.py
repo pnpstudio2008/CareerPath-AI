@@ -147,11 +147,39 @@ def get_db_connection():
                     host=pg_host,
                     port=pg_port,
                     sslmode="require",
-                    connect_timeout=10
+                    connect_timeout=6
                 )
                 return PGConnectionWrapper(raw_conn)
             except Exception as e:
-                print(f"[DB Notice] Could not connect to Supabase PostgreSQL ({e}). Using SQLite fallback.")
+                print(f"[DB Notice] Could not connect directly to {pg_host} ({e}). Trying IPv4 connection pooler...")
+
+        # Priority 3: Automatic IPv4 Pooler fallback (Essential for Render / AWS IPv4 environments)
+        if pg_password:
+            ref = "vggpjzbhumvlkckkxhxv"
+            if pg_host and "supabase.co" in pg_host and "." in pg_host:
+                parts = pg_host.split(".")
+                if len(parts) >= 3 and parts[0] == "db":
+                    ref = parts[1]
+            pooler_hosts = [
+                "aws-0-ap-northeast-1.pooler.supabase.com",
+                "aws-1-ap-northeast-1.pooler.supabase.com"
+            ]
+            for ph in pooler_hosts:
+                try:
+                    raw_conn = psycopg2.connect(
+                        dbname=pg_database or "postgres",
+                        user=f"postgres.{ref}",
+                        password=pg_password,
+                        host=ph,
+                        port=5432,
+                        sslmode="require",
+                        connect_timeout=8
+                    )
+                    print(f"[Database] Successfully connected via Supabase IPv4 Pooler ({ph})!")
+                    return PGConnectionWrapper(raw_conn)
+                except Exception as pool_err:
+                    print(f"[DB Notice] Pooler {ph} failed: {pool_err}")
+
 
     conn = sqlite3.connect(DB_FILE, timeout=30.0)
     conn.row_factory = sqlite3.Row

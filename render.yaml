@@ -10,14 +10,15 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: PG_HOST
-        value: db.vggpjzbhumvlkckkxhxv.supabase.co
+        value: aws-0-ap-northeast-1.pooler.supabase.com
       - key: PG_PORT
         value: 5432
       - key: PG_DATABASE
         value: postgres
       - key: PG_USER
-        value: postgres
+        value: postgres.vggpjzbhumvlkckkxhxv
       - key: PG_PASSWORD
         value: Parth@9586368646
       - key: DATABASE_URL
-        value: postgresql://postgres:Parth%409586368646@db.vggpjzbhumvlkckkxhxv.supabase.co:5432/postgres
+        value: postgresql://postgres.vggpjzbhumvlkckkxhxv:Parth%409586368646@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres?sslmode=require
+
