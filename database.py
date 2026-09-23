@@ -1626,12 +1626,29 @@ def delete_student(student_id: int):
 
 
 def delete_alumni_experience(exp_id: int):
+    """
+    Deletes an alumni record from the platform:
+    1. Removes their experience from alumni_experiences in Supabase.
+    2. Removes any associated login account from alumni_accounts in Supabase.
+    """
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM alumni_experiences WHERE id = ?", (exp_id,))
-    conn.commit()
-    conn.close()
+    try:
+        cursor.execute("SELECT student_name, email FROM alumni_experiences WHERE id = ?", (exp_id,))
+        row = cursor.fetchone()
+        if row:
+            name = row.get('student_name')
+            email = row.get('email')
+            if email:
+                cursor.execute("DELETE FROM alumni_accounts WHERE UPPER(email) = UPPER(?)", (email,))
+            if name:
+                cursor.execute("DELETE FROM alumni_accounts WHERE UPPER(name) = UPPER(?)", (name,))
+        cursor.execute("DELETE FROM alumni_experiences WHERE id = ?", (exp_id,))
+        conn.commit()
+    finally:
+        conn.close()
     return True
+
 
 
 def add_mcq_question(data: dict, alumni_id=None, alumni_name=None):
