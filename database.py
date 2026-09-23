@@ -1186,15 +1186,11 @@ def promote_student_to_alumni(student_id: int, data: dict):
             clean_name = student_name.lower().replace(" ", ".")
             email = f"{clean_name}.itm.alumni@gmail.com"
 
-        # 1. Update student record in cohort table
-        cursor.execute("""
-        UPDATE students
-        SET placement_status = 'Placed',
-            readiness_status = 'Placement Ready',
-            placed_company = ?,
-            package_lpa = ?
-        WHERE id = ?
-        """, (company, package_lpa, student_id))
+        # 1. Capture student's existing credentials before removing from ongoing cohort
+        roll_no = st_dict.get("roll_no", "").strip().upper()
+        generated_alumni_id = roll_no if roll_no else f"ALM{batch_year[-2:]}{student_id:04d}"
+        # Retain student's EXACT SAME login credentials given when creating the ongoing student
+        student_password = st_dict.get("password") or "student123"
 
         # Format interview rounds
         rounds = parse_interview_rounds(data.get("rounds", []), branch, company)
@@ -1202,7 +1198,7 @@ def promote_student_to_alumni(student_id: int, data: dict):
         advice = data.get("advice_to_juniors", "Focus on clear fundamentals, build end-to-end practical projects, and communicate your thought process clearly during interviews.").strip()
         difficulty = data.get("difficulty", "Medium" if package_lpa < 12 else "Hard")
 
-        # 2. Insert into alumni_experiences
+        # 2. Insert into alumni_experiences (Alumni Placement Hub Story)
         cursor.execute("""
         INSERT INTO alumni_experiences (
             student_name, batch_year, email, company, role, package_lpa,
@@ -1217,19 +1213,13 @@ def promote_student_to_alumni(student_id: int, data: dict):
 
         new_exp_id = cursor.lastrowid
 
-        # 3. Create alumni_accounts login entry so the promoted student can log in.
-        # Use the student's existing roll_no as their alumni login ID (it's what they already know).
-        # Fallback to a generated ID if roll_no is missing.
-        roll_no = st_dict.get("roll_no", "").strip().upper()
-        generated_alumni_id = roll_no if roll_no else f"ALM{batch_year[-2:]}{student_id:04d}"
-        default_password = "alumni123"
-
-        # Only create a login account if one doesn't already exist for this alumni_id or email
+        # 3. Create or update alumni_accounts login entry with EXACT SAME CREDENTIALS
         cursor.execute(
             "SELECT id FROM alumni_accounts WHERE UPPER(alumni_id) = ? OR LOWER(email) = ?",
             (generated_alumni_id, email.lower())
         )
-        if not cursor.fetchone():
+        existing_acc = cursor.fetchone()
+        if not existing_acc:
             cursor.execute("""
             INSERT INTO alumni_accounts (
                 name, alumni_id, email, phone, branch, batch_year,
@@ -1245,15 +1235,25 @@ def promote_student_to_alumni(student_id: int, data: dict):
                 company,
                 role,
                 package_lpa,
-                default_password,
-                generated_alumni_id   # 2FA security key = alumni_id by default
+                student_password,
+                generated_alumni_id   # 2FA security key = roll_no
             ))
+        else:
+            acc_id = existing_acc.get('id') if isinstance(existing_acc, dict) else existing_acc[0]
+            cursor.execute("""
+            UPDATE alumni_accounts
+            SET name = ?, company = ?, role = ?, package_lpa = ?, password = ?, security_key_2fa = ?
+            WHERE id = ?
+            """, (student_name, company, role, package_lpa, student_password, generated_alumni_id, acc_id))
+
+        # 4. Remove student from ongoing cohort table so they appear ONLY in the Alumni Hub
+        cursor.execute("DELETE FROM students WHERE id = ?", (student_id,))
 
         conn.commit()
     finally:
         conn.close()
 
-    # 4. Synchronize with synthetic dataset candidates.json file
+    # 5. Synchronize with synthetic dataset candidates.json file
     sync_promoted_student_to_dataset({
         "name": student_name,
         "email": email,
@@ -1270,9 +1270,10 @@ def promote_student_to_alumni(student_id: int, data: dict):
     return {
         "exp_id": new_exp_id,
         "alumni_id": generated_alumni_id,
-        "password": default_password,
+        "password": student_password,
         "email": email
     }
+
 
 
 def get_quiz_questions(subject=None, company=None, difficulty=None, alumni=None, limit=10):
