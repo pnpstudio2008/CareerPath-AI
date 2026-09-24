@@ -125,8 +125,14 @@ def index():
         }
         return render_template('index.html', user=current_user)
 
-    # Primary landing page for unauthenticated visitors
-    return render_template('student_login.html')
+    # Primary landing page: serves the main AI Career Companion platform matching reference UI
+    current_user = {
+        "name": session.get('student_name', 'Test Student'),
+        "type": "student",
+        "is_guest": True,
+        "dashboard_url": "/student/profile" if session.get('student_logged_in') else "/login"
+    }
+    return render_template('index.html', user=current_user)
 
 
 @app.route('/login')
