@@ -1331,6 +1331,24 @@ p, span, li, td, th, label {
         white-space: normal;
     }
 
+    /* Mobile color nuance matching media_1790219283563.jpg: Card 3 is amber and Card 4 is peach */
+    .quick-action-card.qa-peach {
+        background: #FEF9EA !important;
+        border-color: #FDF0CC !important;
+    }
+    .quick-action-card.qa-peach .qa-icon-wrap {
+        background: #FEF3C7 !important;
+        color: #D97706 !important;
+    }
+    .quick-action-card.qa-amber {
+        background: #FDF1F2 !important;
+        border-color: #FDE2E4 !important;
+    }
+    .quick-action-card.qa-amber .qa-icon-wrap {
+        background: #FFE4E6 !important;
+        color: #E11D48 !important;
+    }
+
     .features-grid {
         grid-template-columns: 1fr;
         gap: 12px;
