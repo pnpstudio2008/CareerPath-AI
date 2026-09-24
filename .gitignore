@@ -1,16 +1,35 @@
-# Environment secrets
+# Environment secrets — never commit these
 .env
+*.env
 
-# Python cache
+# Python bytecode cache
 __pycache__/
 *.py[cod]
 *$py.class
-*.env
+*.pyo
 
-# SQLite local database
+# SQLite local dev database files
+career_companion.db
 *.db-shm
 *.db-wal
+
+# User uploaded resumes (ephemeral, not tracked)
+uploads/
+
+# Python virtual environment
+venv/
+.venv/
+env/
 
 # OS files
 Thumbs.db
 .DS_Store
+
+# IDE settings
+.vscode/
+.idea/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
