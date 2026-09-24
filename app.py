@@ -65,7 +65,7 @@ from mailer import send_2fa_email, send_welcome_student_email
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max file upload
-app.secret_key = os.environ.get('SECRET_KEY', 'career_companion_secure_admin_key_2025')
+app.secret_key = 'career_companion_secure_admin_key_2025'
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "admin123"
