@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Chart.js for visualizations -->
@@ -30,13 +30,15 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Top Navigation Header -->
+    <!-- Top Navigation Header -->
     <header class="navbar">
         <div class="nav-container">
             <div class="nav-brand" onclick="navigateTo('home')">
-                <img src="/static/images/logo.png" alt="AI Career Companion Logo" class="brand-logo-img">
+                <div class="brand-cap-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
                 <div class="brand-text">
                     <span class="brand-title">AI Career Companion</span>
-                    <span class="brand-subtitle">By Riya Modi & Diksha Durgapal</span>
                 </div>
             </div>
 
@@ -49,13 +51,13 @@
                     <i class="fa-solid fa-file-invoice"></i> <span>Resume ATS</span>
                 </a>
                 <a href="#mocktest" class="nav-link" onclick="navigateTo('mocktest')">
-                    <i class="fa-solid fa-clipboard-check"></i> <span>Mock - Test</span>
+                    <i class="fa-solid fa-square-check"></i> <span>Mock - Test</span>
                 </a>
                 <a href="#prep" class="nav-link" onclick="navigateTo('prep')">
-                    <i class="fa-solid fa-laptop-code"></i> <span>Practice</span>
+                    <i class="fa-solid fa-book-open"></i> <span>Practice</span>
                 </a>
                 <a href="#alumni" class="nav-link" onclick="navigateTo('alumni')">
-                    <i class="fa-solid fa-users-viewfinder"></i> <span>Alumni Hub</span>
+                    <i class="fa-solid fa-users"></i> <span>Alumni Hub</span>
                 </a>
             </nav>
 
@@ -63,33 +65,33 @@
             <div class="nav-actions">
                 {% if user %}
                     {% if user.type == 'admin' %}
-                    <a href="/admin" class="btn btn-outline btn-sm" title="Master Admin Console">
-                        <i class="fa-solid fa-shield-halved text-purple"></i> <span>Admin Console</span>
+                    <a href="/admin" class="btn btn-primary btn-sm user-nav-btn" title="Master Admin Console">
+                        <i class="fa-solid fa-shield-halved"></i> <span>Admin Console</span>
                     </a>
-                    <a href="/api/admin/logout" class="btn btn-outline btn-sm" title="Logout">
+                    <a href="/api/admin/logout" class="btn btn-outline btn-sm logout-nav-btn" title="Logout">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
                     </a>
                     {% elif user.type == 'alumni' %}
-                    <a href="/alumni/profile" class="btn btn-primary btn-sm" title="My Alumni Profile" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
+                    <a href="/alumni/profile" class="btn btn-primary btn-sm user-nav-btn" title="My Alumni Profile">
                         <i class="fa-solid fa-user-tie"></i> <span>{{ user.name }}</span>
                     </a>
-                    <a href="/api/alumni/logout" class="btn btn-outline btn-sm" title="Logout">
+                    <a href="/api/alumni/logout" class="btn btn-outline btn-sm logout-nav-btn" title="Logout">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
                     </a>
                     {% else %}
-                    <a href="/student/profile" class="btn btn-primary btn-sm" title="My Student Profile">
-                        <i class="fa-solid fa-user-graduate"></i> <span>{{ user.name }}</span>
+                    <a href="/student/profile" class="btn btn-primary btn-sm user-nav-btn" title="My Student Profile">
+                        <i class="fa-solid fa-user"></i> <span>{{ user.name }}</span>
                     </a>
-                    <a href="/api/student/logout" class="btn btn-outline btn-sm" title="Logout">
+                    <a href="/api/student/logout" class="btn btn-outline btn-sm logout-nav-btn" title="Logout">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
                     </a>
                     {% endif %}
                 {% else %}
-                    <a href="/login" class="btn btn-primary btn-sm" title="Portal Login">
+                    <a href="/login" class="btn btn-primary btn-sm user-nav-btn" title="Portal Login">
                         <i class="fa-solid fa-right-to-bracket"></i> <span>Login</span>
                     </a>
                 {% endif %}
-                <button class="mobile-menu-toggle" id="mobile-toggle">
+                <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle navigation">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
@@ -103,60 +105,130 @@
         <!-- SECTION 1: HOME & HERO OVERVIEW           -->
         <!-- ========================================== -->
         <section id="section-home" class="app-section active">
-            <div class="hero-container">
-                <div class="hero-badge">
-                    <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Placement & Career AI
+            <div class="home-wrapper">
+                <!-- Enclosed SaaS Hero Card -->
+                <div class="hero-saas-card">
+                    <div class="hero-saas-content">
+                        <div class="hero-kicker">
+                            <span class="kicker-line"></span>
+                            <span class="kicker-text">YOUR CAREER. SMARTER. BRIGHTER.</span>
+                        </div>
+                        <h1 class="hero-title">
+                            Empowering Students with <span class="hero-title-highlight">AI Career Guidance</span> &amp; Placement Readiness
+                        </h1>
+                        <p class="hero-desc">
+                            A unified intelligent ecosystem combining automated resume analysis, subject-wise placement practice, authentic alumni interview archives, and faculty placement insights.
+                        </p>
+                    </div>
+                    <div class="hero-saas-visual">
+                        <div class="hero-visual-card">
+                            <div class="hero-cap-badge">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                        </div>
+                        <div class="hero-keywords">
+                            <span>Learn</span>
+                            <span>Practice</span>
+                            <span>Connect</span>
+                            <span>Get Placed</span>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="hero-title">
-                    Empowering Students with <span class="gradient-text">AI Career Guidance</span> & Placement Readiness
-                </h1>
-                <p class="hero-desc">
-                    A unified intelligent ecosystem combining automated resume analysis, subject-wise placement practice, authentic alumni interview archives, and faculty placement insights.
-                </p>
 
-                <!-- Quick Action Bar -->
-                <div class="hero-cta-group">
-                    <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Resume
-                    </button>
-                    <button class="btn btn-primary btn-lg" onclick="navigateTo('mocktest')" style="background: linear-gradient(135deg, #10B981, #059669);">
-                        <i class="fa-solid fa-clipboard-check"></i> Skill Mock Test
-                    </button>
-                    <button class="btn btn-outline btn-lg" onclick="navigateTo('prep')">
-                        <i class="fa-solid fa-circle-play"></i> Practice Quizzes
-                    </button>
-                    <button class="btn btn-glass btn-lg" onclick="navigateTo('alumni')">
-                        <i class="fa-solid fa-users"></i> Explore Alumni Hub
-                    </button>
+                <!-- 4 Quick Action Cards (Grid on Desktop, Stacked on Mobile) -->
+                <div class="quick-actions-grid">
+                    <div class="quick-action-card qa-blue" onclick="navigateTo('analyzer')">
+                        <div class="qa-icon-wrap qa-icon-blue">
+                            <i class="fa-solid fa-file-circle-check"></i>
+                        </div>
+                        <div class="qa-info">
+                            <h4 class="qa-title">Analyze Resume</h4>
+                            <p class="qa-desc">Get AI-powered insights on your resume</p>
+                        </div>
+                        <div class="qa-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="quick-action-card qa-green" onclick="navigateTo('mocktest')">
+                        <div class="qa-icon-wrap qa-icon-green">
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+                        <div class="qa-info">
+                            <h4 class="qa-title">Skill Mock Test</h4>
+                            <p class="qa-desc">Practice and improve your skills</p>
+                        </div>
+                        <div class="qa-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="quick-action-card qa-peach" onclick="navigateTo('prep')">
+                        <div class="qa-icon-wrap qa-icon-peach">
+                            <i class="fa-solid fa-circle-play"></i>
+                        </div>
+                        <div class="qa-info">
+                            <h4 class="qa-title">Practice Quizzes</h4>
+                            <p class="qa-desc">Sharpen your skills anytime</p>
+                        </div>
+                        <div class="qa-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="quick-action-card qa-amber" onclick="navigateTo('alumni')">
+                        <div class="qa-icon-wrap qa-icon-amber">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="qa-info">
+                            <h4 class="qa-title">Explore Alumni Hub</h4>
+                            <p class="qa-desc">Learn from real alumni experiences</p>
+                        </div>
+                        <div class="qa-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Platform Highlights Grid -->
+                <!-- Platform Highlights Grid (01, 02, 03) -->
                 <div class="features-grid">
-                    <div class="feature-card" onclick="navigateTo('analyzer')">
-                        <div class="feature-icon icon-cyan">
-                            <i class="fa-solid fa-file-code"></i>
+                    <div class="feature-card feature-card-01" onclick="navigateTo('analyzer')">
+                        <div class="feature-card-header">
+                            <div class="feature-icon icon-blue">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <span class="feature-number">01</span>
                         </div>
-                        <h3>1. AI Resume Analysis</h3>
+                        <h3>AI Resume Analysis</h3>
                         <p>Extracts deep technical skills, calculates ATS compatibility score, identifies formatting gaps, and suggests suitable career tracks.</p>
-                        <span class="feature-link">Explore Analyzer <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="feature-link link-blue">Explore Analyzer <i class="fa-solid fa-arrow-right"></i></span>
+                        <div class="feature-ambient-glow glow-blue"></div>
                     </div>
 
-                    <div class="feature-card" onclick="navigateTo('prep')">
-                        <div class="feature-icon icon-emerald">
-                            <i class="fa-solid fa-laptop-code"></i>
+                    <div class="feature-card feature-card-02" onclick="navigateTo('prep')">
+                        <div class="feature-card-header">
+                            <div class="feature-icon icon-green">
+                                <i class="fa-solid fa-laptop-code"></i>
+                            </div>
+                            <span class="feature-number">02</span>
                         </div>
-                        <h3>2. Placement Preparation</h3>
+                        <h3>Placement Preparation</h3>
                         <p>Practice topic-wise MCQs, company-specific test banks (TCS, Infosys, Amazon, Google), and detailed solution explanations.</p>
-                        <span class="feature-link">Practice Now <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="feature-link link-green">Practice Now <i class="fa-solid fa-arrow-right"></i></span>
+                        <div class="feature-ambient-glow glow-green"></div>
                     </div>
 
-                    <div class="feature-card" onclick="navigateTo('alumni')">
-                        <div class="feature-icon icon-amber">
-                            <i class="fa-solid fa-building-user"></i>
+                    <div class="feature-card feature-card-03" onclick="navigateTo('alumni')">
+                        <div class="feature-card-header">
+                            <div class="feature-icon icon-rose">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <span class="feature-number">03</span>
                         </div>
-                        <h3>3. Alumni Experience Hub</h3>
+                        <h3>Alumni Experience Hub</h3>
                         <p>Access authentic, round-by-round interview journeys, coding questions, salary packages, and preparation advice shared by placed alumni.</p>
-                        <span class="feature-link">Read Experiences <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="feature-link link-rose">Read Experiences <i class="fa-solid fa-arrow-right"></i></span>
+                        <div class="feature-ambient-glow glow-rose"></div>
                     </div>
                 </div>
 
@@ -179,7 +251,7 @@
                     <div class="stat-divider"></div>
                     <div class="stat-item">
                         <div class="stat-num">100%</div>
-                        <div class="stat-label">Free & Campus Ready</div>
+                        <div class="stat-label">Free &amp; Campus Ready</div>
                     </div>
                 </div>
             </div>
