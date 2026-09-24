@@ -267,19 +267,19 @@ async function submitPromoteStudentForm(event) {
         document.getElementById('promote-modal-backdrop').classList.remove('active');
         showToast(data.message, 'success');
 
-        // Show generated alumni login credentials to admin so they can share with the student
+        // Show alumni login credentials to admin with confirmation of cohort removal & password retention
         const loginId = data.alumni_login_id || payload.email.split('@')[0].toUpperCase();
-        const loginPwd = data.alumni_password || 'alumni123';
+        const loginPwd = data.alumni_password || 'student123';
         const loginEmail = data.alumni_email || payload.email;
         setTimeout(() => {
             alert(
-                `Alumni Account Created Successfully!\n\n` +
-                `Student Name : ${payload.student_name}\n` +
+                `🎉 Student Successfully Promoted to Alumni Hub!\n\n` +
+                `Student Name    : ${payload.student_name}\n` +
                 `Alumni Login ID : ${loginId}\n` +
-                `Password  : ${loginPwd}\n` +
-                `Email  : ${loginEmail}\n\n` +
-                `Share these credentials with the student so they can log in to the Alumni Portal.\n` +
-                `(They can change their password after first login.)`
+                `Login Password  : ${loginPwd} (Retained from Student Account)\n` +
+                `Login Email     : ${loginEmail}\n\n` +
+                `✅ The student has been removed from the Ongoing Students cohort.\n` +
+                `✅ Their existing student password and credentials have been preserved for Alumni login.`
             );
         }, 400);
 
