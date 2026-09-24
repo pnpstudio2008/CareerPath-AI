@@ -1816,10 +1816,17 @@ def get_alumni_outreach_metrics(alumni_identifier="24C1103"):
     ident_str = str(alumni_identifier).strip()
 
     # Find matching alumni account if exists
-    cursor.execute("""
-    SELECT * FROM alumni_accounts 
-    WHERE UPPER(alumni_id) = ? OR UPPER(email) = ? OR id = ? OR UPPER(name) = ?
-    """, (ident_str.upper(), ident_str.upper(), ident_str, ident_str.upper()))
+    if ident_str.isdigit():
+        cursor.execute("""
+        SELECT * FROM alumni_accounts 
+        WHERE UPPER(alumni_id) = ? OR UPPER(email) = ? OR id = ? OR UPPER(name) = ?
+        """, (ident_str.upper(), ident_str.upper(), int(ident_str), ident_str.upper()))
+    else:
+        cursor.execute("""
+        SELECT * FROM alumni_accounts 
+        WHERE UPPER(alumni_id) = ? OR UPPER(email) = ? OR UPPER(name) = ?
+        """, (ident_str.upper(), ident_str.upper(), ident_str.upper()))
+    
     acc = cursor.fetchone()
 
     match_keys = [ident_str, ident_str.lower(), ident_str.upper()]
@@ -1874,10 +1881,17 @@ def get_alumni_outreach_metrics(alumni_identifier="24C1103"):
     dept_breakdown = {r['student_branch']: r['count'] for r in dept_rows}
 
     # Published story upvotes (matches this alumni's email, name, or ID in alumni_experiences)
-    cursor.execute("""
-    SELECT SUM(upvotes) FROM alumni_experiences 
-    WHERE LOWER(email) = LOWER(?) OR LOWER(student_name) = LOWER(?) OR id = ?
-    """, (alumni_email, alumni_name, ident_str))
+    if ident_str.isdigit():
+        cursor.execute("""
+        SELECT SUM(upvotes) FROM alumni_experiences 
+        WHERE LOWER(email) = LOWER(?) OR LOWER(student_name) = LOWER(?) OR id = ?
+        """, (alumni_email, alumni_name, int(ident_str)))
+    else:
+        cursor.execute("""
+        SELECT SUM(upvotes) FROM alumni_experiences 
+        WHERE LOWER(email) = LOWER(?) OR LOWER(student_name) = LOWER(?)
+        """, (alumni_email, alumni_name))
+        
     story_row = cursor.fetchone()
     story_upvotes = story_row[0] if (story_row and story_row[0] is not None) else 0
 
