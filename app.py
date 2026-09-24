@@ -92,7 +92,7 @@ init_database()
 def index():
     """
     Primary Landing Page:
-    - If unauthenticated, serves Student Login Portal as the primary landing page for the website.
+    - If unauthenticated, redirects to Student Login Portal (the default entry point).
     - If student is logged in, renders the main AI Career Companion platform.
     - If alumni is logged in, renders their profile dashboard (or platform if ?view=platform).
     - If admin is logged in, renders the platform with admin navigation.
@@ -125,14 +125,8 @@ def index():
         }
         return render_template('index.html', user=current_user)
 
-    # Primary landing page: serves the main AI Career Companion platform matching reference UI
-    current_user = {
-        "name": session.get('student_name', 'Test Student'),
-        "type": "student",
-        "is_guest": True,
-        "dashboard_url": "/student/profile" if session.get('student_logged_in') else "/login"
-    }
-    return render_template('index.html', user=current_user)
+    # Unauthenticated visitors are redirected to the Student Login Portal
+    return redirect('/student/login')
 
 
 @app.route('/login')

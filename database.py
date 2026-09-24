@@ -1015,14 +1015,19 @@ def add_alumni_experience(data):
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
+        email = data.get("email", "alumni.contact@gmail.com")
         parsed_rounds = parse_interview_rounds(data.get("rounds", []), data.get("branch", "Computer Science"), data.get("company", "Company"))
+
+        # Deduplicate: remove any existing records for this email before inserting
+        cursor.execute("DELETE FROM alumni_experiences WHERE LOWER(email) = ?", (email.lower(),))
+
         cursor.execute("""
         INSERT INTO alumni_experiences (student_name, batch_year, email, company, role, package_lpa, offer_type, difficulty, status, rounds_json, preparation_tips, advice_to_juniors, upvotes)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
         """, (
             data.get("student_name", "Anonymous Student"),
             data.get("batch_year", "2025"),
-            data.get("email", "alumni.contact@gmail.com"),
+            email,
             data.get("company", "Company"),
             data.get("role", "Software Engineer"),
             float(data.get("package_lpa", 6.0)),
@@ -1191,7 +1196,9 @@ def promote_student_to_alumni(student_id: int, data: dict):
         advice = data.get("advice_to_juniors", "Focus on clear fundamentals, build end-to-end practical projects, and communicate your thought process clearly during interviews.").strip()
         difficulty = data.get("difficulty", "Medium" if package_lpa < 12 else "Hard")
 
-        # 1. Insert into alumni_experiences
+        # 1. Insert into alumni_experiences (deduplicate: remove any existing records for this email first)
+        cursor.execute("DELETE FROM alumni_experiences WHERE LOWER(email) = ?", (student_email.lower(),))
+
         cursor.execute("""
         INSERT INTO alumni_experiences (
             student_name, batch_year, email, company, role, package_lpa,
