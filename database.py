@@ -1773,22 +1773,44 @@ def init_alumni_outreach_table():
     """Initializes the alumni_outreach table."""
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS alumni_outreach (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        alumni_identifier TEXT NOT NULL,
-        student_name TEXT NOT NULL,
-        student_email TEXT NOT NULL,
-        student_branch TEXT DEFAULT 'Computer Science',
-        student_batch TEXT DEFAULT '2025',
-        target_company TEXT DEFAULT 'Google',
-        channel TEXT NOT NULL, -- 'gmail' or 'linkedin'
-        query_topic TEXT NOT NULL,
-        status TEXT DEFAULT 'Pending', -- 'Pending', 'Replied', 'Completed'
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
-    conn.commit()
+    try:
+        # Try PostgreSQL syntax first
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS alumni_outreach (
+            id SERIAL PRIMARY KEY,
+            alumni_identifier TEXT NOT NULL,
+            student_name TEXT NOT NULL,
+            student_email TEXT NOT NULL,
+            student_branch TEXT DEFAULT 'Computer Science',
+            student_batch TEXT DEFAULT '2025',
+            target_company TEXT DEFAULT 'Google',
+            channel TEXT NOT NULL,
+            query_topic TEXT NOT NULL,
+            status TEXT DEFAULT 'Pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        # Fallback to SQLite syntax
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS alumni_outreach (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            alumni_identifier TEXT NOT NULL,
+            student_name TEXT NOT NULL,
+            student_email TEXT NOT NULL,
+            student_branch TEXT DEFAULT 'Computer Science',
+            student_batch TEXT DEFAULT '2025',
+            target_company TEXT DEFAULT 'Google',
+            channel TEXT NOT NULL,
+            query_topic TEXT NOT NULL,
+            status TEXT DEFAULT 'Pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+        conn.commit()
+    
     conn.close()
 
 
