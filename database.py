@@ -1577,20 +1577,31 @@ def get_all_alumni_accounts():
     return [dict(r) for r in rows]
 
 
-def get_alumni_account_by_id(identifier: str):
+def get_alumni_account_by_id(identifier):
     conn = get_db_connection()
     cursor = conn.cursor()
-    ident = str(identifier).strip().upper()
-    cursor.execute("SELECT * FROM alumni_accounts WHERE UPPER(alumni_id) = ? OR id = ?", (ident, identifier))
+    ident = str(identifier).strip()
+    
+    if ident.isdigit():
+        cursor.execute("SELECT * FROM alumni_accounts WHERE UPPER(alumni_id) = ? OR id = ?", (ident.upper(), int(ident)))
+    else:
+        cursor.execute("SELECT * FROM alumni_accounts WHERE UPPER(alumni_id) = ?", (ident.upper(),))
+        
     row = cursor.fetchone()
     conn.close()
     return dict(row) if row else None
 
 
-def delete_alumni_account(account_id: int):
+def delete_alumni_account(account_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM alumni_accounts WHERE id = ? OR alumni_id = ?", (account_id, str(account_id)))
+    acc_id_str = str(account_id).strip()
+    
+    if acc_id_str.isdigit():
+        cursor.execute("DELETE FROM alumni_accounts WHERE id = ? OR alumni_id = ?", (int(acc_id_str), acc_id_str))
+    else:
+        cursor.execute("DELETE FROM alumni_accounts WHERE alumni_id = ?", (acc_id_str,))
+        
     conn.commit()
     conn.close()
     return True
