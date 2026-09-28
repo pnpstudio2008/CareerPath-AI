@@ -88,55 +88,104 @@ function renderAlumniExperiences(experiences) {
     if (!feed) return;
     feed.innerHTML = '';
 
-    experiences.forEach(exp => {
+    experiences.forEach((exp, index) => {
         const card = document.createElement('div');
-        card.className = 'alumni-card alumni-card-compact';
-        card.onclick = () => openAlumniDetail(exp.id);
+        card.className = 'hof-card';
+        
+        // Generate mock rank (1, 2, 3...)
+        const rank = index + 1;
+        let rankClass = 'rank-neutral';
+        let rankIcon = '<i class="fa-solid fa-medal"></i>';
+        if (rank === 1) { rankClass = 'rank-gold'; rankIcon = '<i class="fa-solid fa-crown"></i>'; }
+        else if (rank === 2) { rankClass = 'rank-silver'; }
+        else if (rank === 3) { rankClass = 'rank-bronze'; }
 
-        const difficultyColor = exp.difficulty === 'Hard' ? 'badge-danger' : exp.difficulty === 'Medium' ? 'badge-warning' : 'badge-success';
-        const seniorEmail = exp.email || `${exp.student_name.toLowerCase().replace(/\s+/g, '.')}@gmail.com`;
         const initials = getInitials(exp.student_name);
-        const roundsCount = exp.rounds ? exp.rounds.length : 3;
+        
+        // Use realistic dummy skills for the challenge test if none exist
+        const challengeSkills = exp.difficulty === 'Hard' ? ['DSA', 'System Design', 'OS'] : ['DSA', 'OOP', 'Database'];
+        const skillsHtml = challengeSkills.map(s => `<span class="h-skill-chip">${s}</span>`).join('');
+        
+        // Format package if exists
+        const packageInfo = exp.package_lpa ? `<div class="hc-package">₹${exp.package_lpa} LPA</div>` : '';
 
         card.innerHTML = `
-            <div class="alumni-compact-top">
-                <div class="alumni-compact-avatar">${initials}</div>
-                <div class="alumni-compact-student">
-                    <h3 class="alumni-compact-name">${exp.student_name}</h3>
-                    <span class="alumni-compact-batch">Batch of ${exp.batch_year}</span>
+            <div class="hc-header">
+                <div class="hc-rank-ribbon ${rankClass}">
+                    ${rankIcon}
+                    <span>${rank}</span>
                 </div>
-                <span class="badge ${difficultyColor} alumni-compact-diff">${exp.difficulty}</span>
-            </div>
-
-            <div class="alumni-compact-body">
-                <div class="alumni-compact-company-row">
-                    <span class="alumni-compact-company"><i class="fa-solid fa-building text-primary"></i> ${exp.company}</span>
-                    <span class="alumni-compact-ctc">₹${exp.package_lpa} LPA</span>
-                </div>
-                <div class="alumni-compact-role">${exp.role}</div>
                 
-                <div class="alumni-compact-meta">
-                    <span class="alumni-compact-rounds"><i class="fa-solid fa-list-check"></i> ${roundsCount} Rounds</span>
-                    <span class="alumni-compact-status"><i class="fa-solid fa-circle-check text-success"></i> ${exp.status}</span>
+                <div class="hc-avatar-wrap">
+                    <div class="hc-avatar">${initials}</div>
+                </div>
+                
+                <div class="hc-user-info">
+                    <h4 class="hc-name">${exp.student_name}</h4>
+                    <div class="hc-role">${exp.role} at <strong>${exp.company}</strong></div>
+                    ${packageInfo}
+                </div>
+                
+                <div class="hc-score-ring">
+                    <svg viewBox="0 0 36 36" class="circular-chart green">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="20.35" class="percentage">100%</text>
+                    </svg>
                 </div>
             </div>
-
-            <div class="alumni-compact-footer">
-                <button class="btn btn-sm btn-outline alumni-compact-view-btn" onclick="event.stopPropagation(); openAlumniDetail(${exp.id})">
-                    <i class="fa-solid fa-expand"></i> View Details
-                </button>
-                <a href="https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(exp.student_name + ' ' + exp.company)}" target="_blank" rel="noopener noreferrer" class="btn-linkedin-contact-sm" title="Find on LinkedIn" onclick="event.stopPropagation(); trackLinkedInOutreach('${encodeURIComponent(exp.student_name)}', '${encodeURIComponent(exp.company)}', '${encodeURIComponent(seniorEmail)}')">
-                    <i class="fa-brands fa-linkedin"></i> LinkedIn
-                </a>
-                <button class="btn-gmail-contact-sm" title="Contact Senior via Gmail" onclick="event.stopPropagation(); contactSeniorViaGmail('${encodeURIComponent(seniorEmail)}', '${encodeURIComponent(exp.student_name)}', '${encodeURIComponent(exp.company)}', '${encodeURIComponent(exp.role)}')">
-                    <i class="fa-brands fa-google"></i> Gmail
-                </button>
+            
+            <div class="hc-divider"></div>
+            
+            <div class="hc-challenge-info">
+                <div class="hc-chal-title">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>${exp.company} ${exp.role} Placement Challenge</span>
+                </div>
+                <div class="hc-skills">
+                    ${skillsHtml}
+                </div>
             </div>
+            
+            <button class="hc-btn-solve" onclick="startAlumniChallenge('${exp.company}', '${exp.role}')">
+                <i class="fa-solid fa-play"></i> Solve ${exp.student_name.split(' ')[0]}'s Test <i class="fa-solid fa-arrow-right"></i>
+            </button>
         `;
-
         feed.appendChild(card);
     });
 }
+
+// Add the wrapper function for starting the challenge
+window.startAlumniChallenge = function(company, role) {
+    if (typeof navigateTo === 'function') navigateTo('mocktest');
+    
+    // Set the dropdowns if they exist
+    const roleSelect = document.getElementById('mocktest-role-select');
+    if (roleSelect) {
+        // Try to find a matching option, else just pick first
+        let matched = false;
+        for (let i = 0; i < roleSelect.options.length; i++) {
+            if (roleSelect.options[i].text.toLowerCase().includes(role.toLowerCase())) {
+                roleSelect.selectedIndex = i;
+                matched = true;
+                break;
+            }
+        }
+    }
+    
+    // Overwrite skills
+    if (typeof mockActiveSkills !== 'undefined') {
+        mockActiveSkills = ['DSA', 'System Design', 'OOP', 'Database'];
+        if (typeof updateMockSkillsPreview === 'function') updateMockSkillsPreview();
+    }
+    
+    // Optional: Start automatically after 500ms
+    setTimeout(() => {
+        if (typeof generateAndStartMockTest === 'function') {
+            generateAndStartMockTest();
+        }
+    }, 500);
+};
 
 function openAlumniDetail(expId) {
     const experiences = window.AppState.allAlumniExperiences || [];
