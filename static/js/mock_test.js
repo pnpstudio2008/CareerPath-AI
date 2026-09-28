@@ -43,43 +43,70 @@ function updateMockSkillsPreview() {
 
     let certsList = (window.AppState && window.AppState.analyzedCertifications) ? window.AppState.analyzedCertifications : [];
 
-    mockActiveSkills = skillsList;
-    mockActiveCertifications = certsList;
+    // Initialize if first time
+    if (!window._skillsInitialized) {
+        mockActiveSkills = skillsList;
+        mockActiveCertifications = certsList;
+        window._skillsInitialized = true;
+    }
 
     container.innerHTML = '';
 
-    if (skillsList.length === 0 && certsList.length === 0) {
-        // Default core tech stack if no resume is scanned yet
-        const defaultTags = ['Python', 'DSA & Problem Solving', 'Java / OOP', 'SQL & Databases', 'React / Web', 'Cloud & Docker', 'Core CS Fundamentals'];
-        defaultTags.forEach(tag => {
-            const pill = document.createElement('span');
-            pill.className = 'badge badge-outline';
-            pill.innerHTML = `<i class="fa-solid fa-code"></i> ${tag}`;
-            container.appendChild(pill);
-        });
-        if (indicator) indicator.innerHTML = 'Using Comprehensive Core Tech Stack (Upload resume for custom test)';
-    } else {
-        // Show detected skills
-        skillsList.slice(0, 15).forEach(skill => {
-            const pill = document.createElement('span');
-            pill.className = 'badge badge-primary';
-            pill.innerHTML = `<i class="fa-solid fa-check"></i> ${skill}`;
-            container.appendChild(pill);
-        });
+    const allSkills = [...skillsList, ...certsList];
+    const defaultTags = ['Python', 'DSA & Problem Solving', 'Java / OOP', 'SQL & Databases', 'React / Web', 'Cloud & Docker', 'Core CS Fundamentals'];
+    const tagsToRender = allSkills.length > 0 ? allSkills.slice(0, 15) : defaultTags;
+    
+    // Default mockActiveSkills to the initial list if empty
+    if (mockActiveSkills.length === 0) mockActiveSkills = [...tagsToRender];
+    
+    tagsToRender.forEach((tag, idx) => {
+        const isSelected = mockActiveSkills.includes(tag);
+        const pill = document.createElement('div');
+        pill.className = isSelected ? 'm-skill-chip selected' : 'm-skill-chip unselected';
+        pill.innerHTML = isSelected ? `<i class="fa-solid fa-check"></i> <span>${tag}</span>` : `<i class="fa-regular fa-square"></i> <span>${tag}</span>`;
+        
+        pill.onclick = function() {
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                this.classList.add('unselected');
+                this.innerHTML = `<i class="fa-regular fa-square"></i> <span>${tag}</span>`;
+                mockActiveSkills = mockActiveSkills.filter(s => s !== tag);
+            } else {
+                this.classList.remove('unselected');
+                this.classList.add('selected');
+                this.innerHTML = `<i class="fa-solid fa-check"></i> <span>${tag}</span>`;
+                if (!mockActiveSkills.includes(tag)) mockActiveSkills.push(tag);
+            }
+        };
+        container.appendChild(pill);
+    });
 
-        // Show detected certifications
-        certsList.forEach(cert => {
-            const pill = document.createElement('span');
-            pill.className = 'badge badge-warning';
-            pill.innerHTML = `<i class="fa-solid fa-certificate"></i> ${cert}`;
-            container.appendChild(pill);
-        });
-
-        if (indicator) {
-            indicator.innerHTML = `<strong>${skillsList.length} Skills & ${certsList.length} Certifications</strong> Detected from Resume`;
+    const addCustom = document.createElement('div');
+    addCustom.className = 'm-skill-chip custom';
+    addCustom.innerHTML = `<i class="fa-solid fa-plus"></i> <span>Add Custom Skill</span>`;
+    addCustom.onclick = function() {
+        const newSkill = prompt('Enter a custom skill (e.g. Go, AWS, Docker):');
+        if (newSkill && newSkill.trim()) {
+            const skillName = newSkill.trim();
+            if (!mockActiveSkills.includes(skillName)) {
+                mockActiveSkills.push(skillName);
+                skillsList.push(skillName); // Fake add it so it persists in the list
+                if (window.AppState) {
+                    if (!window.AppState.analyzedSkills) window.AppState.analyzedSkills = {};
+                    if (!window.AppState.analyzedSkills['Custom']) window.AppState.analyzedSkills['Custom'] = [];
+                    window.AppState.analyzedSkills['Custom'].push(skillName);
+                }
+            }
+            updateMockSkillsPreview(); // Re-render
         }
+    };
+    container.appendChild(addCustom);
+
+    if (indicator) {
+        indicator.innerHTML = allSkills.length === 0 ? 'Using Core Tech Stack (Upload resume for custom test)' : 'Ready for Skill Test';
     }
 }
+
 
 /**
  * One-click trigger from Resume ATS results.
