@@ -1978,16 +1978,11 @@ p {
 }
 
 .saas-hero {
-    width: 100vw;
+    width: 100%;
     position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    margin-top: -2rem; 
+    border-radius: var(--radius-lg);
+    padding: 4rem 2rem;
     margin-bottom: 3rem;
-    border-radius: 0;
-    padding: 6rem 0;
     overflow: hidden;
 }
 
@@ -2010,29 +2005,40 @@ p {
 }
 
 .saas-hero-content {
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 0 1.25rem;
+    max-width: 650px;
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 @media (max-width: 992px) {
     .saas-hero {
-        padding: 4rem 0;
-        text-align: center;
-    }
+    width: 100%;
+    position: relative;
+    border-radius: var(--radius-lg);
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+    overflow: hidden;
+}
     .saas-hero-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+    max-width: 650px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
     .saas-hero::after {
         background: linear-gradient(to bottom, rgba(248, 250, 252, 0.95) 0%, rgba(248, 250, 252, 0.8) 40%, rgba(248, 250, 252, 0.2) 100%) !important;
     }
 }
 
 .saas-hero-content {
+    max-width: 650px;
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
