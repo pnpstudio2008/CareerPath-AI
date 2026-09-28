@@ -133,25 +133,25 @@
 <body>
 
     <!-- Dedicated Admin Top Bar -->
-    <header class="admin-header">
-        <div class="admin-brand">
-            <img src="/static/images/logo.png" alt="AI Career Companion Logo" style="height:38px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(99,102,241,0.3));">
-            <div>
-                <span>AI Career Companion</span>
-                <span class="badge badge-primary ml-2" style="font-size:0.75rem; vertical-align:middle;">Admin Portal</span>
+    <header class="navbar saas-navbar">
+        <div class="nav-container saas-nav-container">
+            <div class="nav-brand">
+                <img src="/static/images/logo.png" alt="Logo" class="brand-logo-img" style="width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <div class="brand-text">
+                    <span class="brand-title" style="font-size: 1.15rem; font-weight: 800; color: #0F172A;">AI Career Companion</span>
+                    <span class="brand-subtitle" style="font-size: 0.75rem; color: #64748B; font-weight: 500;">Admin Console</span>
+                </div>
             </div>
-        </div>
 
-        <div class="admin-nav-right">
-            <div class="admin-user-badge">
-                <i class="fa-solid fa-circle-check text-success"></i> Logged in as {{ admin_user or 'Administrator' }}
+            <!-- Nav Actions -->
+            <div class="nav-actions saas-nav-actions">
+                <a href="/" class="btn btn-outline btn-sm" title="Main Platform">
+                    <i class="fa-solid fa-globe"></i> <span>Platform</span>
+                </a>
+                <a href="/api/admin/logout" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                </a>
             </div>
-            <a href="/" class="btn btn-outline btn-sm" target="_blank" title="Student View">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> <span>Student View</span>
-            </a>
-            <button class="btn btn-danger-outline btn-sm" onclick="adminLogout()" title="Logout">
-                <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
-            </button>
         </div>
     </header>
 

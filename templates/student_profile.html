@@ -474,21 +474,28 @@
 <body>
 
     <!-- Header Navigation -->
-    <header class="student-portal-header">
-        <div class="portal-brand">
-            <img src="/static/images/logo.png" alt="AI Career Companion" style="height:36px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 8px rgba(16,185,129,0.3));">
-            <span>AI Career Companion<span class="portal-brand-sub"> • <span style="font-weight:600; color:var(--text-secondary); font-size:0.95rem;">Student Portal</span></span></span>
-        </div>
-        <div class="portal-nav-actions" style="display:flex; align-items:center; gap:0.5rem;">
-            <a href="/" class="btn btn-outline btn-sm" title="Main Platform">
-                <i class="fa-solid fa-globe"></i> <span>Main Platform</span>
-            </a>
-            <button class="btn btn-outline btn-sm" onclick="openEditProfileModal()" title="Edit Profile">
-                <i class="fa-solid fa-user-pen"></i> <span>Edit Profile</span>
-            </button>
-            <button class="btn btn-danger-outline btn-sm" onclick="studentLogout()" title="Logout">
-                <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
-            </button>
+    <header class="navbar saas-navbar">
+        <div class="nav-container saas-nav-container">
+            <div class="nav-brand">
+                <img src="/static/images/logo.png" alt="Logo" class="brand-logo-img" style="width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <div class="brand-text">
+                    <span class="brand-title" style="font-size: 1.15rem; font-weight: 800; color: #0F172A;">AI Career Companion</span>
+                    <span class="brand-subtitle" style="font-size: 0.75rem; color: #64748B; font-weight: 500;">Student Portal</span>
+                </div>
+            </div>
+
+            <!-- Nav Actions -->
+            <div class="nav-actions saas-nav-actions">
+                <a href="/" class="btn btn-outline btn-sm" title="Main Platform">
+                    <i class="fa-solid fa-globe"></i> <span>Platform</span>
+                </a>
+                <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()">
+                    <i class="fa-solid fa-user-pen"></i> <span>Edit Profile</span>
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="studentLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                </button>
+            </div>
         </div>
     </header>
 

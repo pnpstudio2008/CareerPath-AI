@@ -30,65 +30,52 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Top Navigation Header -->
-    <header class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand" onclick="navigateTo('home')">
-                <img src="/static/images/logo.png" alt="AI Career Companion Logo" class="brand-logo-img">
+    <!-- Top Navigation Header -->
+    <header class="navbar saas-navbar">
+        <div class="nav-container saas-nav-container">
+            <div class="nav-brand" onclick="navigateTo('home')" style="gap: 12px;">
+                <img src="/static/images/logo.png" alt="Logo" class="brand-logo-img" style="width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
                 <div class="brand-text">
-                    <span class="brand-title">AI Career Companion</span>
-                    <span class="brand-subtitle">By Riya Modi & Diksha Durgapal</span>
+                    <span class="brand-title" style="font-size: 1.15rem; font-weight: 800; color: #0F172A;">AI Career Companion</span>
+                    <span class="brand-subtitle" style="font-size: 0.75rem; color: #64748B; font-weight: 500;">By Riya Modi & Diksha Durgapal</span>
                 </div>
             </div>
 
             <!-- Desktop Nav Links -->
-            <nav class="nav-menu" id="nav-menu">
-                <a href="#home" class="nav-link active" onclick="navigateTo('home')">
-                    <i class="fa-solid fa-house"></i> <span>Overview</span>
+            <nav class="nav-menu saas-nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link active saas-nav-link" onclick="navigateTo('home')">
+                    <i class="fa-solid fa-house"></i> <span>Home</span>
                 </a>
-                <a href="#analyzer" class="nav-link" onclick="navigateTo('analyzer')">
-                    <i class="fa-solid fa-file-invoice"></i> <span>Resume ATS</span>
+                <a href="#analyzer" class="nav-link saas-nav-link" onclick="navigateTo('analyzer')">
+                    <i class="fa-solid fa-file-invoice"></i> <span>Resume Analyzer</span>
                 </a>
-                <a href="#mocktest" class="nav-link" onclick="navigateTo('mocktest')">
-                    <i class="fa-solid fa-clipboard-check"></i> <span>Mock - Test</span>
+                <a href="#mocktest" class="nav-link saas-nav-link" onclick="navigateTo('mocktest')">
+                    <i class="fa-solid fa-circle-check"></i> <span>Mock Test</span>
                 </a>
-                <a href="#prep" class="nav-link" onclick="navigateTo('prep')">
+                <a href="#prep" class="nav-link saas-nav-link" onclick="navigateTo('prep')">
                     <i class="fa-solid fa-laptop-code"></i> <span>Practice</span>
                 </a>
-                <a href="#alumni" class="nav-link" onclick="navigateTo('alumni')">
+                <a href="#alumni" class="nav-link saas-nav-link" onclick="navigateTo('alumni')">
                     <i class="fa-solid fa-users-viewfinder"></i> <span>Alumni Hub</span>
                 </a>
             </nav>
 
             <!-- Nav Actions -->
-            <div class="nav-actions">
-                {% if user %}
-                    {% if user.type == 'admin' %}
-                    <a href="/admin" class="btn btn-outline btn-sm" title="Master Admin Console">
-                        <i class="fa-solid fa-shield-halved text-purple"></i> <span>Admin Console</span>
-                    </a>
-                    <a href="/api/admin/logout" class="btn btn-outline btn-sm" title="Logout">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
-                    </a>
-                    {% elif user.type == 'alumni' %}
-                    <a href="/alumni/profile" class="btn btn-primary btn-sm" title="My Alumni Profile" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8);">
-                        <i class="fa-solid fa-user-tie"></i> <span>{{ user.name }}</span>
-                    </a>
-                    <a href="/api/alumni/logout" class="btn btn-outline btn-sm" title="Logout">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
-                    </a>
+            <div class="nav-actions saas-nav-actions">
+                <button class="saas-icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button class="saas-icon-btn has-notification"><i class="fa-solid fa-bell"></i></button>
+                
+                <div class="saas-profile-dropdown" onclick="window.location.href='{{ user.dashboard_url if user else '/login' }}'">
+                    {% if user %}
+                        <div class="saas-avatar-small">{{ user.name[0] }}</div>
+                        <span class="saas-profile-name">{{ user.name }}</span>
                     {% else %}
-                    <a href="/student/profile" class="btn btn-primary btn-sm" title="My Student Profile">
-                        <i class="fa-solid fa-user-graduate"></i> <span>{{ user.name }}</span>
-                    </a>
-                    <a href="/api/student/logout" class="btn btn-outline btn-sm" title="Logout">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Logout</span>
-                    </a>
+                        <div class="saas-avatar-small"><i class="fa-solid fa-user"></i></div>
+                        <span class="saas-profile-name">Login</span>
                     {% endif %}
-                {% else %}
-                    <a href="/login" class="btn btn-primary btn-sm" title="Portal Login">
-                        <i class="fa-solid fa-right-to-bracket"></i> <span>Login</span>
-                    </a>
-                {% endif %}
+                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: #64748B;"></i>
+                </div>
+                
                 <button class="mobile-menu-toggle" id="mobile-toggle">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -102,88 +89,203 @@
         <!-- ========================================== -->
         <!-- SECTION 1: HOME & HERO OVERVIEW           -->
         <!-- ========================================== -->
+        
         <section id="section-home" class="app-section active">
-            <div class="hero-container">
-                <div class="hero-badge">
-                    <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Placement & Career AI
-                </div>
-                <h1 class="hero-title">
-                    Empowering Students with <span class="gradient-text">AI Career Guidance</span> & Placement Readiness
-                </h1>
-                <p class="hero-desc">
-                    A unified intelligent ecosystem combining automated resume analysis, subject-wise placement practice, authentic alumni interview archives, and faculty placement insights.
-                </p>
-
-                <!-- Quick Action Bar -->
-                <div class="hero-cta-group">
-                    <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Resume
-                    </button>
-                    <button class="btn btn-primary btn-lg" onclick="navigateTo('mocktest')" style="background: linear-gradient(135deg, #10B981, #059669);">
-                        <i class="fa-solid fa-clipboard-check"></i> Skill Mock Test
-                    </button>
-                    <button class="btn btn-outline btn-lg" onclick="navigateTo('prep')">
-                        <i class="fa-solid fa-circle-play"></i> Practice Quizzes
-                    </button>
-                    <button class="btn btn-glass btn-lg" onclick="navigateTo('alumni')">
-                        <i class="fa-solid fa-users"></i> Explore Alumni Hub
-                    </button>
-                </div>
-
-                <!-- Platform Highlights Grid -->
-                <div class="features-grid">
-                    <div class="feature-card" onclick="navigateTo('analyzer')">
-                        <div class="feature-icon icon-cyan">
-                            <i class="fa-solid fa-file-code"></i>
-                        </div>
-                        <h3>1. AI Resume Analysis</h3>
-                        <p>Extracts deep technical skills, calculates ATS compatibility score, identifies formatting gaps, and suggests suitable career tracks.</p>
-                        <span class="feature-link">Explore Analyzer <i class="fa-solid fa-arrow-right"></i></span>
+            
+            <!-- HERO SECTION -->
+            <div class="saas-hero">
+                <div class="saas-hero-content">
+                    <div class="hero-badge">
+                        <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Placement & Career AI
                     </div>
-
-                    <div class="feature-card" onclick="navigateTo('prep')">
-                        <div class="feature-icon icon-emerald">
-                            <i class="fa-solid fa-laptop-code"></i>
-                        </div>
-                        <h3>2. Placement Preparation</h3>
-                        <p>Practice topic-wise MCQs, company-specific test banks (TCS, Infosys, Amazon, Google), and detailed solution explanations.</p>
-                        <span class="feature-link">Practice Now <i class="fa-solid fa-arrow-right"></i></span>
+                    <h1 class="hero-title">
+                        Turn Your Resume Into <br/><span class="gradient-text">Real Opportunities</span>
+                    </h1>
+                    <p class="hero-desc">
+                        Get AI-powered resume analysis, personalized career suggestions, company insights and placement-ready preparation — all in one place.
+                    </p>
+                    <div class="hero-cta-group">
+                        <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
+                            <i class="fa-solid fa-upload"></i> Upload & Analyze Resume <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                        <button class="btn btn-outline btn-lg" onclick="navigateTo('mocktest')">
+                            <i class="fa-solid fa-play"></i> See How It Works
+                        </button>
                     </div>
-
-                    <div class="feature-card" onclick="navigateTo('alumni')">
-                        <div class="feature-icon icon-amber">
-                            <i class="fa-solid fa-building-user"></i>
+                    <div class="hero-trust">
+                        <div class="avatar-group">
+                            <div class="avatar"></div>
+                            <div class="avatar"></div>
+                            <div class="avatar"></div>
+                            <div class="avatar"></div>
                         </div>
-                        <h3>3. Alumni Experience Hub</h3>
-                        <p>Access authentic, round-by-round interview journeys, coding questions, salary packages, and preparation advice shared by placed alumni.</p>
-                        <span class="feature-link">Read Experiences <i class="fa-solid fa-arrow-right"></i></span>
+                        <span class="text-muted text-sm">Trusted by 10,000+ students</span>
                     </div>
                 </div>
-
-                <!-- Campus Value Proposition Banner -->
-                <div class="stats-banner">
-                    <div class="stat-item">
-                        <div class="stat-num">95%</div>
-                        <div class="stat-label">ATS Accuracy</div>
+                
+                <div class="saas-hero-visual">
+                    <!-- Dashboard Visual Cluster (CSS Only) -->
+                    <div class="visual-card-main">
+                        <div class="v-header">
+                            <div>
+                                <h4 style="margin:0; font-size: 1.1rem; color: var(--text-primary);">{{ user.name if user else 'Student Portal' }}</h4>
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">Computer Science Student</span>
+                            </div>
+                            <div class="v-avatar"><i class="fa-solid fa-user"></i></div>
+                        </div>
+                        <div class="v-skills mt-3">
+                            <span class="v-badge blue">Java</span>
+                            <span class="v-badge blue">Python</span>
+                            <span class="v-badge blue">Web Development</span>
+                            <span class="v-badge outline">AI/ML</span>
+                        </div>
+                        <div class="v-exp mt-3">
+                            <h5 style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-plus" style="color: var(--primary);"></i> Experience / Projects</h5>
+                            <div class="v-exp-item">
+                                <i class="fa-solid fa-circle-check text-emerald"></i>
+                                <div>
+                                    <div style="font-size: 0.85rem; font-weight: 600;">Smart Vehicle Service App</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">Android Studio • Java</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-num">1,000+</div>
-                        <div class="stat-label">Tech Skill Taxonomy</div>
+                    
+                    <div class="visual-card-floating top-right">
+                        <div style="font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 0.5rem;">Resume Score</div>
+                        <div class="v-score-circle">
+                            <span style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary);">82</span>
+                        </div>
+                        <div style="color: var(--accent-emerald); font-size: 0.8rem; font-weight: 600; text-align: center; margin-top: 0.5rem;">
+                            <i class="fa-solid fa-sparkles"></i> Excellent
+                        </div>
                     </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-num">8+</div>
-                        <div class="stat-label">Top Hiring Tech Profiles</div>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <div class="stat-num">100%</div>
-                        <div class="stat-label">Free & Campus Ready</div>
+                    
+                    <div class="visual-card-floating bottom-right">
+                        <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.8rem;">Career Match</div>
+                        <div class="v-match-row">
+                            <span style="font-size: 0.75rem;">Software Developer</span>
+                            <div class="v-bar-bg"><div class="v-bar-fill emerald" style="width: 92%;"></div></div>
+                            <span style="font-size: 0.75rem; font-weight: 600;">92%</span>
+                        </div>
+                        <div class="v-match-row">
+                            <span style="font-size: 0.75rem;">AI/ML Intern</span>
+                            <div class="v-bar-bg"><div class="v-bar-fill purple" style="width: 85%;"></div></div>
+                            <span style="font-size: 0.75rem; font-weight: 600;">85%</span>
+                        </div>
+                        <div class="v-match-row">
+                            <span style="font-size: 0.75rem;">Web Developer</span>
+                            <div class="v-bar-bg"><div class="v-bar-fill amber" style="width: 78%;"></div></div>
+                            <span style="font-size: 0.75rem; font-weight: 600;">78%</span>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- FEATURE CARDS -->
+            <div class="saas-features-grid mt-5">
+                <div class="saas-feature-card" onclick="navigateTo('analyzer')">
+                    <div class="sf-icon blue"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="sf-content">
+                        <h3>Resume Analysis</h3>
+                        <p>Get detailed feedback, skill mapping and improvement suggestions.</p>
+                    </div>
+                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+                
+                <div class="saas-feature-card" onclick="navigateTo('analyzer')">
+                    <div class="sf-icon orange"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="sf-content">
+                        <h3>Job Recommendations</h3>
+                        <p>Find out which job roles you can apply for based on your resume score.</p>
+                    </div>
+                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+                
+                <div class="saas-feature-card" onclick="navigateTo('mocktest')">
+                    <div class="sf-icon green"><i class="fa-solid fa-clipboard-question"></i></div>
+                    <div class="sf-content">
+                        <h3>Mock Tests</h3>
+                        <p>Practice topic-wise MCQs from top companies with solutions.</p>
+                    </div>
+                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+                
+                <div class="saas-feature-card" onclick="navigateTo('prep')">
+                    <div class="sf-icon purple"><i class="fa-solid fa-building"></i></div>
+                    <div class="sf-content">
+                        <h3>Company Insights</h3>
+                        <p>Explore hiring trends, eligibility criteria and interview patterns.</p>
+                    </div>
+                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+                
+                <div class="saas-feature-card" onclick="navigateTo('alumni')">
+                    <div class="sf-icon amber"><i class="fa-solid fa-users"></i></div>
+                    <div class="sf-content">
+                        <h3>Alumni Hub</h3>
+                        <p>Learn from real alumni experiences and get placement tips.</p>
+                    </div>
+                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD SUMMARY SECTION -->
+            <div class="saas-dashboard-summary mt-5">
+                <div class="summary-welcome">
+                    <div>
+                        <span class="text-muted text-sm">Good Morning,</span>
+                        <h2 style="font-size: 1.5rem; margin: 0.2rem 0; color: var(--text-primary);">{{ user.name if user else 'Student' }} 👋</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Let's prepare and get you closer to your dream career.</p>
+                    </div>
+                </div>
+                
+                <div class="summary-stats-grid">
+                    <div class="summary-stat-card">
+                        <div class="ss-icon blue"><i class="fa-solid fa-file-invoice"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num">3</div>
+                            <div class="ss-label">Resumes Analyzed</div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-stat-card">
+                        <div class="ss-icon green"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num">5</div>
+                            <div class="ss-label">Mock Tests Taken</div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-stat-card">
+                        <div class="ss-icon purple"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num">82%</div>
+                            <div class="ss-label">Best Score</div>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-stat-card">
+                        <div class="ss-icon orange"><i class="fa-solid fa-bookmark"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num">12</div>
+                            <div class="ss-label">Saved Job Roles</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-action-card">
+                    <div class="sac-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="sac-content">
+                        <h4 style="margin: 0; font-size: 0.9rem;">Your Next Step</h4>
+                        <p style="margin: 0.2rem 0 0.8rem 0; font-size: 0.75rem; color: var(--text-muted);">Take a Mock Test on Data Structures to improve your score.</p>
+                        <button class="btn btn-primary btn-sm" onclick="navigateTo('mocktest')">Start Practice <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
         </section>
+
 
         <!-- ========================================== -->
         <!-- SECTION 2: AI RESUME PDF ANALYZER         -->
