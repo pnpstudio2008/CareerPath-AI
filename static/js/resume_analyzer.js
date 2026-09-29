@@ -128,7 +128,15 @@ async function submitResumeAnalysis() {
             });
         }
 
-        const data = await response.json();
+        let data;
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            data = await response.json();
+        } else {
+            const textResponse = await response.text();
+            throw new Error(`Server returned a non-JSON error (Status ${response.status}). This usually happens if the file is too large or the server timed out.`);
+        }
+        
         document.getElementById('analyzer-loading').style.display = 'none';
 
         if (!response.ok || !data.success) {

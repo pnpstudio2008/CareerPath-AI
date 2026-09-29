@@ -145,6 +145,34 @@ def login_gateway():
     return redirect('/')
 
 
+
+# ==========================================
+# GLOBAL ERROR HANDLERS
+# ==========================================
+from werkzeug.exceptions import HTTPException
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # Pass through HTTP errors
+    if isinstance(e, HTTPException):
+        # Return JSON for all API routes
+        if request.path.startswith('/api/'):
+            return jsonify({
+                "success": False,
+                "error": e.description if hasattr(e, 'description') else str(e)
+            }), e.code
+        return e
+
+    # Handle non-HTTP exceptions
+    if request.path.startswith('/api/'):
+        return jsonify({
+            "success": False,
+            "error": "An unexpected server error occurred: " + str(e)
+        }), 500
+    
+    return "Internal Server Error", 500
+
+
 # ==========================================
 # RESUME ANALYZER & ATS EVALUATION API
 # ==========================================
