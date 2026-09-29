@@ -221,12 +221,12 @@ function renderAnalysisResults(data) {
     }
 
     // Update Company hero card if benchmark data is available
-    if (data.cohort_benchmark && data.cohort_benchmark.length > 0) {
+    if (data.dataset_matching && data.dataset_matching.top_matches && data.dataset_matching.top_matches.length > 0) {
         const heroCompany = document.getElementById('hero-company-matches');
         if (heroCompany) {
             heroCompany.innerHTML = ''; // clear placeholders
             // Take top 4 matches
-            data.cohort_benchmark.slice(0, 4).forEach(comp => {
+            data.dataset_matching.top_matches.slice(0, 4).forEach(comp => {
                 let badgeColor = '#EF4444'; // Red default
                 let bgBadgeColor = 'rgba(239,68,68,0.1)';
                 if (comp.match_score >= 80) { badgeColor = '#10B981'; bgBadgeColor = 'rgba(16,185,129,0.1)'; }
