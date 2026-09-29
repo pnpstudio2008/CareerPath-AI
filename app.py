@@ -157,111 +157,132 @@ def analyze_resume():
     Performs skill extraction, ATS scoring, career path mapping,
     45-company synthetic hiring dataset matching, and personalized question generation.
     """
-    resume_text = ""
-    filename = "Pasted Text"
+    # --- RATE LIMITING ---
+    last_upload = session.get('resume_last_upload_time', 0)
+    if time.time() - last_upload > 24 * 3600:
+        session['resume_upload_count'] = 0
 
-    # Check if a file was uploaded
-    if 'resume_file' in request.files:
-        file = request.files['resume_file']
-        if file.filename:
-            raw_filename = file.filename.strip()
-            filename = raw_filename
-            lower_name = raw_filename.lower()
-
-            # Strict Malware Protection: Block all .docx, .doc, .docm, etc.
-            if lower_name.endswith(('.docx', '.doc', '.docm', '.dotx', '.dotm')):
-                return jsonify({
-                    "success": False,
-                    "error": "Malware Protection Policy: .docx and Word documents are strictly prohibited due to macro/embedded script vulnerabilities. Please convert your resume to a secure PDF format (.pdf) and upload again.",
-                    "is_resume": False
-                }), 400
-
-            # Only accept .pdf format
-            if not lower_name.endswith('.pdf'):
-                return jsonify({
-                    "success": False,
-                    "error": "Unsupported file format. Only standard PDF (.pdf) documents are accepted for secure ATS analysis.",
-                    "is_resume": False
-                }), 400
-
-            file_bytes = file.read()
-
-            # Verify PDF magic signature (must contain %PDF header)
-            if not file_bytes.startswith(b'%PDF') and b'%PDF' not in file_bytes[:1024]:
-                return jsonify({
-                    "success": False,
-                    "error": "Security & File Integrity Alert: The uploaded file has a .pdf extension but lacks valid PDF binary signatures. Please upload a genuine, uncorrupted PDF document.",
-                    "is_resume": False
-                }), 400
-
-            resume_text = extract_text_from_pdf_bytes(file_bytes)
-
-    # If raw text was provided via JSON or form
-    if not resume_text and request.is_json:
-        resume_text = request.json.get('resume_text', '')
-    elif not resume_text and 'resume_text' in request.form:
-        resume_text = request.form.get('resume_text', '')
-
-    if not resume_text.strip():
+    if session.get('resume_upload_count', 0) >= 10:
         return jsonify({
-            "success": False,
-            "error": "No readable text could be extracted from your document. If this is a scanned document, please ensure it has selectable text or re-save with OCR enabled.",
-            "is_resume": False
-        }), 400
+            'success': False, 
+            'error': 'You have reached your daily limit of 10 resume analyses. Please try again after 24 hours to help us reduce network consumption.'
+        }), 429
+    # ---------------------
 
-    # =========================================================================
-    # RESUME AUTHENTICITY VERIFIER: Ensure the document is genuinely a Resume/CV
-    # =========================================================================
-    is_valid_resume, verification_msg, verification_details = verify_is_resume(resume_text)
-    if not is_valid_resume:
+    try:
+        session['resume_upload_count'] = session.get('resume_upload_count', 0) + 1
+        session['resume_last_upload_time'] = time.time()
+        resume_text = ""
+        filename = "Pasted Text"
+
+        # Check if a file was uploaded
+        if 'resume_file' in request.files:
+            file = request.files['resume_file']
+            if file.filename:
+                raw_filename = file.filename.strip()
+                filename = raw_filename
+                lower_name = raw_filename.lower()
+
+                # Strict Malware Protection: Block all .docx, .doc, .docm, etc.
+                if lower_name.endswith(('.docx', '.doc', '.docm', '.dotx', '.dotm')):
+                    return jsonify({
+                        "success": False,
+                        "error": "Malware Protection Policy: .docx and Word documents are strictly prohibited due to macro/embedded script vulnerabilities. Please convert your resume to a secure PDF format (.pdf) and upload again.",
+                        "is_resume": False
+                    }), 400
+
+                # Only accept .pdf format
+                if not lower_name.endswith('.pdf'):
+                    return jsonify({
+                        "success": False,
+                        "error": "Unsupported file format. Only standard PDF (.pdf) documents are accepted for secure ATS analysis.",
+                        "is_resume": False
+                    }), 400
+
+                file_bytes = file.read()
+
+                # Verify PDF magic signature (must contain %PDF header)
+                if not file_bytes.startswith(b'%PDF') and b'%PDF' not in file_bytes[:1024]:
+                    return jsonify({
+                        "success": False,
+                        "error": "Security & File Integrity Alert: The uploaded file has a .pdf extension but lacks valid PDF binary signatures. Please upload a genuine, uncorrupted PDF document.",
+                        "is_resume": False
+                    }), 400
+
+                resume_text = extract_text_from_pdf_bytes(file_bytes)
+
+        # If raw text was provided via JSON or form
+        if not resume_text and request.is_json:
+            resume_text = request.json.get('resume_text', '')
+        elif not resume_text and 'resume_text' in request.form:
+            resume_text = request.form.get('resume_text', '')
+
+        if not resume_text.strip():
+            return jsonify({
+                "success": False,
+                "error": "No readable text could be extracted from your document. If this is a scanned document, please ensure it has selectable text or re-save with OCR enabled.",
+                "is_resume": False
+            }), 400
+
+        # =========================================================================
+        # RESUME AUTHENTICITY VERIFIER: Ensure the document is genuinely a Resume/CV
+        # =========================================================================
+        is_valid_resume, verification_msg, verification_details = verify_is_resume(resume_text)
+        if not is_valid_resume:
+            return jsonify({
+                "success": False,
+                "error": verification_msg,
+                "is_resume": False,
+                "verification": verification_details
+            }), 400
+
+        # 1. Extract contact details
+        contact_info = extract_contact_info(resume_text)
+
+        # 2. Extract skills categorized by taxonomy
+        extracted_skills = extract_skills_from_text(resume_text)
+        extracted_certifications = extract_certifications_from_text(resume_text)
+
+        # 3. Analyze ATS score and formatting
+        ats_analysis = analyze_resume_ats(resume_text, extracted_skills)
+
+        # 4. Career path recommendations
+        career_recommendations = recommend_career_paths(extracted_skills)
+
+        # 5. Tailored Interview questions based on resume technologies
+        interview_questions = generate_personalized_interview_questions(extracted_skills, max_questions=8)
+
+        # 6. Compare with 45-Company Hiring Dataset
+        dataset_matching = compare_resume_with_45_companies(resume_text, extracted_skills)
+
+        # 7. Benchmark against Candidate Dataset
+        cohort_benchmark = benchmark_candidate_against_dataset(ats_analysis.get("ats_score", 75), extracted_skills)
+
+        # Count total skills extracted
+        total_skills = sum(len(skills) for skills in extracted_skills.values())
+
         return jsonify({
-            "success": False,
-            "error": verification_msg,
-            "is_resume": False,
-            "verification": verification_details
-        }), 400
-
-    # 1. Extract contact details
-    contact_info = extract_contact_info(resume_text)
-
-    # 2. Extract skills categorized by taxonomy
-    extracted_skills = extract_skills_from_text(resume_text)
-    extracted_certifications = extract_certifications_from_text(resume_text)
-
-    # 3. Analyze ATS score and formatting
-    ats_analysis = analyze_resume_ats(resume_text, extracted_skills)
-
-    # 4. Career path recommendations
-    career_recommendations = recommend_career_paths(extracted_skills)
-
-    # 5. Tailored Interview questions based on resume technologies
-    interview_questions = generate_personalized_interview_questions(extracted_skills, max_questions=8)
-
-    # 6. Compare with 45-Company Hiring Dataset
-    dataset_matching = compare_resume_with_45_companies(resume_text, extracted_skills)
-
-    # 7. Benchmark against Candidate Dataset
-    cohort_benchmark = benchmark_candidate_against_dataset(ats_analysis.get("ats_score", 75), extracted_skills)
-
-    # Count total skills extracted
-    total_skills = sum(len(skills) for skills in extracted_skills.values())
-
-    return jsonify({
-        "success": True,
-        "is_resume": True,
-        "verification": verification_details,
-        "filename": filename,
-        "contact_info": contact_info,
-        "total_skills_count": total_skills,
-        "extracted_skills": extracted_skills,
-        "extracted_certifications": extracted_certifications,
-        "ats_analysis": ats_analysis,
-        "career_recommendations": career_recommendations,
-        "interview_questions": interview_questions,
-        "dataset_matching": dataset_matching,
-        "cohort_benchmark": cohort_benchmark,
-        "raw_text_preview": resume_text[:600] + ("..." if len(resume_text) > 600 else "")
-    })
+            "success": True,
+            "is_resume": True,
+            "verification": verification_details,
+            "filename": filename,
+            "contact_info": contact_info,
+            "total_skills_count": total_skills,
+            "extracted_skills": extracted_skills,
+            "extracted_certifications": extracted_certifications,
+            "ats_analysis": ats_analysis,
+            "career_recommendations": career_recommendations,
+            "interview_questions": interview_questions,
+            "dataset_matching": dataset_matching,
+            "cohort_benchmark": cohort_benchmark,
+            "raw_text_preview": resume_text[:600] + ("..." if len(resume_text) > 600 else "")
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Failed to parse or analyze resume. {str(e)}',
+            'is_resume': False
+        }), 500
 
 
 @app.route('/api/dataset/companies', methods=['GET'])
