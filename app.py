@@ -1521,7 +1521,7 @@ def get_student_alumni_questions():
     alumni = request.args.get('alumni', 'all')
     limit = int(request.args.get('limit', 25))
 
-    questions = get_quiz_questions(subject=subject, company=company, difficulty=difficulty, alumni=alumni, limit=limit)
+    questions = get_quiz_questions(subject=subject, company=company, difficulty=difficulty, alumni=alumni, limit=limit, require_real_alumni=True)
     
     # Return formatted questions with alumni contributor credit and explanations
     formatted_questions = []

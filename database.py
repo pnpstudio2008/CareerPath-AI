@@ -1283,11 +1283,15 @@ def promote_student_to_alumni(student_id: int, data: dict):
 
 
 
-def get_quiz_questions(subject=None, company=None, difficulty=None, alumni=None, limit=10):
+def get_quiz_questions(subject=None, company=None, difficulty=None, alumni=None, limit=10, require_real_alumni=False):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT * FROM mcq_questions WHERE 1=1"
     params = []
+    
+    if require_real_alumni:
+        query += " AND alumni_id IS NOT NULL AND alumni_id != ''"
+
 
     if subject and subject.lower() != 'all':
         query += " AND LOWER(subject) = LOWER(?)"
