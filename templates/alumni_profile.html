@@ -304,132 +304,191 @@
         </div>
     </header>
 
+    
     <!-- Main Content Container -->
-    <main class="container alumni-main-container" style="max-width: 1200px; margin: 0 auto; padding: 1.5rem;">
+    <main class="container alumni-main-container" style="max-width: 1300px; margin: 0 auto; padding: 2rem 1.5rem;">
         
-        <!-- Welcome / Alumni Profile Banner -->
-        <div class="alumni-hero-card">
-            <div class="alumni-hero-profile">
-                <div class="alumni-avatar-portal">{{ alumni.initials or alumni.name[:2].upper() }}</div>
-                <div>
-                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;">{{ alumni.name }}</h1>
-                        <span class="badge badge-success"><i class="fa-solid fa-check-circle"></i> Verified Alumni Mentor</span>
+        <!-- NEW PREMIUM ALUMNI HERO -->
+        <div class="alumni-premium-hero">
+            <div class="ap-hero-bg"></div>
+            <div class="ap-hero-content">
+                <div class="ap-profile-main">
+                    <div class="ap-avatar">{{ alumni.initials or alumni.name[:2].upper() }}</div>
+                    <div class="ap-profile-info">
+                        <div class="ap-name-row">
+                            <h1 class="ap-name">{{ alumni.name }}</h1>
+                            <span class="ap-verified-badge"><i class="fa-solid fa-certificate"></i> Verified Alumni Mentor</span>
+                        </div>
+                        <div class="ap-chips-row">
+                            <span class="ap-chip"><i class="fa-solid fa-id-card text-blue"></i> Roll No: {{ alumni.roll_no }}</span>
+                            <span class="ap-chip"><i class="fa-solid fa-building text-purple"></i> {{ alumni.company }}</span>
+                            <span class="ap-chip"><i class="fa-solid fa-briefcase text-blue"></i> {{ alumni.role }}</span>
+                            <span class="ap-chip"><i class="fa-solid fa-indian-rupee-sign text-emerald"></i> ₹{{ alumni.package_lpa }} LPA</span>
+                            <span class="ap-chip"><i class="fa-solid fa-calendar text-orange"></i> Class of {{ alumni.batch_year }}</span>
+                        </div>
+                        <div class="ap-actions-row">
+                            <a href="https://www.linkedin.com/search/results/all/?keywords={{ alumni.name|urlencode }}%20{{ alumni.company|urlencode }}" target="_blank" class="ap-btn-primary">
+                                <i class="fa-brands fa-linkedin"></i> My LinkedIn Profile
+                            </a>
+                            <a href="/?view=platform#alumni" class="ap-btn-secondary">
+                                <i class="fa-solid fa-book-open"></i> Published Story
+                            </a>
+                        </div>
                     </div>
-                    <div class="alumni-info-meta">
-                        <span class="meta-pill"><i class="fa-solid fa-id-card text-primary"></i> Roll No: {{ alumni.roll_no }}</span>
-                        <span class="meta-pill"><i class="fa-solid fa-building text-purple"></i> {{ alumni.company }}</span>
-                        <span class="meta-pill"><i class="fa-solid fa-briefcase text-emerald"></i> {{ alumni.role }}</span>
-                        <span class="meta-pill"><i class="fa-solid fa-indian-rupee-sign text-amber"></i> ₹{{ alumni.package_lpa }} LPA</span>
-                        <span class="meta-pill"><i class="fa-solid fa-calendar text-warning"></i> Class of {{ alumni.batch_year }}</span>
-                    </div>
                 </div>
-            </div>
-
-            <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-                <a href="https://www.linkedin.com/search/results/all/?keywords={{ alumni.name|urlencode }}%20{{ alumni.company|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-linkedin-action">
-                    <i class="fa-brands fa-linkedin"></i> My LinkedIn Profile
-                </a>
-                <a href="/?view=platform#alumni" class="btn btn-outline">
-                    <i class="fa-solid fa-book-open"></i> Published Story
-                </a>
-            </div>
-        </div>
-
-        <!-- Metric KPI Cards (Outreach Analytics: Mail, LinkedIn, Total Reach, Upvotes) -->
-        <div class="kpi-grid mt-4">
-            <!-- KPI 1: Gmail Inquiries -->
-            <div class="card kpi-card">
-                <div class="kpi-icon-wrap" style="background:rgba(234, 67, 53, 0.12); color:#EA4335;">
-                    <i class="fa-brands fa-google"></i>
-                </div>
-                <div class="kpi-info">
-                    <span class="kpi-label">Mail / Gmail Inquiries</span>
-                    <h2 class="kpi-value" style="color:#EA4335;">{{ metrics.gmail_inquiries }}</h2>
-                </div>
-            </div>
-
-            <!-- KPI 2: LinkedIn Approaches -->
-            <div class="card kpi-card">
-                <div class="kpi-icon-wrap" style="background:rgba(10, 102, 194, 0.12); color:#0A66C2;">
-                    <i class="fa-brands fa-linkedin"></i>
-                </div>
-                <div class="kpi-info">
-                    <span class="kpi-label">LinkedIn Approaches</span>
-                    <h2 class="kpi-value" style="color:#0A66C2;">{{ metrics.linkedin_approaches }}</h2>
-                </div>
-            </div>
-
-            <!-- KPI 3: Total Students Mentored -->
-            <div class="card kpi-card">
-                <div class="kpi-icon-wrap bg-success-soft">
-                    <i class="fa-solid fa-users-rays"></i>
-                </div>
-                <div class="kpi-info">
-                    <span class="kpi-label">Total Juniors Assisted</span>
-                    <h2 class="kpi-value" style="color:var(--accent-emerald);">{{ metrics.total_approached }}</h2>
-                </div>
-            </div>
-
-            <!-- KPI 4: Helpful Community Votes -->
-            <div class="card kpi-card">
-                <div class="kpi-icon-wrap bg-warning-soft">
-                    <i class="fa-solid fa-heart"></i>
-                </div>
-                <div class="kpi-info">
-                    <span class="kpi-label">Helpful Story Votes</span>
-                    <h2 class="kpi-value" style="color:var(--accent-amber);">{{ metrics.story_upvotes }}</h2>
+                <div class="ap-quote-card">
+                    <i class="fa-solid fa-quote-left ap-quote-icon"></i>
+                    <p class="ap-quote-text">Helping juniors grow, because someone once helped me.</p>
+                    <span class="ap-quote-label"><i class="fa-solid fa-star"></i> Give Back • Guide • Grow</span>
                 </div>
             </div>
         </div>
 
-        <!-- 2-Column Detail Layout (Same Structure as Student Portal) -->
-        <div class="portal-grid-2">
-            
-            <!-- Left Column: Personal Profile & Junior Student Outreach Inbox -->
+        <!-- NEW METRICS ROW -->
+        <div class="ap-metrics-grid">
+            <!-- Mail Inquiries -->
+            <div class="ap-metric-card">
+                <div class="ap-metric-header">
+                    <div class="ap-m-icon" style="background:#FEE2E2; color:#EF4444;"><i class="fa-brands fa-google"></i></div>
+                    <span class="ap-m-label">Mail / Gmail Inquiries</span>
+                    <i class="fa-solid fa-chevron-right ap-m-arrow"></i>
+                </div>
+                <div class="ap-metric-body">
+                    <h2 class="ap-m-value">{{ metrics.gmail_inquiries }}</h2>
+                    <span class="ap-m-trend neutral"><i class="fa-solid fa-arrow-right"></i> —</span>
+                    <div class="ap-sparkline red"></div>
+                </div>
+            </div>
+
+            <!-- LinkedIn -->
+            <div class="ap-metric-card">
+                <div class="ap-metric-header">
+                    <div class="ap-m-icon" style="background:#DBEAFE; color:#3B82F6;"><i class="fa-brands fa-linkedin"></i></div>
+                    <span class="ap-m-label">LinkedIn Approaches</span>
+                    <i class="fa-solid fa-chevron-right ap-m-arrow"></i>
+                </div>
+                <div class="ap-metric-body">
+                    <h2 class="ap-m-value">{{ metrics.linkedin_approaches }}</h2>
+                    <span class="ap-m-trend neutral"><i class="fa-solid fa-arrow-right"></i> —</span>
+                    <div class="ap-sparkline blue"></div>
+                </div>
+            </div>
+
+            <!-- Juniors Assisted -->
+            <div class="ap-metric-card">
+                <div class="ap-metric-header">
+                    <div class="ap-m-icon" style="background:#D1FAE5; color:#10B981;"><i class="fa-solid fa-users"></i></div>
+                    <span class="ap-m-label">Total Juniors Assisted</span>
+                    <i class="fa-solid fa-chevron-right ap-m-arrow"></i>
+                </div>
+                <div class="ap-metric-body">
+                    <h2 class="ap-m-value">{{ metrics.total_approached }}</h2>
+                    <span class="ap-m-trend neutral"><i class="fa-solid fa-arrow-right"></i> —</span>
+                    <div class="ap-sparkline green"></div>
+                </div>
+            </div>
+
+            <!-- Helpful Votes -->
+            <div class="ap-metric-card">
+                <div class="ap-metric-header">
+                    <div class="ap-m-icon" style="background:#F3E8FF; color:#8B5CF6;"><i class="fa-solid fa-heart"></i></div>
+                    <span class="ap-m-label">Helpful Story Votes</span>
+                    <i class="fa-solid fa-chevron-right ap-m-arrow"></i>
+                </div>
+                <div class="ap-metric-body">
+                    <h2 class="ap-m-value">{{ metrics.story_upvotes }}</h2>
+                    <span class="ap-m-trend neutral"><i class="fa-solid fa-arrow-right"></i> —</span>
+                    <div class="ap-sparkline purple"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN DASHBOARD GRID (3-Column) -->
+        <div class="ap-dashboard-grid">
+            <!-- Left: Senior Profile -->
+            <div class="ap-panel ap-profile-panel">
+                <div class="ap-panel-header">
+                    <div class="ap-panel-title">
+                        <i class="fa-solid fa-user text-primary"></i> Senior Profile & Career Record
+                    </div>
+                    <div class="ap-panel-actions">
+                        <span class="ap-verified-badge small">Verified Alumni <i class="fa-solid fa-check"></i></span>
+                        <button class="ap-btn-edit" onclick="openProfileEditModal()"><i class="fa-solid fa-pen"></i> Edit</button>
+                    </div>
+                </div>
+                <div class="ap-profile-table">
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-user"></i> Full Name</div><div class="ap-val">{{ alumni.name }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-id-card"></i> Alumni User ID</div><div class="ap-val">{{ alumni.roll_no }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-envelope"></i> Email Address</div><div class="ap-val">{{ alumni.email }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-building-columns"></i> Department</div><div class="ap-val">{{ alumni.branch }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-briefcase"></i> Current Role</div><div class="ap-val">{{ alumni.role }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-building"></i> Current Company</div><div class="ap-val"><strong>{{ alumni.company }}</strong></div></div>
+                </div>
+            </div>
+
+            <!-- Center: Outreach Channels -->
+            <div class="ap-panel ap-chart-panel">
+                <div class="ap-panel-header">
+                    <div class="ap-panel-title"><i class="fa-solid fa-chart-pie text-primary"></i> Outreach Channels</div>
+                </div>
+                <div class="ap-donut-container">
+                    <svg viewBox="0 0 36 36" class="ap-donut-svg">
+                        <!-- Conic chart will be rendered by CSS or JS, fallback to simple SVG rings -->
+                        <path class="ap-donut-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <!-- dynamic portions set via inline styles later -->
+                        <path class="ap-donut-segment red" stroke-dasharray="{{ metrics.channel_ratio.gmail_pct }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="ap-donut-segment blue" stroke-dasharray="{{ metrics.channel_ratio.linkedin_pct }}, 100" stroke-dashoffset="-{{ metrics.channel_ratio.gmail_pct }}" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    </svg>
+                    <div class="ap-donut-center">
+                        <strong>{{ metrics.total_approached }}</strong>
+                        <span>Total<br>Approaches</span>
+                    </div>
+                </div>
+                <div class="ap-chart-legend">
+                    <div class="ap-legend-item"><div class="ap-dot red"></div> Gmail <span>{{ metrics.gmail_inquiries }} ({{ metrics.channel_ratio.gmail_pct }}%)</span></div>
+                    <div class="ap-legend-item"><div class="ap-dot blue"></div> LinkedIn <span>{{ metrics.linkedin_approaches }} ({{ metrics.channel_ratio.linkedin_pct }}%)</span></div>
+                </div>
+                <p class="ap-chart-sub">Distribution of student approaches via Mail vs LinkedIn.</p>
+            </div>
+
+            <!-- Right: Recent Activity -->
+            <div class="ap-panel ap-activity-panel">
+                <div class="ap-panel-header">
+                    <div class="ap-panel-title"><i class="fa-solid fa-clock text-primary"></i> Recent Activity</div>
+                    <i class="fa-solid fa-chevron-right ap-icon-btn"></i>
+                </div>
+                <div class="ap-activity-feed">
+                    {% if metrics.inquiries|length == 0 %}
+                    <div class="ap-activity-empty">
+                        <i class="fa-solid fa-inbox"></i>
+                        <span>No recent activity</span>
+                        <small>Your alumni activity will appear here.</small>
+                    </div>
+                    {% else %}
+                        {% for inq in metrics.inquiries[:4] %}
+                        <div class="ap-activity-item">
+                            {% if inq.channel == 'gmail' %}
+                            <div class="ap-act-icon red"><i class="fa-brands fa-google"></i></div>
+                            {% else %}
+                            <div class="ap-act-icon blue"><i class="fa-brands fa-linkedin"></i></div>
+                            {% endif %}
+                            <div class="ap-act-info">
+                                <strong>New {{ inq.channel }} inquiry</strong>
+                                <span>{{ inq.student_name }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- EXISTING TABLES (Preserved Functionality) -->
+        <div class="portal-grid-2" style="margin-top: 2rem;">
+            <!-- Left Column: Junior Student Inquiries & Mentorship Inbox -->
             <div style="display:flex; flex-direction:column; gap:1.5rem;">
-                
-                <!-- Card 1: Academic & Professional Record -->
-                <div class="card">
-                    <div class="card-header-flex mb-3">
-                        <h3><i class="fa-solid fa-address-card text-primary"></i> Senior Profile & Career Record</h3>
-                        <span class="badge badge-info">Verified Alumni</span>
-                    </div>
-
-                    <div class="student-card-details mt-2">
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-user"></i> Full Name</span>
-                            <span class="detail-val">{{ alumni.name }}</span>
-                        </div>
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-id-card"></i> Alumni User ID</span>
-                            <span class="detail-val">{{ alumni.roll_no }}</span>
-                        </div>
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-envelope"></i> Email Address</span>
-                            <span class="detail-val">{{ alumni.email }}</span>
-                        </div>
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-building-columns"></i> Branch / Department</span>
-                            <span class="detail-val">{{ alumni.branch }}</span>
-                        </div>
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-building"></i> Current Company</span>
-                            <span class="detail-val"><strong>{{ alumni.company }}</strong></span>
-                        </div>
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-briefcase"></i> Designation</span>
-                            <span class="detail-val">{{ alumni.role }}</span>
-                        </div>
-                        <div class="student-detail-row" style="padding:0.5rem 0;">
-                            <span class="detail-label"><i class="fa-solid fa-indian-rupee-sign"></i> Compensation</span>
-                            <span class="detail-val" style="color:var(--accent-emerald); font-weight:700;">₹{{ alumni.package_lpa }} LPA</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Junior Student Inquiries & Mentorship Inbox -->
-                <div class="card">
+                <!-- Card: Junior Student Inquiries & Mentorship Inbox -->
+                <div class="card ap-panel">
                     <div class="card-header-flex mb-3">
                         <div>
                             <h3 style="margin-bottom:0.25rem;"><i class="fa-solid fa-inbox text-primary"></i> Junior Student Mentorship Requests</h3>
@@ -443,8 +502,8 @@
                         <button class="inquiry-filter-btn active" onclick="filterInquiries('all', this)">All</button>
                         <button class="inquiry-filter-btn" onclick="filterInquiries('gmail', this)"><i class="fa-brands fa-google text-danger"></i> Gmail</button>
                         <button class="inquiry-filter-btn" onclick="filterInquiries('linkedin', this)"><i class="fa-brands fa-linkedin text-info"></i> LinkedIn</button>
-                        <button class="inquiry-filter-btn" onclick="filterInquiries('Pending', this)">⏳ Pending</button>
-                        <button class="inquiry-filter-btn" onclick="filterInquiries('Replied', this)">✔️ Replied</button>
+                        <button class="inquiry-filter-btn" onclick="filterInquiries('Pending', this)"><i class="fa-solid fa-clock text-warning"></i> Pending</button>
+                        <button class="inquiry-filter-btn" onclick="filterInquiries('Replied', this)"><i class="fa-solid fa-check text-info"></i> Replied</button>
                     </div>
 
                     <!-- Table -->
@@ -506,102 +565,74 @@
                         </table>
                     </div>
                 </div>
+            </div>
 
-                <!-- Card 3: Placement Test Questions Contributed -->
-                <div class="card">
+            <!-- Right Column: Contributed Questions & Fast Actions -->
+            <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                
+                <!-- Card: Placement Test Questions Contributed -->
+                <div class="card ap-panel">
                     <div class="card-header-flex mb-3">
                         <div>
-                            <h3 style="margin-bottom:0.25rem;"><i class="fa-solid fa-code-branch text-primary"></i> Contributed Placement Test Questions</h3>
-                            <p class="text-muted" style="font-size:0.85rem; margin:0;">Share technical MCQs and interview questions to help junior ongoing students practice.</p>
+                            <h3 style="margin-bottom:0.25rem;"><i class="fa-solid fa-code-branch text-primary"></i> Contributed Questions</h3>
+                            <p class="text-muted" style="font-size:0.85rem; margin:0;">Share technical MCQs.</p>
                         </div>
                         <button class="btn btn-primary btn-sm" onclick="openContributeQuestionModal()">
-                            <i class="fa-solid fa-plus"></i> Contribute Question
+                            <i class="fa-solid fa-plus"></i> Add
                         </button>
                     </div>
 
                     <div class="data-table-container">
-                        <table class="inquiry-table">
+                        <table class="inquiry-table" style="min-width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Skill / Subject</th>
-                                    <th>Topic / Company</th>
+                                    <th>Subject</th>
                                     <th>Question</th>
-                                    <th>Answer</th>
-                                    <th style="text-align:right;">Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="alumni-questions-tbody">
-                                <tr><td colspan="5" class="text-center p-3 text-muted"><div class="spinner"></div> Loading contributed questions...</td></tr>
+                                <tr><td colspan="3" class="text-center p-3 text-muted"><div class="spinner"></div> Loading contributed questions...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- Right Column: Outreach Visual Breakdown & Fast Action Shortcuts -->
-            <div style="display:flex; flex-direction:column; gap:1.5rem;">
-                
-                <!-- Card 1: Channel Breakdown Chart -->
-                <div class="card">
-                    <div class="card-header-flex mb-2">
-                        <h3><i class="fa-solid fa-chart-pie text-primary"></i> Outreach Channels</h3>
-                    </div>
-                    <p class="text-muted" style="font-size:0.82rem; margin-bottom:1rem;">Distribution of student approaches via Mail vs LinkedIn.</p>
-
-                    <div style="height:180px; position:relative;">
-                        <canvas id="alumniChannelChart"></canvas>
-                    </div>
-
-                    <div style="display:flex; justify-content:space-around; margin-top:1rem; font-size:0.82rem; font-weight:600;">
-                        <span style="color:#EA4335;"><i class="fa-solid fa-circle" style="font-size:0.7rem;"></i> Gmail: {{ metrics.gmail_inquiries }} ({{ metrics.channel_ratio.gmail_pct }}%)</span>
-                        <span style="color:#0A66C2;"><i class="fa-solid fa-circle" style="font-size:0.7rem;"></i> LinkedIn: {{ metrics.linkedin_approaches }} ({{ metrics.channel_ratio.linkedin_pct }}%)</span>
-                    </div>
-                </div>
-
-                <!-- Card 2: Fast Action Shortcuts (Identical design to Student Portal) -->
-                <div class="card">
-                    <h3><i class="fa-solid fa-rocket text-warning"></i> Fast Actions</h3>
-                    <p class="text-muted" style="font-size:0.88rem; margin-bottom:1.25rem;">Quick shortcuts to interact with the platform and manage mentorship.</p>
-
+                <!-- Card: Fast Action Shortcuts -->
+                <div class="card ap-panel">
+                    <h3 style="margin-bottom:1.25rem;"><i class="fa-solid fa-rocket text-warning"></i> Fast Actions</h3>
                     <div style="display:flex; flex-direction:column; gap:1rem;">
                         <a href="/?view=platform#alumni" class="quick-action-card">
-                            <div class="action-icon" style="background:#8B5CF6;">
-                                <i class="fa-solid fa-users-viewfinder"></i>
-                            </div>
+                            <div class="action-icon" style="background:#8B5CF6;"><i class="fa-solid fa-users-viewfinder"></i></div>
                             <div>
                                 <strong style="display:block; font-size:0.95rem;">Alumni Placement Hub</strong>
-                                <span class="text-muted" style="font-size:0.8rem;">Browse placement stories & interview round archives.</span>
+                                <span class="text-muted" style="font-size:0.8rem;">Browse placement stories & archives.</span>
                             </div>
                         </a>
-
                         <a href="/?view=platform#analyzer" class="quick-action-card">
-                            <div class="action-icon bg-primary">
-                                <i class="fa-solid fa-file-arrow-up"></i>
-                            </div>
+                            <div class="action-icon bg-primary"><i class="fa-solid fa-file-arrow-up"></i></div>
                             <div>
                                 <strong style="display:block; font-size:0.95rem;">Resume ATS Benchmark</strong>
-                                <span class="text-muted" style="font-size:0.8rem;">Evaluate resumes against 45 company standards.</span>
-                            </div>
-                        </a>
-
-                        <a href="/?view=platform#prep" class="quick-action-card">
-                            <div class="action-icon" style="background:#10B981;">
-                                <i class="fa-solid fa-laptop-code"></i>
-                            </div>
-                            <div>
-                                <strong style="display:block; font-size:0.95rem;">Practice Test Bank</strong>
-                                <span class="text-muted" style="font-size:0.8rem;">Review technical MCQ questions and aptitude tests.</span>
+                                <span class="text-muted" style="font-size:0.8rem;">Evaluate resumes against standards.</span>
                             </div>
                         </a>
                     </div>
                 </div>
 
             </div>
-
         </div>
-
     </main>
+
+    <!-- Placeholder Modal for Profile Edit -->
+    <div class="modal-backdrop" id="edit-profile-modal-backdrop" onclick="closeProfileEditModal(event)">
+        <div class="modal-content" style="max-width: 500px;">
+            <button class="modal-close-btn" onclick="closeProfileEditModal(event)">&times;</button>
+            <h2 style="font-size:1.5rem; margin-bottom:1rem;"><i class="fa-solid fa-pen text-primary"></i> Edit Profile</h2>
+            <p class="text-muted mb-4">Profile editing functionality is connected to your university SSO. Contact administration to update core details.</p>
+            <button class="btn btn-outline w-100" onclick="closeProfileEditModal(event, true)">Close</button>
+        </div>
+    </div>
+
 
     <!-- ========================================== -->
     <!-- MODAL: CONTRIBUTE PRACTICE MCQ QUESTION     -->
@@ -779,6 +810,17 @@
         }
 
         // ==========================================
+        
+        function openProfileEditModal() {
+            const modal = document.getElementById('edit-profile-modal-backdrop');
+            if(modal) modal.classList.add('active');
+        }
+        function closeProfileEditModal(event, force=false) {
+            if(force || event.target === document.getElementById('edit-profile-modal-backdrop') || event.target.classList.contains('modal-close-btn')) {
+                document.getElementById('edit-profile-modal-backdrop').classList.remove('active');
+            }
+        }
+    
         // ALUMNI CONTRIBUTED QUESTIONS HANDLERS
         // ==========================================
         async function loadAlumniQuestions() {
