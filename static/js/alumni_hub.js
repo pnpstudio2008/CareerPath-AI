@@ -105,14 +105,6 @@ function renderAlumniExperiences(experiences) {
         const card = document.createElement('div');
         card.className = 'hof-card';
         
-        // Generate mock rank (1, 2, 3...)
-        const rank = index + 1;
-        let rankClass = 'rank-neutral';
-        let rankIcon = '<i class="fa-solid fa-medal"></i>';
-        if (rank === 1) { rankClass = 'rank-gold'; rankIcon = '<i class="fa-solid fa-crown"></i>'; }
-        else if (rank === 2) { rankClass = 'rank-silver'; }
-        else if (rank === 3) { rankClass = 'rank-bronze'; }
-
         const initials = getInitials(exp.student_name);
         
         // Use realistic dummy skills for the challenge test if none exist
@@ -124,10 +116,6 @@ function renderAlumniExperiences(experiences) {
 
         card.innerHTML = `
             <div class="hc-header">
-                <div class="hc-rank-ribbon ${rankClass}">
-                    ${rankIcon}
-                    <span>${rank}</span>
-                </div>
                 
                 <div class="hc-avatar-wrap">
                     <div class="hc-avatar">${initials}</div>
