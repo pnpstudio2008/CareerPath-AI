@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Faculty Analytics Dashboard (Module 5)
  */
@@ -8,7 +21,7 @@ let tierChartInstance = null;
 async function initFacultyDashboard() {
     try {
         const res = await fetch('/api/faculty/insights');
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (!data.success) return;
 

@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Admin Control Panel & Student Management
  */
@@ -118,7 +131,7 @@ function switchAdminTab(tabName) {
 async function fetchAdminStats() {
     try {
         const res = await fetch('/api/admin/stats');
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.success) {
             const s = data.stats;
             if (document.getElementById('admin-stat-students')) document.getElementById('admin-stat-students').innerText = s.total_students;
@@ -148,7 +161,7 @@ async function fetchAdminStudents() {
     try {
         const queryParams = new URLSearchParams({ search, branch, status, readiness });
         const res = await fetch(`/api/admin/students?${queryParams.toString()}`);
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (!data.success || data.students.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8" class="text-center p-4 text-muted">No student records found matching your filters.</td></tr>';
@@ -218,7 +231,7 @@ let promotingStudentId = null;
 async function openPromoteModal(studentId) {
     try {
         const res = await fetch(`/api/admin/students/${studentId}`);
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!data.success || !data.student) {
             showToast('Failed to load student details.', 'error');
             return;
@@ -279,7 +292,7 @@ async function submitPromoteStudentForm(event) {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!res.ok || !data.success) {
             showToast(data.error || 'Failed to promote student.', 'error');
             return;
@@ -357,7 +370,7 @@ function openAddStudentModal() {
 async function openEditStudentModal(studentId) {
     try {
         const res = await fetch(`/api/admin/students/${studentId}`);
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!data.success || !data.student) {
             showToast('Failed to load student details.', 'error');
             return;
@@ -423,7 +436,7 @@ async function submitStudentForm(event) {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!res.ok || !data.success) {
             showToast(data.error || 'Failed to save student.', 'error');
             return;
@@ -467,7 +480,7 @@ async function confirmDeleteStudent(studentId, name) {
 
     try {
         const res = await fetch(`/api/admin/students/delete/${studentId}`, { method: 'DELETE' });
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.success) {
             showToast(`Student ${name} deleted successfully.`, 'success');
             fetchAdminStudents();
@@ -491,7 +504,7 @@ async function fetchAdminAlumni() {
 
     try {
         const res = await fetch('/api/alumni/experiences?company=all&difficulty=all');
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (!data.success || data.experiences.length === 0) {
             tbody.innerHTML = '<tr><td colspan="7" class="text-center p-4 text-muted">No alumni experiences found.</td></tr>';
@@ -528,7 +541,7 @@ async function confirmDeleteAlumni(expId, name) {
 
     try {
         const res = await fetch(`/api/admin/alumni/delete/${expId}`, { method: 'DELETE' });
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.success) {
             showToast('Alumni story removed.', 'success');
             fetchAdminAlumni();
@@ -589,7 +602,7 @@ async function submitCreateStudentLoginForm(event) {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!res.ok || !data.success) {
             showToast(data.error || 'Failed to create student account.', 'error');
             return;
@@ -687,7 +700,7 @@ async function submitAdminExperienceForm(event) {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!res.ok || !data.success) {
             showToast(data.error || 'Failed to publish story.', 'error');
             return;
@@ -765,7 +778,7 @@ async function submitCreateAlumniLoginForm(event) {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (!res.ok || !data.success) {
             showToast(data.error || 'Failed to create alumni account.', 'error');
             return;

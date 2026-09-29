@@ -546,7 +546,21 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script>
+    
+<script>
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+</script>
+<script>
         // ----------------------------------------------------
         // 3-WAY PORTAL SWITCHER LOGIC
         // ----------------------------------------------------
@@ -621,7 +635,7 @@
                     body: JSON.stringify({ identifier, password })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (res.ok && data.require_2fa) {
                     showToast(`Password verified for ${data.student_name}! Please enter your 2FA security key.`, 'success');
                     document.getElementById('student-step-1').style.display = 'none';
@@ -660,7 +674,7 @@
                     body: JSON.stringify({ code })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (res.ok && data.success) {
                     showToast('2FA Verified! Redirecting to platform...', 'success');
                     setTimeout(() => {
@@ -710,7 +724,7 @@
                     body: JSON.stringify({ identifier, password })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (res.ok && data.require_2fa) {
                     showToast(`Credentials verified for ${data.alumni_name}! Please enter 2FA security key.`, 'success');
                     document.getElementById('alumni-step-1').style.display = 'none';
@@ -749,7 +763,7 @@
                     body: JSON.stringify({ code })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (res.ok && data.success) {
                     showToast('2FA Verified! Welcome to the Alumni Portal...', 'success');
                     setTimeout(() => {
@@ -799,7 +813,7 @@
                     body: JSON.stringify({ username, password })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (res.ok && data.require_2fa) {
                     showToast('Admin credentials verified! Please enter the 2FA Master Key.', 'success');
                     document.getElementById('admin-step-1').style.display = 'none';
@@ -838,7 +852,7 @@
                     body: JSON.stringify({ code })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (res.ok && data.success) {
                     showToast('2FA Master Key Verified! Redirecting...', 'success');
                     setTimeout(() => {

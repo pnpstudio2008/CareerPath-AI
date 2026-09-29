@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Tailored Skill & Certification Mock Test (Module 4)
  * Generates and conducts 10-15 question online assessments based on
@@ -159,7 +172,7 @@ async function generateAndStartMockTest() {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         document.getElementById('mocktest-loading').style.display = 'none';
 
         if (!res.ok || !data.success || !data.questions || data.questions.length === 0) {
@@ -442,7 +455,7 @@ async function submitMockTest() {
             body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         document.getElementById('mocktest-loading').style.display = 'none';
 
         if (!res.ok || !data.success) {

@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Ongoing Student Profiles & Placement Tracking (Module 4)
  */
@@ -22,7 +35,7 @@ async function fetchStudentProfiles() {
         });
 
         const res = await fetch('/api/students?' + queryParams.toString());
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (!data.success || !data.students || data.students.length === 0) {
             feed.innerHTML = `

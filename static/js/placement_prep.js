@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Placement Preparation & Quizzes (Module 2)
  * Features Best Scorers' Benchmark Challenges (Hall of Fame)
@@ -110,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchAndRenderLiveTopScorers() {
     try {
         const res = await fetch('/api/alumni/experiences');
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.experiences && data.experiences.length > 0) {
             TOP_SCORERS.length = 0;
             data.experiences.forEach(exp => {
@@ -239,7 +252,7 @@ async function startNewQuiz(presetScorer = null) {
 
     try {
         const res = await fetch(`/api/quiz/questions?subject=${encodeURIComponent(subject)}&company=${encodeURIComponent(company)}&limit=10`);
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (!data.success || data.questions.length === 0) {
             showToast('No questions found for the selected filter. Loading general practice bank.', 'info');
@@ -405,7 +418,7 @@ async function submitQuizAnswers() {
             body: JSON.stringify({ answers: userAnswers })
         });
 
-        const data = await response.json();
+        const data = await safeJsonFetch(response);
         if (!response.ok || !data.success) {
             showToast(data.error || 'Failed to submit quiz.', 'error');
             return;
@@ -519,7 +532,7 @@ async function loadMainAlumniPracticeQuestions() {
     try {
         const params = new URLSearchParams({ subject: skill, company: company, difficulty: difficulty, alumni: alumni, limit: 25 });
         const res = await fetch(`/api/student/alumni-questions?${params.toString()}`);
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (data.alumni_list && data.alumni_list.length > 0) {
             updateMainAlumniFilterOptions(data.alumni_list);

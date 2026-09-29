@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Global App Router & Shared Utilities
  */
@@ -139,7 +152,7 @@ function showToast(message, type = 'info') {
 async function fetchSampleResumes() {
     try {
         const res = await fetch('/api/sample-resumes');
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.success) {
             window.AppState.sampleResumes = data.resumes;
         }

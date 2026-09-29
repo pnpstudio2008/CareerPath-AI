@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Resume Analyzer & ATS Optimizer (Module 1)
  */
@@ -131,7 +144,7 @@ async function submitResumeAnalysis() {
         let data;
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.indexOf("application/json") !== -1) {
-            data = await response.json();
+            data = await safeJsonFetch(response);
         } else {
             const textResponse = await response.text();
             throw new Error(`Server returned a non-JSON error (Status ${response.status}). This usually happens if the file is too large or the server timed out.`);

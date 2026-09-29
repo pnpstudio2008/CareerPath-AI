@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Alumni Experience Portal (Module 4)
  */
@@ -22,7 +35,7 @@ async function fetchAlumniExperiences() {
         });
 
         const res = await fetch(`/api/alumni/experiences?${queryParams.toString()}`);
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
 
         if (!data.success || !data.experiences || data.experiences.length === 0) {
             feed.innerHTML = `
@@ -371,7 +384,7 @@ function trackLinkedInOutreach(seniorName, company, seniorEmail) {
 async function upvoteExperience(expId, btn) {
     try {
         const res = await fetch(`/api/alumni/upvote/${expId}`, { method: 'POST' });
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.success) {
             const countEl = (btn && (btn.querySelector('#alumni-detail-upvote-count') || btn.querySelector('.upvote-count') || btn.querySelector('span'))) || document.getElementById('alumni-detail-upvote-count');
             if (countEl) {

@@ -737,7 +737,21 @@
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script>
+    
+<script>
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+</script>
+<script>
         document.addEventListener('DOMContentLoaded', () => {
             renderAlumniChart();
             loadAlumniQuestions();
@@ -829,7 +843,7 @@
 
             try {
                 const res = await fetch('/api/alumni/questions');
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (!data.success || !data.questions || data.questions.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-muted"><i class="fa-solid fa-lightbulb"></i> You have not contributed any questions yet. Click "+ Contribute Question" above to help ongoing students.</td></tr>';
                     return;
@@ -908,7 +922,7 @@
                     body: JSON.stringify(payload)
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (!res.ok || !data.success) {
                     showToast(data.error || 'Failed to publish question.', 'error');
                     return;
@@ -930,7 +944,7 @@
 
             try {
                 const res = await fetch(`/api/alumni/questions/delete/${questionId}`, { method: 'DELETE' });
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (data.success) {
                     showToast(data.message || 'Question deleted.', 'success');
                     loadAlumniQuestions();

@@ -1,3 +1,16 @@
+
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+
 /**
  * AI Career Companion - Resume-Job Matcher & Skill Gap Analyzer (Module 2)
  */
@@ -11,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchJobProfiles() {
     try {
         const res = await fetch('/api/jobs');
-        const data = await res.json();
+        const data = await safeJsonFetch(res);
         if (data.success) {
             cachedJobProfiles = data.jobs;
         }
@@ -86,7 +99,7 @@ async function submitJobMatching() {
             body: JSON.stringify({ resume_text: resumeText, jd_text: jdText })
         });
 
-        const data = await response.json();
+        const data = await safeJsonFetch(response);
         matchBtn.innerHTML = '<i class="fa-solid fa-crosshairs"></i> Run Resume–Job Matching Engine';
         matchBtn.disabled = false;
 

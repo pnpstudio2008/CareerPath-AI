@@ -792,7 +792,21 @@
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script>
+    
+<script>
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+</script>
+<script>
         let currentStudent = null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -807,7 +821,7 @@
                     window.location.href = '/student/login';
                     return;
                 }
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (data.success && data.student) {
                     currentStudent = data.student;
                     renderStudentProfile(currentStudent);
@@ -884,7 +898,7 @@
                     body: JSON.stringify({ phone, target_company, password })
                 });
 
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 if (data.success) {
                     showToast('Profile updated successfully!', 'success');
                     document.getElementById('edit-profile-modal-backdrop').classList.remove('active');
@@ -927,7 +941,7 @@
             try {
                 const params = new URLSearchParams({ subject: skill, company: company, difficulty: difficulty, alumni: alumni, limit: 20 });
                 const res = await fetch(`/api/student/alumni-questions?${params.toString()}`);
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
 
                 if (data.alumni_list && data.alumni_list.length > 0) {
                     updateStudentAlumniFilterOptions(data.alumni_list);

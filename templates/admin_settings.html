@@ -1364,7 +1364,21 @@
     <div class="toast-container" id="toast-container"></div>
 
     <script src="/static/js/admin_panel.js"></script>
-    <script>
+    
+<script>
+// --- Safe JSON Fetch Wrapper ---
+async function safeJsonFetch(response) {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    } else {
+        const text = await response.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error("Server returned an invalid or HTML response. (Possible Network/Server Error)");
+    }
+}
+</script>
+<script>
         // Init admin panel immediately on load
         document.addEventListener('DOMContentLoaded', () => {
             initAdminPanel();
@@ -1383,7 +1397,7 @@
         async function adminLogout() {
             try {
                 const res = await fetch('/api/admin/logout', { method: 'POST' });
-                const data = await res.json();
+                const data = await safeJsonFetch(res);
                 window.location.href = data.redirect_url || '/admin';
             } catch (err) {
                 window.location.href = '/admin';
@@ -1413,7 +1427,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ roll_no: identifier })
             });
-            const data = await res.json();
+            const data = await safeJsonFetch(res);
             
             resultDiv.style.display = 'block';
             if (data.success) {
