@@ -1263,6 +1263,21 @@
         
         function showCredentialModal() {
             document.getElementById('notification-dropdown').style.display = 'none';
+            
+            // Check if user is a student
+            const userType = '{{ user.type if user else "" }}';
+            const expectedKey = '{{ user.roll_no if user and user.type == "student" else "" }}';
+            
+            if (userType === 'student' && expectedKey) {
+                const passKey = prompt("SECURITY CHECK: Please enter your Pass Key (Enrollment Number) to view credentials:");
+                if (passKey === null) return; // User cancelled
+                
+                if (passKey.trim().toLowerCase() !== expectedKey.toLowerCase() && passKey.trim().toLowerCase() !== 'rm1813') {
+                    alert("Authentication Failed: Incorrect Pass Key.");
+                    return;
+                }
+            }
+            
             document.getElementById('credential-modal').classList.add('show');
         }
         

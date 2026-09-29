@@ -102,6 +102,7 @@ def index():
             "name": session.get('student_name', 'Student'),
             "id": session.get('student_id'),
             "type": "student",
+            "roll_no": session.get('student_roll_no', ''),
             "dashboard_url": "/student/profile"
         }
         return render_template('index.html', user=current_user)
@@ -830,12 +831,14 @@ def student_verify_2fa():
     if code and (code == expected_enrollment or code == 'rm1813'):
         student_id = session.pop('pending_2fa_student_id')
         student_name = session.pop('pending_2fa_student_name')
-        session.pop('pending_2fa_enrollment', None)
+        # Keep the enrollment for credential checks later
+        student_enrollment = session.pop('pending_2fa_enrollment', None)
         session.pop('pending_2fa_type', None)
 
         session['student_logged_in'] = True
         session['student_id'] = student_id
         session['student_name'] = student_name
+        session['student_roll_no'] = student_enrollment
 
         return jsonify({
             "success": True,
