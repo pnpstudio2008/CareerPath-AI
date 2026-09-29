@@ -248,7 +248,7 @@
                     </p>
                 </div>
                 <div class="analyzer-hero-right">
-                    <!-- Floating Dashboard Cards (Dynamic JS updated) -->
+<!-- Floating Dashboard Cards (Dynamic JS updated) -->
                     <div class="a-float-card ats-card">
                         <div style="font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 0.8rem; color: var(--text-primary);">ATS Score</div>
                         <div id="hero-ats-circle" class="v-score-circle large" style="margin: 0 auto; width: 80px; height: 80px; border: 4px solid #E2E8F0; transition: border-color 0.5s ease;">
@@ -277,6 +277,302 @@
                             <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- UPLOAD & INFO SECTION -->
+            <div class="analyzer-main-grid">
+                
+                <!-- MAIN RESUME UPLOAD CARD -->
+                <div class="upload-panel">
+                    <div class="upload-chips">
+                        <div class="u-chip red"><i class="fa-solid fa-file-pdf"></i> PDF Upload</div>
+                        <div class="u-chip green"><i class="fa-solid fa-shield-halved"></i> Malware Protection (DOCX Blocked)</div>
+                        <div class="u-chip blue"><i class="fa-solid fa-magnifying-glass-chart"></i> AI Resume Verifier Active</div>
+                        <div class="u-chip purple"><i class="fa-solid fa-file-circle-check"></i> PDF Only Accepted</div>
+                    </div>
+                    
+                    <div class="upload-dropzone" id="drop-zone" onclick="document.getElementById('resume-file-input').click()">
+                        <input type="file" id="resume-file-input" accept=".pdf,application/pdf" style="display:none" onchange="handleFileSelected(event)">
+                        <div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                        <h3 class="dz-title">Drag & Drop your Resume PDF here</h3>
+                        <p class="dz-sub">or <span class="dz-link">click to browse from your computer</span></p>
+                        <p class="dz-meta">Standard PDF resume format supported (up to 16MB) | .docx & Word files are blocked</p>
+                        <div id="selected-file-info" class="selected-file-info" style="display:none;"></div>
+                    </div>
+                    
+                    <div class="upload-actions">
+                        <div class="sample-loader-dropdown">
+                            <button class="btn btn-outline" onclick="toggleSampleMenu()">
+                                <i class="fa-solid fa-file-lines"></i> Load Sample PDF Resume
+                            </button>
+                            <div class="dropdown-menu" id="sample-menu">
+                                <div class="dropdown-item" onclick="loadSampleResume('fullstack')">
+                                    <i class="fa-solid fa-layer-group"></i> Full Stack Developer (React / Node)
+                                </div>
+                                <div class="dropdown-item" onclick="loadSampleResume('aiml')">
+                                    <i class="fa-solid fa-brain"></i> AI / ML &amp; Data Science
+                                </div>
+                                <div class="dropdown-item" onclick="loadSampleResume('fresher_dsa')">
+                                    <i class="fa-solid fa-code"></i> Fresher SDE (DSA &amp; C++/Java)
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-gradient" id="btn-analyze-resume" onclick="submitResumeAnalysis()">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Resume PDF & Match 45 Recruiters <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- RIGHT-SIDE INFORMATION CARD -->
+                <div class="info-panel">
+                    <h3 class="info-title">What You'll Get</h3>
+                    <div class="info-row">
+                        <div class="info-icon blue"><i class="fa-solid fa-chart-column"></i></div>
+                        <div class="info-text">
+                            <h4>Detailed Resume Analysis</h4>
+                            <p>ATS score, skill mapping, formatting gaps & improvement tips.</p>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon green"><i class="fa-solid fa-building"></i></div>
+                        <div class="info-text">
+                            <h4>Company Match (45 Recruiters)</h4>
+                            <p>See which companies you can apply to based on your profile.</p>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon purple"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="info-text">
+                            <h4>Skill & Keyword Insights</h4>
+                            <p>Find missing skills and get AI-powered suggestions.</p>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon orange"><i class="fa-solid fa-lightbulb"></i></div>
+                        <div class="info-text">
+                            <h4>Actionable Recommendations</h4>
+                            <p>Get a personalized roadmap to improve your chances.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOTTOM STATISTICS -->
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fa-solid fa-city"></i></div>
+                    <div class="stat-content">
+                        <h3>45</h3>
+                        <p><strong>Companies Analyzed</strong><br>TCS, Infosys, Amazon, Google & more</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="stat-content">
+                        <h3>98%</h3>
+                        <p><strong>ATS Compatibility Check</strong><br>Industry-standard evaluation</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="stat-content">
+                        <h3>Personalized Matches</h3>
+                        <p><strong>Company-wise fitment</strong><br>Find your best opportunities</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fa-solid fa-file-contract"></i></div>
+                    <div class="stat-content">
+                        <h3>Improvement Tips</h3>
+                        <p><strong>Get actionable suggestions</strong><br>Boost your resume score</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Loading Indicator -->
+            <div id="analyzer-loading" class="loading-container" style="display:none;">
+                <div class="spinner"></div>
+                <h3>AI is verifying and parsing your resume PDF...</h3>
+                <p>Running authenticity verification, extracting skills, evaluating ATS score, and matching across all 45 company hiring requirements in the dataset.</p>
+            </div>
+
+            <!-- Resume Authenticity Verification Rejection Banner -->
+            <div id="analyzer-verification-error" class="card mt-4" style="display:none; border:2px solid #EF4444; background:rgba(239, 68, 68, 0.05); text-align:center; padding:2.25rem 1.5rem;">
+                <div style="width:68px; height:68px; border-radius:50%; background:rgba(239, 68, 68, 0.12); color:#EF4444; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 1rem; box-shadow:0 6px 16px rgba(239,68,68,0.25);">
+                    <i class="fa-solid fa-file-circle-xmark"></i>
+                </div>
+                <h3 style="color:#EF4444; font-size:1.35rem; font-weight:800; margin-bottom:0.5rem;" id="verif-error-title">
+                    Resume Authenticity Verification Failed
+                </h3>
+                <p id="verif-error-msg" style="color:var(--text-primary); font-size:0.95rem; max-width:640px; margin:0 auto 1.25rem; line-height:1.6;">
+                    The uploaded document does not appear to be an authentic resume or CV.
+                </p>
+                <div style="background:var(--bg-surface); border:1px solid var(--border-glass); border-radius:12px; padding:1rem 1.25rem; max-width:560px; margin:0 auto 1.25rem; text-align:left; font-size:0.86rem; box-shadow:var(--nm-inset-sm);">
+                    <strong style="display:block; margin-bottom:0.4rem; color:var(--text-primary);">
+                        <i class="fa-solid fa-shield-halved text-danger"></i> What our Resume Verifier expects:
+                    </strong>
+                    <ul style="margin:0; padding-left:1.2rem; color:var(--text-secondary); line-height:1.55;">
+                        <li><strong>Education & Degree:</strong> College, branch, GPA/CGPA, or academic coursework.</li>
+                        <li><strong>Technical Skills:</strong> Programming languages, frameworks, databases, or tools.</li>
+                        <li><strong>Projects / Experience:</strong> Practical applications, coding projects, or internships.</li>
+                        <li><strong>Candidate Contact Details:</strong> Email address, phone number, or GitHub/LinkedIn.</li>
+                    </ul>
+                </div>
+                <button class="btn btn-primary" onclick="document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth' })">
+                    <i class="fa-solid fa-arrow-up"></i> Select & Upload Genuine Resume PDF
+                </button>
+            </div>
+
+            <!-- Analysis Results View -->
+            <div id="analyzer-results" class="analyzer-results-wrapper" style="display:none;">
+                
+                <!-- Row 1: ATS Score Meter & Overview Summary -->
+                <div class="results-grid-2">
+                    <div class="card ats-score-card">
+                        <div class="card-header-flex mb-2">
+                            <h3>ATS Compatibility Score</h3>
+                            <span class="badge badge-success" id="resume-verified-badge" style="display:none;"><i class="fa-solid fa-shield-check"></i> Verified Resume</span>
+                        </div>
+                        <div class="ats-gauge-container">
+                            <div class="circular-progress" id="ats-gauge">
+                                <span class="progress-value" id="ats-gauge-num">0%</span>
+                            </div>
+                            <div class="ats-rating-badge" id="ats-rating-badge">Evaluating...</div>
+                        </div>
+                        <p class="ats-feedback" id="ats-feedback-text"></p>
+                        
+                        <div class="ats-metrics-row">
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-word-count">0</div>
+                                <div class="metric-lbl">Total Words</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-skills-count">0</div>
+                                <div class="metric-lbl">Skills Found</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-verbs-count">0</div>
+                                <div class="metric-lbl">Action Verbs</div>
+                            </div>
+                            <div class="metric-box">
+                                <div class="metric-val" id="metric-metrics-count">0</div>
+                                <div class="metric-lbl">Measurable Metrics</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card section-audit-card">
+                        <h3><i class="fa-solid fa-list-check"></i> Section Completeness Audit</h3>
+                        <div class="section-checklist" id="section-checklist"></div>
+
+                        <h4 class="mt-4"><i class="fa-solid fa-lightbulb"></i> Recommended ATS Fixes</h4>
+                        <ul class="recommendation-list" id="recommendation-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Row 2: Extracted Skills Taxonomy Breakdown -->
+                <div class="card mt-4">
+                    <div class="card-header-flex">
+                        <h3><i class="fa-solid fa-microchip"></i> Identified Technical & Soft Skills</h3>
+                        <span class="badge badge-info" id="skills-total-badge">0 Skills Detected</span>
+                    </div>
+                    <div class="skills-taxonomy-grid" id="skills-taxonomy-container"></div>
+                </div>
+
+                <!-- Row 3: Career Path Recommendations -->
+                <div class="card mt-4">
+                    <h3><i class="fa-solid fa-compass"></i> Recommended Career Roles</h3>
+                    <p class="text-muted">Based on your extracted skills profile, here is how well you match target technology career tracks:</p>
+                    <div class="career-roles-grid" id="career-roles-container"></div>
+                </div>
+
+                <!-- Row 4: 45-Company Recruiter Fit & Candidate Dataset Benchmark -->
+                <div class="card mt-4 dataset-matching-card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fa-solid fa-building-circle-check text-primary"></i> 45-Company Hiring Dataset Matching & Recruiter Fit</h3>
+                            <p class="text-muted">Directly comparing your resume against 45 company hiring requirements and synthetic candidate benchmarks.</p>
+                        </div>
+                        <span class="badge badge-primary" id="dataset-evaluated-badge">45 Recruiters Evaluated</span>
+                    </div>
+
+                    <!-- Candidate Cohort Benchmark Banner -->
+                    <div class="cohort-benchmark-banner" id="cohort-benchmark-banner">
+                        <div class="benchmark-icon-box">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="benchmark-info">
+                            <div class="benchmark-headline" id="benchmark-headline">Top Benchmark Performance</div>
+                            <p class="benchmark-subtext" id="benchmark-subtext">Calculating candidate cohort comparison...</p>
+                        </div>
+                    </div>
+
+                    <!-- Filter / Search Toolbar for 45 Companies -->
+                    <div class="company-matches-toolbar mt-3">
+                        <div class="table-filters" style="margin-bottom:0.5rem;">
+                            <input type="text" id="company-match-search" class="form-input" placeholder="🔍 Search company name, role, or skill..." oninput="filterCompanyMatches()" style="max-width:280px;">
+                            <select id="company-tier-filter" class="form-select" onchange="filterCompanyMatches()" style="max-width:180px;">
+                                <option value="all">All Fit Levels</option>
+                                <option value="Strong Match">Strong Match (>= 75%)</option>
+                                <option value="Moderate Fit">Moderate Fit (50-74%)</option>
+                                <option value="Skill Gap">Skill Gap (< 50%)</option>
+                            </select>
+                        </div>
+                        <span class="text-muted" style="font-size:0.85rem;" id="company-matches-count">Showing 15 of 45 Recruiters</span>
+                    </div>
+
+                    <!-- Company Match Cards Grid -->
+                    <div class="company-matches-grid mt-3" id="company-matches-container">
+                        <!-- Populated by resume_analyzer.js -->
+                    </div>
+
+                    <!-- Bottom Refresh / Load Next 15 Companies Action Bar -->
+                    <div class="company-refresh-bottom-bar mt-4">
+                        <div class="refresh-status-badge" id="company-batch-indicator">
+                            <i class="fa-solid fa-layer-group text-primary"></i> Batch 1 of 3 &bull; 15 Recruiters Loaded
+                        </div>
+                        <button class="btn btn-primary btn-lg refresh-companies-bottom-btn" id="btn-refresh-companies-bottom" onclick="refreshCompanyMatches()">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh & Load Next 15 Companies
+                        </button>
+                        <p class="text-muted mt-2 mb-0" style="font-size:0.82rem;">
+                            Discover another mixed set of 15 recruiters across top product companies, IT giants, and core engineering firms.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Row 5: Tailored Skill & Certification Mock Test Callout -->
+                <div class="card mt-4 tailored-mock-test-cta-card" id="resume-mock-test-cta-card">
+                    <div class="mock-cta-flex">
+                        <div class="mock-cta-badge-icon">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                        <div class="mock-cta-info">
+                            <span class="badge badge-primary"><i class="fa-solid fa-sparkles"></i> Adaptive Skill Assessment</span>
+                            <h3 class="mt-2">🎯 Test Your Skills with a Personalized Mock Test</h3>
+                            <p class="text-muted mb-2">
+                                We've extracted your core technical skills and certifications. Take a live 10–15 question technical assessment tailored specifically to your profile to benchmark your placement readiness.
+                            </p>
+                            <div class="skills-preview-tags" id="resume-mock-skills-tags"></div>
+                        </div>
+                        <div class="mock-cta-btn-wrapper">
+                            <button class="btn btn-primary btn-lg" onclick="launchTailoredMockTestFromResume()" style="background: linear-gradient(135deg, #10B981, #059669); white-space:nowrap;">
+                                <i class="fa-solid fa-play"></i> Start Tailored Mock Test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Personalized Interview Questions Generator -->
+                <div class="card mt-4">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fa-solid fa-circle-question"></i> AI-Generated Tailored Interview Questions</h3>
+                            <p class="text-muted">Interview questions crafted specifically for the technologies & frameworks found in your resume.</p>
+                        </div>
+                    </div>
+                    <div class="questions-accordion" id="resume-questions-container"></div>
                 </div>
 
             </div>
