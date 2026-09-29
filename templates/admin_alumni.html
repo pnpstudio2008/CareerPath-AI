@@ -843,8 +843,8 @@
             </a>
         </div>
         <div class="admin-nav-center">
-            <a href="/admin" class="admin-nav-link active"><i data-lucide="layout-dashboard"></i> Cohort Management</a>
-            <a href="/admin/alumni" class="admin-nav-link"><i data-lucide="users"></i> Alumni Records</a>
+            <a href="/admin" class="admin-nav-link"><i data-lucide="layout-dashboard"></i> Cohort Management</a>
+            <a href="/admin/alumni" class="admin-nav-link active"><i data-lucide="users"></i> Alumni Records</a>
             <a href="#" class="admin-nav-link"><i data-lucide="bar-chart-3"></i> Placement Analytics</a>
             <a href="#" class="admin-nav-link"><i data-lucide="message-square"></i> Messages</a>
             <a href="/admin/settings" class="admin-nav-link"><i data-lucide="settings"></i> Settings</a>
@@ -874,8 +874,8 @@
                     <div class="admin-badge">
                         <i data-lucide="settings" style="width:14px;height:14px;"></i> Master Administration Console
                     </div>
-                    <h1 class="admin-hero-title">Cohort & <span>Placement Management</span></h1>
-                    <p class="admin-hero-desc">Manage student cohorts, track real-time placement progress, and supervise alumni records & verified mentors.</p>
+                    <h1 class="admin-hero-title">Alumni <span>Records & Placements</span></h1>
+                    <p class="admin-hero-desc">Manage verified alumni accounts, placement stories, and mentorship network.</p>
                 </div>
                 <div class="admin-hero-right">
                     <div class="admin-mini-chart-card">
@@ -938,60 +938,29 @@
                 <div class="admin-panel-header">
                     <div class="admin-tabs">
                         <h3 style="margin:0; font-size: 1.1rem; color: var(--admin-text-main); font-weight: 700;">
-                            <i data-lucide="graduation-cap" style="vertical-align:middle; margin-right:8px; color:var(--admin-primary);"></i> Student Cohort
+                            <i data-lucide="users" style="vertical-align:middle; margin-right:8px; color:var(--admin-purple);"></i> Alumni Records
                         </h3>
                     </div>
-                    <button class="admin-btn-primary" onclick="openCreateStudentLoginModal()" id="btn-add-student">
-                        <i data-lucide="plus"></i> Add Ongoing Student
+                    <button class="admin-btn-primary" onclick="openAdminAddExperienceModal()" style="background: linear-gradient(135deg, var(--admin-purple), var(--admin-primary));">
+                        <i data-lucide="plus"></i> Add Placement Record
                     </button>
                 </div>
 
-                <div class="admin-filter-bar">
-                    <div class="admin-search-wrapper">
-                        <i data-lucide="search"></i>
-                        <input type="text" class="admin-search-input" id="admin-student-search" placeholder="Search student name, roll no, or email..." oninput="fetchAdminStudents()">
-                    </div>
-                    <select class="admin-select" id="admin-branch-filter" onchange="fetchAdminStudents()">
-                        <option value="all">All Branches</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="IT">IT</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Mechanical">Mechanical</option>
-                    </select>
-                    <select class="admin-select" id="admin-status-filter" onchange="fetchAdminStudents()">
-                        <option value="all">All Placement Status</option>
-                        <option value="Placed">Placed</option>
-                        <option value="Interviewing">Interviewing</option>
-                        <option value="Not Placed">Not Placed</option>
-                    </select>
-                    <select class="admin-select" id="admin-readiness-filter" onchange="fetchAdminStudents()">
-                        <option value="all">All Readiness</option>
-                        <option value="Ready">Ready</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Needs Improvement">Needs Improvement</option>
-                    </select>
-                    <button class="admin-btn-outline" onclick="document.getElementById('admin-student-search').value=''; document.getElementById('admin-branch-filter').value='all'; document.getElementById('admin-status-filter').value='all'; document.getElementById('admin-readiness-filter').value='all'; fetchAdminStudents();">
-                        <i data-lucide="rotate-ccw"></i> Reset Filters
-                    </button>
-                </div>
-
-                <!-- Student Table -->
-                <div class="admin-table-wrapper" id="students-view">
+                <!-- Alumni Table (Hidden by default) -->
+                <div class="admin-table-wrapper" id="alumni-view">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                
-                                <th>STUDENT & EMAIL</th>
-                                <th>ROLL NO.</th>
-                                <th>BRANCH / BATCH</th>
-                                <th>ATS SCORE <i data-lucide="chevron-down" style="width:12px;height:12px;display:inline;"></i></th>
-                                <th>READINESS</th>
-                                <th>PRACTICE TESTS</th>
-                                <th>PLACEMENT STATUS</th>
+                                <th>ALUMNI MENTOR</th>
+                                <th>EMAIL</th>
+                                <th>COMPANY</th>
+                                <th>ROLE</th>
+                                <th>PACKAGE</th>
+                                <th>UPVOTES</th>
                                 <th>ACTIONS</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-students-tbody">
+                        <tbody id="admin-alumni-tbody">
                             <!-- Populated by JS -->
                         </tbody>
                     </table>
@@ -1471,5 +1440,13 @@
             }
         }
     </script>
-<script>if (typeof lucide !== 'undefined') lucide.createIcons();</script></body>
+<script>if (typeof lucide !== 'undefined') lucide.createIcons();</script><script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Override the default fetch
+        setTimeout(() => {
+            fetchAdminAlumni();
+            fetchAdminStats();
+        }, 100);
+    });
+</script></body>
 </html>

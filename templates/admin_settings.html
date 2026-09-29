@@ -843,11 +843,11 @@
             </a>
         </div>
         <div class="admin-nav-center">
-            <a href="/admin" class="admin-nav-link active"><i data-lucide="layout-dashboard"></i> Cohort Management</a>
+            <a href="/admin" class="admin-nav-link"><i data-lucide="layout-dashboard"></i> Cohort Management</a>
             <a href="/admin/alumni" class="admin-nav-link"><i data-lucide="users"></i> Alumni Records</a>
             <a href="#" class="admin-nav-link"><i data-lucide="bar-chart-3"></i> Placement Analytics</a>
             <a href="#" class="admin-nav-link"><i data-lucide="message-square"></i> Messages</a>
-            <a href="/admin/settings" class="admin-nav-link"><i data-lucide="settings"></i> Settings</a>
+            <a href="/admin/settings" class="admin-nav-link active"><i data-lucide="settings"></i> Settings</a>
         </div>
         <div class="admin-nav-right">
             <div class="admin-nav-icon">
@@ -874,8 +874,8 @@
                     <div class="admin-badge">
                         <i data-lucide="settings" style="width:14px;height:14px;"></i> Master Administration Console
                     </div>
-                    <h1 class="admin-hero-title">Cohort & <span>Placement Management</span></h1>
-                    <p class="admin-hero-desc">Manage student cohorts, track real-time placement progress, and supervise alumni records & verified mentors.</p>
+                    <h1 class="admin-hero-title">Platform <span>Settings & Security</span></h1>
+                    <p class="admin-hero-desc">Configure system settings, manage access control, and enforce security policies.</p>
                 </div>
                 <div class="admin-hero-right">
                     <div class="admin-mini-chart-card">
@@ -897,118 +897,37 @@
                 </div>
             </div>
 
-            <!-- METRICS -->
-            <div class="admin-metrics-grid">
-                <div class="admin-metric-card">
-                    <div class="am-icon blue"><i data-lucide="users"></i></div>
-                    <div class="am-content">
-                        <div class="am-title">Total Cohort Students</div>
-                        <div class="am-value" id="admin-stat-students">--</div>
-                        <div class="am-trend positive"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +0%</div>
-                    </div>
-                </div>
-                <div class="admin-metric-card">
-                    <div class="am-icon purple"><i data-lucide="briefcase"></i></div>
-                    <div class="am-content">
-                        <div class="am-title">Successfully Placed</div>
-                        <div class="am-value" id="admin-stat-placed">--</div>
-                        <div class="am-trend positive"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +0%</div>
-                    </div>
-                </div>
-                <div class="admin-metric-card">
-                    <div class="am-icon green"><i data-lucide="file-text"></i></div>
-                    <div class="am-content">
-                        <div class="am-title">Average ATS Score</div>
-                        <div class="am-value" id="admin-stat-ats">--</div>
-                        <div class="am-trend positive"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +0%</div>
-                    </div>
-                </div>
-                <div class="admin-metric-card">
-                    <div class="am-icon orange"><i data-lucide="users"></i></div>
-                    <div class="am-content">
-                        <div class="am-title">Alumni Mentors</div>
-                        <div class="am-value" id="admin-stat-alumni">--</div>
-                        <div class="am-trend positive"><i data-lucide="trending-up" style="width:12px;height:12px;"></i> +0%</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- MANAGEMENT PANEL -->
-            <div class="admin-panel-container">
+            <div class="admin-panel-container" style="max-width: 800px; margin: 0 auto;">
                 <div class="admin-panel-header">
                     <div class="admin-tabs">
                         <h3 style="margin:0; font-size: 1.1rem; color: var(--admin-text-main); font-weight: 700;">
-                            <i data-lucide="graduation-cap" style="vertical-align:middle; margin-right:8px; color:var(--admin-primary);"></i> Student Cohort
+                            <i data-lucide="shield" style="vertical-align:middle; margin-right:8px; color:var(--admin-primary);"></i> Access Control
                         </h3>
                     </div>
-                    <button class="admin-btn-primary" onclick="openCreateStudentLoginModal()" id="btn-add-student">
-                        <i data-lucide="plus"></i> Add Ongoing Student
-                    </button>
                 </div>
 
-                <div class="admin-filter-bar">
-                    <div class="admin-search-wrapper">
-                        <i data-lucide="search"></i>
-                        <input type="text" class="admin-search-input" id="admin-student-search" placeholder="Search student name, roll no, or email..." oninput="fetchAdminStudents()">
+                <div style="padding: 2rem;">
+                    <h4 style="margin-top:0; margin-bottom:1rem; font-size:1rem;">Student Account Freeze</h4>
+                    <p style="color: var(--admin-text-muted); font-size:0.875rem; margin-bottom:1.5rem; line-height:1.5;">
+                        Freeze an ongoing student's account to instantly revoke their login access to the platform. 
+                        They will not be able to log in until an administrator unfreezes the account.
+                    </p>
+
+                    <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                        <div style="flex:1;">
+                            <label style="display:block; font-size:0.75rem; font-weight:600; color:var(--admin-text-muted); margin-bottom:0.5rem; text-transform:uppercase;">Student ID / Roll No</label>
+                            <input type="text" id="freeze-student-id" class="admin-search-input" placeholder="e.g. 24C11018" style="padding-left: 1rem;">
+                        </div>
+                        <button class="admin-btn-primary" onclick="toggleFreeze()" id="btn-freeze-student" style="background: #EF4444; box-shadow: 0 4px 6px -1px rgba(239,68,68,0.2);">
+                            <i data-lucide="lock"></i> Toggle Freeze Status
+                        </button>
                     </div>
-                    <select class="admin-select" id="admin-branch-filter" onchange="fetchAdminStudents()">
-                        <option value="all">All Branches</option>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="IT">IT</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Mechanical">Mechanical</option>
-                    </select>
-                    <select class="admin-select" id="admin-status-filter" onchange="fetchAdminStudents()">
-                        <option value="all">All Placement Status</option>
-                        <option value="Placed">Placed</option>
-                        <option value="Interviewing">Interviewing</option>
-                        <option value="Not Placed">Not Placed</option>
-                    </select>
-                    <select class="admin-select" id="admin-readiness-filter" onchange="fetchAdminStudents()">
-                        <option value="all">All Readiness</option>
-                        <option value="Ready">Ready</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Needs Improvement">Needs Improvement</option>
-                    </select>
-                    <button class="admin-btn-outline" onclick="document.getElementById('admin-student-search').value=''; document.getElementById('admin-branch-filter').value='all'; document.getElementById('admin-status-filter').value='all'; document.getElementById('admin-readiness-filter').value='all'; fetchAdminStudents();">
-                        <i data-lucide="rotate-ccw"></i> Reset Filters
-                    </button>
+                    
+                    <div id="freeze-result" style="margin-top: 1.5rem; padding: 1rem; border-radius: 12px; display: none; font-size: 0.875rem; font-weight: 500;"></div>
                 </div>
-
-                <!-- Student Table -->
-                <div class="admin-table-wrapper" id="students-view">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                
-                                <th>STUDENT & EMAIL</th>
-                                <th>ROLL NO.</th>
-                                <th>BRANCH / BATCH</th>
-                                <th>ATS SCORE <i data-lucide="chevron-down" style="width:12px;height:12px;display:inline;"></i></th>
-                                <th>READINESS</th>
-                                <th>PRACTICE TESTS</th>
-                                <th>PLACEMENT STATUS</th>
-                                <th>ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-students-tbody">
-                            <!-- Populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="admin-pagination">
-                    <div class="pagination-info">Showing <span id="pagination-count">0</span> records</div>
-                    <div class="pagination-controls">
-                        <button class="page-btn"><i data-lucide="chevron-left"></i></button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn"><i data-lucide="chevron-right"></i></button>
-                    </div>
-                </div>
-
             </div>
-        </main>
+            </main>
     </div>
 
     <!-- Scripts and Modals injection point -->
@@ -1471,5 +1390,49 @@
             }
         }
     </script>
-<script>if (typeof lucide !== 'undefined') lucide.createIcons();</script></body>
+<script>if (typeof lucide !== 'undefined') lucide.createIcons();</script><script>
+    async function toggleFreeze() {
+        const identifier = document.getElementById('freeze-student-id').value.trim();
+        const resultDiv = document.getElementById('freeze-result');
+        
+        if (!identifier) {
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#FEF2F2';
+            resultDiv.style.color = '#EF4444';
+            resultDiv.innerText = 'Please enter a Student ID or Roll No.';
+            return;
+        }
+
+        try {
+            // First we need to find the student ID from roll_no...
+            // Or we can modify our API endpoint to accept roll_no too!
+            // Wait, since we are doing it via a new API endpoint, let's create a specific one for this.
+            
+            const res = await fetch('/api/admin/students/toggle-freeze-by-roll', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ roll_no: identifier })
+            });
+            const data = await res.json();
+            
+            resultDiv.style.display = 'block';
+            if (data.success) {
+                resultDiv.style.backgroundColor = '#F0FDF4';
+                resultDiv.style.color = '#10B981';
+                resultDiv.innerHTML = `<i data-lucide="check-circle" style="vertical-align:middle; width:16px; height:16px;"></i> ${data.message}`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } else {
+                resultDiv.style.backgroundColor = '#FEF2F2';
+                resultDiv.style.color = '#EF4444';
+                resultDiv.innerHTML = `<i data-lucide="alert-circle" style="vertical-align:middle; width:16px; height:16px;"></i> ${data.error}`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        } catch (err) {
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = '#FEF2F2';
+            resultDiv.style.color = '#EF4444';
+            resultDiv.innerText = 'Network error occurred.';
+        }
+    }
+</script></body>
 </html>

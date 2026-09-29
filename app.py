@@ -792,6 +792,11 @@ def student_auth_login():
 
     student = authenticate_student(identifier, password)
     if student:
+        if student.get("account_status", "Active") == "Frozen":
+            return jsonify({
+                "success": False,
+                "error": "Your account has been frozen by the Administrator. Please contact support."
+            })
         session['pending_2fa_type'] = 'student'
         session['pending_2fa_student_id'] = student['id']
         session['pending_2fa_student_name'] = student['name']
@@ -1122,6 +1127,84 @@ def admin_portal():
     if session.get('admin_logged_in'):
         return render_template('admin.html', admin_user=session.get('admin_user', 'Administrator'))
     return render_template('admin_login.html')
+
+@app.route('/admin/alumni', methods=['GET'])
+def admin_alumni_portal():
+    """Renders the Admin Alumni Records page."""
+    if session.get('admin_logged_in'):
+        return render_template('admin_alumni.html', admin_user=session.get('admin_user', 'Administrator'))
+    return redirect(url_for('admin_portal'))
+
+@app.route('/admin/settings', methods=['GET'])
+def admin_settings_portal():
+    """Renders the Admin Settings page (for freezing accounts, etc.)."""
+    if session.get('admin_logged_in'):
+        return render_template('admin_settings.html', admin_user=session.get('admin_user', 'Administrator'))
+    return redirect(url_for('admin_portal'))
+
+@app.route('/api/admin/students/toggle-freeze-by-roll', methods=['POST'])
+@admin_required
+def toggle_freeze_student_by_roll():
+    """Admin toggles the freeze status of a student account by roll_no."""
+    try:
+        data = request.json or request.form.to_dict()
+        roll_no = data.get('roll_no', '').strip().lower()
+        if not roll_no:
+            return jsonify({"success": False, "error": "Roll number is required."})
+            
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT id, name, account_status FROM students WHERE LOWER(roll_no) = ?", (roll_no,))
+        row = cursor.fetchone()
+        
+        if not row:
+            conn.close()
+            return jsonify({"success": False, "error": f"Student with roll number '{roll_no}' not found."})
+            
+        current_status = dict(row).get('account_status', 'Active')
+        new_status = 'Frozen' if current_status != 'Frozen' else 'Active'
+        
+        cursor.execute("UPDATE students SET account_status = ? WHERE id = ?", (new_status, row['id']))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            "success": True, 
+            "message": f"Account for {row['name']} ({roll_no.upper()}) is now {new_status}.",
+            "new_status": new_status
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+@app.route('/api/admin/students/toggle-freeze/<int:student_id>', methods=['POST'])
+@admin_required
+def toggle_freeze_student(student_id):
+    """Admin toggles the freeze status of a student account."""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT account_status FROM students WHERE id = ?", (student_id,))
+        row = cursor.fetchone()
+        
+        if not row:
+            return jsonify({"success": False, "error": "Student not found."})
+            
+        current_status = dict(row).get('account_status', 'Active')
+        new_status = 'Frozen' if current_status != 'Frozen' else 'Active'
+        
+        cursor.execute("UPDATE students SET account_status = ? WHERE id = ?", (new_status, student_id))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            "success": True, 
+            "message": f"Student account is now {new_status}.",
+            "new_status": new_status
+        })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
 
 
 @app.route('/api/admin/login', methods=['POST'])
