@@ -79,13 +79,34 @@ function initAdminPanel() {
 function switchAdminTab(tabName) {
     currentAdminTab = tabName;
 
-    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tabName);
-    });
+    // Handle new design
+    const tabStudents = document.getElementById('tab-students');
+    const tabAlumni = document.getElementById('tab-alumni');
+    const viewStudents = document.getElementById('students-view');
+    const viewAlumni = document.getElementById('alumni-view');
 
-    document.querySelectorAll('.admin-tab-content').forEach(content => {
-        content.classList.toggle('active', content.id === `admin-tab-${tabName}`);
-    });
+    if (tabStudents && tabAlumni && viewStudents && viewAlumni) {
+        if (tabName === 'students') {
+            tabStudents.classList.add('active');
+            tabAlumni.classList.remove('active');
+            viewStudents.style.display = 'block';
+            viewAlumni.style.display = 'none';
+        } else {
+            tabAlumni.classList.add('active');
+            tabStudents.classList.remove('active');
+            viewAlumni.style.display = 'block';
+            viewStudents.style.display = 'none';
+        }
+    } else {
+        // Fallback to old design if elements not found
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+
+        document.querySelectorAll('.admin-tab-content').forEach(content => {
+            content.classList.toggle('active', content.id === `admin-tab-${tabName}`);
+        });
+    }
 
     if (tabName === 'students') fetchAdminStudents();
     else if (tabName === 'alumni') fetchAdminAlumni();
@@ -134,7 +155,7 @@ async function fetchAdminStudents() {
             return;
         }
 
-        renderAdminStudentsTable(data.students);
+        renderAdminStudentsTable(data.students); if(document.getElementById('pagination-count')) { document.getElementById('pagination-count').innerText = data.students.length; }
     } catch (err) {
         tbody.innerHTML = `<tr><td colspan="8" class="text-center p-4 text-danger">Error loading students: ${err.message}</td></tr>`;
     }
