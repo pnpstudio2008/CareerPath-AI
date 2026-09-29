@@ -251,7 +251,11 @@ async function startNewQuiz(presetScorer = null) {
     }
 
     try {
-        const res = await fetch(`/api/quiz/questions?subject=${encodeURIComponent(subject)}&company=${encodeURIComponent(company)}&limit=10`);
+        let apiUrl = `/api/quiz/questions?subject=${encodeURIComponent(subject)}&company=${encodeURIComponent(company)}&limit=10`;
+        if (presetScorer && presetScorer.name) {
+            apiUrl += `&alumni=${encodeURIComponent(presetScorer.name)}`;
+        }
+        const res = await fetch(apiUrl);
         const data = await safeJsonFetch(res);
 
         if (!data.success || data.questions.length === 0) {

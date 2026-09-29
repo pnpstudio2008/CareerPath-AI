@@ -370,12 +370,13 @@ def match_job():
 
 @app.route('/api/quiz/questions', methods=['GET'])
 def fetch_quiz_questions():
-    """Fetches randomized practice MCQs filtered by subject or company."""
+    """Fetches randomized practice MCQs filtered by subject, company, or specific alumni mentor."""
     subject = request.args.get('subject', 'all')
     company = request.args.get('company', 'all')
+    alumni = request.args.get('alumni', 'all')
     limit = int(request.args.get('limit', 10))
 
-    questions = get_quiz_questions(subject=subject, company=company, limit=limit)
+    questions = get_quiz_questions(subject=subject, company=company, difficulty='all', alumni=alumni, limit=limit)
     # Sanitize correct answer from initial question list sent to client for test security
     client_questions = []
     for q in questions:
