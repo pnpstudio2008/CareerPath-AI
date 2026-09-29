@@ -233,7 +233,7 @@ function renderAnalysisResults(data) {
                 else if (comp.match_score >= 60) { badgeColor = '#3B82F6'; bgBadgeColor = 'rgba(59,130,246,0.1)'; }
                 else if (comp.match_score >= 40) { badgeColor = '#F59E0B'; bgBadgeColor = 'rgba(245,158,11,0.1)'; }
                 
-                const html = `
+        const html = `
                     <div class="c-match-row">
                         <div class="c-icon" style="color: ${badgeColor}; background: ${bgBadgeColor};">${comp.company.charAt(0).toUpperCase()}</div>
                         <div class="c-info">
@@ -245,6 +245,64 @@ function renderAnalysisResults(data) {
                 heroCompany.insertAdjacentHTML('beforeend', html);
             });
         }
+    }
+
+    // --- UPDATE HOME DASHBOARD HERO & SUMMARY WITH ACTUAL RESUME DATA ---
+    const homeScoreVal = document.getElementById('home-hero-score-val');
+    const homeScoreArc = document.getElementById('home-hero-score-arc');
+    const homeScoreLabel = document.getElementById('home-hero-score-label');
+    if (homeScoreVal && ats && ats.ats_score !== undefined) {
+        const roundedScore = Math.round(ats.ats_score);
+        homeScoreVal.innerText = roundedScore;
+        if (homeScoreArc) {
+            homeScoreArc.setAttribute('stroke-dasharray', `${roundedScore}, 100`);
+        }
+        if (homeScoreLabel) {
+            homeScoreLabel.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>${ats.rating || 'Evaluated'}</span>`;
+        }
+    }
+
+    const homeSkillChips = document.getElementById('home-hero-skill-chips');
+    if (homeSkillChips && data.extracted_skills) {
+        const flatSkills = [];
+        Object.values(data.extracted_skills).forEach(arr => {
+            if (Array.isArray(arr)) {
+                arr.forEach(s => { if (flatSkills.length < 6 && !flatSkills.includes(s)) flatSkills.push(s); });
+            }
+        });
+        if (flatSkills.length > 0) {
+            homeSkillChips.innerHTML = flatSkills.map((sk, idx) =>
+                `<span class="hrp-chip ${idx === 0 ? 'accent' : ''}">${sk}</span>`
+            ).join('');
+        }
+    }
+
+    const homeCareerMatches = document.getElementById('home-hero-career-matches');
+    if (homeCareerMatches && Array.isArray(data.career_recommendations) && data.career_recommendations.length > 0) {
+        const barClasses = ['emerald', 'indigo', 'amber'];
+        homeCareerMatches.innerHTML = data.career_recommendations.slice(0, 3).map((rec, idx) => {
+            const pct = Math.round(rec.match_percentage || rec.score || 75);
+            const colorCls = barClasses[idx % barClasses.length];
+            return `
+                <div class="hfc-match-item">
+                    <div class="hfc-match-top">
+                        <span class="hfc-role-name">${rec.role || rec.title}</span>
+                        <span class="hfc-role-pct">${pct}%</span>
+                    </div>
+                    <div class="hfc-bar-track"><div class="hfc-bar-fill ${colorCls}" style="width: ${pct}%;"></div></div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    const statResumes = document.getElementById('home-stat-resumes');
+    if (statResumes) {
+        const cur = parseInt(statResumes.innerText, 10) || 0;
+        statResumes.innerText = cur + 1;
+    }
+    const statAts = document.getElementById('home-stat-ats');
+    if (statAts && ats && ats.ats_score !== undefined) {
+        statAts.innerText = `${Math.round(ats.ats_score)}%`;
     }
     // ------------------------------------
 

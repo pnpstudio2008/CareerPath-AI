@@ -98,30 +98,70 @@ def index():
     - If admin is logged in, renders the platform with admin navigation.
     """
     if session.get('student_logged_in'):
+        student_id = session.get('student_id')
+        student_db = get_student_by_id(int(student_id)) if student_id else None
+        name_val = (student_db.get('name') if student_db else None) or session.get('student_name', 'Student')
+        parts = [p for p in name_val.split() if p]
+        initials = "".join([p[0].upper() for p in parts[:2]]) if parts else "ST"
+        ats_val = int(round(float(student_db.get('ats_score', 0) or 0))) if student_db else 0
+        quizzes_val = int(student_db.get('quizzes_completed', 0) or 0) if student_db else 0
+        uploads_cnt = session.get('resume_upload_count', 0)
+        if uploads_cnt == 0 and ats_val > 0:
+            uploads_cnt = 1
         current_user = {
-            "name": session.get('student_name', 'Student'),
-            "id": session.get('student_id'),
+            "name": name_val,
+            "initials": initials,
+            "id": student_id,
             "type": "student",
-            "roll_no": session.get('student_roll_no', ''),
+            "roll_no": (student_db.get('roll_no') if student_db else None) or session.get('student_roll_no', ''),
+            "email": (student_db.get('email') if student_db else '') or '',
+            "phone": (student_db.get('phone') if student_db else '') or '',
+            "branch": (student_db.get('branch') if student_db else 'Computer Science & Engineering') or 'Computer Science & Engineering',
+            "batch_year": (student_db.get('batch_year') if student_db else '2024 - 2028') or '2024 - 2028',
+            "ats_score": ats_val,
+            "quizzes_completed": quizzes_val,
+            "resumes_analyzed": uploads_cnt,
+            "readiness_status": (student_db.get('readiness_status') if student_db else 'In Progress') or 'In Progress',
+            "target_company": (student_db.get('target_company') if student_db else 'Top Tech Recruiters') or 'Top Tech Recruiters',
             "dashboard_url": "/student/profile"
         }
         return render_template('index.html', user=current_user)
 
     if session.get('alumni_logged_in'):
         if request.args.get('view') == 'platform':
+            name_val = session.get('alumni_name', 'Alumni Mentor')
+            parts = [p for p in name_val.split() if p]
+            initials = "".join([p[0].upper() for p in parts[:2]]) if parts else "AL"
             current_user = {
-                "name": session.get('alumni_name', 'Alumni Mentor'),
+                "name": name_val,
+                "initials": initials,
                 "id": session.get('alumni_id', ''),
                 "type": "alumni",
+                "branch": "Verified Placed Alumni Mentor",
+                "batch_year": "Alumni Network",
+                "ats_score": 92,
+                "quizzes_completed": 10,
+                "resumes_analyzed": session.get('resume_upload_count', 1),
+                "readiness_status": "Placed",
+                "target_company": "Industry Mentor",
                 "dashboard_url": "/alumni/profile"
             }
             return render_template('index.html', user=current_user)
         return redirect('/alumni/profile')
 
     if session.get('admin_logged_in'):
+        name_val = session.get('admin_user', 'Administrator')
         current_user = {
-            "name": session.get('admin_user', 'Administrator'),
+            "name": name_val,
+            "initials": "AD",
             "type": "admin",
+            "branch": "Placement Cell Administration",
+            "batch_year": "2025 - 2026",
+            "ats_score": 95,
+            "quizzes_completed": 12,
+            "resumes_analyzed": session.get('resume_upload_count', 3),
+            "readiness_status": "Verified Admin",
+            "target_company": "45+ Partner Recruiters",
             "dashboard_url": "/admin"
         }
         return render_template('index.html', user=current_user)
@@ -289,6 +329,17 @@ def analyze_resume():
 
         # Count total skills extracted
         total_skills = sum(len(skills) for skills in extracted_skills.values())
+
+        # Persist ATS score to student record if logged in
+        student_id = session.get('student_id')
+        if student_id and ats_analysis.get("ats_score") is not None:
+            try:
+                conn = get_db_connection()
+                conn.execute("UPDATE students SET ats_score = ? WHERE id = ?", (float(ats_analysis.get("ats_score")), int(student_id)))
+                conn.commit()
+                conn.close()
+            except Exception as db_err:
+                print(f"[ATS Score Sync Note] Could not update student ats_score: {db_err}")
 
         return jsonify({
             "success": True,

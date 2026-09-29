@@ -30,24 +30,26 @@
     <div id="toast-container" class="toast-container"></div>
 
     <!-- Top Navigation Header -->
-    <!-- Top Navigation Header -->
     <header class="navbar saas-navbar">
         <div class="nav-container saas-nav-container">
-            <div class="nav-brand" onclick="navigateTo('home')" style="gap: 12px;">
-                <img src="/static/images/logo.png" alt="Logo" class="brand-logo-img" style="width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <!-- Brand Left -->
+            <div class="nav-brand saas-brand" onclick="navigateTo('home')">
+                <div class="saas-brand-logo-wrap">
+                    <img src="/static/images/logo.png" alt="AI Career Companion Logo" class="brand-logo-img">
+                </div>
                 <div class="brand-text">
-                    <span class="brand-title" style="font-size: 1.15rem; font-weight: 800; color: #0F172A;">AI Career Companion</span>
-                    <span class="brand-subtitle" style="font-size: 0.75rem; color: #64748B; font-weight: 500;">By Riya Modi & Diksha Durgapal</span>
+                    <span class="brand-title">AI Career Companion</span>
+                    <span class="brand-subtitle">By Riya Modi &amp; Diksha Durgapal</span>
                 </div>
             </div>
 
-            <!-- Desktop Nav Links -->
+            <!-- Center Navigation Pill Dock -->
             <nav class="nav-menu saas-nav-menu" id="nav-menu">
                 <a href="#home" class="nav-link active saas-nav-link" onclick="navigateTo('home')">
                     <i class="fa-solid fa-house"></i> <span>Home</span>
                 </a>
                 <a href="#analyzer" class="nav-link saas-nav-link" onclick="navigateTo('analyzer')">
-                    <i class="fa-solid fa-file-invoice"></i> <span>Resume Analyzer</span>
+                    <i class="fa-solid fa-file-lines"></i> <span>Resume Analyzer</span>
                 </a>
                 <a href="#mocktest" class="nav-link saas-nav-link" onclick="navigateTo('mocktest')">
                     <i class="fa-solid fa-circle-check"></i> <span>Mock Test</span>
@@ -60,243 +62,380 @@
                 </a>
             </nav>
 
-            <!-- Nav Actions -->
+            <!-- Right Actions -->
             <div class="nav-actions saas-nav-actions">
+                <!-- Notification Bell -->
+                <div class="saas-dropdown-wrapper" id="nav-notification-wrapper">
+                    <button class="saas-icon-btn has-notification" onclick="toggleNotificationMenu(event)" aria-label="Notifications" title="Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                    </button>
+                    <div id="notification-dropdown" class="saas-floating-dropdown" style="display: none; width: 320px;">
+                        <div class="saas-dropdown-header">
+                            <span>Notifications</span>
+                            <span class="saas-dropdown-pill">1 New</span>
+                        </div>
+                        <div class="notification-item" onclick="showCredentialModal()">
+                            <div class="notif-icon-circle">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div>
+                                <div class="notif-title">Account Credentials</div>
+                                <div class="notif-desc">Click to view your verified student login ID and security details.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <div style="position: relative; display: inline-block;" id="nav-notification-wrapper">
-                  <button class="saas-icon-btn has-notification" onclick="toggleNotificationMenu(event)"><i class="fa-solid fa-bell"></i></button>
-                  <div id="notification-dropdown" style="display: none; position: absolute; right: 0; top: 120%; width: 320px; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.1); z-index: 1000; overflow: hidden;">
-                      <div style="padding: 1rem; border-bottom: 1px solid var(--border-color); font-weight: 700; background: #F8FAFC;">Notifications</div>
-                      <div class="notification-item" onclick="showCredentialModal()" style="padding: 1rem; cursor: pointer; border-bottom: 1px solid var(--border-color); display: flex; gap: 0.85rem; align-items: flex-start; transition: background 0.2s;">
-                          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: #3B82F6; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-key"></i></div>
-                          <div>
-                              <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);">Account Credentials</div>
-                              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.25rem;">Important: Click to view your secure login info and ID.</div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-                
-                <div class="saas-profile-dropdown" style="position: relative;" id="nav-profile-wrapper" onclick="toggleProfileMenu(event)">
+                <!-- User Profile Pill -->
+                <div class="saas-profile-dropdown" id="nav-profile-wrapper" onclick="toggleProfileMenu(event)">
                     {% if user %}
-                        <div class="saas-avatar-small">{{ user.name[0] }}</div>
+                        <div class="saas-avatar-small">{{ user.initials if user.initials else user.name[0] }}</div>
                         <span class="saas-profile-name">{{ user.name }}</span>
                     {% else %}
                         <div class="saas-avatar-small"><i class="fa-solid fa-user"></i></div>
-                        <span class="saas-profile-name">Login</span>
+                        <span class="saas-profile-name">Sign In</span>
                     {% endif %}
-                    <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: #64748B;"></i>
-                    
+                    <i class="fa-solid fa-chevron-down saas-profile-caret"></i>
+
                     {% if user %}
-                    <div id="profile-dropdown-menu" style="display: none; position: absolute; right: 0; top: 120%; width: 220px; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.1); z-index: 1000; overflow: hidden; text-align: left;">
-                        <a href="{{ user.dashboard_url }}" style="display: block; padding: 0.8rem 1rem; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color); font-weight: 600;"><i class="fa-solid fa-user" style="width: 20px;"></i> Dashboard</a>
-                        
+                    <div id="profile-dropdown-menu" class="saas-floating-dropdown" style="display: none; width: 220px;">
+                        <div class="saas-dropdown-user-meta">
+                            <strong>{{ user.name }}</strong>
+                            <span>{{ user.roll_no if user.roll_no else user.type|capitalize }}</span>
+                        </div>
+                        <a href="{{ user.dashboard_url }}" class="saas-dropdown-link">
+                            <i class="fa-solid fa-gauge-high"></i> <span>My Dashboard</span>
+                        </a>
                         {% if user.type == 'admin' %}
-                        <a href="/api/admin/logout" style="display: block; padding: 0.8rem 1rem; color: #EF4444; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Logout</a>
+                        <a href="/api/admin/logout" class="saas-dropdown-link danger">
+                            <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                        </a>
                         {% elif user.type == 'alumni' %}
-                        <a href="/api/alumni/logout" style="display: block; padding: 0.8rem 1rem; color: #EF4444; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Logout</a>
+                        <a href="/api/alumni/logout" class="saas-dropdown-link danger">
+                            <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                        </a>
                         {% else %}
-                        <a href="/api/student/logout" style="display: block; padding: 0.8rem 1rem; color: #EF4444; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Logout</a>
+                        <a href="/api/student/logout" class="saas-dropdown-link danger">
+                            <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                        </a>
                         {% endif %}
                     </div>
                     {% endif %}
                 </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="saas-mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
+        </div>
+    </header>
 
-            <!-- DASHBOARD SUMMARY SECTION -->
-            <div class="saas-dashboard-summary mt-5">
-                <div class="summary-welcome">
-                    <div>
-                        <span class="text-muted text-sm">Good Morning,</span>
-                        <h2 style="font-size: 1.5rem; margin: 0.2rem 0; color: var(--text-primary);">{{ user.name if user else 'Student' }} 👋</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Let's prepare and get you closer to your dream career.</p>
-                    </div>
-                </div>
-                
-                <div class="summary-stats-grid">
-                    <div class="summary-stat-card">
-                        <div class="ss-icon blue"><i class="fa-solid fa-file-invoice"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num">3</div>
-                            <div class="ss-label">Resumes Analyzed</div>
-                        </div>
-                    </div>
-                    
-                    <div class="summary-stat-card">
-                        <div class="ss-icon green"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num">5</div>
-                            <div class="ss-label">Mock Tests Taken</div>
-                        </div>
-                    </div>
-                    
-                    <div class="summary-stat-card">
-                        <div class="ss-icon purple"><i class="fa-solid fa-bullseye"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num">82%</div>
-                            <div class="ss-label">Best Score</div>
-                        </div>
-                    </div>
-                    
-                    <div class="summary-stat-card">
-                        <div class="ss-icon orange"><i class="fa-solid fa-bookmark"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num">12</div>
-                            <div class="ss-label">Saved Job Roles</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="summary-action-card">
-                    <div class="sac-icon"><i class="fa-solid fa-clipboard-check"></i></div>
-                    <div class="sac-content">
-                        <h4 style="margin: 0; font-size: 0.9rem;">Your Next Step</h4>
-                        <p style="margin: 0.2rem 0 0.8rem 0; font-size: 0.75rem; color: var(--text-muted);">Take a Mock Test on Data Structures to improve your score.</p>
-                        <button class="btn btn-primary btn-sm" onclick="navigateTo('mocktest')">Start Practice <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-
+    <!-- Main Application Container -->
+    <main class="main-container saas-main-container">
 
         <!-- ========================================== -->
         <!-- SECTION 1: HOME & HERO OVERVIEW           -->
         <!-- ========================================== -->
-        
         <section id="section-home" class="app-section active">
-            
-            <!-- HERO SECTION -->
+
+            <!-- HERO / WELCOME SECTION -->
             <div class="saas-hero">
+                <!-- Left Column: Value Proposition & CTAs -->
                 <div class="saas-hero-content">
                     <div class="hero-badge">
-                        <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Placement & Career AI
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Next-Gen Campus Placement &amp; Career AI</span>
                     </div>
+
                     <h1 class="hero-title">
-                        Turn Your Resume Into <br/><span class="gradient-text">Real Opportunities</span>
+                        Turn Your Resume Into<br>
+                        <span class="hero-highlight-blue">Real</span>
+                        <span class="hero-highlight-purple">
+                            Opportunities
+                            <svg class="hero-underline-svg" viewBox="0 0 220 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 10.5C58.5 3.5 142.5 2.5 217 9.5" stroke="url(#heroUnderlineGrad)" stroke-width="4.5" stroke-linecap="round"/>
+                                <defs>
+                                    <linearGradient id="heroUnderlineGrad" x1="0" y1="0" x2="220" y2="0" gradientUnits="userSpaceOnUse">
+                                        <stop offset="0%" stop-color="#2563EB"/>
+                                        <stop offset="100%" stop-color="#8B5CF6"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </span>
                     </h1>
+
                     <p class="hero-desc">
-                        Get AI-powered resume analysis, personalized career suggestions, company insights and placement-ready preparation ΓÇö all in one place.
+                        Get AI-powered resume analysis, personalized career path suggestions, 45-company recruiter insights, and placement-ready preparation — all in one workspace.
                     </p>
+
                     <div class="hero-cta-group">
-                        <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
-                            <i class="fa-solid fa-upload"></i> Upload & Analyze Resume <i class="fa-solid fa-arrow-right ml-2"></i>
+                        <button class="btn-saas-primary" onclick="navigateTo('analyzer')">
+                            <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                            <span>Upload &amp; Analyze Resume</span>
+                            <i class="fa-solid fa-arrow-right btn-arrow-icon"></i>
                         </button>
-                        <button class="btn btn-outline btn-lg" onclick="navigateTo('mocktest')">
-                            <i class="fa-solid fa-play"></i> See How It Works
+                        <button class="btn-saas-secondary" onclick="navigateTo('mocktest')">
+                            <span class="play-icon-circle"><i class="fa-solid fa-play"></i></span>
+                            <span>Take Adaptive Mock Test</span>
                         </button>
                     </div>
+
                     <div class="hero-trust">
-                        <div class="avatar-group">
-                            <div class="avatar"></div>
-                            <div class="avatar"></div>
-                            <div class="avatar"></div>
-                            <div class="avatar"></div>
+                        <div class="hero-avatar-stack">
+                            <span class="stack-initial blue">AM</span>
+                            <span class="stack-initial purple">PP</span>
+                            <span class="stack-initial emerald">SK</span>
+                            <span class="stack-initial amber">RD</span>
                         </div>
-                        <span class="text-muted text-sm">Trusted by 10,000+ students</span>
+                        <span class="hero-trust-text">Benchmarked across <strong>45+ partner recruiters</strong> &amp; verified campus cohorts</span>
                     </div>
-                </div>
-                
                 </div>
 
-            <!-- FEATURE CARDS -->
-            <div class="saas-features-grid mt-5">
-                <div class="saas-feature-card" onclick="navigateTo('analyzer')">
-                    <div class="sf-icon blue"><i class="fa-solid fa-file-lines"></i></div>
+                <!-- Right Column: Interactive AI Telemetry & Candidate Preview Cluster (No Images) -->
+                <div class="saas-hero-visual">
+                    <div class="hero-visual-stage">
+                        <!-- Main Candidate Profile & Resume Telemetry Card -->
+                        <div class="hero-resume-preview-card">
+                            <div class="hrp-header">
+                                <div>
+                                    <h3 class="hrp-name" id="home-hero-user-name">{{ user.name if user else 'Aarav Mehta' }}</h3>
+                                    <span class="hrp-role" id="home-hero-user-branch">{{ user.branch if user and user.branch else 'Computer Science Student' }}</span>
+                                </div>
+                                <div class="hrp-avatar-badge" id="home-hero-user-initials">
+                                    {{ user.initials if user and user.initials else 'AM' }}
+                                </div>
+                            </div>
+
+                            <div class="hrp-contact-strip">
+                                <span><i class="fa-regular fa-envelope"></i> <span id="home-hero-user-email">{{ user.email if user and user.email else 'student@campus.edu' }}</span></span>
+                                {% if user and user.roll_no %}
+                                <span><i class="fa-solid fa-id-card"></i> {{ user.roll_no }}</span>
+                                {% endif %}
+                                <span><i class="fa-solid fa-building-shield"></i> {{ user.target_company if user and user.target_company else 'Top Tech Cohort' }}</span>
+                            </div>
+
+                            <!-- Academic & Readiness Block -->
+                            <div class="hrp-section">
+                                <div class="hrp-section-title">
+                                    <i class="fa-solid fa-graduation-cap text-primary"></i>
+                                    <span>Academic &amp; Cohort Profile</span>
+                                </div>
+                                <div class="hrp-edu-row">
+                                    <div>
+                                        <div class="hrp-edu-degree">{{ user.branch if user and user.branch else 'Computer Science & Engineering' }}</div>
+                                        <div class="hrp-edu-sub">Campus Placement Track &bull; {{ user.readiness_status if user and user.readiness_status else 'Active' }}</div>
+                                    </div>
+                                    <div class="hrp-edu-meta">
+                                        <span class="hrp-year-tag">{{ user.batch_year if user and user.batch_year else '2024 – 2028' }}</span>
+                                        <span class="hrp-status-tag"><i class="fa-solid fa-circle-check"></i> Verified</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Extracted / Core Skills Block -->
+                            <div class="hrp-section">
+                                <div class="hrp-section-title">
+                                    <i class="fa-solid fa-microchip text-primary"></i>
+                                    <span>Core Technical Skills</span>
+                                </div>
+                                <div class="hrp-skill-chips" id="home-hero-skill-chips">
+                                    <span class="hrp-chip">Python</span>
+                                    <span class="hrp-chip">Java</span>
+                                    <span class="hrp-chip">Data Structures</span>
+                                    <span class="hrp-chip accent">AI / ML</span>
+                                    <span class="hrp-chip">SQL &amp; DBMS</span>
+                                </div>
+                            </div>
+
+                            <!-- Active Placement Highlights -->
+                            <div class="hrp-section mb-0">
+                                <div class="hrp-section-title">
+                                    <i class="fa-solid fa-layer-group text-primary"></i>
+                                    <span>Placement Preparation Telemetry</span>
+                                </div>
+                                <div class="hrp-project-list" id="home-hero-telemetry-list">
+                                    <div class="hrp-project-item">
+                                        <span class="hrp-proj-dot blue"></span>
+                                        <div>
+                                            <div class="hrp-proj-name">45-Company ATS Fitment Engine</div>
+                                            <div class="hrp-proj-tech">Automated Skill Gap &bull; CTC Benchmark Mapping</div>
+                                        </div>
+                                    </div>
+                                    <div class="hrp-project-item">
+                                        <span class="hrp-proj-dot purple"></span>
+                                        <div>
+                                            <div class="hrp-proj-name">Adaptive Technical Assessment</div>
+                                            <div class="hrp-proj-tech">{{ user.quizzes_completed if user else 0 }} Completed &bull; Target: {{ user.target_company if user and user.target_company else 'SDE Roles' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Top-Right Card: AI ATS Score Gauge -->
+                        <div class="hero-float-card float-score-card">
+                            <div class="hfc-title">Resume Score</div>
+                            <div class="hfc-gauge-wrap">
+                                <svg viewBox="0 0 36 36" class="hfc-circular-Readout">
+                                    <path class="hfc-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="hfc-circle-fill" id="home-hero-score-arc" stroke-dasharray="{{ user.ats_score if user and user.ats_score > 0 else 82 }}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <div class="hfc-score-number" id="home-hero-score-val">{{ user.ats_score if user and user.ats_score > 0 else 82 }}</div>
+                            </div>
+                            <div class="hfc-score-status" id="home-hero-score-label">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>{% if user and user.ats_score >= 80 %}Excellent{% elif user and user.ats_score >= 60 %}Strong Fit{% elif user and user.ats_score > 0 %}Needs Polish{% else %}AI Ready{% endif %}</span>
+                            </div>
+                        </div>
+
+                        <!-- Floating Bottom-Right Card: Live Career Match Bars -->
+                        <div class="hero-float-card float-match-card">
+                            <div class="hfc-match-header">
+                                <span>Career Match</span>
+                                <span class="hfc-live-pill">AI Live</span>
+                            </div>
+                            <div class="hfc-match-list" id="home-hero-career-matches">
+                                <div class="hfc-match-item">
+                                    <div class="hfc-match-top">
+                                        <span class="hfc-role-name">Software Developer</span>
+                                        <span class="hfc-role-pct">92%</span>
+                                    </div>
+                                    <div class="hfc-bar-track"><div class="hfc-bar-fill emerald" style="width: 92%;"></div></div>
+                                </div>
+                                <div class="hfc-match-item">
+                                    <div class="hfc-match-top">
+                                        <span class="hfc-role-name">AI / ML Role</span>
+                                        <span class="hfc-role-pct">85%</span>
+                                    </div>
+                                    <div class="hfc-bar-track"><div class="hfc-bar-fill indigo" style="width: 85%;"></div></div>
+                                </div>
+                                <div class="hfc-match-item">
+                                    <div class="hfc-match-top">
+                                        <span class="hfc-role-name">Web Developer</span>
+                                        <span class="hfc-role-pct">78%</span>
+                                    </div>
+                                    <div class="hfc-bar-track"><div class="hfc-bar-fill amber" style="width: 78%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FEATURE / MODULE CARDS (5-Column Responsive SaaS Grid) -->
+            <div class="saas-features-grid">
+                <div class="saas-feature-card active-module-card" onclick="navigateTo('analyzer')">
+                    <div class="sf-left-rail">
+                        <div class="sf-icon blue"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
                     <div class="sf-content">
                         <h3>Resume Analysis</h3>
-                        <p>Get detailed feedback, skill mapping and improvement suggestions.</p>
+                        <p>Get detailed ATS feedback, skill mapping and improvement suggestions.</p>
                     </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
-                
+
                 <div class="saas-feature-card" onclick="navigateTo('analyzer')">
-                    <div class="sf-icon orange"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="sf-left-rail">
+                        <div class="sf-icon orange"><i class="fa-solid fa-briefcase"></i></div>
+                        <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
                     <div class="sf-content">
                         <h3>Job Recommendations</h3>
                         <p>Find out which job roles you can apply for based on your resume score.</p>
                     </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
-                
+
                 <div class="saas-feature-card" onclick="navigateTo('mocktest')">
-                    <div class="sf-icon green"><i class="fa-solid fa-clipboard-question"></i></div>
+                    <div class="sf-left-rail">
+                        <div class="sf-icon green"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
                     <div class="sf-content">
                         <h3>Mock Tests</h3>
-                        <p>Practice topic-wise MCQs from top companies with solutions.</p>
+                        <p>Practice adaptive skill &amp; company MCQs with detailed explanations.</p>
                     </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
-                
+
                 <div class="saas-feature-card" onclick="navigateTo('prep')">
-                    <div class="sf-icon purple"><i class="fa-solid fa-building"></i></div>
+                    <div class="sf-left-rail">
+                        <div class="sf-icon purple"><i class="fa-solid fa-building-columns"></i></div>
+                        <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
                     <div class="sf-content">
                         <h3>Company Insights</h3>
                         <p>Explore hiring trends, eligibility criteria and interview patterns.</p>
                     </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
-                
+
                 <div class="saas-feature-card" onclick="navigateTo('alumni')">
-                    <div class="sf-icon amber"><i class="fa-solid fa-users"></i></div>
+                    <div class="sf-left-rail">
+                        <div class="sf-icon amber"><i class="fa-solid fa-users"></i></div>
+                        <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    </div>
                     <div class="sf-content">
                         <h3>Alumni Hub</h3>
-                        <p>Learn from real alumni experiences and get placement tips.</p>
+                        <p>Learn from real alumni experiences and solve placement challenges.</p>
                     </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
             </div>
 
-            <!-- DASHBOARD SUMMARY SECTION -->
-            <div class="saas-dashboard-summary mt-5">
+            <!-- PERSONALIZED DASHBOARD SUMMARY SECTION -->
+            <div class="saas-dashboard-summary">
                 <div class="summary-welcome">
                     <div>
-                        <span class="text-muted text-sm">Good Morning,</span>
-                        <h2 style="font-size: 1.5rem; margin: 0.2rem 0; color: var(--text-primary);">{{ user.name if user else 'Student' }} ≡ƒæï</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Let's prepare and get you closer to your dream career.</p>
+                        <span class="summary-greeting-label" id="dynamic-greeting-text">Good Morning,</span>
+                        <h2 class="summary-user-name">
+                            <span>{{ user.name if user else 'Student' }}</span>
+                            <span class="summary-verified-dot" title="Verified Active Session"><i class="fa-solid fa-sparkles"></i></span>
+                        </h2>
+                        <p class="summary-subtext">Let's prepare and get you closer to your dream career.</p>
                     </div>
                 </div>
-                
+
                 <div class="summary-stats-grid">
-                    <div class="summary-stat-card">
-                        <div class="ss-icon blue"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="summary-stat-card tint-blue" onclick="navigateTo('analyzer')" style="cursor:pointer;">
+                        <div class="ss-icon blue"><i class="fa-solid fa-file-circle-check"></i></div>
                         <div class="ss-info">
-                            <div class="ss-num">3</div>
+                            <div class="ss-num" id="home-stat-resumes">{{ user.resumes_analyzed if user else 1 }}</div>
                             <div class="ss-label">Resumes Analyzed</div>
                         </div>
                     </div>
-                    
-                    <div class="summary-stat-card">
+
+                    <div class="summary-stat-card tint-green" onclick="navigateTo('prep')" style="cursor:pointer;">
                         <div class="ss-icon green"><i class="fa-solid fa-chart-line"></i></div>
                         <div class="ss-info">
-                            <div class="ss-num">5</div>
+                            <div class="ss-num" id="home-stat-quizzes">{{ user.quizzes_completed if user else 0 }}</div>
                             <div class="ss-label">Mock Tests Taken</div>
                         </div>
                     </div>
-                    
-                    <div class="summary-stat-card">
+
+                    <div class="summary-stat-card tint-purple" onclick="navigateTo('analyzer')" style="cursor:pointer;">
                         <div class="ss-icon purple"><i class="fa-solid fa-bullseye"></i></div>
                         <div class="ss-info">
-                            <div class="ss-num">82%</div>
-                            <div class="ss-label">Best Score</div>
+                            <div class="ss-num" id="home-stat-ats">{{ user.ats_score if user and user.ats_score > 0 else 82 }}%</div>
+                            <div class="ss-label">Best ATS Score</div>
                         </div>
                     </div>
-                    
-                    <div class="summary-stat-card">
+
+                    <div class="summary-stat-card tint-amber" onclick="navigateTo('analyzer')" style="cursor:pointer;">
                         <div class="ss-icon orange"><i class="fa-solid fa-bookmark"></i></div>
                         <div class="ss-info">
-                            <div class="ss-num">12</div>
-                            <div class="ss-label">Saved Job Roles</div>
+                            <div class="ss-num" id="home-stat-companies">45</div>
+                            <div class="ss-label">Recruiter Profiles</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="summary-action-card">
-                    <div class="sac-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                    <div class="sac-icon"><i class="fa-solid fa-clipboard-list"></i></div>
                     <div class="sac-content">
-                        <h4 style="margin: 0; font-size: 0.9rem;">Your Next Step</h4>
-                        <p style="margin: 0.2rem 0 0.8rem 0; font-size: 0.75rem; color: var(--text-muted);">Take a Mock Test on Data Structures to improve your score.</p>
-                        <button class="btn btn-primary btn-sm" onclick="navigateTo('mocktest')">Start Practice <i class="fa-solid fa-arrow-right"></i></button>
+                        <h4>Your Next Step</h4>
+                        <p>Take an Adaptive Mock Test on Data Structures &amp; Core Skills to boost your score.</p>
+                        <button class="btn-sac-action" onclick="navigateTo('mocktest')">
+                            <span>Start Practice</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -586,7 +725,7 @@
                     <!-- Filter / Search Toolbar for 45 Companies -->
                     <div class="company-matches-toolbar mt-3">
                         <div class="table-filters" style="margin-bottom:0.5rem;">
-                            <input type="text" id="company-match-search" class="form-input" placeholder="🔍 Search company name, role, or skill..." oninput="filterCompanyMatches()" style="max-width:280px;">
+                            <input type="text" id="company-match-search" class="form-input" placeholder="Search company name, role, or skill..." oninput="filterCompanyMatches()" style="max-width:280px;">
                             <select id="company-tier-filter" class="form-select" onchange="filterCompanyMatches()" style="max-width:180px;">
                                 <option value="all">All Fit Levels</option>
                                 <option value="Strong Match">Strong Match (>= 75%)</option>
@@ -624,7 +763,7 @@
                         </div>
                         <div class="mock-cta-info">
                             <span class="badge badge-primary"><i class="fa-solid fa-sparkles"></i> Adaptive Skill Assessment</span>
-                            <h3 class="mt-2">🎯 Test Your Skills with a Personalized Mock Test</h3>
+                            <h3 class="mt-2"><i class="fa-solid fa-bullseye text-primary"></i> Test Your Skills with a Personalized Mock Test</h3>
                             <p class="text-muted mb-2">
                                 We've extracted your core technical skills and certifications. Take a live 10–15 question technical assessment tailored specifically to your profile to benchmark your placement readiness.
                             </p>
@@ -663,8 +802,8 @@
                     <p class="section-desc">Subject-wise MCQs, company-specific test papers, and theoretical question banks with instant evaluation and detailed explanations.</p>
                 </div>
                 <div style="display:flex; gap:0.65rem; flex-wrap:wrap; margin-bottom:0.5rem;">
-                    <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('alumni-contributed-prep-section').scrollIntoView({ behavior: 'smooth' })" style="background:rgba(139,92,246,0.1); border-color:rgba(139,92,246,0.3); color:#8B5CF6;">
-                        <i class="fa-solid fa-graduation-cap"></i> Jump to Alumni Questions
+                    <button type="button" class="btn btn-outline btn-sm" onclick="navigateTo('alumni')" style="background:rgba(37,99,235,0.08); border-color:rgba(37,99,235,0.25); color:#2563EB;">
+                        <i class="fa-solid fa-trophy"></i> Explore Alumni Hall of Fame
                     </button>
                 </div>
             </div>
@@ -1377,6 +1516,17 @@
             const pDropdown = document.getElementById('profile-dropdown-menu');
             if (pWrapper && pDropdown && !pWrapper.contains(e.target)) {
                 pDropdown.style.display = 'none';
+            }
+        });
+
+        // Dynamic Time-of-Day Greeting
+        document.addEventListener('DOMContentLoaded', function() {
+            const greetEl = document.getElementById('dynamic-greeting-text');
+            if (greetEl) {
+                const hr = new Date().getHours();
+                if (hr < 12) greetEl.textContent = 'Good Morning,';
+                else if (hr < 17) greetEl.textContent = 'Good Afternoon,';
+                else greetEl.textContent = 'Good Evening,';
             }
         });
     </script>
