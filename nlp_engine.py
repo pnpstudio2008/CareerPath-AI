@@ -226,41 +226,6 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     except Exception:
         pass
 
-    # Strategy 3: Raw stream extraction (scanning for uncompressed or decompressed PDF text streams)
-    try:
-        import zlib
-        raw_text_chunks = []
-        stream_matches = re.findall(rb'stream[\r\n]+(.*?)[\r\n]+endstream', pdf_bytes, re.DOTALL)
-        for s in stream_matches:
-            try:
-                decomp = zlib.decompress(s)
-                text_matches = re.findall(rb'\((.*?)\)\s*Tj', decomp)
-                for tm in text_matches:
-                    try:
-                        raw_text_chunks.append(tm.decode('utf-8', errors='ignore'))
-                    except Exception:
-                        pass
-            except Exception:
-                pass
-        
-        if raw_text_chunks:
-            stream_result = " ".join(raw_text_chunks).strip()
-            if len(stream_result) >= 50:
-                return stream_result
-    except Exception:
-        pass
-
-    # Strategy 4: Printable ASCII/UTF sequence extraction
-    try:
-        printable_sequences = re.findall(rb'[a-zA-Z0-9\+\#\.\,\-\@\:\/\s]{4,}', pdf_bytes)
-        decoded_tokens = [seq.decode('utf-8', errors='ignore').strip() for seq in printable_sequences if len(seq.strip()) > 3]
-        if decoded_tokens:
-            printable_result = " ".join(decoded_tokens).strip()
-            if len(printable_result) >= 40:
-                return printable_result
-    except Exception:
-        pass
-
     return full_text if full_text else ""
 
 
