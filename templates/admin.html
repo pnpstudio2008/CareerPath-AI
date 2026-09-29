@@ -16,7 +16,7 @@
         /* ADMIN DASHBOARD SPECIFIC STYLES */
         :root {
             --admin-bg: #F8FAFC;
-            --admin-sidebar-width: 260px;
+            --admin-sidebar-width: 0px;
             --admin-nav-height: 70px;
             --admin-primary: #3B82F6;
             --admin-purple: #8B5CF6;
@@ -56,7 +56,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            width: var(--admin-sidebar-width);
+            width: auto;
         }
 
         .admin-brand {
@@ -276,10 +276,10 @@
 
         /* Main Content */
         .admin-main-content {
-            margin-left: var(--admin-sidebar-width);
+            margin-left: 0;
             padding: 2rem;
             flex: 1;
-            max-width: calc(100vw - var(--admin-sidebar-width));
+            max-width: 100vw; margin: 0 auto; width: 100%;
         }
 
         /* Hero */
@@ -808,7 +808,7 @@
             .admin-sidebar { width: 80px; padding: 1.5rem 0.5rem; }
             .admin-sidebar-link span { display: none; }
             .admin-sidebar-promo { display: none; }
-            .admin-main-content { margin-left: 80px; max-width: calc(100vw - 80px); }
+            .admin-main-content { margin-left: 0; max-width: 100vw; }
             .admin-nav-left { width: 80px; }
             .admin-brand-text { display: none; }
             .admin-hero { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
@@ -863,26 +863,7 @@
 
     <div class="admin-app-layout">
         <!-- SIDEBAR -->
-        <aside class="admin-sidebar">
-            <nav class="admin-sidebar-nav">
-                <a href="#" class="admin-sidebar-link active"><i data-lucide="graduation-cap"></i> <span>Cohort & Placement</span></a>
-                <a href="#" class="admin-sidebar-link"><i data-lucide="briefcase"></i> <span>Alumni Records</span></a>
-                <a href="#" class="admin-sidebar-link"><i data-lucide="bar-chart-3"></i> <span>Placement Analytics</span></a>
-                <a href="#" class="admin-sidebar-link"><i data-lucide="users"></i> <span>Mentor Management</span></a>
-                <a href="#" class="admin-sidebar-link"><i data-lucide="message-square"></i> <span>Messages</span></a>
-                <a href="#" class="admin-sidebar-link"><i data-lucide="book-open"></i> <span>Resources</span></a>
-                <a href="#" class="admin-sidebar-link"><i data-lucide="settings"></i> <span>Platform Settings</span></a>
-            </nav>
-
-            <div class="admin-sidebar-promo">
-                <div class="admin-promo-icon">
-                    <i data-lucide="users"></i>
-                </div>
-                <h4 class="admin-promo-title">Build a stronger alumni network</h4>
-                <p class="admin-promo-desc">Connect, guide and help more students get placed.</p>
-                <a href="javascript:openCreateAlumniLoginModal()" class="admin-promo-btn">Invite Alumni <i data-lucide="arrow-right" style="width:14px; height:14px;"></i></a>
-            </div>
-        </aside>
+        
 
         <!-- MAIN CONTENT -->
         <main class="admin-main-content">
