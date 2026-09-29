@@ -77,7 +77,7 @@
                   </div>
               </div>
                 
-                <div class="saas-profile-dropdown" onclick="window.location.href='{{ user.dashboard_url if user else '/login' }}'">
+                <div class="saas-profile-dropdown" style="position: relative;" id="nav-profile-wrapper" onclick="toggleProfileMenu(event)">
                     {% if user %}
                         <div class="saas-avatar-small">{{ user.name[0] }}</div>
                         <span class="saas-profile-name">{{ user.name }}</span>
@@ -86,102 +86,20 @@
                         <span class="saas-profile-name">Login</span>
                     {% endif %}
                     <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: #64748B;"></i>
-                </div>
-                
-                <button class="mobile-menu-toggle" id="mobile-toggle">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content Area (Single Page App Navigation) -->
-    <main class="main-content">
-
-        <!-- ========================================== -->
-        <!-- SECTION 1: HOME & HERO OVERVIEW           -->
-        <!-- ========================================== -->
-        
-        <section id="section-home" class="app-section active">
-            
-            <!-- HERO SECTION -->
-            <div class="saas-hero">
-                <div class="saas-hero-content">
-                    <div class="hero-badge">
-                        <i class="fa-solid fa-sparkles"></i> Next-Gen Campus Placement & Career AI
+                    
+                    {% if user %}
+                    <div id="profile-dropdown-menu" style="display: none; position: absolute; right: 0; top: 120%; width: 220px; background: white; border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.1); z-index: 1000; overflow: hidden; text-align: left;">
+                        <a href="{{ user.dashboard_url }}" style="display: block; padding: 0.8rem 1rem; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color); font-weight: 600;"><i class="fa-solid fa-user" style="width: 20px;"></i> Dashboard</a>
+                        
+                        {% if user.type == 'admin' %}
+                        <a href="/api/admin/logout" style="display: block; padding: 0.8rem 1rem; color: #EF4444; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Logout</a>
+                        {% elif user.type == 'alumni' %}
+                        <a href="/api/alumni/logout" style="display: block; padding: 0.8rem 1rem; color: #EF4444; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Logout</a>
+                        {% else %}
+                        <a href="/api/student/logout" style="display: block; padding: 0.8rem 1rem; color: #EF4444; text-decoration: none; font-weight: 600;"><i class="fa-solid fa-right-from-bracket" style="width: 20px;"></i> Logout</a>
+                        {% endif %}
                     </div>
-                    <h1 class="hero-title">
-                        Turn Your Resume Into <br/><span class="gradient-text">Real Opportunities</span>
-                    </h1>
-                    <p class="hero-desc">
-                        Get AI-powered resume analysis, personalized career suggestions, company insights and placement-ready preparation — all in one place.
-                    </p>
-                    <div class="hero-cta-group">
-                        <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
-                            <i class="fa-solid fa-upload"></i> Upload & Analyze Resume <i class="fa-solid fa-arrow-right ml-2"></i>
-                        </button>
-                        <button class="btn btn-outline btn-lg" onclick="navigateTo('mocktest')">
-                            <i class="fa-solid fa-play"></i> See How It Works
-                        </button>
-                    </div>
-                    <div class="hero-trust">
-                        <div class="avatar-group">
-                            <div class="avatar"></div>
-                            <div class="avatar"></div>
-                            <div class="avatar"></div>
-                            <div class="avatar"></div>
-                        </div>
-                        <span class="text-muted text-sm">Trusted by 10,000+ students</span>
-                    </div>
-                </div>
-                
-                </div>
-
-            <!-- FEATURE CARDS -->
-            <div class="saas-features-grid mt-5">
-                <div class="saas-feature-card" onclick="navigateTo('analyzer')">
-                    <div class="sf-icon blue"><i class="fa-solid fa-file-lines"></i></div>
-                    <div class="sf-content">
-                        <h3>Resume Analysis</h3>
-                        <p>Get detailed feedback, skill mapping and improvement suggestions.</p>
-                    </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                </div>
-                
-                <div class="saas-feature-card" onclick="navigateTo('analyzer')">
-                    <div class="sf-icon orange"><i class="fa-solid fa-briefcase"></i></div>
-                    <div class="sf-content">
-                        <h3>Job Recommendations</h3>
-                        <p>Find out which job roles you can apply for based on your resume score.</p>
-                    </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                </div>
-                
-                <div class="saas-feature-card" onclick="navigateTo('mocktest')">
-                    <div class="sf-icon green"><i class="fa-solid fa-clipboard-question"></i></div>
-                    <div class="sf-content">
-                        <h3>Mock Tests</h3>
-                        <p>Practice topic-wise MCQs from top companies with solutions.</p>
-                    </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                </div>
-                
-                <div class="saas-feature-card" onclick="navigateTo('prep')">
-                    <div class="sf-icon purple"><i class="fa-solid fa-building"></i></div>
-                    <div class="sf-content">
-                        <h3>Company Insights</h3>
-                        <p>Explore hiring trends, eligibility criteria and interview patterns.</p>
-                    </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-                </div>
-                
-                <div class="saas-feature-card" onclick="navigateTo('alumni')">
-                    <div class="sf-icon amber"><i class="fa-solid fa-users"></i></div>
-                    <div class="sf-content">
-                        <h3>Alumni Hub</h3>
-                        <p>Learn from real alumni experiences and get placement tips.</p>
-                    </div>
-                    <div class="sf-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -1251,6 +1169,23 @@
         }
     </style>
     <script>
+        function toggleProfileMenu(e) {
+            if (e) e.stopPropagation();
+            const userType = '{{ user.type if user else "" }}';
+            if (!userType) {
+                window.location.href = '/student/login';
+                return;
+            }
+            const dropdown = document.getElementById('profile-dropdown-menu');
+            if (dropdown) {
+                if (dropdown.style.display === 'none') {
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            }
+        }
+        
         function toggleNotificationMenu(e) {
             if (e) e.stopPropagation();
             const dropdown = document.getElementById('notification-dropdown');
@@ -1292,6 +1227,12 @@
             const dropdown = document.getElementById('notification-dropdown');
             if (wrapper && dropdown && !wrapper.contains(e.target)) {
                 dropdown.style.display = 'none';
+            }
+            
+            const pWrapper = document.getElementById('nav-profile-wrapper');
+            const pDropdown = document.getElementById('profile-dropdown-menu');
+            if (pWrapper && pDropdown && !pWrapper.contains(e.target)) {
+                pDropdown.style.display = 'none';
             }
         });
     </script>
