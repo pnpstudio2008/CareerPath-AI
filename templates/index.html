@@ -139,6 +139,65 @@
         <!-- ========================================== -->
         <section id="section-home" class="app-section active">
 
+            <!-- PERSONALIZED DASHBOARD SUMMARY SECTION (TOP HERO) -->
+            <div class="saas-dashboard-summary">
+                <div class="summary-welcome">
+                    <div>
+                        <span class="summary-greeting-label" id="dynamic-greeting-text">Good Morning,</span>
+                        <h2 class="summary-user-name">
+                            <span>{{ user.name if user else 'Student' }}</span>
+                            <span class="summary-verified-dot" title="Verified Active Session"><i class="fa-solid fa-sparkles"></i></span>
+                        </h2>
+                        <p class="summary-subtext">Let's prepare and get you closer to your dream career.</p>
+                    </div>
+                </div>
+
+                <div class="summary-stats-grid">
+                    <div class="summary-stat-card tint-blue" onclick="navigateTo('analyzer')" style="cursor:pointer;">
+                        <div class="ss-icon blue"><i class="fa-solid fa-file-circle-check"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num" id="home-stat-resumes">{{ user.resumes_analyzed if user else 1 }}</div>
+                            <div class="ss-label">Resumes Analyzed</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-stat-card tint-green" onclick="navigateTo('prep')" style="cursor:pointer;">
+                        <div class="ss-icon green"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num" id="home-stat-quizzes">{{ user.quizzes_completed if user else 0 }}</div>
+                            <div class="ss-label">Mock Tests Taken</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-stat-card tint-purple" onclick="navigateTo('analyzer')" style="cursor:pointer;">
+                        <div class="ss-icon purple"><i class="fa-solid fa-bullseye"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num" id="home-stat-ats">{{ user.ats_score if user and user.ats_score > 0 else 82 }}%</div>
+                            <div class="ss-label">Best ATS Score</div>
+                        </div>
+                    </div>
+
+                    <div class="summary-stat-card tint-amber" onclick="navigateTo('analyzer')" style="cursor:pointer;">
+                        <div class="ss-icon orange"><i class="fa-solid fa-bookmark"></i></div>
+                        <div class="ss-info">
+                            <div class="ss-num" id="home-stat-companies">45</div>
+                            <div class="ss-label">Recruiter Profiles</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-action-card">
+                    <div class="sac-icon"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <div class="sac-content">
+                        <h4>Your Next Step</h4>
+                        <p>Take an Adaptive Mock Test on Data Structures &amp; Core Skills to boost your score.</p>
+                        <button class="btn-sac-action" onclick="navigateTo('mocktest')">
+                            <span>Start Practice</span> <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- HERO / WELCOME SECTION -->
             <div class="saas-hero">
                 <!-- Left Column: Value Proposition & CTAs -->
