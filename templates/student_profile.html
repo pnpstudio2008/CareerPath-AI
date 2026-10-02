@@ -834,39 +834,46 @@ async function safeJsonFetch(response) {
         }
 
         function renderStudentProfile(s) {
-            const initials = s.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'ST';
+            if (!s) return;
+            const nameStr = s.name || 'Student';
+            const initials = nameStr.split(' ').filter(w => w).map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'ST';
             document.getElementById('student-avatar').textContent = initials;
-            document.getElementById('student-name').textContent = s.name;
-            document.getElementById('student-roll').textContent = s.roll_no;
+            document.getElementById('student-name').textContent = nameStr;
+            document.getElementById('student-roll').textContent = s.roll_no || '--';
             document.getElementById('student-dept').textContent = s.branch || s.department || 'Computer Science';
             document.getElementById('student-section').textContent = s.section || 'Section A';
             document.getElementById('student-batch').textContent = s.batch_year || '2025';
 
             const badge = document.getElementById('student-placement-badge');
-            if (s.placement_status === 'Placed') {
-                badge.className = 'badge badge-success';
-                badge.innerHTML = `<i class="fa-solid fa-check-circle"></i> Placed at ${s.placed_company || 'Dream Tech'} (₹${s.package_lpa || 0} LPA)`;
-            } else if (s.placement_status === 'Interviewing' || s.placement_status === 'In Progress') {
-                badge.className = 'badge badge-warning';
-                badge.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Interviewing`;
-            } else {
-                badge.className = 'badge badge-info';
-                badge.innerHTML = `<i class="fa-solid fa-bolt"></i> Actively Preparing`;
+            if (badge) {
+                if (s.placement_status === 'Placed') {
+                    badge.className = 'badge badge-success';
+                    const pkg = parseFloat(s.package_lpa || 0) || 0;
+                    badge.innerHTML = `<i class="fa-solid fa-check-circle"></i> Placed at ${s.placed_company || 'Dream Tech'} (₹${pkg} LPA)`;
+                } else if (s.placement_status === 'Interviewing' || s.placement_status === 'In Progress') {
+                    badge.className = 'badge badge-warning';
+                    badge.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Interviewing`;
+                } else {
+                    badge.className = 'badge badge-info';
+                    badge.innerHTML = `<i class="fa-solid fa-bolt"></i> Actively Preparing`;
+                }
             }
 
-            document.getElementById('student-ats-score').textContent = (s.ats_score > 0 ? s.ats_score.toFixed(1) : '75.0') + '%';
+            const atsNum = parseFloat(s.ats_score);
+            const displayAts = (!isNaN(atsNum) && atsNum > 0) ? atsNum.toFixed(1) : '75.0';
+            document.getElementById('student-ats-score').textContent = displayAts + '%';
             document.getElementById('student-quizzes-count').textContent = s.quizzes_completed || 0;
             document.getElementById('student-target-comp').textContent = s.target_company || 'General';
             document.getElementById('student-readiness-val').textContent = s.readiness_status || 'In Progress';
 
             // Details
-            document.getElementById('det-name').textContent = s.name;
-            document.getElementById('det-roll').textContent = s.roll_no;
-            document.getElementById('det-email').textContent = s.email;
+            document.getElementById('det-name').textContent = nameStr;
+            document.getElementById('det-roll').textContent = s.roll_no || '--';
+            document.getElementById('det-email').textContent = s.email || '--';
             document.getElementById('det-phone').textContent = s.phone || 'Not Provided';
             document.getElementById('det-dept').textContent = s.branch || s.department || 'Computer Science';
             document.getElementById('det-section').textContent = s.section || 'Section A';
-            document.getElementById('det-placement').textContent = s.placement_status + (s.placed_company ? ` (${s.placed_company})` : '');
+            document.getElementById('det-placement').textContent = (s.placement_status || 'Actively Preparing') + (s.placed_company ? ` (${s.placed_company})` : '');
         }
 
         function openEditProfileModal() {
