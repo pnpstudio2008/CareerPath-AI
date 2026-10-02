@@ -5353,3 +5353,134 @@ p {
         font-size: 0.88rem;
     }
 }
+
+/* ========================================================
+   CINEMATIC GLOW CTA HERO SECTION
+   Exact Match to User Reference Mockup
+   ======================================================== */
+.cinematic-glow-hero {
+    position: relative;
+    width: 100%;
+    background: radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 255, 255, 0.14) 0%, rgba(15, 23, 42, 0.45) 45%, #030712 90%), #030712;
+    border-radius: 28px;
+    padding: 5.5rem 2rem 5rem;
+    margin-bottom: 2.25rem;
+    text-align: center;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* Ambient Top Light Beam */
+.cinematic-glow-hero::before {
+    content: "";
+    position: absolute;
+    top: -110px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 720px;
+    height: 320px;
+    background: radial-gradient(ellipse 65% 55% at 50% 40%, rgba(255, 255, 255, 0.5) 0%, rgba(220, 230, 255, 0.22) 35%, rgba(0, 0, 0, 0) 75%);
+    filter: blur(52px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Top Rim Highlight */
+.cinematic-glow-hero::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 18%;
+    right: 18%;
+    height: 1.5px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 100%);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+    pointer-events: none;
+    z-index: 2;
+}
+
+.cinematic-glow-content {
+    position: relative;
+    z-index: 5;
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cinematic-glow-title {
+    font-family: var(--font-main, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: clamp(2.1rem, 4.4vw, 3.25rem);
+    font-weight: 800;
+    color: #FFFFFF;
+    line-height: 1.16;
+    letter-spacing: -0.025em;
+    margin: 0 0 1.15rem;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.25);
+}
+
+.cinematic-glow-sub {
+    font-size: clamp(0.95rem, 1.8vw, 1.12rem);
+    color: #94A3B8;
+    line-height: 1.62;
+    max-width: 630px;
+    margin: 0 auto 2.25rem;
+    font-weight: 400;
+}
+
+.cinematic-glow-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #FFFFFF;
+    color: #090A0F;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.88rem 2rem;
+    font-size: 0.96rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.35), 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.cinematic-glow-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 38px rgba(255, 255, 255, 0.6), 0 6px 20px rgba(0, 0, 0, 0.5);
+    background: #FFFFFF;
+    color: #000000;
+}
+
+.dropzone-pulse-highlight {
+    outline: 3px solid #2563EB !important;
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.45) !important;
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .cinematic-glow-hero {
+        padding: 3.75rem 1.25rem 3.5rem;
+        border-radius: 22px;
+    }
+    .cinematic-glow-hero::before {
+        width: 95%;
+        height: 240px;
+        top: -80px;
+    }
+    .cinematic-glow-title {
+        font-size: 1.85rem;
+    }
+    .cinematic-glow-sub {
+        font-size: 0.92rem;
+        margin-bottom: 1.75rem;
+    }
+    .cinematic-glow-btn {
+        padding: 0.78rem 1.65rem;
+        font-size: 0.9rem;
+    }
+}

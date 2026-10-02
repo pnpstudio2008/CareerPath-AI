@@ -411,48 +411,25 @@
         
         <section id="section-analyzer" class="app-section">
             
-            <!-- ANALYZER HERO SECTION -->
-            <div class="analyzer-hero">
-                <div class="analyzer-hero-left">
-                    <div class="a-badge">
-                        <i class="fa-solid fa-sparkles"></i> AI-Powered Resume Analysis
-                    </div>
-                    <h2 class="a-title">AI Resume PDF Analyzer &<br><span class="gradient-text">45-Company Matcher</span></h2>
-                    <p class="a-desc">
-                        Upload your resume PDF to extract skills, evaluate ATS readiness, and compare directly against 45 company hiring requirements and candidate cohort benchmarks.
+            <!-- CINEMATIC GLOW HERO SECTION (Matching User Design Mockup) -->
+            <div class="cinematic-glow-hero">
+                <div class="cinematic-glow-content">
+                    <h1 class="cinematic-glow-title">Ready to build something unforgettable?</h1>
+                    <p class="cinematic-glow-sub">
+                        Discover polished ATS optimization, skill extractions, and hiring benchmarks matched across 45+ top recruitment companies.
                     </p>
+                    <button type="button" class="cinematic-glow-btn" onclick="scrollToResumeUpload()">
+                        Explore for free
+                    </button>
                 </div>
-                <div class="analyzer-hero-right">
-<!-- Floating Dashboard Cards (Dynamic JS updated) -->
-                    <div class="a-float-card ats-card">
-                        <div style="font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 0.8rem; color: var(--text-primary);">ATS Score</div>
-                        <div id="hero-ats-circle" class="v-score-circle large" style="margin: 0 auto; width: 80px; height: 80px; border: 4px solid #E2E8F0; transition: border-color 0.5s ease;">
-                            <span id="hero-ats-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">--</span>
-                        </div>
-                        <div id="hero-ats-label" style="color: #64748B; font-size: 0.85rem; font-weight: 700; text-align: center; margin-top: 0.8rem; transition: color 0.5s ease;">
-                            <i class="fa-solid fa-clock"></i> Awaiting Resume
-                        </div>
-                    </div>
-                    
-                    <div class="a-float-card company-card" id="hero-company-matches">
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
-                        </div>
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
-                        </div>
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
-                        </div>
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+
+            <!-- Invisible Anchors for Safe JS Background Updates -->
+            <div style="display: none;" aria-hidden="true">
+                <span id="hero-ats-score">--</span>
+                <div id="hero-ats-circle"></div>
+                <div id="hero-ats-label"></div>
+                <div id="hero-company-matches"></div>
             </div>
 
             <!-- UPLOAD & INFO SECTION -->
@@ -1771,6 +1748,16 @@
                 else greetEl.textContent = 'Good Evening,';
             }
         });
+
+        // Scroll to dropzone helper for Cinematic Glow Hero CTA
+        function scrollToResumeUpload() {
+            const dropzone = document.getElementById('drop-zone');
+            if (dropzone) {
+                dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                dropzone.classList.add('dropzone-pulse-highlight');
+                setTimeout(() => dropzone.classList.remove('dropzone-pulse-highlight'), 1800);
+            }
+        }
     </script>
 
 </body>
