@@ -69,19 +69,80 @@
                     <button class="saas-icon-btn has-notification" onclick="toggleNotificationMenu(event)" aria-label="Notifications" title="Notifications">
                         <i class="fa-regular fa-bell"></i>
                     </button>
-                    <div id="notification-dropdown" class="saas-floating-dropdown" style="display: none; width: 320px;">
-                        <div class="saas-dropdown-header">
-                            <span>Notifications</span>
-                            <span class="saas-dropdown-pill">1 New</span>
+                    <div id="notification-dropdown" class="saas-floating-dropdown notif-center-panel" style="display: none;">
+                        <!-- Floating Top Bell Emblem (per user design sketch) -->
+                        <div class="notif-center-bell-badge">
+                            <i class="fa-solid fa-bell"></i>
                         </div>
-                        <div class="notification-item" onclick="showCredentialModal()">
-                            <div class="notif-icon-circle">
-                                <i class="fa-solid fa-key"></i>
+
+                        <!-- Header -->
+                        <div class="notif-center-header">
+                            <div class="notif-center-title-wrap">
+                                <span class="notif-center-title">Notifications</span>
+                                <span class="notif-center-counter">3 Updates</span>
                             </div>
-                            <div>
-                                <div class="notif-title">Account Credentials</div>
-                                <div class="notif-desc">Click to view your verified student login ID and security details.</div>
+                            <button class="notif-close-mini" onclick="toggleNotificationMenu(event)" title="Close">&times;</button>
+                        </div>
+
+                        <!-- Notification List -->
+                        <div class="notif-center-list">
+                            <!-- 1. Credentials (Locked item) -->
+                            <div class="notif-item-card notif-item-security" onclick="showCredentialModal()">
+                                <div class="notif-item-icon notif-icon-red">
+                                    <i class="fa-solid fa-key"></i>
+                                </div>
+                                <div class="notif-item-content">
+                                    <div class="notif-item-headline">
+                                        <span class="notif-item-name">Account Credentials</span>
+                                        <span class="notif-status-badge red"><i class="fa-solid fa-lock"></i> Locked</span>
+                                    </div>
+                                    <div class="notif-item-desc">Click to view your verified student login ID and security details.</div>
+                                </div>
                             </div>
+
+                            <!-- 2. ATS Resume Analysis (Pending/Action) -->
+                            <div class="notif-item-card notif-item-pending" onclick="navigateTo('analyzer'); toggleNotificationMenu(event);">
+                                <div class="notif-item-icon notif-icon-yellow">
+                                    <i class="fa-solid fa-file-shield"></i>
+                                </div>
+                                <div class="notif-item-content">
+                                    <div class="notif-item-headline">
+                                        <span class="notif-item-name">ATS Resume Benchmark</span>
+                                        <span class="notif-status-badge yellow"><i class="fa-solid fa-clock"></i> Action</span>
+                                    </div>
+                                    <div class="notif-item-desc">Benchmark your score against 45+ company recruitment filters.</div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Mock Test (Verified/Active) -->
+                            <div class="notif-item-card notif-item-verified" onclick="navigateTo('mocktest'); toggleNotificationMenu(event);">
+                                <div class="notif-item-icon notif-icon-green">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <div class="notif-item-content">
+                                    <div class="notif-item-headline">
+                                        <span class="notif-item-name">Adaptive Mock Practice</span>
+                                        <span class="notif-status-badge green"><i class="fa-solid fa-circle-check"></i> Active</span>
+                                    </div>
+                                    <div class="notif-item-desc">Practice technical assessment tests curated by alumni seniors.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom 3 Colored Pills (Matching sketch & website colors) -->
+                        <div class="notif-center-pills-row">
+                            <button type="button" class="notif-bottom-pill pill-red" onclick="filterNotifCenter('security', this)" title="Security Alerts">
+                                <span class="pill-dot"></span>
+                                <span>Security</span>
+                            </button>
+                            <button type="button" class="notif-bottom-pill pill-yellow" onclick="filterNotifCenter('pending', this)" title="Pending Actions">
+                                <span class="pill-dot"></span>
+                                <span>Pending</span>
+                            </button>
+                            <button type="button" class="notif-bottom-pill pill-green" onclick="filterNotifCenter('verified', this)" title="Verified Systems">
+                                <span class="pill-dot"></span>
+                                <span>Verified</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1498,6 +1559,33 @@
                 alert("All registration credentials copied to clipboard!");
             }).catch(() => {
                 alert(`Enrollment: ${roll}\nPassword: ${pass}`);
+            });
+        }
+
+        function filterNotifCenter(type, btn) {
+            const list = document.querySelectorAll('.notif-item-card');
+            const pills = document.querySelectorAll('.notif-bottom-pill');
+            
+            const isActive = btn.classList.contains('active');
+            pills.forEach(p => p.classList.remove('active'));
+            
+            if (isActive) {
+                list.forEach(item => item.style.display = 'flex');
+                return;
+            }
+            
+            btn.classList.add('active');
+            
+            list.forEach(item => {
+                if (type === 'security' && item.classList.contains('notif-item-security')) {
+                    item.style.display = 'flex';
+                } else if (type === 'pending' && item.classList.contains('notif-item-pending')) {
+                    item.style.display = 'flex';
+                } else if (type === 'verified' && item.classList.contains('notif-item-verified')) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
             });
         }
         
