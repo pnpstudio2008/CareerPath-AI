@@ -1087,71 +1087,87 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 2rem;
     position: relative;
     z-index: 1;
 }
 
 .footer-left {
-    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    max-width: 490px;
 }
 
 .footer-brand {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
     color: var(--text-primary);
-    margin-bottom: 0.45rem;
-    background: rgba(255, 255, 255, 0.55);
+    background: #FFFFFF;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 0.35rem 0.85rem;
+    padding: 0.35rem 0.95rem 0.35rem 0.5rem;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 4px 14px rgba(31, 38, 135, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
 }
 
-.footer-brand i {
-    color: var(--primary);
+.footer-brand-logo {
+    height: 34px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.2));
+}
+
+.footer-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    margin: 0;
+}
+
+.footer-desc strong {
+    color: var(--text-primary);
 }
 
 .footer-links {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    background: rgba(255, 255, 255, 0.45);
+    gap: 0.25rem;
+    background: #FFFFFF;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    padding: 0.4rem 0.65rem;
+    padding: 0.35rem 0.65rem;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-subtle);
-    box-shadow: 0 6px 20px rgba(31, 38, 135, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    white-space: nowrap;
 }
 
 .footer-links a {
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.84rem;
     font-weight: 600;
-    padding: 0.45rem 0.95rem;
+    padding: 0.45rem 0.85rem;
     border-radius: var(--radius-full);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
 }
 
 .footer-links a:hover {
     color: var(--primary);
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.95);
-    transform: translateY(-2px) scale(1.04);
+    background: rgba(37, 99, 235, 0.08);
+    transform: translateY(-1px);
 }
 
 .footer-links a:active {
-    transform: scale(0.96);
+    transform: scale(0.97);
 }
 
 @keyframes mobileDrawerEnter {
@@ -1298,26 +1314,48 @@ p {
     }
 
     .footer {
-        padding: 2rem 1rem 1.75rem;
-        margin-top: 2.5rem;
+        padding: 2.25rem 1.25rem 2rem;
+        margin-top: 3rem;
     }
 
     .footer-container {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: 1.25rem;
+        gap: 1.5rem;
     }
 
     .footer-left {
-        max-width: 100%;
+        max-width: 460px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-brand {
+        margin: 0 auto;
+    }
+
+    .footer-desc {
+        text-align: center;
     }
 
     .footer-links {
-        justify-content: center;
+        border-radius: 18px !important;
+        padding: 0.75rem 1rem;
         width: 100%;
+        max-width: 440px;
+        display: flex;
         flex-wrap: wrap;
-        gap: 0.85rem;
+        justify-content: center;
+        align-items: center;
+        gap: 0.4rem 0.65rem;
+        white-space: normal;
+    }
+
+    .footer-links a {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.82rem;
+        border-radius: 10px;
     }
 
     .modal-backdrop {
@@ -2981,6 +3019,40 @@ p {
     .summary-circular-grid {
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 0.65rem;
+    }
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    .footer-left {
+        max-width: 480px;
+        align-items: center;
+        text-align: center;
+    }
+    .footer-brand {
+        margin: 0 auto;
+    }
+    .footer-desc {
+        text-align: center;
+    }
+    .footer-links {
+        border-radius: 18px !important;
+        padding: 0.75rem 1rem;
+        width: 100%;
+        max-width: 440px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.4rem 0.65rem;
+        white-space: normal;
+    }
+    .footer-links a {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.82rem;
+        border-radius: 10px;
     }
 }
 
