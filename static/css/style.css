@@ -5354,133 +5354,456 @@ p {
     }
 }
 
-/* ========================================================
-   CINEMATIC GLOW CTA HERO SECTION
-   Exact Match to User Reference Mockup
-   ======================================================== */
-.cinematic-glow-hero {
-    position: relative;
-    width: 100%;
-    background: radial-gradient(ellipse 90% 70% at 50% 0%, rgba(255, 255, 255, 0.14) 0%, rgba(15, 23, 42, 0.45) 45%, #030712 90%), #030712;
-    border-radius: 28px;
-    padding: 5.5rem 2rem 5rem;
-    margin-bottom: 2.25rem;
-    text-align: center;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-}
-
-/* Ambient Top Light Beam */
-.cinematic-glow-hero::before {
-    content: "";
-    position: absolute;
-    top: -110px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    max-width: 720px;
-    height: 320px;
-    background: radial-gradient(ellipse 65% 55% at 50% 40%, rgba(255, 255, 255, 0.5) 0%, rgba(220, 230, 255, 0.22) 35%, rgba(0, 0, 0, 0) 75%);
-    filter: blur(52px);
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Top Rim Highlight */
-.cinematic-glow-hero::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 18%;
-    right: 18%;
-    height: 1.5px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 100%);
-    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
-    pointer-events: none;
-    z-index: 2;
-}
-
-.cinematic-glow-content {
-    position: relative;
-    z-index: 5;
-    max-width: 780px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.cinematic-glow-title {
-    font-family: var(--font-main, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
-    font-size: clamp(2.1rem, 4.4vw, 3.25rem);
-    font-weight: 800;
-    color: #FFFFFF;
-    line-height: 1.16;
-    letter-spacing: -0.025em;
-    margin: 0 0 1.15rem;
-    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.25);
-}
-
-.cinematic-glow-sub {
-    font-size: clamp(0.95rem, 1.8vw, 1.12rem);
-    color: #94A3B8;
-    line-height: 1.62;
-    max-width: 630px;
-    margin: 0 auto 2.25rem;
-    font-weight: 400;
-}
-
-.cinematic-glow-btn {
+/* ==========================================================================
+   THEME TOGGLE BUTTON 3 (SKIPER 3 SUN / MOON ECLIPSE ANIMATION)
+   ========================================================================== */
+.theme-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    padding: 7px;
+    border: 1px solid #E2E8F0;
     background: #FFFFFF;
-    color: #090A0F;
-    border: none;
-    border-radius: 9999px;
-    padding: 0.88rem 2rem;
-    font-size: 0.96rem;
-    font-weight: 700;
+    color: #0F172A;
     cursor: pointer;
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 24px rgba(255, 255, 255, 0.35), 0 4px 14px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 }
 
-.cinematic-glow-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 38px rgba(255, 255, 255, 0.6), 0 6px 20px rgba(0, 0, 0, 0.5);
-    background: #FFFFFF;
-    color: #000000;
+.theme-toggle-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    border-color: #CBD5E1;
 }
 
-.dropzone-pulse-highlight {
-    outline: 3px solid #2563EB !important;
-    box-shadow: 0 0 30px rgba(37, 99, 235, 0.45) !important;
-    transform: scale(1.01);
-    transition: all 0.3s ease;
+.theme-toggle-btn:active {
+    transform: scale(0.92);
 }
 
-@media (max-width: 768px) {
-    .cinematic-glow-hero {
-        padding: 3.75rem 1.25rem 3.5rem;
-        border-radius: 22px;
-    }
-    .cinematic-glow-hero::before {
-        width: 95%;
-        height: 240px;
-        top: -80px;
-    }
-    .cinematic-glow-title {
-        font-size: 1.85rem;
-    }
-    .cinematic-glow-sub {
-        font-size: 0.92rem;
-        margin-bottom: 1.75rem;
-    }
-    .cinematic-glow-btn {
-        padding: 0.78rem 1.65rem;
-        font-size: 0.9rem;
-    }
+.theme-toggle-svg {
+    width: 22px;
+    height: 22px;
+    display: block;
+    overflow: visible;
+}
+
+.theme-clip-path {
+    transform: translate(0, 0);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-circle {
+    r: 8px;
+    transition: r 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-rays {
+    transform-origin: 16px 16px;
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode States on Theme Button 3 */
+[data-theme="dark"] .theme-toggle-btn {
+    background: #1E293B;
+    color: #F8FAFC;
+    border-color: #334155;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .theme-toggle-btn:hover {
+    background: #2D3D56;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .theme-clip-path {
+    transform: translate(-11px, 14px);
+}
+
+[data-theme="dark"] .theme-circle {
+    r: 10px;
+}
+
+[data-theme="dark"] .theme-rays {
+    transform: scale(0.5);
+    opacity: 0;
+}
+
+/* ==========================================================================
+   DARK THEME SYSTEM OVERRIDES
+   Activated globally via [data-theme="dark"]
+   ========================================================================== */
+html[data-theme="dark"],
+[data-theme="dark"] {
+    --bg-base: #0B0F19;
+    --bg-surface: #111827;
+    --bg-card: #131D31;
+    --bg-card-hover: #1E293B;
+    
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    
+    --border-subtle: #1E293B;
+    --border-focus: rgba(99, 102, 241, 0.6);
+    
+    --nm-shadow-dark: #060911;
+    --nm-shadow-light: #162035;
+    --nm-glow: rgba(99, 102, 241, 0.35);
+    
+    --nm-flat: 0 4px 12px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+    --nm-flat-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    --nm-raised: 0 12px 28px -4px rgba(0, 0, 0, 0.6), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+    --nm-inset: 0 0 0 1px #1E293B;
+    --nm-inset-sm: 0 0 0 1px #1E293B;
+}
+
+[data-theme="dark"] body {
+    background-color: #0B0F19;
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] p {
+    color: #94A3B8;
+}
+
+/* Navbar */
+[data-theme="dark"] .navbar.saas-navbar {
+    background: rgba(11, 15, 25, 0.92);
+    border-bottom: 1px solid #1E293B;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .brand-title {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .brand-subtitle {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .saas-brand-logo-wrap {
+    background: #1E293B;
+    border-color: #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .saas-nav-link {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .saas-nav-link:hover {
+    color: #F8FAFC;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .saas-nav-link.active {
+    color: #60A5FA;
+    background: rgba(37, 99, 235, 0.16);
+}
+
+[data-theme="dark"] .saas-icon-btn {
+    background: #1E293B;
+    border-color: #334155;
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .saas-icon-btn:hover {
+    background: #2D3D56;
+    color: #FFFFFF;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .saas-profile-dropdown {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .saas-profile-dropdown:hover {
+    background: #2D3D56;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .saas-profile-name {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .saas-profile-caret {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .saas-floating-dropdown {
+    background: #131D31;
+    border-color: #334155;
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.65);
+}
+
+[data-theme="dark"] .saas-dropdown-header {
+    background: #1A2438;
+    border-bottom-color: #26334D;
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .saas-dropdown-user-meta {
+    background: #1A2438;
+    border-bottom-color: #26334D;
+}
+
+[data-theme="dark"] .saas-dropdown-user-meta strong {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .saas-dropdown-user-meta span {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .saas-dropdown-link {
+    color: #CBD5E1;
+    border-bottom-color: #1A2438;
+}
+
+[data-theme="dark"] .saas-dropdown-link:hover {
+    background: #1E293B;
+    color: #60A5FA;
+}
+
+/* Notification Center */
+[data-theme="dark"] .notif-center-panel {
+    background: #131D31;
+    border-color: #334155;
+}
+
+[data-theme="dark"] .notif-center-header {
+    border-bottom-color: #1E293B;
+}
+
+[data-theme="dark"] .notif-center-title {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .notif-close-mini {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .notif-close-mini:hover {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .notif-item-card {
+    background: #1E293B;
+    border-color: #2A3950;
+}
+
+[data-theme="dark"] .notif-item-card:hover {
+    background: #253347;
+    border-color: #3B82F6;
+}
+
+[data-theme="dark"] .notif-item-card.is-expanded {
+    background: #1A2438;
+    border-color: #3B82F6;
+}
+
+[data-theme="dark"] .notif-item-name {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .notif-item-desc {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .notif-cred-card-inner {
+    background: #0F172A;
+    border-color: #2E3E56;
+}
+
+[data-theme="dark"] .notif-cred-field-label {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .notif-cred-field-val {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F8FAFC;
+}
+
+/* Cards & Sections */
+[data-theme="dark"] .card,
+[data-theme="dark"] .saas-stat-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .prep-card,
+[data-theme="dark"] .alumni-card {
+    background: #131D31;
+    border-color: #1E293B;
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .card:hover,
+[data-theme="dark"] .stat-card:hover,
+[data-theme="dark"] .prep-card:hover {
+    border-color: #334155;
+    background: #172238;
+}
+
+[data-theme="dark"] .saas-hero-title {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .saas-hero-desc {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .btn-saas-secondary {
+    background: #1E293B;
+    border-color: #334155;
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .btn-saas-secondary:hover {
+    background: #2A384F;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .resume-reveal-container {
+    background: #131D31;
+    border-color: #1E293B;
+}
+
+[data-theme="dark"] .reveal-header {
+    border-bottom-color: #1E293B;
+}
+
+[data-theme="dark"] .reveal-main-title {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .reveal-main-subtitle {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .reveal-line {
+    background: #1A2438;
+    border-color: #27354C;
+}
+
+[data-theme="dark"] .reveal-line.is-active {
+    background: #1E293B;
+    border-color: #3B82F6;
+}
+
+[data-theme="dark"] .reveal-line.is-done {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="dark"] .reveal-line-body {
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .reveal-word.is-revealed {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .reveal-footer {
+    border-top-color: #1E293B;
+}
+
+[data-theme="dark"] .reveal-status-chip {
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .upload-area,
+[data-theme="dark"] .upload-dropzone {
+    background: #131D31;
+    border-color: #334155;
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .upload-area:hover,
+[data-theme="dark"] .upload-dropzone:hover {
+    background: #172238;
+    border-color: #3B82F6;
+}
+
+[data-theme="dark"] .form-control,
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background-color: #1E293B !important;
+    border-color: #334155 !important;
+    color: #F8FAFC !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #64748B !important;
+}
+
+[data-theme="dark"] .footer {
+    background: #070B12;
+    border-top-color: #1E293B;
+    color: #94A3B8;
+}
+
+[data-theme="dark"] .footer h4,
+[data-theme="dark"] .footer strong {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .table {
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .table thead th {
+    background: #1E293B;
+    color: #F8FAFC;
+    border-color: #334155;
+}
+
+[data-theme="dark"] .table tbody td {
+    border-color: #1E293B;
+    background: #131D31;
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .table tbody tr:hover td {
+    background: #1A2438;
+}
+
+[data-theme="dark"] .badge-light {
+    background: #1E293B;
+    color: #CBD5E1;
+}
+
+[data-theme="dark"] .bg-glow {
+    opacity: 0.12;
+}
+
+[data-theme="dark"] .analyzer-mocktest-banner {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
+    border-color: rgba(37, 99, 235, 0.28);
+}
+
+[data-theme="dark"] .analyzer-mocktest-banner .amb-content h4 {
+    color: #F8FAFC;
+}
+
+[data-theme="dark"] .analyzer-mocktest-banner .amb-content p {
+    color: #94A3B8;
 }

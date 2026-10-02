@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function() {
+            try {
+                var savedTheme = localStorage.getItem('careerpath_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch (e) {}
+        })();
+    </script>
     <title>AI Career Companion - AI-Powered Placement & Career Platform</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/static/images/favicon.png">
@@ -64,6 +72,21 @@
 
             <!-- Right Actions -->
             <div class="nav-actions saas-nav-actions">
+                <!-- Theme Toggle Button (Skiper Button 3) -->
+                <button type="button" id="theme-toggle-btn" class="theme-toggle-btn saas-icon-btn" onclick="toggleTheme()" aria-label="Toggle Dark or Light Theme" title="Toggle Theme">
+                    <svg class="theme-toggle-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" fill="currentColor" stroke-linecap="round" viewBox="0 0 32 32">
+                        <clipPath id="skiper-btn-3">
+                            <path class="theme-clip-path" d="M0-11h25a1 1 0 0017 13v30H0Z" />
+                        </clipPath>
+                        <g clip-path="url(#skiper-btn-3)">
+                            <circle class="theme-circle" cx="16" cy="16" r="8" />
+                            <g class="theme-rays" stroke="currentColor" stroke-width="1.5">
+                                <path d="M18.3 3.2c0 1.3-1 2.3-2.3 2.3s-2.3-1-2.3-2.3S14.7.9 16 .9s2.3 1 2.3 2.3zm-4.6 25.6c0-1.3 1-2.3 2.3-2.3s2.3 1 2.3 2.3-1 2.3-2.3 2.3-2.3-1-2.3-2.3zm15.1-10.5c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zM3.2 13.7c1.3 0 2.3 1 2.3 2.3s-1 2.3-2.3 2.3S.9 17.3.9 16s1-2.3 2.3-2.3zm5.8-7C9 7.9 7.9 9 6.7 9S4.4 8 4.4 6.7s1-2.3 2.3-2.3S9 5.4 9 6.7zm16.3 21c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3zm2.4-21c0 1.3-1 2.3-2.3 2.3S23 7.9 23 6.7s1-2.3 2.3-2.3 2.4 1 2.4 2.3zM6.7 23C8 23 9 24 9 25.3s-1 2.3-2.3 2.3-2.3-1-2.3-2.3 1-2.3 2.3-2.3z" />
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+
                 <!-- Notification Bell -->
                 <div class="saas-dropdown-wrapper" id="nav-notification-wrapper">
                     <button class="saas-icon-btn has-notification" onclick="toggleNotificationMenu(event)" aria-label="Notifications" title="Notifications">
@@ -411,25 +434,48 @@
         
         <section id="section-analyzer" class="app-section">
             
-            <!-- CINEMATIC GLOW HERO SECTION (Matching User Design Mockup) -->
-            <div class="cinematic-glow-hero">
-                <div class="cinematic-glow-content">
-                    <h1 class="cinematic-glow-title">Ready to build something unforgettable?</h1>
-                    <p class="cinematic-glow-sub">
-                        Discover polished ATS optimization, skill extractions, and hiring benchmarks matched across 45+ top recruitment companies.
+            <!-- ANALYZER HERO SECTION -->
+            <div class="analyzer-hero">
+                <div class="analyzer-hero-left">
+                    <div class="a-badge">
+                        <i class="fa-solid fa-sparkles"></i> AI-Powered Resume Analysis
+                    </div>
+                    <h2 class="a-title">AI Resume PDF Analyzer &<br><span class="gradient-text">45-Company Matcher</span></h2>
+                    <p class="a-desc">
+                        Upload your resume PDF to extract skills, evaluate ATS readiness, and compare directly against 45 company hiring requirements and candidate cohort benchmarks.
                     </p>
-                    <button type="button" class="cinematic-glow-btn" onclick="scrollToResumeUpload()">
-                        Explore for free
-                    </button>
                 </div>
-            </div>
-
-            <!-- Invisible Anchors for Safe JS Background Updates -->
-            <div style="display: none;" aria-hidden="true">
-                <span id="hero-ats-score">--</span>
-                <div id="hero-ats-circle"></div>
-                <div id="hero-ats-label"></div>
-                <div id="hero-company-matches"></div>
+                <div class="analyzer-hero-right">
+<!-- Floating Dashboard Cards (Dynamic JS updated) -->
+                    <div class="a-float-card ats-card">
+                        <div style="font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 0.8rem; color: var(--text-primary);">ATS Score</div>
+                        <div id="hero-ats-circle" class="v-score-circle large" style="margin: 0 auto; width: 80px; height: 80px; border: 4px solid #E2E8F0; transition: border-color 0.5s ease;">
+                            <span id="hero-ats-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">--</span>
+                        </div>
+                        <div id="hero-ats-label" style="color: #64748B; font-size: 0.85rem; font-weight: 700; text-align: center; margin-top: 0.8rem; transition: color 0.5s ease;">
+                            <i class="fa-solid fa-clock"></i> Awaiting Resume
+                        </div>
+                    </div>
+                    
+                    <div class="a-float-card company-card" id="hero-company-matches">
+                        <div class="c-match-row">
+                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
+                        </div>
+                        <div class="c-match-row">
+                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
+                        </div>
+                        <div class="c-match-row">
+                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
+                        </div>
+                        <div class="c-match-row">
+                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- UPLOAD & INFO SECTION -->
@@ -1748,16 +1794,6 @@
                 else greetEl.textContent = 'Good Evening,';
             }
         });
-
-        // Scroll to dropzone helper for Cinematic Glow Hero CTA
-        function scrollToResumeUpload() {
-            const dropzone = document.getElementById('drop-zone');
-            if (dropzone) {
-                dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                dropzone.classList.add('dropzone-pulse-highlight');
-                setTimeout(() => dropzone.classList.remove('dropzone-pulse-highlight'), 1800);
-            }
-        }
     </script>
 
 </body>
