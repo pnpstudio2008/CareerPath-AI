@@ -1096,8 +1096,8 @@ p {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.5rem;
-    max-width: 490px;
+    gap: 0.65rem;
+    max-width: 560px;
 }
 
 .footer-brand {
@@ -1133,6 +1133,94 @@ p {
 
 .footer-desc strong {
     color: var(--text-primary);
+}
+
+.footer-pnp-highlight {
+    color: #2563EB !important;
+    font-weight: 700;
+}
+
+.footer-credits-row {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 0.4rem;
+}
+
+.credit-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.credit-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(15, 23, 42, 0.08));
+}
+
+.credit-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+
+.credit-avatar-blue {
+    background: #EFF6FF;
+    color: #2563EB;
+    border: 1px solid rgba(37, 99, 235, 0.18);
+}
+
+.credit-avatar-rose {
+    background: #FDF2F8;
+    color: #DB2777;
+    border: 1px solid rgba(219, 39, 119, 0.18);
+}
+
+.credit-meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.credit-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.credit-role {
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #64748B;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+
+.credit-divider {
+    width: 1px;
+    height: 26px;
+    background: #CBD5E1;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+    .credit-divider {
+        display: none;
+    }
+    .footer-credits-row {
+        gap: 0.85rem 1.25rem;
+    }
 }
 
 .footer-links {
@@ -1326,7 +1414,7 @@ p {
     }
 
     .footer-left {
-        max-width: 460px;
+        max-width: 520px;
         align-items: center;
         text-align: center;
     }
@@ -1337,6 +1425,12 @@ p {
 
     .footer-desc {
         text-align: center;
+    }
+
+    .footer-credits-row {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.15rem;
     }
 
     .footer-links {
@@ -3027,7 +3121,7 @@ p {
         gap: 1.5rem;
     }
     .footer-left {
-        max-width: 480px;
+        max-width: 520px;
         align-items: center;
         text-align: center;
     }
@@ -3036,6 +3130,11 @@ p {
     }
     .footer-desc {
         text-align: center;
+    }
+    .footer-credits-row {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.15rem;
     }
     .footer-links {
         border-radius: 18px !important;
