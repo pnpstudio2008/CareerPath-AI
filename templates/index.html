@@ -566,11 +566,46 @@
                 </div>
             </div>
 
-            <!-- Analysis Loading Indicator -->
-            <div id="analyzer-loading" class="loading-container" style="display:none;">
-                <div class="spinner"></div>
-                <h3>AI is verifying and parsing your resume PDF...</h3>
-                <p>Running authenticity verification, extracting skills, evaluating ATS score, and matching across all 45 company hiring requirements in the dataset.</p>
+            <!-- Analysis Loading Indicator with Scroll-Triggered Text Reveal -->
+            <div id="analyzer-loading" class="resume-reveal-container" style="display:none;" role="status" aria-live="polite">
+                <!-- Top Header -->
+                <div class="reveal-header">
+                    <div class="reveal-header-left">
+                        <div class="reveal-radar-spinner">
+                            <div class="radar-circle"></div>
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div>
+                            <h3 class="reveal-main-title">AI Resume Intelligence Engine</h3>
+                            <p class="reveal-main-subtitle">Processing document structure, semantic skills &amp; recruitment benchmarks</p>
+                        </div>
+                    </div>
+                    <div class="reveal-progress-pill">
+                        <span class="reveal-pulse-dot"></span>
+                        <span id="reveal-progress-percent">25%</span>
+                    </div>
+                </div>
+
+                <!-- Progress Track Bar -->
+                <div class="reveal-progress-track">
+                    <div class="reveal-progress-fill" id="reveal-progress-fill" style="width: 25%;"></div>
+                </div>
+
+                <!-- Scroll-Triggered Text Reveal Stream Viewport -->
+                <div class="reveal-stream-viewport" id="reveal-stream-viewport">
+                    <div class="reveal-lines-list" id="reveal-lines-list">
+                        <!-- Populated and dynamically animated word-by-word with highlights -->
+                    </div>
+                </div>
+
+                <!-- Live Status Footer -->
+                <div class="reveal-footer">
+                    <div class="reveal-status-chip">
+                        <i class="fa-solid fa-arrows-rotate fa-spin"></i>
+                        <span id="reveal-live-status-text">Parsing document layout and typography layers...</span>
+                    </div>
+                    <span class="reveal-secure-note"><i class="fa-solid fa-shield-halved"></i> 100% Private &amp; Secure Verification</span>
+                </div>
             </div>
 
             <!-- Resume Authenticity Verification Rejection Banner -->

@@ -105,14 +105,248 @@ function handleFile(file) {
     showToast(`Loaded PDF: ${file.name}`, 'info');
 }
 
+let activeRevealController = null;
+
+/**
+ * Scroll-Triggered Text Reveal Controller
+ * Features smooth word-by-word animation, background highlights, and auto-scrolling
+ */
+class ResumeRevealController {
+    constructor() {
+        this.container = document.getElementById('analyzer-loading');
+        this.linesContainer = document.getElementById('reveal-lines-list');
+        this.viewport = document.getElementById('reveal-stream-viewport');
+        this.percentEl = document.getElementById('reveal-progress-percent');
+        this.progressFill = document.getElementById('reveal-progress-fill');
+        this.statusText = document.getElementById('reveal-live-status-text');
+
+        this.isCancelled = false;
+        this.isFastForward = false;
+        this.currentStepIndex = 0;
+
+        // Steps configured per user instructions:
+        // 1. Wait your resume is being processed
+        // 2. The processing is complete, now we are analyzing it
+        // 3. Benchmarking against 45+ company recruitment filters
+        // 4. Wait for the results, finalizing ATS score & career roadmap
+        this.steps = [
+            {
+                stepNum: 1,
+                label: "Stage 1",
+                badgeText: "PDF Ingestion",
+                statusDesc: "Validating file signature, reading text layers & checking layout...",
+                targetProgress: 28,
+                segments: [
+                    { text: "Please wait, ", hl: false },
+                    { text: "your resume is being processed", hl: true, hlType: "primary" },
+                    { text: " and securely parsed for authenticity verification...", hl: false }
+                ]
+            },
+            {
+                stepNum: 2,
+                label: "Stage 2",
+                badgeText: "Skill Analysis",
+                statusDesc: "Extracting core technical competencies, tools, frameworks & certifications...",
+                targetProgress: 62,
+                segments: [
+                    { text: "The processing is complete! ", hl: true, hlType: "green" },
+                    { text: "Now we are ", hl: false },
+                    { text: "analyzing technical skills, experience & projects", hl: true, hlType: "primary" },
+                    { text: " across your profile...", hl: false }
+                ]
+            },
+            {
+                stepNum: 3,
+                label: "Stage 3",
+                badgeText: "Recruiter Benchmark",
+                statusDesc: "Matching keyword density & requirements across 45 top hiring companies...",
+                targetProgress: 88,
+                segments: [
+                    { text: "Benchmarking profile against ", hl: false },
+                    { text: "45+ company recruitment filters & ATS standards", hl: true, hlType: "primary" },
+                    { text: " in the placement dataset...", hl: false }
+                ]
+            },
+            {
+                stepNum: 4,
+                label: "Stage 4",
+                badgeText: "Scorecard Ready",
+                statusDesc: "Calculating final ATS score and assembling personalized interview roadmap...",
+                targetProgress: 98,
+                segments: [
+                    { text: "Wait for your results! ", hl: true, hlType: "amber" },
+                    { text: "Synthesizing your ", hl: false },
+                    { text: "comprehensive ATS score, gap analysis & tailored mock questions...", hl: true, hlType: "green" }
+                ]
+            }
+        ];
+    }
+
+    renderStructure() {
+        if (!this.linesContainer) return;
+        this.linesContainer.innerHTML = '';
+
+        this.steps.forEach((step) => {
+            const lineEl = document.createElement('div');
+            lineEl.className = 'reveal-line';
+            lineEl.id = `reveal-line-${step.stepNum}`;
+
+            const badgeEl = document.createElement('div');
+            badgeEl.className = 'reveal-line-badge';
+            badgeEl.id = `reveal-badge-${step.stepNum}`;
+            badgeEl.innerHTML = `<i class="fa-solid fa-clock"></i> ${step.label}: ${step.badgeText}`;
+
+            const bodyEl = document.createElement('div');
+            bodyEl.className = 'reveal-line-body';
+            bodyEl.id = `reveal-body-${step.stepNum}`;
+
+            // Parse words and highlight groups
+            let wordIndex = 0;
+            step.segments.forEach((seg) => {
+                const words = seg.text.split(' ');
+                
+                let wrapper = bodyEl;
+                if (seg.hl) {
+                    const hlSpan = document.createElement('span');
+                    hlSpan.className = 'reveal-highlight' + (seg.hlType === 'green' ? ' accent-green' : seg.hlType === 'amber' ? ' accent-amber' : '');
+                    bodyEl.appendChild(hlSpan);
+                    wrapper = hlSpan;
+                }
+
+                words.forEach((w, wIdx) => {
+                    if (w === '' && wIdx > 0) return;
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'reveal-word';
+                    wordSpan.textContent = w + (wIdx < words.length - 1 ? ' ' : ' ');
+                    wordSpan.dataset.step = step.stepNum;
+                    wordSpan.dataset.wordIndex = wordIndex++;
+                    wrapper.appendChild(wordSpan);
+                });
+            });
+
+            lineEl.appendChild(badgeEl);
+            lineEl.appendChild(bodyEl);
+            this.linesContainer.appendChild(lineEl);
+        });
+    }
+
+    async start() {
+        if (!this.container) return;
+        this.container.style.display = 'block';
+        this.renderStructure();
+
+        // Smooth scroll to loading container
+        this.container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        for (let i = 0; i < this.steps.length; i++) {
+            if (this.isCancelled) break;
+            this.currentStepIndex = i;
+            await this.runStep(this.steps[i]);
+            if (this.isCancelled) break;
+        }
+    }
+
+    async runStep(step) {
+        const lineEl = document.getElementById(`reveal-line-${step.stepNum}`);
+        const badgeEl = document.getElementById(`reveal-badge-${step.stepNum}`);
+        if (!lineEl) return;
+
+        // Activate Line
+        lineEl.classList.add('is-active');
+        if (badgeEl) {
+            badgeEl.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${step.label}: In Progress`;
+        }
+        if (this.percentEl) this.percentEl.innerText = `${step.targetProgress}%`;
+        if (this.progressFill) this.progressFill.style.width = `${step.targetProgress}%`;
+        if (this.statusText) this.statusText.innerText = step.statusDesc;
+
+        // Auto-scroll viewport to keep active line in view
+        if (this.viewport) {
+            const lineOffsetTop = lineEl.offsetTop - this.viewport.offsetTop;
+            this.viewport.scrollTo({ top: Math.max(0, lineOffsetTop - 20), behavior: 'smooth' });
+        }
+
+        // Reveal words one by one
+        const words = lineEl.querySelectorAll('.reveal-word');
+        const delayPerWord = this.isFastForward ? 18 : 65;
+
+        for (let w = 0; w < words.length; w++) {
+            if (this.isCancelled) return;
+            words[w].classList.add('is-revealed');
+            await new Promise(r => setTimeout(r, this.isFastForward ? 12 : delayPerWord));
+        }
+
+        // Mark line done
+        lineEl.classList.remove('is-active');
+        lineEl.classList.add('is-done');
+        if (badgeEl) {
+            badgeEl.innerHTML = `<i class="fa-solid fa-check"></i> ${step.label}: Completed`;
+        }
+
+        // Short pause before next line
+        if (!this.isFastForward) {
+            await new Promise(r => setTimeout(r, 450));
+        }
+    }
+
+    async finish() {
+        this.isFastForward = true;
+
+        // Ensure all remaining steps complete rapidly
+        for (let i = this.currentStepIndex; i < this.steps.length; i++) {
+            if (this.isCancelled) break;
+            const lineEl = document.getElementById(`reveal-line-${this.steps[i].stepNum}`);
+            const badgeEl = document.getElementById(`reveal-badge-${this.steps[i].stepNum}`);
+            if (lineEl && !lineEl.classList.contains('is-done')) {
+                lineEl.classList.add('is-done');
+                lineEl.classList.remove('is-active');
+                if (badgeEl) {
+                    badgeEl.innerHTML = `<i class="fa-solid fa-check"></i> ${this.steps[i].label}: Completed`;
+                }
+                const words = lineEl.querySelectorAll('.reveal-word');
+                words.forEach(w => w.classList.add('is-revealed'));
+            }
+        }
+
+        if (this.percentEl) this.percentEl.innerText = `100%`;
+        if (this.progressFill) this.progressFill.style.width = `100%`;
+        if (this.statusText) this.statusText.innerText = "Resume analyzed successfully! Preparing report...";
+
+        // Auto-scroll to end
+        if (this.viewport) {
+            this.viewport.scrollTo({ top: this.viewport.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Brief delay for visual satisfaction
+        await new Promise(r => setTimeout(r, 380));
+
+        if (this.container) {
+            this.container.style.display = 'none';
+        }
+    }
+
+    cancel() {
+        this.isCancelled = true;
+        if (this.container) {
+            this.container.style.display = 'none';
+        }
+    }
+}
+
 async function submitResumeAnalysis() {
     if (!selectedResumeFile && !window.AppState.selectedSampleText) {
         showToast('Please select or drag-and-drop your Resume PDF file first.', 'error');
         return;
     }
 
-    // Show loading spinner & hide old results / errors
-    document.getElementById('analyzer-loading').style.display = 'block';
+    if (activeRevealController) {
+        activeRevealController.cancel();
+    }
+
+    // Start text reveal animation
+    activeRevealController = new ResumeRevealController();
+    activeRevealController.start();
+
     document.getElementById('analyzer-results').style.display = 'none';
     const verifErrDiv = document.getElementById('analyzer-verification-error');
     if (verifErrDiv) verifErrDiv.style.display = 'none';
@@ -149,10 +383,11 @@ async function submitResumeAnalysis() {
             const textResponse = await response.text();
             throw new Error(`Server returned a non-JSON error (Status ${response.status}). This usually happens if the file is too large or the server timed out.`);
         }
-        
-        document.getElementById('analyzer-loading').style.display = 'none';
 
         if (!response.ok || !data.success) {
+            if (activeRevealController) {
+                activeRevealController.cancel();
+            }
             const errMsg = data.error || 'Failed to parse resume PDF. Please ensure your PDF is not password protected and contains readable text.';
             
             // Display structured verification rejection banner if non-resume document detected
@@ -165,6 +400,11 @@ async function submitResumeAnalysis() {
             }
             showToast(errMsg, 'error');
             return;
+        }
+
+        // Successfully received analysis data! Finish text reveal animation
+        if (activeRevealController) {
+            await activeRevealController.finish();
         }
 
         // Store in global state
@@ -181,7 +421,9 @@ async function submitResumeAnalysis() {
         showToast('Resume verified & matched with 45-company dataset!', 'success');
 
     } catch (err) {
-        document.getElementById('analyzer-loading').style.display = 'none';
+        if (activeRevealController) {
+            activeRevealController.cancel();
+        }
         showToast('Network error while analyzing resume: ' + err.message, 'error');
     }
 }
