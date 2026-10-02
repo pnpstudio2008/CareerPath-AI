@@ -100,6 +100,15 @@ def index():
     if session.get('student_logged_in'):
         student_id = session.get('student_id')
         student_db = get_student_by_id(int(student_id)) if student_id else None
+        if not student_db and session.get('student_roll_no'):
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM students WHERE LOWER(roll_no) = LOWER(?)", (session.get('student_roll_no'),))
+            s_row = cursor.fetchone()
+            if s_row:
+                student_db = dict(s_row)
+            conn.close()
+
         name_val = (student_db.get('name') if student_db else None) or session.get('student_name', 'Student')
         parts = [p for p in name_val.split() if p]
         initials = "".join([p[0].upper() for p in parts[:2]]) if parts else "ST"
@@ -114,9 +123,10 @@ def index():
             "id": student_id,
             "type": "student",
             "roll_no": (student_db.get('roll_no') if student_db else None) or session.get('student_roll_no', ''),
-            "email": (student_db.get('email') if student_db else '') or '',
+            "email": (student_db.get('email') if student_db else '') or 'desaiparth039@gmail.com',
             "phone": (student_db.get('phone') if student_db else '') or '',
             "branch": (student_db.get('branch') if student_db else 'Computer Science & Engineering') or 'Computer Science & Engineering',
+            "password": (student_db.get('password') if student_db else 'Parth@1605') or 'Parth@1605',
             "batch_year": (student_db.get('batch_year') if student_db else '2024 - 2028') or '2024 - 2028',
             "ats_score": ats_val,
             "quizzes_completed": quizzes_val,
