@@ -5550,6 +5550,7 @@ html[data-theme="dark"],
 [data-theme="dark"] .btn-saas-secondary:hover {
     background: #F8FAFC !important;
     border-color: #CBD5E1 !important;
+    color: #0F172A !important;
 }
 
 /* Inputs and Forms inside cards */
@@ -5705,18 +5706,73 @@ html[data-theme="dark"],
     border-color: #334155 !important;
 }
 
-[data-theme="dark"] .saas-nav-link {
-    color: #94A3B8 !important;
+/* Center Pill Navigation Dock in Dark Mode stays crisp white */
+[data-theme="dark"] .nav-menu.saas-nav-menu {
+    background: #FFFFFF !important;
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
 }
 
-[data-theme="dark"] .saas-nav-link:hover {
-    color: #F8FAFC !important;
-    background: rgba(255, 255, 255, 0.06) !important;
+[data-theme="dark"] .saas-nav-link,
+[data-theme="dark"] .nav-link.saas-nav-link {
+    color: #475569 !important;
+    background: transparent !important;
 }
 
-[data-theme="dark"] .saas-nav-link.active {
-    color: #60A5FA !important;
-    background: rgba(37, 99, 235, 0.2) !important;
+[data-theme="dark"] .saas-nav-link i,
+[data-theme="dark"] .nav-link.saas-nav-link i {
+    color: #64748B !important;
+}
+
+[data-theme="dark"] .saas-nav-link span,
+[data-theme="dark"] .nav-link.saas-nav-link span {
+    color: #475569 !important;
+}
+
+/* On hover: Text turns solid black and icon turns primary blue, never white */
+[data-theme="dark"] .saas-nav-link:hover,
+[data-theme="dark"] .nav-link.saas-nav-link:hover {
+    color: #0F172A !important;
+    background: #F1F5F9 !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-theme="dark"] .saas-nav-link:hover i,
+[data-theme="dark"] .nav-link.saas-nav-link:hover i {
+    color: #2563EB !important;
+}
+
+[data-theme="dark"] .saas-nav-link:hover span,
+[data-theme="dark"] .nav-link.saas-nav-link:hover span {
+    color: #0F172A !important;
+}
+
+/* Active Nav Pill State */
+[data-theme="dark"] .saas-nav-link.active,
+[data-theme="dark"] .nav-link.saas-nav-link.active {
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+}
+
+[data-theme="dark"] .saas-nav-link.active i,
+[data-theme="dark"] .saas-nav-link.active span,
+[data-theme="dark"] .nav-link.saas-nav-link.active i,
+[data-theme="dark"] .nav-link.saas-nav-link.active span {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .saas-nav-link.active:hover,
+[data-theme="dark"] .nav-link.saas-nav-link.active:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%) !important;
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .saas-nav-link.active:hover i,
+[data-theme="dark"] .saas-nav-link.active:hover span,
+[data-theme="dark"] .nav-link.saas-nav-link.active:hover i,
+[data-theme="dark"] .nav-link.saas-nav-link.active:hover span {
+    color: #FFFFFF !important;
 }
 
 [data-theme="dark"] .saas-profile-dropdown {
