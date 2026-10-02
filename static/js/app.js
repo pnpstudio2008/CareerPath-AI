@@ -28,7 +28,6 @@ window.AppState = {
 
 // Initialize application on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
     initNavigation();
     fetchSampleResumes();
     initDropZone();
@@ -112,40 +111,6 @@ function initNavigation() {
     }
 }
 
-/* ==========================================================================
-   THEME CONFIGURATION (LIGHT & DARK MODE TOGGLE - SKIPER BUTTON 3)
-   ========================================================================== */
-function initTheme() {
-    let savedTheme = 'light';
-    try {
-        savedTheme = localStorage.getItem('careerpath_theme') || 'light';
-    } catch (e) {}
-    applyTheme(savedTheme, false);
-}
-
-function applyTheme(theme, showNotice = false) {
-    window.AppState.theme = theme;
-    document.documentElement.setAttribute('data-theme', theme);
-    try {
-        localStorage.setItem('careerpath_theme', theme);
-    } catch (e) {}
-
-    const toggleBtn = document.getElementById('theme-toggle-btn');
-    if (toggleBtn) {
-        toggleBtn.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-        toggleBtn.setAttribute('title', theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode');
-    }
-
-    if (showNotice && typeof showToast === 'function') {
-        showToast(theme === 'dark' ? '🌙 Dark Mode Activated' : '☀️ Light Mode Activated', 'info');
-    }
-}
-
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    applyTheme(nextTheme, true);
-}
 
 /* ==========================================================================
    TOAST NOTIFICATION SYSTEM
