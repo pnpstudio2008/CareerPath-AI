@@ -118,7 +118,7 @@ function initNavigation() {
 function initTheme() {
     let savedTheme = 'light';
     try {
-        savedTheme = localStorage.getItem('careerpath_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        savedTheme = localStorage.getItem('careerpath_theme') || 'light';
     } catch (e) {}
     applyTheme(savedTheme, false);
 }

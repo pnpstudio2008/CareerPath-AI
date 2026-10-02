@@ -6,7 +6,7 @@
     <script>
         (function() {
             try {
-                var savedTheme = localStorage.getItem('careerpath_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                var savedTheme = localStorage.getItem('careerpath_theme') || 'light';
                 document.documentElement.setAttribute('data-theme', savedTheme);
             } catch (e) {}
         })();
