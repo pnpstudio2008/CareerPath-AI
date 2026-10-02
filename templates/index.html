@@ -899,7 +899,7 @@
                         </div>
                     </div>
                     <div class="hof-header-right">
-                        <button class="btn btn-outline" onclick="fetchAlumniExperiences()">
+                        <button class="btn btn-outline" onclick="window.location.href='/alumni/directory'">
                             <i class="fa-solid fa-chart-simple"></i> View All Alumni <i class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i>
                         </button>
                     </div>
@@ -1286,6 +1286,7 @@
                 <a href="#mocktest" onclick="navigateTo('mocktest')">Mock - Test</a>
                 <a href="#prep" onclick="navigateTo('prep')">Practice Tests</a>
                 <a href="#alumni" onclick="navigateTo('alumni')">Alumni Hub</a>
+                <a href="/alumni/directory">Alumni Directory</a>
                 {% if user %}
                     {% if user.type == 'admin' %}
                     <a href="/admin">Admin Console</a>

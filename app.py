@@ -734,6 +734,58 @@ def upvote_experience(exp_id):
     return jsonify({"success": True, "message": "Upvoted!", "upvotes": new_upvotes})
 
 
+@app.route('/alumni/directory', methods=['GET'])
+@app.route('/alumni/all', methods=['GET'])
+def alumni_directory():
+    """Renders the dedicated line-by-line Alumni Placement Directory page."""
+    current_user = None
+    if session.get('student_logged_in'):
+        student_id = session.get('student_id')
+        student_db = get_student_by_id(int(student_id)) if student_id else None
+        name_val = (student_db.get('name') if student_db else None) or session.get('student_name', 'Student')
+        parts = [p for p in name_val.split() if p]
+        initials = "".join([p[0].upper() for p in parts[:2]]) if parts else "ST"
+        current_user = {
+            "name": name_val,
+            "initials": initials,
+            "id": student_id,
+            "type": "student",
+            "dashboard_url": "/student/profile"
+        }
+    elif session.get('alumni_logged_in'):
+        name_val = session.get('alumni_name', 'Alumni Mentor')
+        parts = [p for p in name_val.split() if p]
+        initials = "".join([p[0].upper() for p in parts[:2]]) if parts else "AL"
+        current_user = {
+            "name": name_val,
+            "initials": initials,
+            "id": session.get('alumni_id', ''),
+            "type": "alumni",
+            "dashboard_url": "/alumni/profile"
+        }
+    elif session.get('admin_logged_in'):
+        current_user = {
+            "name": session.get('admin_user', 'Administrator'),
+            "initials": "AD",
+            "type": "admin",
+            "dashboard_url": "/admin"
+        }
+
+    experiences = get_all_alumni_experiences()
+    # Enrich records with guaranteed email and LinkedIn URL
+    for exp in experiences:
+        name = exp.get('student_name', 'Senior')
+        company = exp.get('company', 'Tech')
+        if not exp.get('email'):
+            slug = name.lower().replace(' ', '.')
+            domain = company.lower().replace(' ', '')
+            exp['email'] = f"{slug}@{domain}.com"
+        if not exp.get('linkedin_url'):
+            exp['linkedin_url'] = f"https://www.linkedin.com/search/results/all/?keywords={name}%20{company}"
+
+    return render_template('alumni_directory.html', alumni_list=experiences, user=current_user)
+
+
 # ==========================================
 # JOB PROFILES & SAMPLE DATA ENDPOINTS
 # ==========================================

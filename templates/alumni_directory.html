@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Placement Directory | AI Career Companion</title>
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Core Application CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+        :root {
+            --dir-bg: #F8FAFC;
+            --dir-card: #FFFFFF;
+            --dir-border: #E2E8F0;
+            --dir-primary: #2563EB;
+            --dir-primary-light: #EFF6FF;
+            --dir-linkedin: #0A66C2;
+            --dir-linkedin-light: #EBF4FC;
+            --dir-gmail: #EA4335;
+            --dir-gmail-light: #FEF2F2;
+            --dir-success: #10B981;
+            --dir-success-light: #ECFDF5;
+        }
+
+        body {
+            background-color: var(--dir-bg);
+            color: #0F172A;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dir-page-wrapper {
+            flex: 1;
+            max-width: 1320px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 1.5rem 1.25rem 4rem;
+        }
+
+        /* Top Breadcrumb & Back Row */
+        .dir-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .dir-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid var(--dir-border);
+            border-radius: 9999px;
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .dir-back-btn:hover {
+            color: var(--dir-primary);
+            border-color: #BFDBFE;
+            background: var(--dir-primary-light);
+            transform: translateX(-2px);
+        }
+
+        /* Hero Banner */
+        .dir-hero {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            border-radius: 20px;
+            padding: 2.25rem 2.5rem;
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+        }
+
+        .dir-hero::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .dir-hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #93C5FD;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.85rem;
+        }
+
+        .dir-hero-title {
+            font-size: 2.15rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .dir-hero-title span {
+            background: linear-gradient(135deg, #60A5FA, #A78BFA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dir-hero-desc {
+            font-size: 0.95rem;
+            color: #94A3B8;
+            max-width: 680px;
+            line-height: 1.55;
+            margin: 0 0 1.75rem;
+        }
+
+        /* Stats Grid */
+        .dir-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+        }
+
+        .dir-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .dir-stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            color: #60A5FA;
+            flex-shrink: 0;
+        }
+
+        .dir-stat-val {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1.1;
+        }
+
+        .dir-stat-lbl {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Filter Controls Card */
+        .dir-controls-card {
+            background: #FFFFFF;
+            border: 1px solid var(--dir-border);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .dir-search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .dir-search-wrap i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 0.9rem;
+        }
+
+        .dir-search-input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.6rem;
+            border: 1px solid var(--dir-border);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            background: #F8FAFC;
+            color: #0F172A;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .dir-search-input:focus {
+            background: #FFFFFF;
+            border-color: var(--dir-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .dir-filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .dir-select {
+            padding: 0.65rem 2rem 0.65rem 1rem;
+            border: 1px solid var(--dir-border);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            color: #334155;
+            background: #FFFFFF;
+            outline: none;
+            cursor: pointer;
+            font-weight: 500;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            transition: border-color 0.2s;
+        }
+
+        .dir-select:focus {
+            border-color: var(--dir-primary);
+        }
+
+        .dir-count-pill {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #475569;
+            background: #F1F5F9;
+            padding: 0.45rem 0.85rem;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        /* Table Card & Structure */
+        .dir-table-card {
+            background: #FFFFFF;
+            border: 1px solid var(--dir-border);
+            border-radius: 18px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+        }
+
+        .dir-table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .dir-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 980px;
+        }
+
+        .dir-table th {
+            background: #F8FAFC;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--dir-border);
+            white-space: nowrap;
+        }
+
+        .dir-table td {
+            padding: 1.15rem 1.25rem;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: middle;
+            font-size: 0.875rem;
+        }
+
+        .dir-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .dir-table tbody tr:hover {
+            background: #F8FAFC;
+        }
+
+        .dir-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Alumni Cell */
+        .alumni-person-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .alumni-avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563EB, #8B5CF6);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.88rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .alumni-person-meta strong {
+            display: block;
+            color: #0F172A;
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .alumni-person-meta span {
+            font-size: 0.75rem;
+            color: #64748B;
+            font-weight: 500;
+        }
+
+        /* Company Badge */
+        .company-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.75rem;
+            background: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1E293B;
+            white-space: nowrap;
+        }
+
+        .company-pill.google { background: #FEF3C7; border-color: #FDE68A; color: #92400E; }
+        .company-pill.amazon { background: #FFEDD5; border-color: #FED7AA; color: #9A3412; }
+        .company-pill.microsoft { background: #EFF6FF; border-color: #BFDBFE; color: #1E40AF; }
+        .company-pill.tcs { background: #F3E8FF; border-color: #E9D5FF; color: #6B21A8; }
+        .company-pill.infosys { background: #E0F2FE; border-color: #BAE6FD; color: #0369A1; }
+
+        /* Role Cell */
+        .role-text {
+            font-weight: 600;
+            color: #1E293B;
+            font-size: 0.85rem;
+            line-height: 1.35;
+        }
+
+        /* CTC Badge */
+        .ctc-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: var(--dir-success-light);
+            color: #065F46;
+            border: 1px solid #A7F3D0;
+            padding: 0.35rem 0.65rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        /* Difficulty Pill */
+        .diff-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .diff-pill.hard { background: #FEE2E2; color: #991B1B; }
+        .diff-pill.medium { background: #FEF3C7; color: #92400E; }
+        .diff-pill.easy { background: #DCFCE7; color: #166534; }
+
+        /* Action Buttons: Email and LinkedIn */
+        .dir-action-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn-action-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.85rem;
+            background: var(--dir-gmail-light);
+            color: var(--dir-gmail);
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-email:hover {
+            background: var(--dir-gmail);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(234, 67, 53, 0.2);
+        }
+
+        .btn-action-copy {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--dir-border);
+            background: #FFFFFF;
+            color: #64748B;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-copy:hover {
+            color: var(--dir-primary);
+            border-color: #BFDBFE;
+            background: var(--dir-primary-light);
+        }
+
+        .btn-action-linkedin {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.85rem;
+            background: var(--dir-linkedin-light);
+            color: var(--dir-linkedin);
+            border: 1px solid #BAE6FD;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-linkedin:hover {
+            background: var(--dir-linkedin);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(10, 102, 194, 0.25);
+        }
+
+        .btn-action-story {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.75rem;
+            background: #FFFFFF;
+            border: 1px solid var(--dir-border);
+            border-radius: 8px;
+            color: #334155;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-story:hover {
+            border-color: #94A3B8;
+            background: #F8FAFC;
+            color: #0F172A;
+        }
+
+        /* Empty State */
+        .dir-empty-state {
+            display: none;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .dir-empty-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #EFF6FF;
+            color: var(--dir-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 1.25rem;
+        }
+
+        /* Toast */
+        .dir-toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #0F172A;
+            color: #FFFFFF;
+            padding: 0.85rem 1.35rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            z-index: 9999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .dir-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .dir-hero {
+                padding: 1.75rem 1.5rem;
+            }
+            .dir-hero-title {
+                font-size: 1.65rem;
+            }
+            .dir-controls-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .dir-filter-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .dir-select {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="header saas-nav">
+        <div class="nav-container saas-nav-container">
+            <a href="/" class="brand saas-brand">
+                <img src="/static/images/logo.png" alt="AI Career Companion" class="brand-logo">
+                <span class="brand-name">AI Career Companion</span>
+            </a>
+
+            <nav class="nav-links saas-nav-links">
+                <a href="/" class="nav-link saas-nav-link">
+                    <i class="fa-solid fa-house"></i> <span>Home</span>
+                </a>
+                <a href="/#analyzer" class="nav-link saas-nav-link">
+                    <i class="fa-solid fa-file-invoice"></i> <span>Resume ATS</span>
+                </a>
+                <a href="/#mocktest" class="nav-link saas-nav-link">
+                    <i class="fa-solid fa-laptop-code"></i> <span>Mock Test</span>
+                </a>
+                <a href="/#alumni" class="nav-link saas-nav-link">
+                    <i class="fa-solid fa-trophy"></i> <span>Alumni Hub</span>
+                </a>
+                <a href="/alumni/directory" class="nav-link saas-nav-link active">
+                    <i class="fa-solid fa-table-list"></i> <span>Alumni Directory</span>
+                </a>
+            </nav>
+
+            <div class="nav-actions saas-nav-actions">
+                <a href="/" class="btn btn-outline" style="border-radius: 9999px; padding: 0.45rem 1rem; font-size: 0.85rem;">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Dashboard</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="dir-page-wrapper">
+
+        <!-- Top Breadcrumbs Bar -->
+        <div class="dir-top-bar">
+            <a href="/#alumni" class="dir-back-btn">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Alumni Hub</span>
+            </a>
+            <div style="font-size: 0.85rem; color: #64748B;">
+                <span>Home</span> / <span>Alumni Network</span> / <strong style="color: #0F172A;">All Placed Seniors</strong>
+            </div>
+        </div>
+
+        <!-- Hero Header -->
+        <div class="dir-hero">
+            <div class="dir-hero-pill">
+                <i class="fa-solid fa-graduation-cap"></i> Verified Placement Network
+            </div>
+            <h1 class="dir-hero-title">All Alumni <span>Directory & Contacts</span></h1>
+            <p class="dir-hero-desc">
+                Browse all verified placed seniors in a comprehensive line-by-line directory. Connect directly with alumni via Email or LinkedIn for mentorship, referral guidance, and genuine placement advice.
+            </p>
+
+            <!-- Quick Telemetry Stats -->
+            <div class="dir-stats-grid">
+                <div class="dir-stat-item">
+                    <div class="dir-stat-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                    <div>
+                        <div class="dir-stat-val" id="stat-total-alumni">{{ alumni_list|length }}</div>
+                        <div class="dir-stat-lbl">Placed Alumni</div>
+                    </div>
+                </div>
+                <div class="dir-stat-item">
+                    <div class="dir-stat-icon"><i class="fa-solid fa-building"></i></div>
+                    <div>
+                        <div class="dir-stat-val">10+</div>
+                        <div class="dir-stat-lbl">Top Tech Giants</div>
+                    </div>
+                </div>
+                <div class="dir-stat-item">
+                    <div class="dir-stat-icon"><i class="fa-solid fa-award"></i></div>
+                    <div>
+                        <div class="dir-stat-val">₹35.0 LPA</div>
+                        <div class="dir-stat-lbl">Highest Package</div>
+                    </div>
+                </div>
+                <div class="dir-stat-item">
+                    <div class="dir-stat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <div class="dir-stat-val">100%</div>
+                        <div class="dir-stat-lbl">Verified Profiles</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="dir-controls-card">
+            <div class="dir-search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="dir-search-input" class="dir-search-input" placeholder="Search by name, company, role, or skill..." oninput="filterAlumniTable()">
+            </div>
+
+            <div class="dir-filter-group">
+                <select id="dir-company-filter" class="dir-select" onchange="filterAlumniTable()">
+                    <option value="all">All Companies</option>
+                    <option value="Google">Google</option>
+                    <option value="Amazon">Amazon</option>
+                    <option value="Microsoft">Microsoft</option>
+                    <option value="TCS">TCS</option>
+                    <option value="Infosys">Infosys</option>
+                </select>
+
+                <select id="dir-difficulty-filter" class="dir-select" onchange="filterAlumniTable()">
+                    <option value="all">All Difficulties</option>
+                    <option value="Hard">High Bar (Hard)</option>
+                    <option value="Medium">Standard (Medium)</option>
+                    <option value="Easy">Foundation (Easy)</option>
+                </select>
+
+                <select id="dir-sort-filter" class="dir-select" onchange="filterAlumniTable()">
+                    <option value="default">Sort: Default</option>
+                    <option value="pkg-high">Package: High to Low</option>
+                    <option value="pkg-low">Package: Low to High</option>
+                    <option value="name-asc">Name: A to Z</option>
+                </select>
+
+                <div class="dir-count-pill" id="dir-count-display">
+                    Showing {{ alumni_list|length }} Alumni
+                </div>
+            </div>
+        </div>
+
+        <!-- Line-by-Line Table Card -->
+        <div class="dir-table-card">
+            <div class="dir-table-responsive">
+                <table class="dir-table" id="alumni-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th style="min-width: 200px;">Senior / Alumni</th>
+                            <th style="min-width: 140px;">Placed Company</th>
+                            <th style="min-width: 220px;">Role & Designation</th>
+                            <th style="min-width: 120px;">Package (CTC)</th>
+                            <th style="min-width: 130px;">Difficulty</th>
+                            <th style="min-width: 240px;">Direct Connect (Email & LinkedIn)</th>
+                            <th style="min-width: 110px; text-align: center;">Experience</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alumni-table-body">
+                        {% for item in alumni_list %}
+                        {% set company_lower = item.company|lower %}
+                        <tr class="alumni-row" 
+                            data-name="{{ item.student_name|lower }}"
+                            data-company="{{ item.company }}"
+                            data-role="{{ item.role|lower }}"
+                            data-difficulty="{{ item.difficulty }}"
+                            data-package="{{ item.package_lpa|float if item.package_lpa else 0 }}"
+                            data-id="{{ item.id }}">
+                            <td style="color: #94A3B8; font-weight: 600;">{{ loop.index }}</td>
+                            
+                            <!-- Alumni Identity -->
+                            <td>
+                                <div class="alumni-person-cell">
+                                    <div class="alumni-avatar-circle">
+                                        {{ item.student_name[0] }}{{ item.student_name.split(' ')[1][0] if item.student_name.split(' ')|length > 1 else '' }}
+                                    </div>
+                                    <div class="alumni-person-meta">
+                                        <strong>{{ item.student_name }}</strong>
+                                        <span>Batch of {{ item.batch_year }} • {{ item.offer_type or 'On-Campus' }}</span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Company -->
+                            <td>
+                                <span class="company-pill {{ company_lower }}">
+                                    <i class="fa-solid fa-building"></i> {{ item.company }}
+                                </span>
+                            </td>
+
+                            <!-- Role -->
+                            <td>
+                                <span class="role-text">{{ item.role }}</span>
+                            </td>
+
+                            <!-- Package (CTC) -->
+                            <td>
+                                <span class="ctc-badge">
+                                    <i class="fa-solid fa-indian-rupee-sign"></i> {{ "%.2f"|format(item.package_lpa|float) if item.package_lpa else 'N/A' }} LPA
+                                </span>
+                            </td>
+
+                            <!-- Difficulty -->
+                            <td>
+                                <span class="diff-pill {{ item.difficulty|lower }}">
+                                    {{ item.difficulty }} Bar
+                                </span>
+                            </td>
+
+                            <!-- Direct Connect Actions: Email and LinkedIn -->
+                            <td>
+                                <div class="dir-action-group">
+                                    <!-- Email Action -->
+                                    <a href="mailto:{{ item.email }}?subject=Placement%20Mentorship%20Inquiry%20via%20AI%20Career%20Companion" 
+                                       class="btn-action-email" 
+                                       title="Send email to {{ item.student_name }}">
+                                        <i class="fa-solid fa-envelope"></i>
+                                        <span>Email</span>
+                                    </a>
+
+                                    <!-- Quick Copy Email -->
+                                    <button class="btn-action-copy" 
+                                            onclick="copyAlumniEmail('{{ item.email }}', this)" 
+                                            title="Copy email: {{ item.email }}">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+
+                                    <!-- LinkedIn Action -->
+                                    <a href="{{ item.linkedin_url }}" 
+                                       target="_blank" 
+                                       rel="noopener noreferrer" 
+                                       class="btn-action-linkedin" 
+                                       title="Connect with {{ item.student_name }} on LinkedIn">
+                                        <i class="fa-brands fa-linkedin"></i>
+                                        <span>LinkedIn</span>
+                                    </a>
+                                </div>
+                            </td>
+
+                            <!-- View Story Modal Action -->
+                            <td style="text-align: center;">
+                                <button class="btn-action-story" onclick="openAlumniStoryModal({{ item.id }})">
+                                    <i class="fa-solid fa-book-open"></i> Story
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty Search Results State -->
+            <div class="dir-empty-state" id="dir-empty-state">
+                <div class="dir-empty-icon"><i class="fa-solid fa-user-slash"></i></div>
+                <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem; color: #0F172A;">No Alumni Records Found</h3>
+                <p style="color: #64748B; font-size: 0.9rem; max-width: 420px; margin: 0 auto 1.25rem;">
+                    No placed alumni matched your search criteria. Try clearing search keywords or selecting all companies.
+                </p>
+                <button class="btn btn-outline" onclick="resetFilters()">Reset All Filters</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ALUMNI STORY MODAL -->
+    <div id="alumni-story-modal" class="modal-backdrop" style="display:none;" onclick="closeAlumniStoryModal(event)">
+        <div class="modal-card" style="max-width: 720px; padding: 2rem;" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div id="modal-avatar" style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, #2563EB, #8B5CF6); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 800;">
+                        AP
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <h2 id="modal-name" style="margin: 0; font-size: 1.35rem; font-weight: 800; color: #0F172A;">Aarav Sharma</h2>
+                            <span id="modal-company" class="company-pill amazon">Amazon</span>
+                        </div>
+                        <p id="modal-role-batch" style="margin: 0.25rem 0 0; color: #64748B; font-size: 0.875rem;">
+                            Software Development Engineer (SDE-1) • Batch of 2024
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeAlumniStoryModal()" style="background: none; border: none; font-size: 1.5rem; color: #94A3B8; cursor: pointer;">&times;</button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div id="modal-body-content" style="max-height: 60vh; overflow-y: auto; padding-right: 0.5rem;">
+                <!-- Rounds & Tips injected dynamically -->
+            </div>
+
+            <!-- Modal Actions Footer -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid #E2E8F0; flex-wrap: wrap; gap: 1rem;">
+                <button class="btn btn-outline" onclick="closeAlumniStoryModal()">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                </button>
+                <div style="display: flex; gap: 0.75rem;">
+                    <a id="modal-email-btn" href="#" class="btn-action-email" style="padding: 0.6rem 1.15rem; font-size: 0.875rem;">
+                        <i class="fa-solid fa-envelope"></i> Contact via Email
+                    </a>
+                    <a id="modal-linkedin-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-action-linkedin" style="padding: 0.6rem 1.15rem; font-size: 0.875rem;">
+                        <i class="fa-brands fa-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification for Email Copy -->
+    <div id="dir-toast" class="dir-toast">
+        <i class="fa-solid fa-circle-check" style="color: #10B981;"></i>
+        <span id="dir-toast-text">Email copied to clipboard!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="footer-brand">
+                    <img src="/static/images/logo.png" alt="AI Career Companion" class="footer-brand-logo">
+                    <span>AI Career Companion</span>
+                </div>
+                <p class="footer-desc">Designed and Developed by <strong class="footer-pnp-highlight">P&amp;P Studio</strong> in collaboration with <strong>Riya Modi &amp; Diksha Durgapal</strong> for student career guidance and placement excellence.</p>
+                <div class="footer-credits-row">
+                    <div class="credit-badge credit-badge-pnp">
+                        <img src="/static/images/pnp_logo.png" alt="P&amp;P Studio" class="credit-logo">
+                        <div class="credit-meta">
+                            <span class="credit-name">P&amp;P Studio</span>
+                            <span class="credit-role">CREATOR</span>
+                        </div>
+                    </div>
+                    <div class="credit-divider credit-divider-pnp"></div>
+                    <div class="credit-badge credit-badge-riya">
+                        <div class="credit-avatar credit-avatar-blue">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="credit-meta">
+                            <span class="credit-name">Riya Modi</span>
+                            <span class="credit-role">FACULTY GUIDE</span>
+                        </div>
+                    </div>
+                    <div class="credit-divider credit-divider-teachers"></div>
+                    <div class="credit-badge credit-badge-diksha">
+                        <div class="credit-avatar credit-avatar-rose">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <div class="credit-meta">
+                            <span class="credit-name">Diksha Durgapal</span>
+                            <span class="credit-role">FACULTY GUIDE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-links">
+                <a href="/#analyzer">Resume ATS</a>
+                <a href="/#mocktest">Mock - Test</a>
+                <a href="/#prep">Practice Tests</a>
+                <a href="/#alumni">Alumni Hub</a>
+                <a href="/alumni/directory" style="color: var(--primary); font-weight: 700;">Alumni Directory</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Directory Scripts -->
+    <script>
+        // Store raw alumni data for fast modal rendering
+        const allAlumni = {{ alumni_list|tojson }};
+
+        // Filter and Search
+        function filterAlumniTable() {
+            const searchVal = document.getElementById('dir-search-input').value.toLowerCase().trim();
+            const companyVal = document.getElementById('dir-company-filter').value;
+            const diffVal = document.getElementById('dir-difficulty-filter').value;
+            const sortVal = document.getElementById('dir-sort-filter').value;
+
+            const tbody = document.getElementById('alumni-table-body');
+            const rows = Array.from(tbody.querySelectorAll('.alumni-row'));
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                const company = row.getAttribute('data-company');
+                const role = row.getAttribute('data-role');
+                const diff = row.getAttribute('data-difficulty');
+
+                const matchesSearch = !searchVal || 
+                    name.includes(searchVal) || 
+                    company.toLowerCase().includes(searchVal) || 
+                    role.includes(searchVal);
+
+                const matchesCompany = (companyVal === 'all') || (company.toLowerCase() === companyVal.toLowerCase());
+                const matchesDiff = (diffVal === 'all') || (diff.toLowerCase() === diffVal.toLowerCase());
+
+                if (matchesSearch && matchesCompany && matchesDiff) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Sorting
+            if (sortVal !== 'default') {
+                rows.sort((a, b) => {
+                    if (sortVal === 'pkg-high') {
+                        return parseFloat(b.getAttribute('data-package')) - parseFloat(a.getAttribute('data-package'));
+                    } else if (sortVal === 'pkg-low') {
+                        return parseFloat(a.getAttribute('data-package')) - parseFloat(b.getAttribute('data-package'));
+                    } else if (sortVal === 'name-asc') {
+                        return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
+                    }
+                    return 0;
+                });
+                rows.forEach(row => tbody.appendChild(row));
+            }
+
+            // Update counter and empty state
+            document.getElementById('dir-count-display').innerText = `Showing ${visibleCount} Alumni`;
+            const emptyEl = document.getElementById('dir-empty-state');
+            const tableEl = document.getElementById('alumni-table');
+
+            if (visibleCount === 0) {
+                emptyEl.style.display = 'block';
+                tableEl.style.display = 'none';
+            } else {
+                emptyEl.style.display = 'none';
+                tableEl.style.display = 'table';
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('dir-search-input').value = '';
+            document.getElementById('dir-company-filter').value = 'all';
+            document.getElementById('dir-difficulty-filter').value = 'all';
+            document.getElementById('dir-sort-filter').value = 'default';
+            filterAlumniTable();
+        }
+
+        // Copy Email to clipboard with toast
+        function copyAlumniEmail(email, btnEl) {
+            if (!email) return;
+            navigator.clipboard.writeText(email).then(() => {
+                showToast(`Copied ${email} to clipboard!`);
+                if (btnEl) {
+                    const icon = btnEl.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fa-solid fa-check';
+                        setTimeout(() => { icon.className = 'fa-regular fa-copy'; }, 2000);
+                    }
+                }
+            }).catch(() => {
+                showToast(`Email: ${email}`);
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('dir-toast');
+            const text = document.getElementById('dir-toast-text');
+            text.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // Open Interview Story Modal
+        function openAlumniStoryModal(expId) {
+            const item = allAlumni.find(a => String(a.id) === String(expId));
+            if (!item) return;
+
+            document.getElementById('modal-name').innerText = item.student_name;
+            document.getElementById('modal-avatar').innerText = item.student_name.split(' ').map(n=>n[0]).join('').substring(0, 2);
+            
+            const compEl = document.getElementById('modal-company');
+            compEl.innerText = item.company;
+            compEl.className = `company-pill ${item.company.toLowerCase()}`;
+            
+            document.getElementById('modal-role-batch').innerText = `${item.role} • Batch of ${item.batch_year} • Package: ₹${parseFloat(item.package_lpa || 0).toFixed(2)} LPA`;
+            
+            document.getElementById('modal-email-btn').href = `mailto:${item.email}?subject=Placement%20Inquiry%20via%20Career%20Companion`;
+            document.getElementById('modal-linkedin-btn').href = item.linkedin_url;
+
+            // Render rounds & tips
+            let contentHtml = '';
+            if (item.rounds && item.rounds.length > 0) {
+                contentHtml += `<h4 style="font-size:1rem; font-weight:700; margin:1rem 0 0.75rem; color:#0F172A;"><i class="fa-solid fa-list-check" style="color:#2563EB;"></i> Interview Rounds Breakdown</h4>`;
+                contentHtml += `<div style="display:flex; flex-direction:column; gap:0.75rem;">`;
+                item.rounds.forEach((rnd, idx) => {
+                    contentHtml += `
+                        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:0.85rem 1rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+                                <strong style="color:#1E293B; font-size:0.88rem;">Round ${idx+1}: ${rnd.round_name || 'Technical Round'}</strong>
+                                <span style="font-size:0.75rem; color:#64748B; font-weight:600;">${rnd.duration_mins ? rnd.duration_mins + ' mins' : '45 mins'}</span>
+                            </div>
+                            <p style="margin:0; font-size:0.82rem; color:#475569; line-height:1.45;">${rnd.focus_areas || rnd.description || 'DSA, System Design, and Behavioral discussion.'}</p>
+                        </div>
+                    `;
+                });
+                contentHtml += `</div>`;
+            }
+
+            if (item.preparation_tips) {
+                contentHtml += `
+                    <h4 style="font-size:1rem; font-weight:700; margin:1.25rem 0 0.5rem; color:#0F172A;"><i class="fa-solid fa-lightbulb" style="color:#EAB308;"></i> Preparation Tips</h4>
+                    <div style="background:#FEFCE8; border:1px solid #FEF08A; border-radius:12px; padding:0.85rem 1rem; color:#854D0E; font-size:0.85rem; line-height:1.5;">
+                        ${item.preparation_tips}
+                    </div>
+                `;
+            }
+
+            if (item.advice_to_juniors) {
+                contentHtml += `
+                    <h4 style="font-size:1rem; font-weight:700; margin:1.25rem 0 0.5rem; color:#0F172A;"><i class="fa-solid fa-heart" style="color:#EC4899;"></i> Advice to Juniors</h4>
+                    <div style="background:#FDF2F8; border:1px solid #FBCFE8; border-radius:12px; padding:0.85rem 1rem; color:#9D174D; font-size:0.85rem; line-height:1.5;">
+                        ${item.advice_to_juniors}
+                    </div>
+                `;
+            }
+
+            document.getElementById('modal-body-content').innerHTML = contentHtml || '<p style="color:#64748B;">No extra notes recorded for this interview.</p>';
+
+            document.getElementById('alumni-story-modal').style.display = 'flex';
+        }
+
+        function closeAlumniStoryModal(e) {
+            if (e && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) return;
+            document.getElementById('alumni-story-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
