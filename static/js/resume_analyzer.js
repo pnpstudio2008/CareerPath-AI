@@ -299,10 +299,19 @@ function renderAnalysisResults(data) {
     if (statResumes) {
         const cur = parseInt(statResumes.innerText, 10) || 0;
         statResumes.innerText = cur + 1;
+        const circRes = document.getElementById('home-stat-resumes-circle');
+        if (circRes) {
+            circRes.setAttribute('stroke-dasharray', `${Math.min((cur + 1) * 33, 100)}, 100`);
+        }
     }
     const statAts = document.getElementById('home-stat-ats');
     if (statAts && ats && ats.ats_score !== undefined) {
-        statAts.innerText = `${Math.round(ats.ats_score)}%`;
+        const roundedScore = Math.round(ats.ats_score);
+        statAts.innerText = `${roundedScore}%`;
+        const circAts = document.getElementById('home-stat-ats-circle');
+        if (circAts) {
+            circAts.setAttribute('stroke-dasharray', `${roundedScore}, 100`);
+        }
     }
     // ------------------------------------
 

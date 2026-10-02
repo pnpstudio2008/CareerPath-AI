@@ -152,36 +152,76 @@
                     </div>
                 </div>
 
-                <div class="summary-stats-grid">
-                    <div class="summary-stat-card tint-blue" onclick="navigateTo('analyzer')" style="cursor:pointer;">
-                        <div class="ss-icon blue"><i class="fa-solid fa-file-circle-check"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num" id="home-stat-resumes">{{ user.resumes_analyzed if user else 1 }}</div>
-                            <div class="ss-label">Resumes Analyzed</div>
+                <div class="summary-circular-grid">
+                    <!-- 1. Resumes Analyzed Circular Graph -->
+                    <div class="circ-stat-card tint-blue" onclick="navigateTo('analyzer')" style="cursor:pointer;" title="Click to view & upload resumes">
+                        <div class="circ-chart-wrap">
+                            <svg viewBox="0 0 42 42" class="circ-svg">
+                                <circle class="circ-bg" cx="21" cy="21" r="15.9155" />
+                                <circle class="circ-fill blue" id="home-stat-resumes-circle" cx="21" cy="21" r="15.9155" 
+                                    stroke-dasharray="{{ ((user.resumes_analyzed if user else 1) * 33) if (user.resumes_analyzed if user else 1) <= 3 else 100 }}, 100" />
+                            </svg>
+                            <div class="circ-inner">
+                                <span class="circ-num" id="home-stat-resumes">{{ user.resumes_analyzed if user else 1 }}</span>
+                            </div>
+                        </div>
+                        <div class="circ-meta">
+                            <span class="circ-title">Resumes</span>
+                            <span class="circ-sub"><i class="fa-solid fa-file-shield text-primary"></i> Analyzed</span>
                         </div>
                     </div>
 
-                    <div class="summary-stat-card tint-green" onclick="navigateTo('prep')" style="cursor:pointer;">
-                        <div class="ss-icon green"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num" id="home-stat-quizzes">{{ user.quizzes_completed if user else 0 }}</div>
-                            <div class="ss-label">Mock Tests Taken</div>
+                    <!-- 2. Mock Tests Taken Circular Graph -->
+                    <div class="circ-stat-card tint-green" onclick="navigateTo('prep')" style="cursor:pointer;" title="Click to take Adaptive Mock Tests">
+                        <div class="circ-chart-wrap">
+                            <svg viewBox="0 0 42 42" class="circ-svg">
+                                <circle class="circ-bg" cx="21" cy="21" r="15.9155" />
+                                <circle class="circ-fill green" id="home-stat-quizzes-circle" cx="21" cy="21" r="15.9155" 
+                                    stroke-dasharray="{{ ((user.quizzes_completed if user else 1) * 20) if (user.quizzes_completed if user else 1) <= 5 else 100 }}, 100" />
+                            </svg>
+                            <div class="circ-inner">
+                                <span class="circ-num" id="home-stat-quizzes">{{ user.quizzes_completed if user else 0 }}</span>
+                            </div>
+                        </div>
+                        <div class="circ-meta">
+                            <span class="circ-title">Mock Tests</span>
+                            <span class="circ-sub"><i class="fa-solid fa-chart-line text-success"></i> Completed</span>
                         </div>
                     </div>
 
-                    <div class="summary-stat-card tint-purple" onclick="navigateTo('analyzer')" style="cursor:pointer;">
-                        <div class="ss-icon purple"><i class="fa-solid fa-bullseye"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num" id="home-stat-ats">{{ user.ats_score if user and user.ats_score > 0 else 82 }}%</div>
-                            <div class="ss-label">Best ATS Score</div>
+                    <!-- 3. Best ATS Score Circular Graph -->
+                    <div class="circ-stat-card tint-purple" onclick="navigateTo('analyzer')" style="cursor:pointer;" title="Click to view ATS Score Report">
+                        <div class="circ-chart-wrap">
+                            <svg viewBox="0 0 42 42" class="circ-svg">
+                                <circle class="circ-bg" cx="21" cy="21" r="15.9155" />
+                                <circle class="circ-fill purple" id="home-stat-ats-circle" cx="21" cy="21" r="15.9155" 
+                                    stroke-dasharray="{{ user.ats_score if user and user.ats_score > 0 else 82 }}, 100" />
+                            </svg>
+                            <div class="circ-inner">
+                                <span class="circ-num" id="home-stat-ats">{{ user.ats_score if user and user.ats_score > 0 else 82 }}%</span>
+                            </div>
+                        </div>
+                        <div class="circ-meta">
+                            <span class="circ-title">ATS Score</span>
+                            <span class="circ-sub"><i class="fa-solid fa-wand-magic-sparkles text-purple"></i> Best Rating</span>
                         </div>
                     </div>
 
-                    <div class="summary-stat-card tint-amber" onclick="navigateTo('analyzer')" style="cursor:pointer;">
-                        <div class="ss-icon orange"><i class="fa-solid fa-bookmark"></i></div>
-                        <div class="ss-info">
-                            <div class="ss-num" id="home-stat-companies">45</div>
-                            <div class="ss-label">Recruiter Profiles</div>
+                    <!-- 4. Recruiter Profiles Circular Graph -->
+                    <div class="circ-stat-card tint-amber" onclick="navigateTo('analyzer')" style="cursor:pointer;" title="Click to view 45 Recruiter Profiles">
+                        <div class="circ-chart-wrap">
+                            <svg viewBox="0 0 42 42" class="circ-svg">
+                                <circle class="circ-bg" cx="21" cy="21" r="15.9155" />
+                                <circle class="circ-fill amber" id="home-stat-companies-circle" cx="21" cy="21" r="15.9155" 
+                                    stroke-dasharray="100, 100" />
+                            </svg>
+                            <div class="circ-inner">
+                                <span class="circ-num" id="home-stat-companies">45</span>
+                            </div>
+                        </div>
+                        <div class="circ-meta">
+                            <span class="circ-title">Recruiters</span>
+                            <span class="circ-sub"><i class="fa-solid fa-building text-amber"></i> Profiles</span>
                         </div>
                     </div>
                 </div>
