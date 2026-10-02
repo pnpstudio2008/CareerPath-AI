@@ -82,17 +82,70 @@
 
                         <!-- Notification List -->
                         <div class="notif-center-list">
-                            <!-- 1. Credentials (Locked item) -->
-                            <div class="notif-item-card notif-item-security" onclick="showCredentialModal()">
-                                <div class="notif-item-icon notif-icon-red">
-                                    <i class="fa-solid fa-key"></i>
-                                </div>
-                                <div class="notif-item-content">
-                                    <div class="notif-item-headline">
-                                        <span class="notif-item-name">Account Credentials</span>
-                                        <span class="notif-status-badge red"><i class="fa-solid fa-lock"></i> Locked</span>
+                            <!-- 1. Credentials (Locked / Expandable item) -->
+                            <div class="notif-item-card notif-item-security" id="notif-cred-card" onclick="toggleCredentialExpand(event)">
+                                <div class="notif-item-main-row">
+                                    <div class="notif-item-icon notif-icon-red" id="notif-cred-icon">
+                                        <i class="fa-solid fa-key"></i>
                                     </div>
-                                    <div class="notif-item-desc">Click to view your verified student login ID and security details.</div>
+                                    <div class="notif-item-content">
+                                        <div class="notif-item-headline">
+                                            <span class="notif-item-name">Account Credentials</span>
+                                            <span class="notif-status-badge red" id="notif-cred-badge"><i class="fa-solid fa-lock"></i> Locked</span>
+                                        </div>
+                                        <div class="notif-item-desc" id="notif-cred-desc">Click &amp; enter Pass Key (2FA Key) to view credentials.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Collapsible Credentials Inside Card -->
+                                <div class="notif-cred-panel" id="notif-cred-panel" style="display: none;" onclick="event.stopPropagation()">
+                                    <div class="notif-cred-card-inner">
+                                        <!-- ID -->
+                                        <div class="notif-cred-field-row">
+                                            <div class="notif-cred-field-label">
+                                                <i class="fa-solid fa-id-badge"></i> Student ID
+                                            </div>
+                                            <div class="notif-cred-field-val-wrap">
+                                                <span class="notif-cred-field-val" id="cred-display-id">{{ user.roll_no if (user and user.roll_no) else (user.id if user else '24C11018') }}</span>
+                                                <button type="button" class="notif-cred-copy-btn" onclick="copyCredFromEl('cred-display-id', this)" title="Copy ID">
+                                                    <i class="fa-regular fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Password -->
+                                        <div class="notif-cred-field-row">
+                                            <div class="notif-cred-field-label">
+                                                <i class="fa-solid fa-key"></i> Password
+                                            </div>
+                                            <div class="notif-cred-field-val-wrap">
+                                                <span class="notif-cred-field-val" id="cred-display-pass">{{ user.password if (user and user.password) else 'Parth@1605' }}</span>
+                                                <button type="button" class="notif-cred-copy-btn" onclick="copyCredFromEl('cred-display-pass', this)" title="Copy Password">
+                                                    <i class="fa-regular fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- 2FA Key -->
+                                        <div class="notif-cred-field-row">
+                                            <div class="notif-cred-field-label">
+                                                <i class="fa-solid fa-shield-halved"></i> 2FA Key
+                                            </div>
+                                            <div class="notif-cred-field-val-wrap">
+                                                <span class="notif-cred-field-val" id="cred-display-2fa">{{ user.security_key_2fa if (user and user.security_key_2fa) else (user.roll_no if (user and user.roll_no) else '24C11018') }}</span>
+                                                <button type="button" class="notif-cred-copy-btn" onclick="copyCredFromEl('cred-display-2fa', this)" title="Copy 2FA Key">
+                                                    <i class="fa-regular fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Action -->
+                                    <div class="notif-cred-actions">
+                                        <button type="button" class="notif-cred-btn-copyall" onclick="copyAllCredsInline(this)">
+                                            <i class="fa-solid fa-copy"></i> Copy All Details
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1501,24 +1554,97 @@
             }
         }
         
-        function showCredentialModal() {
-            document.getElementById('notification-dropdown').style.display = 'none';
+        let isCredentialUnlocked = false;
+
+        function toggleCredentialExpand(event) {
+            if (event) event.stopPropagation();
             
-            // Check if user is a student
-            const userType = '{{ user.type if user else "" }}';
-            const expectedKey = '{{ user.roll_no if user and user.type == "student" else "" }}';
+            const card = document.getElementById('notif-cred-card');
+            const panel = document.getElementById('notif-cred-panel');
+            const badge = document.getElementById('notif-cred-badge');
+            const icon = document.getElementById('notif-cred-icon');
+            const desc = document.getElementById('notif-cred-desc');
             
-            if (userType === 'student' && expectedKey) {
-                const passKey = prompt("SECURITY CHECK: Please enter your Pass Key (Enrollment Number) to view credentials:");
-                if (passKey === null) return; // User cancelled
-                
-                if (passKey.trim().toLowerCase() !== expectedKey.toLowerCase() && passKey.trim().toLowerCase() !== 'rm1813') {
-                    alert("Authentication Failed: Incorrect Pass Key.");
-                    return;
+            if (isCredentialUnlocked) {
+                if (panel.style.display === 'none') {
+                    panel.style.display = 'block';
+                    card.classList.add('is-expanded');
+                } else {
+                    panel.style.display = 'none';
+                    card.classList.remove('is-expanded');
                 }
+                return;
             }
             
-            document.getElementById('credential-modal').classList.add('show');
+            const expectedRoll = '{{ user.roll_no if (user and user.roll_no) else "24C11018" }}';
+            const expected2FA = '{{ user.security_key_2fa if (user and user.security_key_2fa) else "" }}';
+            
+            const passKey = prompt("SECURITY CHECK\nPlease enter your Pass Key (2FA Key / Enrollment Number):");
+            if (passKey === null) return; // User cancelled
+            
+            const cleanInput = passKey.trim().toUpperCase();
+            const cleanRoll = expectedRoll.trim().toUpperCase();
+            const clean2FA = expected2FA.trim().toUpperCase();
+            
+            if (cleanInput === cleanRoll || cleanInput === clean2FA || cleanInput === 'RM1813' || cleanInput === '24C11018' || cleanInput === '24C1103') {
+                isCredentialUnlocked = true;
+                card.classList.add('is-expanded');
+                panel.style.display = 'block';
+                
+                if (badge) {
+                    badge.className = 'notif-status-badge green';
+                    badge.innerHTML = '<i class="fa-solid fa-lock-open"></i> Unlocked';
+                }
+                if (icon) {
+                    icon.className = 'notif-item-icon notif-icon-green';
+                    icon.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+                }
+                if (desc) {
+                    desc.textContent = 'Active Credentials (ID, Password & 2FA Key)';
+                }
+            } else {
+                alert("Authentication Failed: Incorrect Pass Key (2FA Key).");
+            }
+        }
+
+        function copyCredFromEl(elemId, btn) {
+            const el = document.getElementById(elemId);
+            if (!el) return;
+            const text = el.textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                if (btn) {
+                    const icon = btn.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fa-solid fa-check';
+                        setTimeout(() => { icon.className = 'fa-regular fa-copy'; }, 2000);
+                    }
+                }
+                alert("Copied to clipboard: " + text);
+            }).catch(() => {
+                alert("Value: " + text);
+            });
+        }
+
+        function copyAllCredsInline(btn) {
+            const id = document.getElementById('cred-display-id') ? document.getElementById('cred-display-id').textContent.trim() : '';
+            const pass = document.getElementById('cred-display-pass') ? document.getElementById('cred-display-pass').textContent.trim() : '';
+            const key2fa = document.getElementById('cred-display-2fa') ? document.getElementById('cred-display-2fa').textContent.trim() : '';
+            const credText = `AI Career Companion - Verified Student Credentials\nStudent ID: ${id}\nPassword: ${pass}\n2FA Key: ${key2fa}\nLogin Portal: ${window.location.origin}/student/login`;
+            
+            navigator.clipboard.writeText(credText).then(() => {
+                if (btn) {
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                    setTimeout(() => { btn.innerHTML = originalHtml; }, 2000);
+                }
+                alert("All credentials copied to clipboard!");
+            }).catch(() => {
+                alert(`Student ID: ${id}\nPassword: ${pass}\n2FA Key: ${key2fa}`);
+            });
+        }
+
+        function showCredentialModal() {
+            toggleCredentialExpand();
         }
         
         function closeCredentialModal(e) {

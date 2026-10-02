@@ -2096,6 +2096,135 @@ p {
     transition: all 0.18s ease;
 }
 
+.notif-item-card.notif-item-security {
+    flex-direction: column;
+}
+
+.notif-item-card.is-expanded {
+    background: #FFFFFF;
+    border-color: #93C5FD;
+    box-shadow: 0 8px 24px -4px rgba(37, 99, 235, 0.12);
+}
+
+.notif-item-main-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.notif-cred-panel {
+    width: 100%;
+    margin-top: 0.65rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed #CBD5E1;
+    animation: notifCredSlideDown 0.22s ease-out;
+}
+
+@keyframes notifCredSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.notif-cred-card-inner {
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 0.65rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.notif-cred-field-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.notif-cred-field-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #64748B;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.notif-cred-field-val-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.notif-cred-field-val {
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: #0F172A;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    padding: 0.18rem 0.5rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+}
+
+.notif-cred-copy-btn {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #2563EB;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.notif-cred-copy-btn:hover {
+    background: #DBEAFE;
+    color: #1D4ED8;
+    transform: scale(1.05);
+}
+
+.notif-cred-actions {
+    margin-top: 0.55rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.notif-cred-btn-copyall {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    transition: all 0.15s ease;
+}
+
+.notif-cred-btn-copyall:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
 .notif-item-card:hover {
     background: #FFFFFF;
     border-color: #CBD5E1;

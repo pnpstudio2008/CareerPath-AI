@@ -133,6 +133,7 @@ def index():
             "resumes_analyzed": uploads_cnt,
             "readiness_status": (student_db.get('readiness_status') if student_db else 'In Progress') or 'In Progress',
             "target_company": (student_db.get('target_company') if student_db else 'Top Tech Recruiters') or 'Top Tech Recruiters',
+            "security_key_2fa": (student_db.get('security_key_2fa') if student_db else None) or (student_db.get('roll_no') if student_db else None) or session.get('student_roll_no', '24C11018'),
             "dashboard_url": "/student/profile"
         }
         return render_template('index.html', user=current_user)
