@@ -2004,14 +2004,14 @@ p {
 .notif-center-panel {
     position: absolute;
     right: -10px;
-    top: calc(100% + 18px);
+    top: calc(100% + 10px);
     width: 370px;
     max-width: calc(100vw - 28px);
     background: #FFFFFF;
     border: 2px solid #E2E8F0;
-    border-radius: 24px;
+    border-radius: 20px;
     box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.04);
-    padding: 1.35rem 1.15rem 1.15rem;
+    padding: 1.25rem 1.15rem 1.15rem;
     z-index: 1050;
     text-align: left;
     display: none;
@@ -2027,27 +2027,6 @@ p {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
-}
-
-/* Floating Bell Circle on Top (matching user's sketch) */
-.notif-center-bell-badge {
-    position: absolute;
-    top: -24px;
-    right: 28px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #FEF3C7;
-    border: 2px solid #F59E0B;
-    color: #D97706;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.25);
-    z-index: 10;
-    cursor: default;
-    pointer-events: none;
 }
 
 /* Header */
@@ -2287,9 +2266,6 @@ p {
         max-width: 350px;
         border-radius: 20px;
         padding: 1.25rem 1rem 1rem;
-    }
-    .notif-center-bell-badge {
-        right: 75px;
     }
 }
 
