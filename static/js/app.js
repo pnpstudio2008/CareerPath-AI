@@ -199,7 +199,7 @@ function initHeroDarkElementsParallax() {
         return;
     }
 
-    const heroes = document.querySelectorAll('.analyzer-hero, .saas-hero');
+    const heroes = document.querySelectorAll('.analyzer-hero');
     if (!heroes.length) return;
 
     heroes.forEach(hero => {
