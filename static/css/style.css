@@ -2394,13 +2394,22 @@ p {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .notif-center-panel {
-        right: -65px;
-        width: calc(100vw - 30px);
-        max-width: 350px;
-        border-radius: 20px;
-        padding: 1.25rem 1rem 1rem;
+        position: fixed !important;
+        top: 66px !important;
+        left: 12px !important;
+        right: 12px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: calc(100vw - 24px) !important;
+        max-width: 380px !important;
+        max-height: calc(100vh - 80px) !important;
+        overflow-y: auto !important;
+        border-radius: 20px !important;
+        padding: 1.2rem 1.05rem 1rem !important;
+        box-shadow: 0 24px 50px -10px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.06) !important;
+        z-index: 1099 !important;
     }
 }
 
