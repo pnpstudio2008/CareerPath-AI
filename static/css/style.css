@@ -1725,6 +1725,12 @@ p {
     gap: 1.25rem;
 }
 
+.nav-left-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
 .saas-brand {
     display: flex;
     align-items: center;
@@ -2447,16 +2453,30 @@ p {
 
 .saas-mobile-toggle {
     display: none;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     border: 1px solid #E2E8F0;
     background: #FFFFFF;
     color: #0F172A;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.15rem;
     cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    flex-shrink: 0;
+}
+
+.saas-mobile-toggle:hover {
+    background: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #2563EB;
+}
+
+.saas-mobile-toggle:active {
+    transform: scale(0.94);
+    background: #EFF6FF;
 }
 
 /* --------------------------------------------------------------------------
@@ -3193,6 +3213,41 @@ p {
     padding-right: 0.5rem;
 }
 
+.summary-platform-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    margin-bottom: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.summary-platform-badge i {
+    font-size: 0.85rem;
+    color: #2563EB;
+}
+
+.summary-badge-title {
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: #1E40AF;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.summary-badge-sub {
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: #64748B;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding-left: 0.45rem;
+    border-left: 1px solid #CBD5E1;
+}
+
 .summary-greeting-label {
     display: block;
     font-size: 0.84rem;
@@ -3513,8 +3568,24 @@ p {
 }
 
 @media (max-width: 992px) {
+    .nav-left-group {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }
     .saas-mobile-toggle {
         display: inline-flex;
+    }
+    .saas-brand {
+        gap: 0;
+    }
+    .saas-brand-logo-wrap {
+        width: 42px;
+        height: 42px;
+    }
+    .saas-brand-logo-wrap .brand-logo-img {
+        width: 32px;
+        height: 32px;
     }
     .nav-menu.saas-nav-menu {
         display: none;
@@ -3528,10 +3599,48 @@ p {
         left: 1rem;
         right: 1rem;
         background: #FFFFFF;
-        border-radius: 18px;
+        border: 1px solid #E2E8F0;
+        border-radius: 20px;
         padding: 0.75rem;
-        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
-        z-index: 1020;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
+        z-index: 1050;
+        gap: 0.35rem;
+    }
+    .nav-menu.saas-nav-menu.mobile-open .nav-link.saas-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.8rem 1.15rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1E293B;
+        border-radius: 12px;
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        text-decoration: none;
+        transition: all 0.18s ease;
+    }
+    .nav-menu.saas-nav-menu.mobile-open .nav-link.saas-nav-link i {
+        font-size: 1.05rem;
+        color: #2563EB;
+        width: 22px;
+        text-align: center;
+    }
+    .nav-menu.saas-nav-menu.mobile-open .nav-link.saas-nav-link:hover,
+    .nav-menu.saas-nav-menu.mobile-open .nav-link.saas-nav-link:active {
+        background: #EFF6FF;
+        color: #2563EB;
+        border-color: #BFDBFE;
+    }
+    .nav-menu.saas-nav-menu.mobile-open .nav-link.saas-nav-link.active {
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+        color: #FFFFFF;
+        border-color: #2563EB;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+    .nav-menu.saas-nav-menu.mobile-open .nav-link.saas-nav-link.active i {
+        color: #FFFFFF;
     }
     .saas-hero {
         grid-template-columns: 1fr;
@@ -3624,10 +3733,25 @@ p {
         padding: 1.25rem 1rem 2.5rem;
     }
     .saas-nav-container {
-        padding: 0 1rem;
+        padding: 0 0.85rem;
     }
     .saas-profile-name {
         display: none;
+    }
+    .summary-platform-badge {
+        padding: 0.28rem 0.65rem;
+        gap: 0.4rem;
+        margin-bottom: 0.45rem;
+    }
+    .summary-badge-title {
+        font-size: 0.72rem;
+    }
+    .summary-badge-sub {
+        font-size: 0.62rem;
+        padding-left: 0.35rem;
+    }
+    .summary-user-name {
+        font-size: 1.35rem;
     }
     .saas-hero {
         padding: 1.75rem 1.25rem;

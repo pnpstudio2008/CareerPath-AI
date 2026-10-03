@@ -38,14 +38,18 @@
     <!-- Top Navigation Header -->
     <header class="navbar saas-navbar">
         <div class="nav-container saas-nav-container">
-            <!-- Brand Left -->
-            <div class="nav-brand saas-brand" onclick="navigateTo('home')">
-                <div class="saas-brand-logo-wrap">
-                    <img src="/static/images/logo.png" alt="AI Career Companion Logo" class="brand-logo-img">
-                </div>
-                <div class="brand-text">
-                    <span class="brand-title">AI Career Companion</span>
-                    <span class="brand-subtitle">By Riya Modi &amp; Diksha Durgapal</span>
+            <!-- Left: 1st Navigation Panel (Mobile Toggle), 2nd Logo -->
+            <div class="nav-left-group">
+                <!-- 1st: Navigation Panel Toggle Button (for Mobile) -->
+                <button class="saas-mobile-toggle" id="mobile-toggle" aria-label="Toggle Navigation Menu" title="Open Navigation Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <!-- 2nd: Logo (Website Name removed from navbar as requested) -->
+                <div class="nav-brand saas-brand" onclick="navigateTo('home')" title="AI Career Companion">
+                    <div class="saas-brand-logo-wrap">
+                        <img src="/static/images/logo.png" alt="AI Career Companion Logo" class="brand-logo-img">
+                    </div>
                 </div>
             </div>
 
@@ -238,11 +242,6 @@
                     </div>
                     {% endif %}
                 </div>
-
-                <!-- Mobile Menu Toggle -->
-                <button class="saas-mobile-toggle" id="mobile-toggle" aria-label="Toggle Menu">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
             </div>
         </div>
     </header>
@@ -259,12 +258,18 @@
             <div class="saas-dashboard-summary">
                 <div class="summary-welcome">
                     <div>
+                        <!-- Full Name of Website in Capital -->
+                        <div class="summary-platform-badge">
+                            <i class="fa-solid fa-graduation-cap text-primary"></i>
+                            <span class="summary-badge-title">AI CAREER COMPANION</span>
+                            <span class="summary-badge-sub">BY RIYA MODI &amp; DIKSHA DURGAPAL</span>
+                        </div>
                         <span class="summary-greeting-label" id="dynamic-greeting-text">Good Morning,</span>
                         <h2 class="summary-user-name">
-                            <span>{{ user.name if user else 'Student' }}</span>
+                            <span>{{ (user.name if user else 'STUDENT')|upper }}</span>
                             <span class="summary-verified-dot" title="Verified Active Session"><i class="fa-solid fa-sparkles"></i></span>
                         </h2>
-                        <p class="summary-subtext">Let's prepare and get you closer to your dream career.</p>
+                        <p class="summary-subtext">Welcome to <strong>AI CAREER COMPANION</strong>. Let's prepare and get you closer to your dream career.</p>
                     </div>
                 </div>
 
