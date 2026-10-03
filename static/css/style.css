@@ -3907,35 +3907,59 @@ p {
 }
 
 .analyzer-hero-preview-dock {
-    display: grid;
-    grid-template-columns: 185px 235px;
-    gap: 1.15rem;
-    align-items: stretch;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.35rem;
+    padding: 1.5rem 0.5rem;
     width: 100%;
-    max-width: 440px;
+    max-width: 470px;
+    perspective: 1000px;
 }
 
 .analyzer-preview-card {
-    background: #F8FAFC;
+    background: #FFFFFF;
     border: 1px solid #E2E8F0;
-    border-radius: 18px;
-    padding: 1.25rem 1.15rem;
-    box-shadow: 0 4px 16px -4px rgba(15, 23, 42, 0.06);
+    border-radius: 20px;
+    padding: 1.35rem 1.2rem;
+    box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.1), 0 2px 8px rgba(15, 23, 42, 0.04);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.analyzer-preview-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.1);
-    background: #FFFFFF;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .ats-preview-card {
+    width: 185px;
+    flex-shrink: 0;
     text-align: center;
     align-items: center;
+    transform: rotate(-4.5deg) translateY(8px);
+    transform-origin: center right;
+    box-shadow: -8px 18px 36px -10px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
+    z-index: 2;
+}
+
+.ats-preview-card:hover {
+    transform: rotate(-1deg) translateY(-4px) scale(1.03);
+    box-shadow: -10px 24px 48px -10px rgba(15, 23, 42, 0.18), 0 6px 16px rgba(15, 23, 42, 0.06);
+    z-index: 5;
+}
+
+.company-preview-card {
+    width: 240px;
+    flex-shrink: 0;
+    transform: rotate(3.5deg) translateY(-8px);
+    transform-origin: center left;
+    box-shadow: 8px 18px 36px -10px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.04);
+    z-index: 1;
+}
+
+.company-preview-card:hover {
+    transform: rotate(0.5deg) translateY(-14px) scale(1.03);
+    box-shadow: 10px 24px 48px -10px rgba(15, 23, 42, 0.18), 0 6px 16px rgba(15, 23, 42, 0.06);
+    z-index: 5;
 }
 
 .apc-header {
@@ -4268,9 +4292,11 @@ p {
         width: 100%;
     }
     .analyzer-hero-preview-dock {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        max-width: 440px;
+        flex-direction: row;
+        justify-content: center;
+        max-width: 470px;
         margin: 0 auto;
+        padding: 1rem 0;
     }
 }
 
@@ -4285,8 +4311,36 @@ p {
         font-size: 1.65rem;
     }
     .analyzer-hero-preview-dock {
-        grid-template-columns: 1fr;
-        max-width: 320px;
+        flex-direction: row;
+        justify-content: center;
+        gap: 1.15rem;
+        max-width: 100%;
+    }
+    .ats-preview-card {
+        width: 160px;
+        transform: rotate(-3.5deg) translateY(6px);
+    }
+    .company-preview-card {
+        width: 200px;
+        transform: rotate(2.5deg) translateY(-6px);
+    }
+}
+
+@media (max-width: 480px) {
+    .analyzer-hero-preview-dock {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.15rem;
+    }
+    .ats-preview-card {
+        width: 100%;
+        max-width: 270px;
+        transform: rotate(-1.5deg);
+    }
+    .company-preview-card {
+        width: 100%;
+        max-width: 270px;
+        transform: rotate(1.5deg);
     }
 }
 
