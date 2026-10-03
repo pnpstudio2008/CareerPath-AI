@@ -421,45 +421,98 @@
         
         <section id="section-analyzer" class="app-section">
             
-            <!-- ANALYZER HERO SECTION -->
+            <!-- ANALYZER HERO CARD (Structured Card Layout matching Home Page) -->
             <div class="analyzer-hero">
+                <!-- Left Column: Content & Quick Actions -->
                 <div class="analyzer-hero-left">
-                    <div class="a-badge">
-                        <i class="fa-solid fa-sparkles"></i> AI-Powered Resume Analysis
+                    <div class="analyzer-hero-badge">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>AI-Powered Resume Analysis</span>
                     </div>
-                    <h2 class="a-title">AI Resume PDF Analyzer &<br><span class="gradient-text">45-Company Matcher</span></h2>
-                    <p class="a-desc">
+
+                    <h1 class="analyzer-hero-title">
+                        AI Resume PDF Analyzer &amp;<br>
+                        <span class="gradient-text">45-Company Matcher</span>
+                    </h1>
+
+                    <p class="analyzer-hero-desc">
                         Upload your resume PDF to extract skills, evaluate ATS readiness, and compare directly against 45 company hiring requirements and candidate cohort benchmarks.
                     </p>
-                </div>
-                <div class="analyzer-hero-right">
-<!-- Floating Dashboard Cards (Dynamic JS updated) -->
-                    <div class="a-float-card ats-card">
-                        <div style="font-size: 0.8rem; font-weight: 600; text-align: center; margin-bottom: 0.8rem; color: var(--text-primary);">ATS Score</div>
-                        <div id="hero-ats-circle" class="v-score-circle large" style="margin: 0 auto; width: 80px; height: 80px; border: 4px solid #E2E8F0; transition: border-color 0.5s ease;">
-                            <span id="hero-ats-score" style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">--</span>
-                        </div>
-                        <div id="hero-ats-label" style="color: #64748B; font-size: 0.85rem; font-weight: 700; text-align: center; margin-top: 0.8rem; transition: color 0.5s ease;">
-                            <i class="fa-solid fa-clock"></i> Awaiting Resume
-                        </div>
+
+                    <div class="analyzer-hero-cta-group">
+                        <button type="button" class="btn-saas-primary" onclick="document.getElementById('resume-file-input').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Upload Resume PDF</span>
+                            <i class="fa-solid fa-arrow-right btn-arrow-icon"></i>
+                        </button>
+                        <button type="button" class="btn-saas-secondary" onclick="document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <span>Go to Dropzone</span>
+                        </button>
                     </div>
-                    
-                    <div class="a-float-card company-card" id="hero-company-matches">
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
+
+                    <div class="analyzer-hero-trust">
+                        <div class="aht-item"><i class="fa-solid fa-shield-halved text-success"></i> <span>Client-Side Privacy</span></div>
+                        <div class="aht-item"><i class="fa-solid fa-bolt text-primary"></i> <span>Instant ATS Score</span></div>
+                        <div class="aht-item"><i class="fa-solid fa-building text-purple"></i> <span>45 Company Matchers</span></div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Structured Live Preview Dock -->
+                <div class="analyzer-hero-right">
+                    <div class="analyzer-hero-preview-dock">
+                        <!-- ATS Live Metric Card -->
+                        <div class="analyzer-preview-card ats-preview-card">
+                            <div class="apc-header">
+                                <span class="apc-title"><i class="fa-solid fa-gauge-high"></i> ATS Readiness</span>
+                                <span class="apc-tag">Live Metric</span>
+                            </div>
+                            <div class="apc-dial-wrap">
+                                <div id="hero-ats-circle" class="v-score-circle large" style="margin: 0 auto; width: 84px; height: 84px; border: 4px solid #E2E8F0; transition: border-color 0.5s ease; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #F8FAFC;">
+                                    <span id="hero-ats-score" style="font-size: 1.85rem; font-weight: 800; color: #0F172A;">--</span>
+                                </div>
+                            </div>
+                            <div id="hero-ats-label" style="color: #64748B; font-size: 0.82rem; font-weight: 700; text-align: center; margin-top: 0.65rem; transition: color 0.5s ease;">
+                                <i class="fa-solid fa-clock"></i> Awaiting Resume
+                            </div>
                         </div>
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
-                        </div>
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
-                        </div>
-                        <div class="c-match-row">
-                            <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
-                            <div class="c-info"><span class="c-name" style="color:#94A3B8;">Pending</span><span class="c-score" style="color:#CBD5E1;">-- Match</span></div>
+
+                        <!-- Recruiter Benchmark Card -->
+                        <div class="analyzer-preview-card company-preview-card">
+                            <div class="apc-header">
+                                <span class="apc-title"><i class="fa-solid fa-building-circle-check"></i> Benchmark</span>
+                                <span class="apc-tag blue">45 Recruiters</span>
+                            </div>
+                            <div class="c-match-list" id="hero-company-matches">
+                                <div class="c-match-row">
+                                    <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                                    <div class="c-info">
+                                        <span class="c-name" style="color:#0F172A;">Pending</span>
+                                        <span class="c-score" style="color:#94A3B8;">-- Match</span>
+                                    </div>
+                                </div>
+                                <div class="c-match-row">
+                                    <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                                    <div class="c-info">
+                                        <span class="c-name" style="color:#0F172A;">Pending</span>
+                                        <span class="c-score" style="color:#94A3B8;">-- Match</span>
+                                    </div>
+                                </div>
+                                <div class="c-match-row">
+                                    <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                                    <div class="c-info">
+                                        <span class="c-name" style="color:#0F172A;">Pending</span>
+                                        <span class="c-score" style="color:#94A3B8;">-- Match</span>
+                                    </div>
+                                </div>
+                                <div class="c-match-row">
+                                    <div class="c-icon" style="color: #94A3B8; background: #F1F5F9;">?</div>
+                                    <div class="c-info">
+                                        <span class="c-name" style="color:#0F172A;">Pending</span>
+                                        <span class="c-score" style="color:#94A3B8;">-- Match</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
