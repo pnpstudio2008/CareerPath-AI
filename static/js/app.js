@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     fetchSampleResumes();
     initDropZone();
+    initHeroDarkElementsParallax();
 
     // Default load faculty and alumni data
     if (typeof fetchAlumniExperiences === 'function') fetchAlumniExperiences();
@@ -188,3 +189,104 @@ function loadSampleResume(key) {
 
     showToast(`Loaded sample PDF profile: ${sample.title}`, 'success');
 }
+
+/* ==========================================================================
+   HERO INTERACTIVE DARK ELEMENTS - ULTRA-SMOOTH MOUSE CURSOR PARALLAX
+   ========================================================================== */
+function initHeroDarkElementsParallax() {
+    const heroes = document.querySelectorAll('.analyzer-hero, .saas-hero');
+    if (!heroes.length) return;
+
+    heroes.forEach(hero => {
+        const layer = hero.querySelector('.hero-dark-elements-layer');
+        if (!layer) return;
+
+        const elements = layer.querySelectorAll('.hero-dark-element');
+        const spotlight = layer.querySelector('.hero-dark-spotlight');
+
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        let targetSpotX = 50;
+        let targetSpotY = 50;
+        let currentSpotX = 50;
+        let currentSpotY = 50;
+
+        let isHovered = false;
+        let isLoopRunning = false;
+
+        function onMouseMove(e) {
+            const rect = hero.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+
+            // Normalized coordinates (-1 to +1 from hero center)
+            const normX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+            const normY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+            targetX = Math.max(-1, Math.min(1, normX));
+            targetY = Math.max(-1, Math.min(1, normY));
+
+            targetSpotX = ((e.clientX - rect.left) / rect.width) * 100;
+            targetSpotY = ((e.clientY - rect.top) / rect.height) * 100;
+
+            isHovered = true;
+            if (!isLoopRunning) {
+                isLoopRunning = true;
+                requestAnimationFrame(updateLoop);
+            }
+        }
+
+        function onMouseLeave() {
+            isHovered = false;
+            targetX = 0;
+            targetY = 0;
+            targetSpotX = 50;
+            targetSpotY = 50;
+            if (!isLoopRunning) {
+                isLoopRunning = true;
+                requestAnimationFrame(updateLoop);
+            }
+        }
+
+        function updateLoop() {
+            // Extreme smooth damping factor (0.055 provides silky smooth inertia and glide)
+            const ease = 0.055;
+            currentX += (targetX - currentX) * ease;
+            currentY += (targetY - currentY) * ease;
+            currentSpotX += (targetSpotX - currentSpotX) * 0.07;
+            currentSpotY += (targetSpotY - currentSpotY) * 0.07;
+
+            // Update each dark element
+            elements.forEach(el => {
+                const depthX = parseFloat(el.getAttribute('data-depth-x') || 25);
+                const depthY = parseFloat(el.getAttribute('data-depth-y') || 25);
+                const rot = parseFloat(el.getAttribute('data-rotate') || 0);
+
+                const tx = (currentX * depthX).toFixed(2);
+                const ty = (currentY * depthY).toFixed(2);
+                const r = rot ? ` rotate(${(currentX * rot).toFixed(2)}deg)` : '';
+
+                el.style.transform = `translate3d(${tx}px, ${ty}px, 0px)${r}`;
+            });
+
+            // Update ambient spotlight
+            if (spotlight) {
+                spotlight.style.background = `radial-gradient(460px circle at ${currentSpotX.toFixed(1)}% ${currentSpotY.toFixed(1)}%, rgba(15, 23, 42, 0.045) 0%, rgba(15, 23, 42, 0.012) 48%, transparent 75%)`;
+            }
+
+            // Continue loop if still hovering or still smoothly returning towards rest position
+            const diff = Math.abs(targetX - currentX) + Math.abs(targetY - currentY);
+            if (isHovered || diff > 0.0008) {
+                requestAnimationFrame(updateLoop);
+            } else {
+                isLoopRunning = false;
+            }
+        }
+
+        hero.addEventListener('mousemove', onMouseMove, { passive: true });
+        hero.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    });
+}
+

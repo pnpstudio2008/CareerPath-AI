@@ -3828,7 +3828,7 @@ p {
 
 .analyzer-hero-left {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -3900,7 +3900,7 @@ p {
 /* Right Column Preview Dock */
 .analyzer-hero-right {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -4054,6 +4054,235 @@ p {
     color: #64748B;
     font-weight: 500;
 }
+
+/* ==========================================================================
+   HERO INTERACTIVE DARK ELEMENTS (SMOOTH MOUSE-TRACKING BACKGROUND)
+   ========================================================================== */
+.hero-dark-elements-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+    border-radius: inherit;
+    contain: layout style paint;
+}
+
+/* Ambient Dynamic Cursor Spotlight */
+.hero-dark-spotlight {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(460px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(15, 23, 42, 0.045) 0%, rgba(15, 23, 42, 0.012) 48%, transparent 75%);
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+}
+
+/* Base Dark Floating Element */
+.hero-dark-element {
+    position: absolute;
+    pointer-events: none;
+    user-select: none;
+    will-change: transform;
+    z-index: 1;
+}
+
+.hero-dark-element .hde-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transform-origin: center center;
+    transition: box-shadow 0.3s ease;
+}
+
+/* 1. Dark Pill Badges */
+.hde-badge-1 .hde-inner,
+.hde-badge-2 .hde-inner,
+.hde-badge-3 .hde-inner {
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 9999px;
+    padding: 0.38rem 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #F8FAFC;
+    box-shadow: 0 14px 30px -6px rgba(15, 23, 42, 0.32), 0 3px 8px rgba(15, 23, 42, 0.2);
+}
+
+.hde-badge-1 {
+    top: 9%;
+    left: 8%;
+}
+
+.hde-badge-2 {
+    top: 6%;
+    left: 45%;
+}
+
+.hde-badge-3 {
+    bottom: 12%;
+    left: 36%;
+}
+
+.hde-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.hde-dot.emerald {
+    background: #10B981;
+    box-shadow: 0 0 8px #10B981;
+}
+
+/* 2. 3D Obsidian Glossy Sphere */
+.hde-orb-1 {
+    top: 60%;
+    left: 3%;
+}
+
+.hde-orb-1 .hde-inner {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 28%, #475569 0%, #1E293B 38%, #0F172A 70%, #020617 100%);
+    box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.38), inset 0 2px 5px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 3. Dark Geometric Diamond Prism */
+.hde-diamond-1 {
+    top: 14%;
+    right: 36%;
+}
+
+.hde-diamond-1 .hde-inner {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 24px -5px rgba(15, 23, 42, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+    font-size: 0.75rem;
+    transform: rotate(45deg);
+}
+
+.hde-diamond-1 .hde-inner i {
+    transform: rotate(-45deg);
+}
+
+/* 4. Dark Orbital Dashed Ring */
+.hde-ring-1 {
+    bottom: 6%;
+    right: 14%;
+}
+
+.hde-ring-1 .hde-inner {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    border: 2px dashed rgba(15, 23, 42, 0.22);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hde-ring-satellite {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #0F172A;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.3);
+}
+
+/* 5. Dark Code Tag */
+.hde-tag-1 {
+    top: 7%;
+    right: 7%;
+}
+
+.hde-tag-1 .hde-inner {
+    background: #0B0F19;
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    border-radius: 8px;
+    padding: 0.32rem 0.7rem;
+    color: #818CF8;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    box-shadow: 0 10px 24px -6px rgba(15, 23, 42, 0.28);
+}
+
+/* 6. Constellation Micro Dots */
+.hde-dot-node .hde-inner {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #0F172A;
+    box-shadow: 0 0 10px rgba(15, 23, 42, 0.45);
+}
+
+.hde-dot-1 {
+    top: 38%;
+    left: 35%;
+}
+
+.hde-dot-2 {
+    bottom: 22%;
+    left: 22%;
+}
+
+.hde-dot-3 {
+    top: 78%;
+    right: 38%;
+}
+
+/* Smooth Floating & Pulsing Keyframes */
+@keyframes hdeFloat1 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-11px) rotate(2deg); }
+}
+
+@keyframes hdeFloat2 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(13px) rotate(-3deg); }
+}
+
+@keyframes hdeFloat3 {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-9px) scale(1.04); }
+}
+
+@keyframes hdePulse1 {
+    0%, 100% { transform: scale(0.85); opacity: 0.35; }
+    50% { transform: scale(1.25); opacity: 0.85; }
+}
+
+@keyframes hdePulse2 {
+    0%, 100% { transform: scale(1.1); opacity: 0.75; }
+    50% { transform: scale(0.8); opacity: 0.3; }
+}
+
+.hde-float-1 { animation: hdeFloat1 7s ease-in-out infinite; }
+.hde-float-2 { animation: hdeFloat2 9s ease-in-out infinite; }
+.hde-float-3 { animation: hdeFloat3 8s ease-in-out infinite; }
+.hde-pulse-1 { animation: hdePulse1 4.5s ease-in-out infinite; }
+.hde-pulse-2 { animation: hdePulse2 5.5s ease-in-out infinite; }
 
 /* Main Grid */
 .analyzer-main-grid {
@@ -4323,6 +4552,19 @@ p {
     .company-preview-card {
         width: 200px;
         transform: rotate(2.5deg) translateY(-6px);
+    }
+    .hde-tag-1,
+    .hde-badge-2,
+    .hde-diamond-1 {
+        display: none !important;
+    }
+    .hde-orb-1 .hde-inner {
+        width: 36px;
+        height: 36px;
+    }
+    .hde-ring-1 .hde-inner {
+        width: 54px;
+        height: 54px;
     }
 }
 
