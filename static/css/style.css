@@ -4111,7 +4111,11 @@ p {
 /* 1. Dark Pill Badges */
 .hde-badge-1 .hde-inner,
 .hde-badge-2 .hde-inner,
-.hde-badge-3 .hde-inner {
+.hde-badge-3 .hde-inner,
+.hde-badge-4 .hde-inner,
+.hde-badge-5 .hde-inner,
+.hde-badge-6 .hde-inner,
+.hde-badge-7 .hde-inner {
     background: rgba(15, 23, 42, 0.94);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -4125,19 +4129,31 @@ p {
     box-shadow: 0 14px 30px -6px rgba(15, 23, 42, 0.32), 0 3px 8px rgba(15, 23, 42, 0.2);
 }
 
-.hde-badge-1 {
-    top: 3%;
-    left: 4%;
-}
+.hde-badge-1 { top: 3%; left: 4%; }
+.hde-badge-2 { top: 3.5%; left: 48%; }
+.hde-badge-3 { bottom: 3.5%; left: 40%; }
+.hde-badge-4 { top: 36%; left: 47%; }
+.hde-badge-5 { top: 42%; left: 8%; }
+.hde-badge-6 { top: 18%; right: 2%; }
+.hde-badge-7 { bottom: 2%; left: 24%; }
 
-.hde-badge-2 {
-    top: 3.5%;
-    left: 48%;
-}
+/* Cards & Mini-Panels */
+.hde-card-1 { top: 70%; left: 45%; }
+.hde-card-2 { bottom: 16%; right: 4%; }
 
-.hde-badge-3 {
-    bottom: 3.5%;
-    left: 40%;
+.hde-card-1 .hde-inner,
+.hde-card-2 .hde-inner {
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 0.38rem 0.85rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #F8FAFC;
+    box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.32), 0 3px 8px rgba(15, 23, 42, 0.2);
 }
 
 .hde-dot {
@@ -4153,11 +4169,26 @@ p {
     box-shadow: 0 0 8px #10B981;
 }
 
-/* 2. 3D Obsidian Glossy Sphere */
-.hde-orb-1 {
-    top: 74%;
-    left: 2%;
+.hde-dot.cyan {
+    background: #06B6D4;
+    box-shadow: 0 0 8px #06B6D4;
 }
+
+.hde-dot.purple {
+    background: #A855F7;
+    box-shadow: 0 0 8px #A855F7;
+}
+
+.hde-dot.amber {
+    background: #F59E0B;
+    box-shadow: 0 0 8px #F59E0B;
+}
+
+/* 2. 3D Obsidian Glossy Spheres */
+.hde-orb-1 { top: 74%; left: 2%; }
+.hde-orb-2 { top: 56%; left: 50%; }
+.hde-orb-3 { top: 28%; left: 2%; }
+.hde-orb-4 { bottom: 24%; right: 28%; }
 
 .hde-orb-1 .hde-inner {
     width: 48px;
@@ -4168,11 +4199,36 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* 3. Dark Geometric Diamond Prism */
-.hde-diamond-1 {
-    top: 16%;
-    right: 38%;
+.hde-orb-2 .hde-inner {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 28%, #475569 0%, #1E293B 38%, #0F172A 70%, #020617 100%);
+    box-shadow: 0 14px 28px -6px rgba(15, 23, 42, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+.hde-orb-3 .hde-inner {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 28%, #475569 0%, #1E293B 38%, #0F172A 70%, #020617 100%);
+    box-shadow: 0 10px 20px -4px rgba(15, 23, 42, 0.3), inset 0 1px 3px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hde-orb-4 .hde-inner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 28%, #475569 0%, #1E293B 38%, #0F172A 70%, #020617 100%);
+    box-shadow: 0 12px 24px -5px rgba(15, 23, 42, 0.32), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 3. Dark Geometric Diamond Prisms */
+.hde-diamond-1 { top: 16%; right: 38%; }
+.hde-diamond-2 { top: 48%; left: 22%; }
 
 .hde-diamond-1 .hde-inner {
     width: 34px;
@@ -4193,11 +4249,20 @@ p {
     transform: rotate(-45deg);
 }
 
-/* 4. Dark Orbital Dashed Ring */
-.hde-ring-1 {
-    bottom: 4%;
-    right: 11%;
+.hde-diamond-2 .hde-inner {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 8px 18px -4px rgba(15, 23, 42, 0.28);
+    transform: rotate(45deg);
 }
+
+/* 4. Dark Orbital Dashed Rings */
+.hde-ring-1 { bottom: 4%; right: 11%; }
+.hde-ring-2 { top: 22%; left: 52%; }
+.hde-ring-3 { top: 44%; right: 34%; }
 
 .hde-ring-1 .hde-inner {
     width: 76px;
@@ -4208,6 +4273,20 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.hde-ring-2 .hde-inner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px dashed rgba(15, 23, 42, 0.22);
+}
+
+.hde-ring-3 .hde-inner {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px dashed rgba(15, 23, 42, 0.2);
 }
 
 .hde-ring-satellite {
@@ -4223,13 +4302,12 @@ p {
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.3);
 }
 
-/* 5. Dark Code Tag */
-.hde-tag-1 {
-    top: 5%;
-    right: 5%;
-}
+/* 5. Dark Code Tags */
+.hde-tag-1 { top: 5%; right: 5%; }
+.hde-tag-2 { top: 66%; left: 16%; }
 
-.hde-tag-1 .hde-inner {
+.hde-tag-1 .hde-inner,
+.hde-tag-2 .hde-inner {
     background: #0B0F19;
     border: 1px solid rgba(99, 102, 241, 0.35);
     border-radius: 8px;
@@ -4250,19 +4328,26 @@ p {
     box-shadow: 0 0 10px rgba(15, 23, 42, 0.45);
 }
 
-.hde-dot-1 {
-    top: 18%;
-    left: 36%;
-}
+.hde-dot-1 { top: 18%; left: 36%; }
+.hde-dot-2 { bottom: 6%; left: 18%; }
+.hde-dot-3 { top: 84%; right: 36%; }
+.hde-dot-4 { top: 52%; left: 44%; }
+.hde-dot-5 { top: 24%; right: 18%; }
+.hde-dot-6 { bottom: 12%; right: 8%; }
+.hde-dot-7 { top: 12%; left: 24%; }
+.hde-dot-8 { bottom: 8%; left: 34%; }
 
-.hde-dot-2 {
-    bottom: 6%;
-    left: 18%;
-}
+/* 7. Ambient Dark Glow Blobs */
+.hde-glow-blob-1 { top: 25%; left: 44%; }
+.hde-glow-blob-2 { bottom: 10%; right: 18%; }
 
-.hde-dot-3 {
-    top: 84%;
-    right: 36%;
+.hde-glow-blob-1 .hde-inner,
+.hde-glow-blob-2 .hde-inner {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15, 23, 42, 0.4) 0%, rgba(30, 41, 59, 0.15) 50%, transparent 70%);
+    filter: blur(14px);
 }
 
 /* Smooth Floating & Pulsing Keyframes */
