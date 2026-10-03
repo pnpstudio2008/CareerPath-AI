@@ -2545,7 +2545,7 @@ p {
     flex-direction: column;
     align-items: flex-start;
     max-width: 610px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .hero-badge {
@@ -2734,7 +2734,7 @@ p {
     align-items: center;
     justify-content: center;
     min-height: 340px;
-    z-index: 2;
+    z-index: 3;
     pointer-events: none;
 }
 
@@ -3828,7 +3828,7 @@ p {
 
 .analyzer-hero-left {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -3900,7 +3900,7 @@ p {
 /* Right Column Preview Dock */
 .analyzer-hero-right {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -4068,6 +4068,19 @@ p {
     contain: layout style paint;
 }
 
+/* Frosted Glass Blur Veil between dark elements (z-index: 1) and text (z-index: 3) */
+.hero-blur-veil {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: inherit;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: radial-gradient(ellipse at 32% 50%, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.55) 55%, rgba(255, 255, 255, 0.3) 100%);
+    contain: layout style paint;
+}
+
 /* Ambient Dynamic Cursor Spotlight */
 .hero-dark-spotlight {
     position: absolute;
@@ -4113,18 +4126,18 @@ p {
 }
 
 .hde-badge-1 {
-    top: 9%;
-    left: 8%;
+    top: 3%;
+    left: 4%;
 }
 
 .hde-badge-2 {
-    top: 6%;
-    left: 45%;
+    top: 3.5%;
+    left: 48%;
 }
 
 .hde-badge-3 {
-    bottom: 12%;
-    left: 36%;
+    bottom: 3.5%;
+    left: 40%;
 }
 
 .hde-dot {
@@ -4142,8 +4155,8 @@ p {
 
 /* 2. 3D Obsidian Glossy Sphere */
 .hde-orb-1 {
-    top: 60%;
-    left: 3%;
+    top: 74%;
+    left: 2%;
 }
 
 .hde-orb-1 .hde-inner {
@@ -4157,8 +4170,8 @@ p {
 
 /* 3. Dark Geometric Diamond Prism */
 .hde-diamond-1 {
-    top: 14%;
-    right: 36%;
+    top: 16%;
+    right: 38%;
 }
 
 .hde-diamond-1 .hde-inner {
@@ -4182,8 +4195,8 @@ p {
 
 /* 4. Dark Orbital Dashed Ring */
 .hde-ring-1 {
-    bottom: 6%;
-    right: 14%;
+    bottom: 4%;
+    right: 11%;
 }
 
 .hde-ring-1 .hde-inner {
@@ -4212,8 +4225,8 @@ p {
 
 /* 5. Dark Code Tag */
 .hde-tag-1 {
-    top: 7%;
-    right: 7%;
+    top: 5%;
+    right: 5%;
 }
 
 .hde-tag-1 .hde-inner {
@@ -4238,18 +4251,18 @@ p {
 }
 
 .hde-dot-1 {
-    top: 38%;
-    left: 35%;
+    top: 18%;
+    left: 36%;
 }
 
 .hde-dot-2 {
-    bottom: 22%;
-    left: 22%;
+    bottom: 6%;
+    left: 18%;
 }
 
 .hde-dot-3 {
-    top: 78%;
-    right: 38%;
+    top: 84%;
+    right: 36%;
 }
 
 /* Smooth Floating & Pulsing Keyframes */
@@ -4500,6 +4513,10 @@ p {
 @media (max-width: 1024px) {
     .analyzer-main-grid { grid-template-columns: 1fr; }
     .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .hero-dark-elements-layer,
+    .hero-blur-veil {
+        display: none !important;
+    }
     .analyzer-hero {
         grid-template-columns: 1fr;
         padding: 2.25rem 1.75rem;
@@ -4532,6 +4549,10 @@ p {
 @media (max-width: 768px) {
     .stats-row { grid-template-columns: 1fr; }
     .upload-actions { flex-direction: column; align-items: stretch; }
+    .hero-dark-elements-layer,
+    .hero-blur-veil {
+        display: none !important;
+    }
     .analyzer-hero {
         padding: 1.75rem 1.25rem;
         border-radius: 20px;
@@ -4552,19 +4573,6 @@ p {
     .company-preview-card {
         width: 200px;
         transform: rotate(2.5deg) translateY(-6px);
-    }
-    .hde-tag-1,
-    .hde-badge-2,
-    .hde-diamond-1 {
-        display: none !important;
-    }
-    .hde-orb-1 .hde-inner {
-        width: 36px;
-        height: 36px;
-    }
-    .hde-ring-1 .hde-inner {
-        width: 54px;
-        height: 54px;
     }
 }
 

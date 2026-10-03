@@ -194,6 +194,11 @@ function loadSampleResume(key) {
    HERO INTERACTIVE DARK ELEMENTS - ULTRA-SMOOTH MOUSE CURSOR PARALLAX
    ========================================================================== */
 function initHeroDarkElementsParallax() {
+    // Completely disable on mobile, tablet, and touch screens
+    if (window.innerWidth <= 1024 || !window.matchMedia('(hover: hover)').matches) {
+        return;
+    }
+
     const heroes = document.querySelectorAll('.analyzer-hero, .saas-hero');
     if (!heroes.length) return;
 
