@@ -1812,60 +1812,175 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
-            <div class="footer-left">
-                <div class="footer-brand">
-                    <img src="/static/images/logo.png" alt="AI Career Companion" class="footer-brand-logo">
-                    <span>AI Career Companion</span>
+            <!-- Top Row: Brand Info & Navigation Grid -->
+            <div class="footer-top-row">
+                <!-- Left Column: Brand Info & Credits -->
+                <div class="footer-brand-column">
+                    <div class="footer-brand-header">
+                        <img src="/static/images/logo.png" alt="AI Career Companion" class="footer-brand-logo">
+                        <div class="footer-brand-text">
+                            <span class="footer-brand-title">AI Career</span>
+                            <span class="footer-brand-subtitle">Companion</span>
+                        </div>
+                    </div>
+
+                    <p class="footer-desc">Designed and Developed by <strong class="footer-pnp-highlight">P&amp;P Studio</strong> in collaboration with <strong>Riya Modi &amp; Diksha Durgapal</strong> for student career guidance and placement excellence.</p>
+
+                    <!-- Faculty Guides & Creator Badges -->
+                    <div class="footer-credits-dock">
+                        <div class="footer-guides-pair">
+                            <!-- Riya Modi -->
+                            <div class="credit-badge credit-badge-riya">
+                                <div class="credit-avatar credit-avatar-blue">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="credit-meta">
+                                    <span class="credit-name">Riya Modi</span>
+                                    <span class="credit-role">FACULTY GUIDE</span>
+                                </div>
+                            </div>
+
+                            <div class="credit-divider-inline"></div>
+
+                            <!-- Diksha Durgapal -->
+                            <div class="credit-badge credit-badge-diksha">
+                                <div class="credit-avatar credit-avatar-rose">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="credit-meta">
+                                    <span class="credit-name">Diksha Durgapal</span>
+                                    <span class="credit-role">FACULTY GUIDE</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- P&P Studio Creator -->
+                        <div class="credit-badge credit-badge-pnp">
+                            <img src="/static/images/pnp_logo.png" alt="P&amp;P Studio" class="credit-pnp-logo">
+                            <div class="credit-meta">
+                                <span class="credit-name">P&amp;P Studio</span>
+                                <span class="credit-role">CREATOR</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="footer-desc">Designed and Developed by <strong class="footer-pnp-highlight">P&amp;P Studio</strong> in collaboration with <strong>Riya Modi &amp; Diksha Durgapal</strong> for student career guidance and placement excellence.</p>
-                <div class="footer-credits-row">
-                    <div class="credit-badge credit-badge-pnp">
-                        <img src="/static/images/pnp_logo.png" alt="P&amp;P Studio" class="credit-logo">
-                        <div class="credit-meta">
-                            <span class="credit-name">P&amp;P Studio</span>
-                            <span class="credit-role">CREATOR</span>
-                        </div>
+
+                <!-- Desktop Vertical Divider -->
+                <div class="footer-vertical-divider"></div>
+
+                <!-- Right Column: Navigation Links 3-Column Grid -->
+                <div class="footer-nav-grid">
+                    <!-- Column 1: Platform -->
+                    <div class="footer-nav-col">
+                        <h4 class="footer-nav-heading">Platform</h4>
+                        <div class="footer-heading-bar bar-blue"></div>
+                        <ul class="footer-nav-list">
+                            <li>
+                                <a href="#analyzer" onclick="navigateTo('analyzer')" class="footer-nav-link">
+                                    <i class="fa-regular fa-file-lines footer-nav-icon"></i>
+                                    <span>Resume ATS</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#mocktest" onclick="navigateTo('mocktest')" class="footer-nav-link">
+                                    <i class="fa-solid fa-chart-simple footer-nav-icon"></i>
+                                    <span>Mock - Test</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="credit-divider credit-divider-pnp"></div>
-                    <div class="credit-badge credit-badge-riya">
-                        <div class="credit-avatar credit-avatar-blue">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <div class="credit-meta">
-                            <span class="credit-name">Riya Modi</span>
-                            <span class="credit-role">FACULTY GUIDE</span>
-                        </div>
+
+                    <!-- Column 2: Community -->
+                    <div class="footer-nav-col">
+                        <h4 class="footer-nav-heading">Community</h4>
+                        <div class="footer-heading-bar bar-purple"></div>
+                        <ul class="footer-nav-list">
+                            <li>
+                                <a href="#alumni" onclick="navigateTo('alumni')" class="footer-nav-link">
+                                    <i class="fa-solid fa-users footer-nav-icon"></i>
+                                    <span>Alumni Hub</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#prep" onclick="navigateTo('prep')" class="footer-nav-link">
+                                    <i class="fa-regular fa-rectangle-list footer-nav-icon"></i>
+                                    <span>Practice Tests</span>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="credit-divider credit-divider-teachers"></div>
-                    <div class="credit-badge credit-badge-diksha">
-                        <div class="credit-avatar credit-avatar-rose">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
-                        <div class="credit-meta">
-                            <span class="credit-name">Diksha Durgapal</span>
-                            <span class="credit-role">FACULTY GUIDE</span>
-                        </div>
+
+                    <!-- Column 3: Account -->
+                    <div class="footer-nav-col">
+                        <h4 class="footer-nav-heading">Account</h4>
+                        <div class="footer-heading-bar bar-pink"></div>
+                        <ul class="footer-nav-list">
+                            <li>
+                                <a href="{{ user.dashboard_url if user and user.dashboard_url else '/student/profile' }}" class="footer-nav-link">
+                                    <i class="fa-regular fa-user footer-nav-icon"></i>
+                                    <span>My Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                {% if user %}
+                                    {% if user.type == 'admin' %}
+                                    <a href="/api/admin/logout" class="footer-nav-link">
+                                        <i class="fa-solid fa-arrow-right-from-bracket footer-nav-icon"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                    {% elif user.type == 'alumni' %}
+                                    <a href="/api/alumni/logout" class="footer-nav-link">
+                                        <i class="fa-solid fa-arrow-right-from-bracket footer-nav-icon"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                    {% else %}
+                                    <a href="/api/student/logout" class="footer-nav-link">
+                                        <i class="fa-solid fa-arrow-right-from-bracket footer-nav-icon"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="/student/login" class="footer-nav-link">
+                                        <i class="fa-solid fa-arrow-right-to-bracket footer-nav-icon"></i>
+                                        <span>Login</span>
+                                    </a>
+                                {% endif %}
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="footer-links">
-                <a href="#analyzer" onclick="navigateTo('analyzer')">Resume ATS</a>
-                <a href="#mocktest" onclick="navigateTo('mocktest')">Mock - Test</a>
-                <a href="#prep" onclick="navigateTo('prep')">Practice Tests</a>
-                <a href="#alumni" onclick="navigateTo('alumni')">Alumni Hub</a>
-                <a href="/alumni/directory">Alumni Directory</a>
-                {% if user %}
-                    {% if user.type == 'admin' %}
-                    <a href="/admin">Admin Console</a>
-                    <a href="/api/admin/logout">Logout</a>
-                    {% elif user.type == 'alumni' %}
-                    <a href="/alumni/profile">Alumni Profile</a>
-                    <a href="/api/alumni/logout">Logout</a>
-                    {% else %}
-                    <a href="/student/profile">My Profile</a>
-                    <a href="/api/student/logout">Logout</a>
-                    {% endif %}
-                {% endif %}
+
+            <!-- Bottom Horizontal Divider -->
+            <div class="footer-bottom-divider-line"></div>
+
+            <!-- Bottom Row: Copyright + Follow Us Social Icons -->
+            <div class="footer-bottom-row">
+                <!-- Left: Copyright info -->
+                <div class="footer-copyright-col">
+                    <p class="footer-copy-main">&copy; 2026 AI Career Companion.</p>
+                    <p class="footer-copy-sub">Designed &amp; Developed by P&amp;P Studio.</p>
+                    <p class="footer-copy-sub">All rights reserved.</p>
+                </div>
+
+                <!-- Mobile vertical separator between copyright and social icons -->
+                <div class="footer-bottom-v-separator"></div>
+
+                <!-- Right: Social Media Icons -->
+                <div class="footer-social-col">
+                    <span class="footer-follow-label">Follow Us</span>
+                    <div class="footer-social-btns">
+                        <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="LinkedIn" title="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram" title="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="YouTube" title="YouTube">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
