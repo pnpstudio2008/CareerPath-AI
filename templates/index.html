@@ -226,6 +226,11 @@
                         <a href="{{ user.dashboard_url }}" class="saas-dropdown-link">
                             <i class="fa-solid fa-gauge-high"></i> <span>My Dashboard</span>
                         </a>
+                        {% if user.type == 'student' %}
+                        <a href="/student/history" class="saas-dropdown-link">
+                            <i class="fa-solid fa-clock-rotate-left"></i> <span>Resume History</span>
+                        </a>
+                        {% endif %}
                         {% if user.type == 'admin' %}
                         <a href="/api/admin/logout" class="saas-dropdown-link danger">
                             <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
@@ -274,7 +279,7 @@
 
                 <div class="summary-circular-grid">
                     <!-- 1. Resumes Analyzed Circular Graph -->
-                    <div class="circ-stat-card tint-blue" onclick="navigateTo('analyzer')" style="cursor:pointer;" title="Click to view & upload resumes">
+                    <div class="circ-stat-card tint-blue" onclick="window.location.href='/student/history'" style="cursor:pointer;" title="Click to view your Analyzed Resumes History">
                         <div class="circ-chart-wrap">
                             <svg viewBox="0 0 42 42" class="circ-svg">
                                 <circle class="circ-bg" cx="21" cy="21" r="15.9155" />

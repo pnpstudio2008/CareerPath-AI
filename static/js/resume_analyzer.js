@@ -462,6 +462,25 @@ function renderAnalysisResults(data) {
         heroLabel.style.color = ats.rating_color;
     }
 
+    // Update Home Dashboard Circular Card
+    const homeResumesEl = document.getElementById('home-stat-resumes');
+    const homeResumesCircle = document.getElementById('home-stat-resumes-circle');
+    if (homeResumesEl && data.distinct_resumes_count) {
+        homeResumesEl.innerText = data.distinct_resumes_count;
+        if (homeResumesCircle) {
+            const pct = Math.min(100, data.distinct_resumes_count * 33);
+            homeResumesCircle.setAttribute('stroke-dasharray', `${pct}, 100`);
+        }
+    }
+    const homeAtsEl = document.getElementById('home-stat-ats');
+    const homeAtsCircle = document.getElementById('home-stat-ats-circle');
+    if (homeAtsEl && ats && ats.ats_score) {
+        homeAtsEl.innerText = `${ats.ats_score}%`;
+        if (homeAtsCircle) {
+            homeAtsCircle.setAttribute('stroke-dasharray', `${ats.ats_score}, 100`);
+        }
+    }
+
     // Update Company hero card if benchmark data is available
     if (data.dataset_matching && data.dataset_matching.top_matches && data.dataset_matching.top_matches.length > 0) {
         const heroCompany = document.getElementById('hero-company-matches');

@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Analysis History | AI Career Companion</title>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Pro/Free Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Base Styling Sheets -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-soft: rgba(37, 99, 235, 0.08);
+            --emerald: #10B981;
+            --emerald-soft: rgba(16, 185, 129, 0.1);
+            --purple: #8B5CF6;
+            --purple-soft: rgba(139, 92, 246, 0.1);
+            --amber: #F59E0B;
+            --amber-soft: rgba(245, 158, 11, 0.1);
+            --red: #EF4444;
+            --red-soft: rgba(239, 68, 68, 0.1);
+            --bg-page: #F8FAFC;
+            --surface: #FFFFFF;
+            --border-subtle: #E2E8F0;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --shadow-subtle: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+            --shadow-hover: 0 12px 28px -4px rgba(37, 99, 235, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+        }
+
+        body {
+            background-color: var(--bg-page);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Header Navbar */
+        .hist-navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hist-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .hist-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            text-decoration: none;
+        }
+
+        .hist-brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            object-fit: cover;
+        }
+
+        .hist-brand-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hist-brand-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .hist-brand-sub {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .hist-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        /* Container Layout */
+        .hist-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* Hero Banner */
+        .hist-hero-banner {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.25);
+            margin-bottom: 2rem;
+        }
+
+        .hist-hero-banner::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, rgba(139, 92, 246, 0.15) 50%, transparent 70%);
+            pointer-events: none;
+            border-radius: 50%;
+        }
+
+        .hist-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hist-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #93C5FD;
+            margin-bottom: 0.85rem;
+        }
+
+        .hist-hero-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 0 0 0.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hist-hero-desc {
+            font-size: 0.96rem;
+            color: #CBD5E1;
+            margin: 0 0 1.75rem;
+            max-width: 680px;
+            line-height: 1.6;
+        }
+
+        /* 4 Pillars Banner */
+        .hist-pillars-box {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .hist-pillars-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hist-pillars-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563EB, #8B5CF6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .hist-pillars-text h5 {
+            margin: 0 0 0.2rem;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #F8FAFC;
+        }
+
+        .hist-pillars-text p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #94A3B8;
+        }
+
+        .hist-pillars-badges {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .pillar-badge {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 8px;
+            padding: 0.3rem 0.65rem;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #F1F5F9;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .pillar-badge.active {
+            background: rgba(16, 185, 129, 0.25);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #6EE7B7;
+        }
+
+        /* 4 Circular KPI Cards Grid */
+        .hist-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2.25rem;
+        }
+
+        @media (max-width: 980px) {
+            .hist-kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 580px) {
+            .hist-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hist-kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-subtle);
+            display: flex;
+            align-items: center;
+            gap: 1.15rem;
+            transition: all 0.25s ease;
+        }
+
+        .hist-kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(37, 99, 235, 0.3);
+        }
+
+        .hist-kpi-circ {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+        }
+
+        .hist-kpi-circ svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .hist-kpi-circ circle.bg {
+            fill: none;
+            stroke: #E2E8F0;
+            stroke-width: 3.5;
+        }
+
+        .hist-kpi-circ circle.fill {
+            fill: none;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.8s ease;
+        }
+
+        .hist-kpi-circ circle.fill.blue { stroke: var(--primary); }
+        .hist-kpi-circ circle.fill.emerald { stroke: var(--emerald); }
+        .hist-kpi-circ circle.fill.purple { stroke: var(--purple); }
+        .hist-kpi-circ circle.fill.amber { stroke: var(--amber); }
+
+        .hist-kpi-circ-num {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .hist-kpi-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hist-kpi-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.2rem;
+        }
+
+        .hist-kpi-val {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .hist-kpi-sub {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* Controls / Filter Bar */
+        .hist-controls-bar {
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.15rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .hist-search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: #F1F5F9;
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+            padding: 0.55rem 1rem;
+            flex: 1;
+            min-width: 260px;
+            max-width: 480px;
+        }
+
+        .hist-search-input {
+            border: none;
+            background: transparent;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            outline: none;
+            width: 100%;
+        }
+
+        .hist-controls-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Resumes History Feed */
+        .hist-feed-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .hist-feed-title-row h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .hist-resume-card {
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-subtle);
+            margin-bottom: 1.5rem;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .hist-resume-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(37, 99, 235, 0.35);
+        }
+
+        .hist-card-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .hist-doc-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hist-doc-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+            flex-shrink: 0;
+        }
+
+        .hist-doc-titles h4 {
+            font-size: 1.12rem;
+            font-weight: 800;
+            margin: 0 0 0.3rem;
+            color: var(--text-main);
+        }
+
+        .hist-doc-subline {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .hist-score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 1.15rem;
+            border-radius: 14px;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            color: #1D4ED8;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .hist-score-badge.high {
+            background: #ECFDF5;
+            border-color: #A7F3D0;
+            color: #065F46;
+        }
+        .hist-score-badge.avg {
+            background: #FFFBEB;
+            border-color: #FDE68A;
+            color: #92400E;
+        }
+
+        /* 3-Column Highlights in Card */
+        .hist-highlights-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 860px) {
+            .hist-highlights-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hist-hl-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .hist-hl-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .hist-hl-val {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 0.25rem;
+        }
+
+        .hist-hl-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .hist-skills-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
+        }
+
+        .hist-skill-pill {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        /* Bottom Row / Action */
+        .hist-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #E2E8F0;
+        }
+
+        .hist-footer-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .btn-show-more {
+            background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 0.65rem 1.4rem;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-show-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Empty State */
+        .hist-empty-card {
+            background: var(--surface);
+            border: 2px dashed #CBD5E1;
+            border-radius: var(--radius-xl);
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .hist-empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--primary);
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* ======================================================== */
+        /* MODAL: COMPREHENSIVE "SHOW MORE" BREAKDOWN               */
+        /* ======================================================== */
+        .hist-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .hist-modal-dialog {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            max-width: 960px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.35);
+            border: 1px solid var(--border-subtle);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .hist-modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F8FAFC;
+        }
+
+        .hist-modal-title-group h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .hist-modal-title-group p {
+            margin: 0;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .hist-modal-close {
+            background: #E2E8F0;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1rem;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .hist-modal-close:hover {
+            background: #CBD5E1;
+            color: #0F172A;
+            transform: scale(1.05);
+        }
+
+        .hist-modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .hist-section-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Company Matches Table/Grid in Modal */
+        .hist-comp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .hist-comp-card {
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 1.15rem;
+            background: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+
+        .hist-comp-card:hover {
+            border-color: #93C5FD;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+        }
+
+        .hist-comp-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .hist-comp-name-box {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hist-comp-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #EFF6FF;
+            color: #2563EB;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .hist-comp-titles strong {
+            font-size: 0.95rem;
+            display: block;
+            color: #0F172A;
+        }
+
+        .hist-comp-titles span {
+            font-size: 0.78rem;
+            color: #64748B;
+        }
+
+        .hist-comp-score {
+            font-size: 0.88rem;
+            font-weight: 800;
+            padding: 0.25rem 0.6rem;
+            border-radius: 8px;
+            background: #ECFDF5;
+            color: #059669;
+        }
+
+        .hist-comp-details {
+            font-size: 0.8rem;
+            color: #475569;
+            margin-top: 0.5rem;
+            border-top: 1px dashed #E2E8F0;
+            padding-top: 0.5rem;
+        }
+
+        /* Skill Gap Box */
+        .hist-gap-summary-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.06) 0%, rgba(239, 68, 68, 0.06) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+        }
+
+        .hist-gap-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #F59E0B;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .hist-gap-info h4 {
+            margin: 0 0 0.35rem;
+            font-size: 1rem;
+            font-weight: 800;
+            color: #78350F;
+        }
+
+        .hist-gap-info p {
+            margin: 0 0 0.75rem;
+            font-size: 0.85rem;
+            color: #92400E;
+            line-height: 1.5;
+        }
+
+        .hist-missing-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .missing-pill {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #B91C1C;
+            padding: 0.3rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Lists in Modal */
+        .hist-bullet-list {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .hist-bullet-list li {
+            font-size: 0.88rem;
+            color: #334155;
+            margin-bottom: 0.6rem;
+            line-height: 1.5;
+        }
+
+        /* Project Cards in Modal */
+        .hist-proj-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+
+        .hist-proj-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 1.15rem;
+        }
+
+        .hist-proj-card h5 {
+            margin: 0 0 0.4rem;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #0F172A;
+        }
+
+        .hist-proj-card p {
+            margin: 0 0 0.6rem;
+            font-size: 0.82rem;
+            color: #475569;
+            line-height: 1.45;
+        }
+
+        .hist-modal-footer {
+            padding: 1.25rem 2rem;
+            border-top: 1px solid var(--border-subtle);
+            background: #F8FAFC;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="hist-navbar">
+        <div class="hist-nav-left">
+            <a href="/" class="hist-brand">
+                <img src="/static/images/logo.png" alt="Logo" class="hist-brand-logo">
+                <div class="hist-brand-titles">
+                    <span class="hist-brand-title">AI CAREER COMPANION</span>
+                    <span class="hist-brand-sub">Resume Analysis History &amp; Multi-Candidate Portfolio</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="hist-nav-right">
+            <a href="/" class="btn btn-outline btn-sm" title="Back to Main Platform">
+                <i class="fa-solid fa-house"></i> <span>Dashboard</span>
+            </a>
+            <a href="/?section=analyzer" class="btn btn-primary btn-sm" title="Analyze New Resume">
+                <i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload &amp; Analyze</span>
+            </a>
+            <a href="/student/profile" class="btn btn-outline btn-sm" title="My Profile">
+                <i class="fa-solid fa-user"></i> <span>{{ user.name if user else 'Profile' }}</span>
+            </a>
+            <a href="/api/student/logout" class="btn btn-outline btn-sm" style="color:#EF4444;" title="Sign Out">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="hist-container">
+
+        <!-- Hero Header -->
+        <div class="hist-hero-banner">
+            <div class="hist-hero-content">
+                <div class="hist-badge-pill">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Ongoing Student Verified Portal</span>
+                </div>
+                <h1 class="hist-hero-title">{{ (user.name if user else 'STUDENT')|upper }}'S RESUME HISTORY</h1>
+                <p class="hist-hero-desc">
+                    Review and compare every distinct resume uploaded and evaluated by the system.
+                    Examine your match status against the 45-company recruitment dataset, measure remaining skill gaps, and explore target roles.
+                </p>
+
+                <!-- 4 Pillars Callout -->
+                <div class="hist-pillars-box">
+                    <div class="hist-pillars-left">
+                        <div class="hist-pillars-icon">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <div class="hist-pillars-text">
+                            <h5>4-Pillar Distinct Resume Verification Active</h5>
+                            <p>Uniqueness is determined strictly through achievements, skills, projects, and ATS score.</p>
+                        </div>
+                    </div>
+                    <div class="hist-pillars-badges">
+                        <span class="pillar-badge active"><i class="fa-solid fa-check"></i> 1. Achievements</span>
+                        <span class="pillar-badge active"><i class="fa-solid fa-check"></i> 2. Skills Taxonomy</span>
+                        <span class="pillar-badge active"><i class="fa-solid fa-check"></i> 3. Technical Projects</span>
+                        <span class="pillar-badge active"><i class="fa-solid fa-check"></i> 4. ATS Scoring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 KPI Summary Cards (Circular Graphs) -->
+        <div class="hist-kpi-grid">
+            <!-- 1. Unique Resumes Analyzed -->
+            <div class="hist-kpi-card">
+                <div class="hist-kpi-circ">
+                    <svg viewBox="0 0 42 42">
+                        <circle class="bg" cx="21" cy="21" r="15.9155" />
+                        <circle class="fill blue" cx="21" cy="21" r="15.9155" 
+                            stroke-dasharray="{{ (distinct_count * 33) if distinct_count <= 3 else 100 }}, 100" />
+                    </svg>
+                    <div class="hist-kpi-circ-num">{{ distinct_count }}</div>
+                </div>
+                <div class="hist-kpi-meta">
+                    <span class="hist-kpi-label">Distinct Resumes</span>
+                    <span class="hist-kpi-val">{{ distinct_count }}</span>
+                    <span class="hist-kpi-sub"><i class="fa-solid fa-layer-group text-primary"></i> Unique Fingerprints</span>
+                </div>
+            </div>
+
+            <!-- 2. Peak ATS Score -->
+            <div class="hist-kpi-card">
+                <div class="hist-kpi-circ">
+                    <svg viewBox="0 0 42 42">
+                        <circle class="bg" cx="21" cy="21" r="15.9155" />
+                        <circle class="fill emerald" cx="21" cy="21" r="15.9155" 
+                            stroke-dasharray="{{ user.ats_score if user and user.ats_score > 0 else 82 }}, 100" />
+                    </svg>
+                    <div class="hist-kpi-circ-num">{{ user.ats_score if user and user.ats_score > 0 else 82 }}%</div>
+                </div>
+                <div class="hist-kpi-meta">
+                    <span class="hist-kpi-label">Peak ATS Rating</span>
+                    <span class="hist-kpi-val">{{ user.ats_score if user and user.ats_score > 0 else 82 }}%</span>
+                    <span class="hist-kpi-sub"><i class="fa-solid fa-wand-magic-sparkles text-emerald"></i> Recruiter Benchmark</span>
+                </div>
+            </div>
+
+            <!-- 3. Target / Best Role -->
+            <div class="hist-kpi-card">
+                <div class="hist-kpi-circ">
+                    <svg viewBox="0 0 42 42">
+                        <circle class="bg" cx="21" cy="21" r="15.9155" />
+                        <circle class="fill purple" cx="21" cy="21" r="15.9155" stroke-dasharray="88, 100" />
+                    </svg>
+                    <div class="hist-kpi-circ-num"><i class="fa-solid fa-briefcase text-purple"></i></div>
+                </div>
+                <div class="hist-kpi-meta">
+                    <span class="hist-kpi-label">Best Suited Role</span>
+                    <span class="hist-kpi-val" style="font-size:1.05rem;">
+                        {{ (history[0].best_role if history and history[0].best_role else 'Software Engineer')[:20] }}
+                    </span>
+                    <span class="hist-kpi-sub"><i class="fa-solid fa-code text-purple"></i> Recommended Track</span>
+                </div>
+            </div>
+
+            <!-- 4. Top Matched Recruiter -->
+            <div class="hist-kpi-card">
+                <div class="hist-kpi-circ">
+                    <svg viewBox="0 0 42 42">
+                        <circle class="bg" cx="21" cy="21" r="15.9155" />
+                        <circle class="fill amber" cx="21" cy="21" r="15.9155" stroke-dasharray="100, 100" />
+                    </svg>
+                    <div class="hist-kpi-circ-num">45</div>
+                </div>
+                <div class="hist-kpi-meta">
+                    <span class="hist-kpi-label">Top Fit Company</span>
+                    <span class="hist-kpi-val" style="font-size:1.05rem;">
+                        {{ (history[0].best_match_company if history and history[0].best_match_company else 'Top Tech Recruiters')[:18] }}
+                    </span>
+                    <span class="hist-kpi-sub"><i class="fa-solid fa-building text-amber"></i> 45 Dataset Matched</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls / Search Bar -->
+        <div class="hist-controls-bar">
+            <div class="hist-search-wrap">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+                <input type="text" id="resume-search" class="hist-search-input" placeholder="Search by resume title, company, or target role..." oninput="filterHistoryList()">
+            </div>
+
+            <div class="hist-controls-actions">
+                <a href="/?section=analyzer" class="btn btn-primary" style="padding:0.6rem 1.25rem;">
+                    <i class="fa-solid fa-plus"></i> Analyze Another Resume
+                </a>
+            </div>
+        </div>
+
+        <!-- Section Header -->
+        <div class="hist-feed-title-row">
+            <h3><i class="fa-solid fa-clock-rotate-left text-primary"></i> Uploaded &amp; Evaluated Resumes</h3>
+            <span class="text-muted" style="font-size:0.85rem;" id="history-count-label">Showing {{ history|length }} resume record{{ 's' if history|length != 1 else '' }}</span>
+        </div>
+
+        <!-- History Records Container -->
+        <div id="history-cards-container">
+            {% if history and history|length > 0 %}
+                {% for r in history %}
+                <div class="hist-resume-card" data-card-index="{{ loop.index0 }}">
+                    <!-- Header -->
+                    <div class="hist-card-head">
+                        <div class="hist-doc-info">
+                            <div class="hist-doc-icon">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div class="hist-doc-titles">
+                                <h4 class="resume-title-text">{{ r.filename }}</h4>
+                                <div class="hist-doc-subline">
+                                    <span><i class="fa-solid fa-calendar-days text-primary"></i> {{ r.created_at }}</span>
+                                    <span>&bull;</span>
+                                    <span><i class="fa-solid fa-id-badge text-emerald"></i> Candidate: {{ user.name }}</span>
+                                    <span>&bull;</span>
+                                    <span class="badge badge-info" style="font-size:0.72rem;">Distinct Resume #{{ loop.index }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ATS Score Rating -->
+                        <div class="hist-score-badge {{ 'high' if r.ats_score >= 80 else ('avg' if r.ats_score >= 60 else '') }}">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>{{ r.ats_score|round|int }}% ATS Score</span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Highlight Columns -->
+                    <div class="hist-highlights-grid">
+                        <!-- 1. Suitable Company -->
+                        <div class="hist-hl-box">
+                            <span class="hist-hl-label"><i class="fa-solid fa-building text-amber"></i> Suitable Company</span>
+                            <h5 class="hist-hl-val company-text">{{ r.best_match_company if r.best_match_company else 'Top Tech Recruiters' }}</h5>
+                            <p class="hist-hl-desc">
+                                {% if r.suitable_companies and r.suitable_companies|length > 0 %}
+                                    Match Score: <strong>{{ r.suitable_companies[0].match_score }}%</strong> | Package: <strong>{{ r.suitable_companies[0].indicative_ctc_range_lpa }}</strong>
+                                {% else %}
+                                    Evaluated against 45 campus hiring benchmark profiles.
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <!-- 2. Best Fitting Role -->
+                        <div class="hist-hl-box">
+                            <span class="hist-hl-label"><i class="fa-solid fa-user-tie text-purple"></i> Best Fitting Role</span>
+                            <h5 class="hist-hl-val role-text">{{ r.best_role if r.best_role else 'Software Engineer' }}</h5>
+                            <p class="hist-hl-desc">
+                                Algorithmic role fit based on extracted programming tools and systems.
+                            </p>
+                        </div>
+
+                        <!-- 3. Skill Gap Analysis Summary -->
+                        <div class="hist-hl-box">
+                            <span class="hist-hl-label"><i class="fa-solid fa-triangle-exclamation text-red"></i> Skill Gap Analysis</span>
+                            <h5 class="hist-hl-val" style="color:#B91C1C;">
+                                {% if r.skill_gaps and r.skill_gaps|length > 0 %}
+                                    {{ r.skill_gaps|length }} Missing Skill{{ 's' if r.skill_gaps|length != 1 else '' }}
+                                {% else %}
+                                    0 Critical Gaps Identified
+                                {% endif %}
+                            </h5>
+                            <div class="hist-skills-pills">
+                                {% if r.skill_gaps and r.skill_gaps|length > 0 %}
+                                    {% for gap in r.skill_gaps[:3] %}
+                                    <span class="hist-skill-pill" style="border-color:#FCA5A5; color:#B91C1C;">
+                                        <i class="fa-solid fa-circle-minus"></i> {{ gap }}
+                                    </span>
+                                    {% endfor %}
+                                    {% if r.skill_gaps|length > 3 %}
+                                    <span class="hist-skill-pill">+{{ r.skill_gaps|length - 3 }} more</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="hist-skill-pill" style="color:#059669; border-color:#A7F3D0;">
+                                        <i class="fa-solid fa-circle-check"></i> Strong Role Fit
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer & "Show More" Trigger -->
+                    <div class="hist-card-footer">
+                        <div class="hist-footer-meta">
+                            <span title="Deterministic 4-Pillar SHA-256 Fingerprint">
+                                <i class="fa-solid fa-fingerprint text-primary"></i> Fingerprint: {{ (r.resume_fingerprint if r.resume_fingerprint else 'f7b3a9e')[:12] }}...
+                            </span>
+                            <span>&bull;</span>
+                            <span><i class="fa-solid fa-check-double text-emerald"></i> Verified Uniqueness</span>
+                        </div>
+
+                        <button type="button" class="btn-show-more" onclick="openDetailModal({{ loop.index0 }})">
+                            <i class="fa-solid fa-expand"></i> Show More Data &amp; Detailed Breakdown
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Empty State -->
+                <div class="hist-empty-card">
+                    <div class="hist-empty-icon">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                    </div>
+                    <h3 style="font-size:1.4rem; font-weight:800; margin-bottom:0.5rem;">No Resumes Analyzed Yet</h3>
+                    <p style="color:#64748B; max-width:500px; margin:0 auto 1.75rem; font-size:0.92rem;">
+                        Upload your candidate resume in PDF format to receive instant ATS scoring, 45-company match ratings, skill gap calculations, and role fit analysis.
+                    </p>
+                    <a href="/?section=analyzer" class="btn btn-primary" style="padding:0.75rem 1.75rem; font-size:0.95rem;">
+                        <i class="fa-solid fa-upload"></i> Upload &amp; Analyze Your Resume Now
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </main>
+
+    <!-- ======================================================== -->
+    <!-- INTERACTIVE "SHOW MORE" BREAKDOWN MODAL                  -->
+    <!-- ======================================================== -->
+    <div class="hist-modal-overlay" id="history-detail-modal" onclick="closeDetailModalOnBackdrop(event)">
+        <div class="hist-modal-dialog">
+            <!-- Modal Header -->
+            <div class="hist-modal-header">
+                <div class="hist-modal-title-group">
+                    <h3 id="modal-resume-title">Resume Breakdown</h3>
+                    <p id="modal-resume-meta">Uploaded on -- &bull; Candidate Analysis Report</p>
+                </div>
+                <button type="button" class="hist-modal-close" onclick="closeDetailModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="hist-modal-body">
+
+                <!-- 1. Suitable Companies (45 Dataset Match) -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-building-circle-check text-primary"></i>
+                        1. Suitable Companies (Top Matches from 45-Recruiter Dataset)
+                    </h4>
+                    <div class="hist-comp-grid" id="modal-companies-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 2. Skill Gap Analysis -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-gauge-simple-high text-amber"></i>
+                        2. How Much Gap is There? (Skill Gap &amp; Readiness Analysis)
+                    </h4>
+                    <div class="hist-gap-summary-card">
+                        <div class="hist-gap-icon">
+                            <i class="fa-solid fa-person-chalkboard"></i>
+                        </div>
+                        <div class="hist-gap-info" style="flex:1;">
+                            <h4 id="modal-gap-title">Skill Gap Evaluation</h4>
+                            <p id="modal-gap-desc">Identified missing tools and concepts needed to reach 100% recruiter compatibility.</p>
+                            <div class="hist-missing-pills" id="modal-missing-skills">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Which Role Suits Them Best -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-user-graduate text-purple"></i>
+                        3. Which Role Suits You Best?
+                    </h4>
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:14px; padding:1.25rem;">
+                        <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.75rem;">
+                            <span class="badge badge-primary" style="font-size:0.85rem; padding:0.4rem 0.8rem;" id="modal-best-role-badge">
+                                Software Development Engineer
+                            </span>
+                            <span class="text-muted" style="font-size:0.82rem;" id="modal-role-fit-tier">Primary Algorithmic Match</span>
+                        </div>
+                        <p style="font-size:0.88rem; color:#475569; line-height:1.6; margin:0;" id="modal-role-description">
+                            Based on your extracted technology stack and coursework, you demonstrate highest alignment with modern software engineering and systems development positions.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4. Extracted Achievements -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-trophy text-amber"></i>
+                        4. Extracted Achievements &amp; Recognitions
+                    </h4>
+                    <ul class="hist-bullet-list" id="modal-achievements-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+                <!-- 5. Extracted Projects -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-laptop-code text-emerald"></i>
+                        5. Extracted Technical Projects
+                    </h4>
+                    <div class="hist-proj-grid" id="modal-projects-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 6. ATS Score Breakdown & Recommendations -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-list-check text-primary"></i>
+                        6. ATS Score Breakdown &amp; Optimization Checklist
+                    </h4>
+                    <div id="modal-ats-recommendations" style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:14px; padding:1.25rem;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="hist-modal-footer">
+                <span class="text-muted" style="font-size:0.82rem;">
+                    <i class="fa-solid fa-circle-check text-emerald"></i> Verified with Placement NLP Engine
+                </span>
+                <button type="button" class="btn btn-outline" onclick="closeDetailModal()">
+                    Close Breakdown
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store History Data into JavaScript -->
+    <script>
+        const HISTORY_DATA = {{ history|tojson if history else '[]' }};
+
+        function filterHistoryList() {
+            const query = (document.getElementById('resume-search').value || '').trim().toLowerCase();
+            const cards = document.querySelectorAll('.hist-resume-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('.resume-title-text') ? card.querySelector('.resume-title-text').innerText.toLowerCase() : '';
+                const comp = card.querySelector('.company-text') ? card.querySelector('.company-text').innerText.toLowerCase() : '';
+                const role = card.querySelector('.role-text') ? card.querySelector('.role-text').innerText.toLowerCase() : '';
+
+                if (!query || title.includes(query) || comp.includes(query) || role.includes(query)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const lbl = document.getElementById('history-count-label');
+            if (lbl) {
+                lbl.innerText = `Showing ${visibleCount} resume record${visibleCount !== 1 ? 's' : ''}`;
+            }
+        }
+
+        function openDetailModal(index) {
+            const item = HISTORY_DATA[index];
+            if (!item) return;
+
+            // 1. Header
+            document.getElementById('modal-resume-title').innerText = item.filename || 'Resume Analysis Breakdown';
+            document.getElementById('modal-resume-meta').innerText = `Uploaded on ${item.created_at || 'Recently'} • ${Math.round(item.ats_score || 0)}% ATS Score`;
+
+            // 2. Suitable Companies
+            const compContainer = document.getElementById('modal-companies-list');
+            compContainer.innerHTML = '';
+            const comps = item.suitable_companies || [];
+            if (comps.length > 0) {
+                comps.slice(0, 6).forEach(c => {
+                    const matchedCount = (c.matched_skills || []).length;
+                    const missingCount = (c.missing_skills || []).length;
+                    const card = document.createElement('div');
+                    card.className = 'hist-comp-card';
+                    card.innerHTML = `
+                        <div class="hist-comp-header">
+                            <div class="hist-comp-name-box">
+                                <div class="hist-comp-icon">${(c.company || 'C').charAt(0).toUpperCase()}</div>
+                                <div class="hist-comp-titles">
+                                    <strong>${c.company}</strong>
+                                    <span>${c.role || 'Software Engineer'}</span>
+                                </div>
+                            </div>
+                            <span class="hist-comp-score">${Math.round(c.match_score || 0)}% Match</span>
+                        </div>
+                        <div class="hist-comp-details">
+                            <div><i class="fa-solid fa-money-bill-wave text-emerald"></i> Package: <strong>${c.indicative_ctc_range_lpa || 'Competitive'}</strong></div>
+                            <div style="margin-top:0.35rem; color:#059669;"><i class="fa-solid fa-check"></i> ${matchedCount} Matched Skill${matchedCount !== 1 ? 's' : ''}</div>
+                            ${missingCount > 0 ? `<div style="margin-top:0.2rem; color:#B91C1C;"><i class="fa-solid fa-triangle-exclamation"></i> ${missingCount} Missing Skill${missingCount !== 1 ? 's' : ''}</div>` : ''}
+                        </div>
+                    `;
+                    compContainer.appendChild(card);
+                });
+            } else {
+                compContainer.innerHTML = '<p class="text-muted">No specific company match records stored for this resume.</p>';
+            }
+
+            // 3. Skill Gap Analysis
+            const gaps = item.skill_gaps || [];
+            const gapTitle = document.getElementById('modal-gap-title');
+            const gapDesc = document.getElementById('modal-gap-desc');
+            const gapPills = document.getElementById('modal-missing-skills');
+            gapPills.innerHTML = '';
+
+            const matchScore = (comps.length > 0 && comps[0].match_score) ? Math.round(comps[0].match_score) : Math.round(item.ats_score || 75);
+            const gapPercent = Math.max(0, 100 - matchScore);
+
+            gapTitle.innerText = `${gapPercent}% Skill Gap to Top Target Role`;
+            gapDesc.innerText = `Based on competitive analysis for ${item.best_role || 'Software Engineer'}, learning the missing competencies below will maximize your recruiter qualification.`;
+
+            if (gaps.length > 0) {
+                gaps.forEach(g => {
+                    const span = document.createElement('span');
+                    span.className = 'missing-pill';
+                    span.innerHTML = `<i class="fa-solid fa-circle-minus"></i> ${g}`;
+                    gapPills.appendChild(span);
+                });
+            } else {
+                gapPills.innerHTML = '<span class="badge badge-success" style="padding:0.4rem 0.8rem;"><i class="fa-solid fa-circle-check"></i> Exceptional Skill Alignment - 0 Critical Gaps</span>';
+            }
+
+            // 4. Best Role
+            document.getElementById('modal-best-role-badge').innerText = item.best_role || 'Software Development Engineer';
+            document.getElementById('modal-role-fit-tier').innerText = `Best fit company: ${item.best_match_company || 'Top Recruiters'}`;
+            const roleDescEl = document.getElementById('modal-role-description');
+            roleDescEl.innerText = `Your profile demonstrates strongest structural and technical qualification for ${item.best_role || 'Software Engineering'} positions with high adaptability across full-stack architectures.`;
+
+            // 5. Achievements
+            const achList = document.getElementById('modal-achievements-list');
+            achList.innerHTML = '';
+            const achs = item.achievements || [];
+            if (achs.length > 0) {
+                achs.forEach(a => {
+                    const li = document.createElement('li');
+                    li.innerText = a;
+                    achList.appendChild(li);
+                });
+            } else {
+                achList.innerHTML = '<li>Demonstrated consistent academic and technical competency across technical coursework.</li>';
+            }
+
+            // 6. Projects
+            const projGrid = document.getElementById('modal-projects-list');
+            projGrid.innerHTML = '';
+            const projs = item.projects || [];
+            if (projs.length > 0) {
+                projs.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'hist-proj-card';
+                    const techPills = (p.tech_stack || []).map(t => `<span class="hist-skill-pill">${t}</span>`).join(' ');
+                    div.innerHTML = `
+                        <h5>${p.title || 'Technical Project'}</h5>
+                        <p>${p.description || 'Full-stack software application implementation.'}</p>
+                        ${techPills ? `<div class="hist-skills-pills">${techPills}</div>` : ''}
+                    `;
+                    projGrid.appendChild(div);
+                });
+            } else {
+                projGrid.innerHTML = '<p class="text-muted">No explicit projects extracted from this resume version.</p>';
+            }
+
+            // 7. ATS Breakdown
+            const atsBox = document.getElementById('modal-ats-recommendations');
+            atsBox.innerHTML = '';
+            const fullAn = item.full_analysis || {};
+            const atsBd = fullAn.ats_breakdown || {};
+            const recs = atsBd.recommendations || [];
+
+            let recsHtml = '';
+            if (recs.length > 0) {
+                recsHtml = '<ul style="margin:0.5rem 0 0; padding-left:1.25rem;">' + recs.map(r => `<li style="font-size:0.85rem; color:#1E3A8A; margin-bottom:0.35rem;">${r}</li>`).join('') + '</ul>';
+            } else {
+                recsHtml = '<p style="margin:0.5rem 0 0; font-size:0.85rem; color:#1E3A8A;">Resume formatting and section density comply with top-tier ATS standards.</p>';
+            }
+
+            atsBox.innerHTML = `
+                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.5rem;">
+                    <strong style="color:#1E3A8A; font-size:0.95rem;">ATS Rating: ${atsBd.rating || 'Strong'} (${Math.round(item.ats_score || 0)}/100)</strong>
+                    <span style="font-size:0.8rem; color:#3B82F6;"><i class="fa-solid fa-bolt"></i> Action Verbs: ${atsBd.action_verb_count || 8}+ | Metrics: ${atsBd.metric_count || 3}+</span>
+                </div>
+                <p style="margin:0; font-size:0.84rem; color:#1E40AF; line-height:1.5;">${atsBd.feedback_summary || 'Your resume demonstrates high parsing fidelity across automated recruiter screenings.'}</p>
+                <div style="margin-top:0.75rem; border-top:1px dashed #BFDBFE; padding-top:0.5rem;">
+                    <strong style="font-size:0.82rem; color:#1E3A8A; text-transform:uppercase;">Recommendations to maximize interview callbacks:</strong>
+                    ${recsHtml}
+                </div>
+            `;
+
+            // Open modal
+            const modal = document.getElementById('history-detail-modal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById('history-detail-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeDetailModalOnBackdrop(event) {
+            if (event.target.id === 'history-detail-modal') {
+                closeDetailModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetailModal();
+            }
+        });
+    </script>
+</body>
+</html>

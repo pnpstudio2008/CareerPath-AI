@@ -495,8 +495,64 @@ def ensure_faculty_profile_table():
         conn.close()
 
 
+def ensure_resume_history_table():
+    """Creates student_resume_history table on both PostgreSQL and SQLite."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        is_pg = getattr(conn, "_is_pg", False)
+        if is_pg:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS student_resume_history (
+                id SERIAL PRIMARY KEY,
+                student_id INTEGER NOT NULL,
+                filename TEXT NOT NULL,
+                ats_score REAL DEFAULT 0,
+                skills_json TEXT DEFAULT '[]',
+                achievements_json TEXT DEFAULT '[]',
+                projects_json TEXT DEFAULT '[]',
+                suitable_companies_json TEXT DEFAULT '[]',
+                best_role TEXT DEFAULT 'Software Engineer',
+                best_match_company TEXT DEFAULT 'Top Tech Recruiters',
+                skill_gaps_json TEXT DEFAULT '[]',
+                career_recommendations_json TEXT DEFAULT '[]',
+                full_analysis_json TEXT DEFAULT '{}',
+                resume_fingerprint TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_resume_hist_student ON student_resume_history(student_id)")
+        else:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS student_resume_history (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                student_id INTEGER NOT NULL,
+                filename TEXT NOT NULL,
+                ats_score REAL DEFAULT 0,
+                skills_json TEXT DEFAULT '[]',
+                achievements_json TEXT DEFAULT '[]',
+                projects_json TEXT DEFAULT '[]',
+                suitable_companies_json TEXT DEFAULT '[]',
+                best_role TEXT DEFAULT 'Software Engineer',
+                best_match_company TEXT DEFAULT 'Top Tech Recruiters',
+                skill_gaps_json TEXT DEFAULT '[]',
+                career_recommendations_json TEXT DEFAULT '[]',
+                full_analysis_json TEXT DEFAULT '{}',
+                resume_fingerprint TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            """)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_resume_hist_student ON student_resume_history(student_id)")
+        conn.commit()
+    except Exception as e:
+        print("[ensure_resume_history_table] Notice:", e)
+    finally:
+        conn.close()
+
+
 def init_database():
     ensure_faculty_profile_table()
+    ensure_resume_history_table()
     conn = get_db_connection()
     if getattr(conn, "_is_pg", False):
         print("[Database] Connected to Supabase Cloud PostgreSQL (10,000+ Student Production Scale)")
@@ -2349,3 +2405,156 @@ def update_alumni_inquiry_status(inquiry_id: int, new_status: str):
     conn.commit()
     conn.close()
     return True
+
+
+# ==========================================
+# STUDENT RESUME HISTORY & DISTINCT COUNT
+# ==========================================
+
+def add_resume_analysis_record(student_id: int, filename: str, ats_score: float,
+                               skills: list, achievements: list, projects: list,
+                               suitable_companies: list, best_role: str,
+                               best_match_company: str, skill_gaps: list,
+                               career_recommendations: list, full_analysis: dict,
+                               fingerprint: str) -> int:
+    """
+    Saves or updates a resume analysis record for an ongoing student.
+    A resume is recognized as distinct if its fingerprint (derived from achievements, skills, projects, ATS score) differs.
+    If an identical resume fingerprint already exists for this student, updates the existing entry timestamp.
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id FROM student_resume_history 
+            WHERE student_id = ? AND resume_fingerprint = ?
+            ORDER BY id DESC LIMIT 1
+        """, (int(student_id), str(fingerprint)))
+        existing = cursor.fetchone()
+
+        skills_str = json.dumps(skills or [], default=str)
+        achievements_str = json.dumps(achievements or [], default=str)
+        projects_str = json.dumps(projects or [], default=str)
+        companies_str = json.dumps(suitable_companies or [], default=str)
+        gaps_str = json.dumps(skill_gaps or [], default=str)
+        recs_str = json.dumps(career_recommendations or [], default=str)
+        full_analysis_str = json.dumps(full_analysis or {}, default=str)
+
+        if existing:
+            rec_id = existing["id"] if isinstance(existing, dict) else existing[0]
+            cursor.execute("""
+                UPDATE student_resume_history
+                SET filename = ?, ats_score = ?, skills_json = ?, achievements_json = ?,
+                    projects_json = ?, suitable_companies_json = ?, best_role = ?,
+                    best_match_company = ?, skill_gaps_json = ?, career_recommendations_json = ?,
+                    full_analysis_json = ?, created_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+            """, (
+                filename, float(ats_score), skills_str, achievements_str, projects_str,
+                companies_str, best_role, best_match_company, gaps_str, recs_str,
+                full_analysis_str, int(rec_id)
+            ))
+            conn.commit()
+            return int(rec_id)
+        else:
+            cursor.execute("""
+                INSERT INTO student_resume_history (
+                    student_id, filename, ats_score, skills_json, achievements_json,
+                    projects_json, suitable_companies_json, best_role, best_match_company,
+                    skill_gaps_json, career_recommendations_json, full_analysis_json,
+                    resume_fingerprint
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                int(student_id), filename, float(ats_score), skills_str, achievements_str,
+                projects_str, companies_str, best_role, best_match_company,
+                gaps_str, recs_str, full_analysis_str, str(fingerprint)
+            ))
+            conn.commit()
+            return cursor.lastrowid
+    finally:
+        conn.close()
+
+
+def get_student_resume_history(student_id: int) -> list:
+    """Returns all analyzed resume records for the specified student, sorted latest first."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM student_resume_history
+            WHERE student_id = ?
+            ORDER BY id DESC
+        """, (int(student_id),))
+        rows = cursor.fetchall()
+        results = []
+        for r in rows:
+            row_dict = dict(r)
+            for jf in ['skills_json', 'achievements_json', 'projects_json', 
+                       'suitable_companies_json', 'skill_gaps_json', 
+                       'career_recommendations_json', 'full_analysis_json']:
+                raw = row_dict.get(jf)
+                clean_name = jf.replace('_json', '')
+                try:
+                    row_dict[clean_name] = json.loads(raw) if raw else ([] if not jf.endswith('analysis_json') else {})
+                except Exception:
+                    row_dict[clean_name] = [] if not jf.endswith('analysis_json') else {}
+            results.append(row_dict)
+        return results
+    finally:
+        conn.close()
+
+
+def get_student_resume_detail(record_id: int, student_id: int) -> dict:
+    """Returns single resume record details for student."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT * FROM student_resume_history
+            WHERE id = ? AND student_id = ?
+        """, (int(record_id), int(student_id)))
+        row = cursor.fetchone()
+        if not row:
+            return None
+        row_dict = dict(row)
+        for jf in ['skills_json', 'achievements_json', 'projects_json', 
+                   'suitable_companies_json', 'skill_gaps_json', 
+                   'career_recommendations_json', 'full_analysis_json']:
+            raw = row_dict.get(jf)
+            clean_name = jf.replace('_json', '')
+            try:
+                row_dict[clean_name] = json.loads(raw) if raw else ([] if not jf.endswith('analysis_json') else {})
+            except Exception:
+                row_dict[clean_name] = [] if not jf.endswith('analysis_json') else {}
+        return row_dict
+    finally:
+        conn.close()
+
+
+def get_distinct_resume_count(student_id: int) -> int:
+    """
+    Returns the count of distinct resumes analyzed by the student,
+    based on distinct fingerprints (which incorporate achievements, skills, projects, and ATS score).
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT COUNT(DISTINCT resume_fingerprint) as cnt
+            FROM student_resume_history
+            WHERE student_id = ?
+        """, (int(student_id),))
+        row = cursor.fetchone()
+        count = row["cnt"] if isinstance(row, dict) else (row[0] if row else 0)
+        if not count or count == 0:
+            # Check if student has ats_score > 0 from existing database record
+            cursor.execute("SELECT ats_score FROM students WHERE id = ?", (int(student_id),))
+            st_row = cursor.fetchone()
+            if st_row:
+                st_ats = st_row["ats_score"] if isinstance(st_row, dict) else st_row[0]
+                if st_ats and float(st_ats) > 0:
+                    return 1
+        return count or 0
+    finally:
+        conn.close()

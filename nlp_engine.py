@@ -886,3 +886,204 @@ def evaluate_mock_interview_response(question: str, topic: str, user_answer: str
         "feedback": f"Your answer demonstrated a {rating.lower()} of '{topic}'. Keeping your explanations structured and citing practical examples leaves a memorable impression on interviewers.",
         "model_answer": "Structure your answer: 1. Core definition / purpose -> 2. How it works under the hood -> 3. Practical trade-offs or personal project scenario -> 4. Measurable outcome."
     }
+
+
+# =========================================================================
+# ACHIEVEMENTS & PROJECTS EXTRACTION & DETERMINISTIC RESUME FINGERPRINTING
+# =========================================================================
+
+def extract_achievements(text: str) -> List[str]:
+    """
+    Extracts achievements, awards, honors, hackathons, and certifications/milestones
+    from resume content.
+    """
+    if not text:
+        return []
+    
+    achievements = []
+    lines = [l.strip() for l in text.split('\n') if l.strip()]
+    
+    # 1. Look for dedicated section header
+    ach_header_idx = -1
+    section_headers = [
+        'achievement', 'achievements', 'awards', 'awards & achievements',
+        'honors & awards', 'honors and awards', 'accomplishments',
+        'extracurricular', 'hackathons', 'milestones', 'recognitions'
+    ]
+    
+    for i, line in enumerate(lines):
+        clean_l = re.sub(r'[^a-zA-Z0-9\s&]', '', line).strip().lower()
+        if clean_l in section_headers or (len(clean_l) < 30 and any(clean_l.startswith(h) for h in section_headers)):
+            ach_header_idx = i
+            break
+            
+    if ach_header_idx != -1:
+        known_next = ['education', 'skills', 'experience', 'projects', 'certifications', 'summary', 'languages', 'hobbies']
+        for j in range(ach_header_idx + 1, min(len(lines), ach_header_idx + 25)):
+            cand = lines[j]
+            clean_cand = re.sub(r'[^a-zA-Z0-9\s&]', '', cand).strip().lower()
+            if len(clean_cand) < 25 and any(clean_cand == s for s in known_next):
+                break
+            clean_ach = re.sub(r'^[\•\-\*\d\.\)\s]+', '', cand).strip()
+            if len(clean_ach) >= 12 and not clean_ach.lower().startswith(('page ', 'http', 'github', 'linkedin')):
+                achievements.append(clean_ach)
+                
+    # 2. Heuristic scan across entire document if few or no achievements found
+    if len(achievements) < 2:
+        achievement_keywords = [
+            r'\b(?:secured|ranked|rank|won|winner|1st|2nd|3rd|first|second|third|finalist|champion|runner[\s\-]up)\b',
+            r'\b(?:hackathon|scholarship|dean\'?s\s+list|merit|award|gold\s+medal|published|paper)\b',
+            r'\b(?:solved\s+\d+\+|leetcode\s+\d+|codeforces\s+\d+|top\s+\d+[%％]?)\b',
+            r'\b(?:certified|certification|credential|badge|distinction)\b'
+        ]
+        for line in lines:
+            clean_line = re.sub(r'^[\•\-\*\d\.\)\s]+', '', line).strip()
+            if 20 <= len(clean_line) <= 250:
+                if any(re.search(pat, clean_line, re.IGNORECASE) for pat in achievement_keywords):
+                    if clean_line not in achievements:
+                        achievements.append(clean_line)
+                        if len(achievements) >= 8:
+                            break
+                            
+    seen = set()
+    unique_ach = []
+    for a in achievements:
+        norm = a.lower()
+        if norm not in seen:
+            seen.add(norm)
+            unique_ach.append(a)
+            
+    if not unique_ach:
+        unique_ach.append("Demonstrated consistent academic and technical competency across technical coursework.")
+        
+    return unique_ach[:10]
+
+
+def extract_projects(text: str) -> List[Dict[str, Any]]:
+    """
+    Extracts projects, personal projects, academic projects, and tech stacks
+    from resume content.
+    """
+    if not text:
+        return []
+        
+    projects = []
+    lines = [l.strip() for l in text.split('\n') if l.strip()]
+    
+    proj_header_idx = -1
+    proj_headers = [
+        'projects', 'academic projects', 'personal projects',
+        'key projects', 'selected projects', 'technical projects', 'capstone'
+    ]
+    
+    for i, line in enumerate(lines):
+        clean_l = re.sub(r'[^a-zA-Z0-9\s&]', '', line).strip().lower()
+        if clean_l in proj_headers or (len(clean_l) < 30 and any(clean_l.startswith(h) for h in proj_headers)):
+            proj_header_idx = i
+            break
+            
+    if proj_header_idx != -1:
+        current_project = None
+        known_next = ['education', 'skills', 'experience', 'work experience', 'achievements', 'certifications', 'hobbies', 'contact']
+        for j in range(proj_header_idx + 1, min(len(lines), proj_header_idx + 40)):
+            cand = lines[j]
+            clean_cand = re.sub(r'[^a-zA-Z0-9\s&]', '', cand).strip().lower()
+            if len(clean_cand) < 25 and any(clean_cand == s for s in known_next):
+                break
+                
+            clean_text_cand = re.sub(r'^[\•\-\*\d\.\)\s]+', '', cand).strip()
+            is_title = (
+                (len(cand) < 70 and not cand.endswith('.') and (':' in cand or '|' in cand or '-' in cand or not cand.startswith(('•', '-', '*'))))
+                or ('application' in cand.lower() or 'system' in cand.lower() or 'platform' in cand.lower() or 'website' in cand.lower() or 'portal' in cand.lower())
+            ) and len(clean_text_cand) >= 4
+            
+            if is_title and (not current_project or len(current_project.get("desc_lines", [])) >= 1):
+                title_parts = cand.split('|')[0].split('–')[0].split('-')[0].strip()
+                title = re.sub(r'^[\•\-\*\d\.\)\s]+', '', title_parts).strip() or clean_text_cand
+                current_project = {
+                    "title": title[:65],
+                    "desc_lines": [],
+                    "tech_stack": []
+                }
+                if '|' in cand:
+                    tech_part = cand.split('|', 1)[1]
+                    current_project["tech_stack"] = [t.strip() for t in re.split(r'[,/|]', tech_part) if len(t.strip()) > 1][:6]
+                projects.append(current_project)
+            elif current_project is not None:
+                if len(clean_text_cand) >= 15:
+                    current_project["desc_lines"].append(clean_text_cand)
+                    for word in ['python', 'react', 'node', 'django', 'flask', 'sql', 'mongodb', 'docker', 'aws', 'java', 'flutter']:
+                        if word in clean_text_cand.lower() and word.title() not in current_project["tech_stack"]:
+                            current_project["tech_stack"].append(word.title())
+        
+        for p in projects:
+            p["description"] = " ".join(p.pop("desc_lines", [])[:3]) or "Full-stack technical project implementation."
+            
+    if not projects:
+        tech_words = ['developed', 'built', 'created', 'implemented', 'designed', 'engineered']
+        for line in lines:
+            clean_l = re.sub(r'^[\•\-\*\d\.\)\s]+', '', line).strip()
+            if any(clean_l.lower().startswith(w) for w in tech_words) and len(clean_l) >= 25:
+                projects.append({
+                    "title": clean_l[:45] + ("..." if len(clean_l) > 45 else ""),
+                    "description": clean_l,
+                    "tech_stack": ["Full Stack", "System Design"]
+                })
+                if len(projects) >= 4:
+                    break
+                    
+    if not projects:
+        projects.append({
+            "title": "Software Engineering Capstone Project",
+            "description": "Engineered full-featured application with database persistence and modern responsive UI.",
+            "tech_stack": ["Python", "SQL", "Git"]
+        })
+        
+    return projects[:6]
+
+
+def compute_resume_fingerprint(skills: Any, achievements: List[str], projects: List[Any], ats_score: float) -> str:
+    """
+    Computes a deterministic SHA-256 fingerprint representing a distinct resume based on:
+    1. Extracted skills
+    2. Extracted achievements
+    3. Extracted projects
+    4. ATS score
+    
+    If any of these 4 pillars vary, a new distinct resume is recognized.
+    """
+    import hashlib
+    norm_skills = []
+    if isinstance(skills, dict):
+        for cat, sk_list in skills.items():
+            if isinstance(sk_list, list):
+                for s in sk_list:
+                    norm_skills.append(str(s).lower().strip())
+    elif isinstance(skills, list):
+        for s in skills:
+            norm_skills.append(str(s).lower().strip())
+    norm_skills = sorted(list(set(norm_skills)))
+    
+    norm_achievements = []
+    if isinstance(achievements, list):
+        for a in achievements:
+            if isinstance(a, str):
+                cleaned = re.sub(r'\s+', ' ', a.lower().strip())
+                if cleaned:
+                    norm_achievements.append(cleaned)
+    norm_achievements = sorted(list(set(norm_achievements)))
+    
+    norm_projects = []
+    if isinstance(projects, list):
+        for p in projects:
+            if isinstance(p, dict):
+                title = re.sub(r'\s+', ' ', str(p.get('title', '')).lower().strip())
+                norm_projects.append(title)
+            elif isinstance(p, str):
+                norm_projects.append(re.sub(r'\s+', ' ', p.lower().strip()))
+    norm_projects = sorted(list(set(norm_projects)))
+    
+    rounded_ats = round(float(ats_score or 0), 1)
+    raw_payload = f"SKILLS:{','.join(norm_skills)}|ACHIEVEMENTS:{';'.join(norm_achievements)}|PROJECTS:{';'.join(norm_projects)}|ATS:{rounded_ats}"
+    return hashlib.sha256(raw_payload.encode('utf-8')).hexdigest()
+
