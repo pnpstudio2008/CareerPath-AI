@@ -97,11 +97,15 @@ init_database()
 def index():
     """
     Primary Landing Page:
-    - If unauthenticated, redirects to Student Login Portal (the default entry point).
+    - If faculty/admin is logged in, they are NEVER allowed to access the student platform -> redirect to /admin.
     - If student is logged in, renders the main AI Career Companion platform.
     - If alumni is logged in, renders their profile dashboard (or platform if ?view=platform).
-    - If admin is logged in, renders the platform with admin navigation.
+    - If unauthenticated, redirects to Student Login Portal (the default entry point).
     """
+    # Strict Faculty Isolation: Faculty dashboard users must NEVER access student platform
+    if session.get('admin_logged_in'):
+        return redirect('/admin')
+
     if session.get('student_logged_in'):
         student_id = session.get('student_id')
         student_db = get_student_by_id(int(student_id)) if student_id else None
@@ -164,32 +168,6 @@ def index():
             }
             return render_template('index.html', user=current_user)
         return redirect('/alumni/profile')
-
-    if session.get('admin_logged_in'):
-        fac_p = get_faculty_profile()
-        name_val = session.get('faculty_name') or session.get('admin_user') or fac_p.get('name', 'Prof. Riya Modi')
-        clean_name = re.sub(r'^(prof\.?|dr\.?|mr\.?|mrs\.?|ms\.?)\s+', '', name_val, flags=re.IGNORECASE).strip()
-        clean_parts = [p for p in clean_name.split() if p]
-        if len(clean_parts) >= 2:
-            initials = (clean_parts[0][0] + clean_parts[1][0]).upper()
-        elif clean_parts:
-            initials = clean_parts[0][:2].upper()
-        else:
-            initials = "RM"
-        current_user = {
-            "name": name_val,
-            "initials": initials,
-            "type": "admin",
-            "branch": "Placement Cell Faculty",
-            "batch_year": "2025 - 2026",
-            "ats_score": 95,
-            "quizzes_completed": 12,
-            "resumes_analyzed": session.get('resume_upload_count', 3),
-            "readiness_status": "Verified Faculty",
-            "target_company": "45+ Partner Recruiters",
-            "dashboard_url": "/faculty/profile"
-        }
-        return render_template('index.html', user=current_user)
 
     # Unauthenticated visitors are redirected to the Student Login Portal
     return redirect('/student/login')
@@ -763,6 +741,9 @@ def upvote_experience(exp_id):
 @app.route('/alumni/all', methods=['GET'])
 def alumni_directory():
     """Renders the dedicated line-by-line Alumni Placement Directory page."""
+    if session.get('admin_logged_in'):
+        return redirect('/admin/alumni')
+
     current_user = None
     if session.get('student_logged_in'):
         student_id = session.get('student_id')
@@ -787,13 +768,6 @@ def alumni_directory():
             "id": session.get('alumni_id', ''),
             "type": "alumni",
             "dashboard_url": "/alumni/profile"
-        }
-    elif session.get('admin_logged_in'):
-        current_user = {
-            "name": session.get('admin_user', 'Faculty Guide'),
-            "initials": "FC",
-            "type": "admin",
-            "dashboard_url": "/admin"
         }
 
     experiences = get_all_alumni_experiences()
@@ -879,6 +853,8 @@ def get_public_single_student(student_id):
 @app.route('/student/login', methods=['GET'])
 def student_login_page():
     """Renders the Student Login Portal."""
+    if session.get('admin_logged_in'):
+        return redirect('/admin')
     if session.get('student_logged_in'):
         return redirect('/')
     return render_template('student_login.html')
@@ -887,6 +863,8 @@ def student_login_page():
 @app.route('/student/profile', methods=['GET'])
 def student_profile_page():
     """Renders the logged-in Student's Personal Profile Dashboard."""
+    if session.get('admin_logged_in'):
+        return redirect('/admin')
     if not session.get('student_logged_in') or not session.get('student_id'):
         return redirect('/')
     student = get_student_by_id(session.get('student_id'))
@@ -1043,6 +1021,8 @@ def student_update_profile():
 @app.route('/alumni/profile', methods=['GET'])
 def alumni_profile_page():
     """Renders the logged-in Alumni's Profile Dashboard."""
+    if session.get('admin_logged_in'):
+        return redirect('/admin')
     if not session.get('alumni_logged_in'):
         return redirect('/student/login?role=alumni')
 
