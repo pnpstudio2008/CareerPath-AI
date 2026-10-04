@@ -466,7 +466,7 @@
                 <i class="fa-solid fa-user-tie"></i> Alumni
             </button>
             <button type="button" class="portal-tab-btn tab-admin" id="tab-btn-admin" onclick="selectPortalTab('admin')">
-                <i class="fa-solid fa-shield-halved"></i> Admin
+                <i class="fa-solid fa-chalkboard-user"></i> Faculty
             </button>
         </nav>
 
@@ -688,20 +688,20 @@
                     <div class="login-icon-box icon-admin">
                         <i class="fa-solid fa-user-shield"></i>
                     </div>
-                    <h1 class="login-title">Admin Control Portal</h1>
+                    <h1 class="login-title">Faculty Control Portal</h1>
                     <p class="login-subtitle">Sign in to manage student cohorts, placements, and question banks</p>
                 </div>
 
                 <form id="admin-login-form" onsubmit="handleAdminStep1(event)">
                     <div class="form-group mb-3">
                         <label class="form-label" for="login-username">
-                            <i class="fa-solid fa-user"></i> Admin Username
+                            <i class="fa-solid fa-user"></i> Faculty Username
                         </label>
                         <input 
                             type="text" 
                             id="login-username" 
                             class="form-input" 
-                            placeholder="Enter admin username" 
+                            placeholder="Enter faculty username" 
                             required 
                             autocomplete="username"
                         >
@@ -715,7 +715,7 @@
                             type="password" 
                             id="login-password" 
                             class="form-input" 
-                            placeholder="Enter admin password" 
+                            placeholder="Enter faculty password" 
                             required 
                             autocomplete="current-password"
                         >
@@ -735,8 +735,8 @@
                     <div class="login-icon-box icon-admin">
                         <i class="fa-solid fa-shield-check"></i>
                     </div>
-                    <h1 class="login-title">Admin 2FA Security</h1>
-                    <p class="login-subtitle">Enter the Master 2FA Security Key to unlock administrative access</p>
+                    <h1 class="login-title">Faculty 2FA Security</h1>
+                    <p class="login-subtitle">Enter the Master 2FA Security Key to unlock faculty access</p>
                 </div>
 
                 <div class="security-banner-2fa">
@@ -766,14 +766,14 @@
 
                     <div class="btn-center-wrapper">
                         <button type="submit" class="btn btn-primary btn-center-action" id="login-btn-2" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">
-                            <i class="fa-solid fa-lock-open"></i> Verify & Access Admin Console
+                            <i class="fa-solid fa-lock-open"></i> Verify & Access Faculty Console
                         </button>
                     </div>
                 </form>
 
                 <div class="login-footer-actions">
                     <a href="#" onclick="backToAdminStep1(event)">
-                        <i class="fa-solid fa-arrow-left"></i> Change Admin Account
+                        <i class="fa-solid fa-arrow-left"></i> Change Faculty Account
                     </a>
                 </div>
             </div>
@@ -847,7 +847,7 @@ async function safeJsonFetch(response) {
         window.addEventListener('DOMContentLoaded', () => {
             const path = window.location.pathname;
             const params = new URLSearchParams(window.location.search);
-            if (path.includes('admin') || params.get('role') === 'admin') {
+            if (path.includes('admin') || path.includes('faculty') || params.get('role') === 'admin' || params.get('role') === 'faculty') {
                 selectPortalTab('admin');
             } else if (params.get('role') === 'alumni' || path.includes('alumni')) {
                 selectPortalTab('alumni');
@@ -1060,7 +1060,7 @@ async function safeJsonFetch(response) {
 
                 const data = await safeJsonFetch(res);
                 if (res.ok && data.require_2fa) {
-                    showToast('Admin credentials verified! Please enter the 2FA Master Key.', 'success');
+                    showToast('Faculty credentials verified! Please enter the 2FA Master Key.', 'success');
                     document.getElementById('admin-step-1').style.display = 'none';
                     document.getElementById('admin-step-2').style.display = 'block';
                     document.getElementById('admin-otp-input').value = '';
@@ -1106,12 +1106,12 @@ async function safeJsonFetch(response) {
                 } else {
                     showToast(data.error || 'Invalid 2FA Master Key. Please try again.', 'error');
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify & Access Admin Console';
+                    btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify & Access Faculty Console';
                 }
             } catch (err) {
                 showToast('Network error: ' + err.message, 'error');
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify & Access Admin Console';
+                btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Verify & Access Faculty Console';
             }
         }
 

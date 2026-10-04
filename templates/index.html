@@ -221,7 +221,7 @@
                     <div id="profile-dropdown-menu" class="saas-floating-dropdown" style="display: none; width: 220px;">
                         <div class="saas-dropdown-user-meta">
                             <strong>{{ user.name }}</strong>
-                            <span>{{ user.roll_no if user.roll_no else user.type|capitalize }}</span>
+                            <span>{{ user.roll_no if user.roll_no else ('Faculty' if user.type == 'admin' else user.type|capitalize) }}</span>
                         </div>
                         <a href="{{ user.dashboard_url }}" class="saas-dropdown-link">
                             <i class="fa-solid fa-gauge-high"></i> <span>My Dashboard</span>
@@ -2007,7 +2007,7 @@
                 {% if user %}
                 <p style="margin: 0 0 10px; font-size: 15px; color: #0F172A;">Hello <strong>{{ user.name }}</strong>,</p>
                 <p style="margin: 0 0 16px; font-size: 13.5px; line-height: 1.55; color: #475569;">
-                    Your student login account has been created by the placement administration. You can now log into your student dashboard to track your resume ATS score, practice placement questions, and monitor your placement journey.
+                    Your student login account has been created by the placement faculty. You can now log into your student dashboard to track your resume ATS score, practice placement questions, and monitor your placement journey.
                 </p>
 
                 <!-- Credentials Card -->

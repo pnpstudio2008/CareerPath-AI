@@ -76,7 +76,7 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if not session.get('admin_logged_in'):
             if request.is_json or request.path.startswith('/api/'):
-                return jsonify({"error": "Admin authentication required. Please log in.", "redirect": "/admin"}), 401
+                return jsonify({"error": "Faculty authentication required. Please log in.", "redirect": "/admin"}), 401
             return redirect('/admin')
         return f(*args, **kwargs)
     return decorated_function
@@ -161,17 +161,17 @@ def index():
         return redirect('/alumni/profile')
 
     if session.get('admin_logged_in'):
-        name_val = session.get('admin_user', 'Administrator')
+        name_val = session.get('admin_user', 'Faculty Guide')
         current_user = {
             "name": name_val,
-            "initials": "AD",
+            "initials": "FC",
             "type": "admin",
-            "branch": "Placement Cell Administration",
+            "branch": "Placement Cell Faculty",
             "batch_year": "2025 - 2026",
             "ats_score": 95,
             "quizzes_completed": 12,
             "resumes_analyzed": session.get('resume_upload_count', 3),
-            "readiness_status": "Verified Admin",
+            "readiness_status": "Verified Faculty",
             "target_company": "45+ Partner Recruiters",
             "dashboard_url": "/admin"
         }
@@ -776,8 +776,8 @@ def alumni_directory():
         }
     elif session.get('admin_logged_in'):
         current_user = {
-            "name": session.get('admin_user', 'Administrator'),
-            "initials": "AD",
+            "name": session.get('admin_user', 'Faculty Guide'),
+            "initials": "FC",
             "type": "admin",
             "dashboard_url": "/admin"
         }
@@ -911,7 +911,7 @@ def student_auth_login():
         if student.get("account_status", "Active") == "Frozen":
             return jsonify({
                 "success": False,
-                "error": "Your account has been frozen by the Administrator. Please contact support."
+                "error": "Your account has been frozen by the Faculty. Please contact support."
             })
         session['pending_2fa_type'] = 'student'
         session['pending_2fa_student_id'] = student['id']
@@ -1241,24 +1241,37 @@ def alumni_auth_logout():
 
 @app.route('/admin', methods=['GET'])
 def admin_portal():
-    """Renders the standalone Admin Dashboard or Login Page."""
+    """Renders the standalone Faculty Dashboard or Login Page."""
     if session.get('admin_logged_in'):
-        return render_template('admin.html', admin_user=session.get('admin_user', 'Administrator'))
+        return render_template('admin.html', admin_user=session.get('admin_user', 'Faculty Guide'))
     return render_template('admin_login.html')
 
 @app.route('/admin/alumni', methods=['GET'])
 def admin_alumni_portal():
-    """Renders the Admin Alumni Records page."""
+    """Renders the Faculty Alumni Records page."""
     if session.get('admin_logged_in'):
-        return render_template('admin_alumni.html', admin_user=session.get('admin_user', 'Administrator'))
+        return render_template('admin_alumni.html', admin_user=session.get('admin_user', 'Faculty Guide'))
     return redirect(url_for('admin_portal'))
 
 @app.route('/admin/settings', methods=['GET'])
 def admin_settings_portal():
-    """Renders the Admin Settings page (for freezing accounts, etc.)."""
+    """Renders the Faculty Settings page (for freezing accounts, etc.)."""
     if session.get('admin_logged_in'):
-        return render_template('admin_settings.html', admin_user=session.get('admin_user', 'Administrator'))
+        return render_template('admin_settings.html', admin_user=session.get('admin_user', 'Faculty Guide'))
     return redirect(url_for('admin_portal'))
+
+# Route aliases for /faculty
+@app.route('/faculty', methods=['GET'])
+def faculty_portal():
+    return admin_portal()
+
+@app.route('/faculty/alumni', methods=['GET'])
+def faculty_alumni_portal():
+    return admin_alumni_portal()
+
+@app.route('/faculty/settings', methods=['GET'])
+def faculty_settings_portal():
+    return admin_settings_portal()
 
 @app.route('/api/admin/students/toggle-freeze-by-roll', methods=['POST'])
 @admin_required
@@ -1338,7 +1351,7 @@ def admin_login():
         return jsonify({
             "success": True,
             "require_2fa": True,
-            "message": "Admin credentials verified. Enter the 2FA Master Security Key to proceed."
+            "message": "Faculty credentials verified. Enter the 2FA Master Security Key to proceed."
         })
     else:
         return jsonify({
@@ -1360,7 +1373,7 @@ def admin_verify_2fa():
         session.pop('pending_2fa_type', None)
 
         session['admin_logged_in'] = True
-        session['admin_user'] = 'Administrator'
+        session['admin_user'] = 'Faculty Guide'
 
         return jsonify({
             "success": True,
