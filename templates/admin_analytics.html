@@ -305,20 +305,29 @@
         }
 
         .ak-icon-wrap {
-            width: 52px;
-            height: 52px;
+            width: 54px;
+            height: 54px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
             flex-shrink: 0;
+            padding: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
 
-        .ak-icon-blue { background: #EFF6FF; color: #2563EB; }
-        .ak-icon-green { background: #ECFDF5; color: #10B981; }
-        .ak-icon-purple { background: #F5F3FF; color: #8B5CF6; }
-        .ak-icon-amber { background: #FFFBEB; color: #F59E0B; }
+        .ak-icon-wrap img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .ak-icon-blue { background: #EFF6FF; border-color: #DBEAFE; }
+        .ak-icon-green { background: #ECFDF5; border-color: #D1FAE5; }
+        .ak-icon-purple { background: #F5F3FF; border-color: #EDE9FE; }
+        .ak-icon-amber { background: #FFFBEB; border-color: #FEF3C7; }
 
         .ak-info {
             display: flex;
@@ -597,45 +606,45 @@
             <div class="analytics-kpi-grid">
                 <div class="analytics-kpi-card">
                     <div class="ak-icon-wrap ak-icon-blue">
-                        <i class="fa-solid fa-user-graduate"></i>
+                        <img src="/static/images/kpi_cohort_students.svg" alt="Active Cohort Students">
                     </div>
                     <div class="ak-info">
                         <span class="ak-label">Active Cohort Students</span>
                         <h3 class="ak-value" id="kpi-total-students">--</h3>
-                        <span class="ak-sub"><i class="fa-solid fa-arrow-trend-up"></i> 100% Monitored</span>
+                        <span class="ak-sub"><i data-lucide="users" style="width:13px;height:13px;"></i> Available Ongoing</span>
                     </div>
                 </div>
 
                 <div class="analytics-kpi-card">
                     <div class="ak-icon-wrap ak-icon-green">
-                        <i class="fa-solid fa-briefcase"></i>
+                        <img src="/static/images/kpi_placement_rate.svg" alt="Cohort Placement Rate">
                     </div>
                     <div class="ak-info">
                         <span class="ak-label">Cohort Placement Rate</span>
                         <h3 class="ak-value" id="kpi-placement-rate">--%</h3>
-                        <span class="ak-sub"><i class="fa-solid fa-circle-check"></i> <span id="kpi-placed-count">--</span> Placed Offers</span>
+                        <span class="ak-sub"><i data-lucide="check-circle-2" style="width:13px;height:13px;"></i> <span id="kpi-placed-count">--</span> Placed Offers</span>
                     </div>
                 </div>
 
                 <div class="analytics-kpi-card">
                     <div class="ak-icon-wrap ak-icon-purple">
-                        <i class="fa-solid fa-file-invoice"></i>
+                        <img src="/static/images/kpi_ats_readiness.svg" alt="Average ATS Readiness">
                     </div>
                     <div class="ak-info">
                         <span class="ak-label">Average ATS Readiness</span>
                         <h3 class="ak-value" id="kpi-avg-ats">--%</h3>
-                        <span class="ak-sub" style="color:#8B5CF6;"><i class="fa-solid fa-bolt"></i> AI ATS Powered</span>
+                        <span class="ak-sub" style="color:#8B5CF6;"><i data-lucide="zap" style="width:13px;height:13px;"></i> AI ATS Powered</span>
                     </div>
                 </div>
 
                 <div class="analytics-kpi-card">
                     <div class="ak-icon-wrap ak-icon-amber">
-                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                        <img src="/static/images/kpi_alumni_package.svg" alt="Average Alumni Package">
                     </div>
                     <div class="ak-info">
                         <span class="ak-label">Average Alumni Package</span>
                         <h3 class="ak-value" id="kpi-avg-ctc">₹-- LPA</h3>
-                        <span class="ak-sub" style="color:#D97706;"><i class="fa-solid fa-trophy"></i> Highest: <span id="kpi-highest-ctc">₹-- LPA</span></span>
+                        <span class="ak-sub" style="color:#D97706;"><i data-lucide="award" style="width:13px;height:13px;"></i> Highest: <span id="kpi-highest-ctc">₹-- LPA</span></span>
                     </div>
                 </div>
             </div>
@@ -846,6 +855,7 @@
                     updateKPICards(data.kpis);
                     renderOngoingCharts(data.ongoing_students);
                     renderAlumniCharts(data.alumni_progress);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
                 }
             } catch (err) {
                 console.error("Failed to fetch analytics:", err);

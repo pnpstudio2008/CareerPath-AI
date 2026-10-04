@@ -268,37 +268,37 @@
         <div class="kpi-grid mt-4">
             <div class="card kpi-card">
                 <div class="kpi-icon-wrap bg-primary-soft">
-                    <i class="fa-solid fa-user-graduate"></i>
+                    <img src="/static/images/kpi_cohort_students.svg" alt="Active Cohort Students" style="width:36px; height:36px; object-fit:contain;">
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Active Cohort Students</span>
-                    <h2 class="kpi-value" id="kpi-students-count">{{ stats.total_students or 142 }}</h2>
+                    <h2 class="kpi-value" id="kpi-students-count">{{ stats.total_students or 0 }}</h2>
                 </div>
             </div>
 
             <div class="card kpi-card">
                 <div class="kpi-icon-wrap bg-success-soft">
-                    <i class="fa-solid fa-briefcase"></i>
+                    <img src="/static/images/kpi_placement_rate.svg" alt="Placement Rate" style="width:36px; height:36px; object-fit:contain;">
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Cohort Placement Rate</span>
-                    <h2 class="kpi-value" id="kpi-placement-rate">{{ stats.placement_rate or 78 }}%</h2>
+                    <h2 class="kpi-value" id="kpi-placement-rate">{{ stats.placement_rate or 0 }}%</h2>
                 </div>
             </div>
 
             <div class="card kpi-card">
                 <div class="kpi-icon-wrap bg-warning-soft">
-                    <i class="fa-solid fa-file-invoice"></i>
+                    <img src="/static/images/kpi_ats_readiness.svg" alt="ATS Readiness" style="width:36px; height:36px; object-fit:contain;">
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Average ATS Readiness</span>
-                    <h2 class="kpi-value" style="font-size:1.45rem;" id="kpi-avg-ats">{{ stats.avg_ats or 76.5 }}%</h2>
+                    <h2 class="kpi-value" style="font-size:1.45rem;" id="kpi-avg-ats">{{ stats.avg_ats or 0 }}%</h2>
                 </div>
             </div>
 
             <div class="card kpi-card">
                 <div class="kpi-icon-wrap bg-info-soft">
-                    <i class="fa-solid fa-handshake"></i>
+                    <img src="/static/images/kpi_alumni_package.svg" alt="Recruiter Network" style="width:36px; height:36px; object-fit:contain;">
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Recruiter Network</span>

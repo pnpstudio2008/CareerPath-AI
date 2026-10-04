@@ -1312,15 +1312,15 @@ def faculty_profile_page():
     stats = get_admin_dashboard_stats()
     total_st = stats.get('total_students', 0)
     placed_st = stats.get('placed_students', 0)
-    placement_rate = round((placed_st / max(1, total_st)) * 100, 1) if total_st > 0 else 78.4
+    placement_rate = round((placed_st / max(1, total_st)) * 100, 1) if total_st > 0 else 0.0
 
     return render_template('faculty_profile.html', 
                            faculty=faculty_data, 
                            stats={
-                               "total_students": max(142, total_st),
-                               "placed_students": max(98, placed_st),
-                               "placement_rate": placement_rate if total_st > 10 else 78.4,
-                               "avg_ats": stats.get('avg_ats') or 76.5
+                               "total_students": total_st,
+                               "placed_students": placed_st,
+                               "placement_rate": placement_rate,
+                               "avg_ats": stats.get('avg_ats') or 0.0
                            })
 
 @app.route('/api/faculty/profile', methods=['GET', 'POST'])

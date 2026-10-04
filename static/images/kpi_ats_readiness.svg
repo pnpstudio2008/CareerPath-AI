@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+    <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C084FC"/>
+      <stop offset="100%" stop-color="#9333EA"/>
+    </linearGradient>
+    <filter id="shadowDoc" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#4C1D95" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- Background Circle Glow -->
+  <circle cx="32" cy="32" r="28" fill="#F5F3FF"/>
+  <!-- Resume Sheet Back -->
+  <rect x="16" y="13" width="30" height="40" rx="4" fill="#DDD6FE"/>
+  <!-- Resume Sheet Main -->
+  <rect x="18" y="11" width="30" height="40" rx="4" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="1.5" filter="url(#shadowDoc)"/>
+  <!-- Document Lines -->
+  <rect x="23" y="17" width="12" height="3" rx="1.5" fill="#8B5CF6"/>
+  <rect x="23" y="24" width="20" height="2" rx="1" fill="#E2E8F0"/>
+  <rect x="23" y="29" width="18" height="2" rx="1" fill="#E2E8F0"/>
+  <rect x="23" y="34" width="16" height="2" rx="1" fill="#E2E8F0"/>
+  <rect x="23" y="39" width="14" height="2" rx="1" fill="#E2E8F0"/>
+  <!-- ATS AI Scanning Badge -->
+  <circle cx="43" cy="43" r="11" fill="url(#docGrad)"/>
+  <circle cx="43" cy="43" r="10" stroke="#FFFFFF" stroke-width="1.5"/>
+  <!-- AI Sparkle / Target Symbol -->
+  <path d="M43 36V50M36 43H50" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="43" cy="43" r="3.5" fill="#FDE047"/>
+</svg>
