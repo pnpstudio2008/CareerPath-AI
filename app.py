@@ -102,9 +102,9 @@ def index():
     - If alumni is logged in, renders their profile dashboard (or platform if ?view=platform).
     - If unauthenticated, redirects to Student Login Portal (the default entry point).
     """
-    # Strict Faculty Isolation: Faculty dashboard users must NEVER access student platform
+    # If faculty or anyone removes path from URL, redirect back to the student login portal
     if session.get('admin_logged_in'):
-        return redirect('/admin')
+        return redirect('/student/login')
 
     if session.get('student_logged_in'):
         student_id = session.get('student_id')
@@ -174,6 +174,7 @@ def index():
 
 
 @app.route('/login')
+@app.route('/student')
 @app.route('/alumni/login')
 def login_gateway():
     """Redirects unauthenticated users to the login portal."""
@@ -181,12 +182,10 @@ def login_gateway():
         return redirect('/alumni/profile')
     if session.get('student_logged_in'):
         return redirect('/')
-    if session.get('admin_logged_in'):
-        return redirect('/admin')
     # If route is /alumni/login, pass query param to active tab
     if request.path == '/alumni/login':
         return redirect('/student/login?role=alumni')
-    return redirect('/')
+    return redirect('/student/login')
 
 
 
@@ -195,10 +194,19 @@ def login_gateway():
 # ==========================================
 from werkzeug.exceptions import HTTPException
 
+@app.errorhandler(404)
+def handle_404(e):
+    """If anyone removes anything from URL or visits an invalid URL, redirect to /student/login."""
+    if request.path.startswith('/api/'):
+        return jsonify({"success": False, "error": "Endpoint not found"}), 404
+    return redirect('/student/login')
+
 @app.errorhandler(Exception)
 def handle_exception(e):
     # Pass through HTTP errors
     if isinstance(e, HTTPException):
+        if e.code == 404 and not request.path.startswith('/api/'):
+            return redirect('/student/login')
         # Return JSON for all API routes
         if request.path.startswith('/api/'):
             return jsonify({
@@ -853,8 +861,6 @@ def get_public_single_student(student_id):
 @app.route('/student/login', methods=['GET'])
 def student_login_page():
     """Renders the Student Login Portal."""
-    if session.get('admin_logged_in'):
-        return redirect('/admin')
     if session.get('student_logged_in'):
         return redirect('/')
     return render_template('student_login.html')
