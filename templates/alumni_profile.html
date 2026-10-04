@@ -313,17 +313,17 @@
             <div class="ap-hero-bg"></div>
             <div class="ap-hero-content">
                 <div class="ap-profile-main">
-                    <div class="ap-avatar">{{ alumni.initials or alumni.name[:2].upper() }}</div>
+                    <div class="ap-avatar" id="hero-alumni-avatar">{{ alumni.initials or alumni.name[:2].upper() }}</div>
                     <div class="ap-profile-info">
                         <div class="ap-name-row">
-                            <h1 class="ap-name">{{ alumni.name }}</h1>
+                            <h1 class="ap-name" id="hero-alumni-name">{{ alumni.name }}</h1>
                             <span class="ap-verified-badge"><i class="fa-solid fa-certificate"></i> Verified Alumni Mentor</span>
                         </div>
                         <div class="ap-chips-row">
                             <span class="ap-chip"><i class="fa-solid fa-id-card text-blue"></i> Roll No: {{ alumni.roll_no }}</span>
-                            <span class="ap-chip"><i class="fa-solid fa-building text-purple"></i> {{ alumni.company }}</span>
-                            <span class="ap-chip"><i class="fa-solid fa-briefcase text-blue"></i> {{ alumni.role }}</span>
-                            <span class="ap-chip"><i class="fa-solid fa-indian-rupee-sign text-emerald"></i> ₹{{ alumni.package_lpa }} LPA</span>
+                            <span class="ap-chip" id="hero-alumni-company"><i class="fa-solid fa-building text-purple"></i> {{ alumni.company }}</span>
+                            <span class="ap-chip" id="hero-alumni-role"><i class="fa-solid fa-briefcase text-blue"></i> {{ alumni.role }}</span>
+                            <span class="ap-chip" id="hero-alumni-package"><i class="fa-solid fa-indian-rupee-sign text-emerald"></i> ₹{{ alumni.package_lpa }} LPA</span>
                             <span class="ap-chip"><i class="fa-solid fa-calendar text-orange"></i> Class of {{ alumni.batch_year }}</span>
                         </div>
                         <div class="ap-actions-row">
@@ -417,12 +417,12 @@
                     </div>
                 </div>
                 <div class="ap-profile-table">
-                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-user"></i> Full Name</div><div class="ap-val">{{ alumni.name }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-user"></i> Full Name</div><div class="ap-val" id="table-alumni-name">{{ alumni.name }}</div></div>
                     <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-id-card"></i> Alumni User ID</div><div class="ap-val">{{ alumni.roll_no }}</div></div>
-                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-envelope"></i> Email Address</div><div class="ap-val">{{ alumni.email }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-envelope"></i> Email Address</div><div class="ap-val" id="table-alumni-email">{{ alumni.email }}</div></div>
                     <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-building-columns"></i> Department</div><div class="ap-val">{{ alumni.branch }}</div></div>
-                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-briefcase"></i> Current Role</div><div class="ap-val">{{ alumni.role }}</div></div>
-                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-building"></i> Current Company</div><div class="ap-val"><strong>{{ alumni.company }}</strong></div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-briefcase"></i> Current Role</div><div class="ap-val" id="table-alumni-role">{{ alumni.role }}</div></div>
+                    <div class="ap-row"><div class="ap-label"><i class="fa-solid fa-building"></i> Current Company</div><div class="ap-val" id="table-alumni-company"><strong>{{ alumni.company }}</strong></div></div>
                 </div>
             </div>
 
@@ -623,13 +623,51 @@
         </div>
     </main>
 
-    <!-- Placeholder Modal for Profile Edit -->
+    <!-- Real Interactive Modal for Alumni Profile Edit -->
     <div class="modal-backdrop" id="edit-profile-modal-backdrop" onclick="closeProfileEditModal(event)">
-        <div class="modal-content" style="max-width: 500px;">
-            <button class="modal-close-btn" onclick="closeProfileEditModal(event)">&times;</button>
-            <h2 style="font-size:1.5rem; margin-bottom:1rem;"><i class="fa-solid fa-pen text-primary"></i> Edit Profile</h2>
-            <p class="text-muted mb-4">Profile editing functionality is connected to your university SSO. Contact faculty to update core details.</p>
-            <button class="btn btn-outline w-100" onclick="closeProfileEditModal(event, true)">Close</button>
+        <div class="modal-card" style="max-width: 540px; background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid #E2E8F0; padding-bottom:1rem;">
+                <h3 style="font-size:1.35rem; font-weight:700; color:#0F172A; margin:0;"><i class="fa-solid fa-user-pen text-primary"></i> Edit Alumni Profile</h3>
+                <button type="button" class="modal-close-btn" onclick="closeProfileEditModal(event, true)" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#94A3B8;">&times;</button>
+            </div>
+            <form id="edit-alumni-form" onsubmit="submitAlumniEditProfileForm(event)">
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-user"></i> Full Name</label>
+                    <input type="text" id="edit-alumni-name" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ alumni.name }}" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-envelope"></i> Email Address</label>
+                    <input type="email" id="edit-alumni-email" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ alumni.email }}" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-phone"></i> Contact Phone</label>
+                    <input type="text" id="edit-alumni-phone" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ alumni.phone or '' }}" placeholder="e.g. +91 98765 43210">
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;" class="mb-3">
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-building"></i> Current Company</label>
+                        <input type="text" id="edit-alumni-company" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ alumni.company }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-briefcase"></i> Current Role</label>
+                        <input type="text" id="edit-alumni-role" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ alumni.role }}" required>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-indian-rupee-sign"></i> Package (LPA)</label>
+                    <input type="number" step="0.1" id="edit-alumni-package" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ alumni.package_lpa }}">
+                </div>
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;"><i class="fa-solid fa-lock"></i> New Password (leave blank to keep current)</label>
+                    <input type="password" id="edit-alumni-password" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" placeholder="Leave blank to keep unchanged">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeProfileEditModal(event, true)">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-alumni-profile">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Profile
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -830,8 +868,79 @@ async function safeJsonFetch(response) {
             if(modal) modal.classList.add('active');
         }
         function closeProfileEditModal(event, force=false) {
-            if(force || event.target === document.getElementById('edit-profile-modal-backdrop') || event.target.classList.contains('modal-close-btn')) {
+            if(force || (event && (event.target === document.getElementById('edit-profile-modal-backdrop') || event.target.classList.contains('modal-close-btn')))) {
                 document.getElementById('edit-profile-modal-backdrop').classList.remove('active');
+            }
+        }
+
+        async function submitAlumniEditProfileForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-alumni-profile');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            }
+
+            const payload = {
+                name: document.getElementById('edit-alumni-name').value.trim(),
+                email: document.getElementById('edit-alumni-email').value.trim(),
+                phone: document.getElementById('edit-alumni-phone').value.trim(),
+                company: document.getElementById('edit-alumni-company').value.trim(),
+                role: document.getElementById('edit-alumni-role').value.trim(),
+                package_lpa: document.getElementById('edit-alumni-package').value.trim(),
+                password: document.getElementById('edit-alumni-password').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/alumni/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await safeJsonFetch(res);
+                if (data.success) {
+                    showToast('Profile updated successfully!', 'success');
+                    // Immediately update DOM elements
+                    if (payload.name) {
+                        const hName = document.getElementById('hero-alumni-name');
+                        if (hName) hName.innerText = payload.name;
+                        const tName = document.getElementById('table-alumni-name');
+                        if (tName) tName.innerText = payload.name;
+                        const initials = payload.name.split(' ').filter(n=>n).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'AL';
+                        const hAv = document.getElementById('hero-alumni-avatar');
+                        if (hAv) hAv.innerText = initials;
+                    }
+                    if (payload.email) {
+                        const tEmail = document.getElementById('table-alumni-email');
+                        if (tEmail) tEmail.innerText = payload.email;
+                    }
+                    if (payload.company) {
+                        const hComp = document.getElementById('hero-alumni-company');
+                        if (hComp) hComp.innerHTML = `<i class="fa-solid fa-building text-purple"></i> ${payload.company}`;
+                        const tComp = document.getElementById('table-alumni-company');
+                        if (tComp) tComp.innerHTML = `<strong>${payload.company}</strong>`;
+                    }
+                    if (payload.role) {
+                        const hRole = document.getElementById('hero-alumni-role');
+                        if (hRole) hRole.innerHTML = `<i class="fa-solid fa-briefcase text-blue"></i> ${payload.role}`;
+                        const tRole = document.getElementById('table-alumni-role');
+                        if (tRole) tRole.innerText = payload.role;
+                    }
+                    if (payload.package_lpa) {
+                        const hPkg = document.getElementById('hero-alumni-package');
+                        if (hPkg) hPkg.innerHTML = `<i class="fa-solid fa-indian-rupee-sign text-emerald"></i> ₹${payload.package_lpa} LPA`;
+                    }
+                    closeProfileEditModal(null, true);
+                } else {
+                    showToast(data.error || 'Failed to update profile.', 'error');
+                }
+            } catch (err) {
+                showToast('Error updating profile: ' + err.message, 'error');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Profile';
+                }
             }
         }
     

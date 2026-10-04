@@ -894,8 +894,8 @@
                 <div class="admin-nav-icon-badge"></div>
             </div>
             <div class="admin-user-profile" onclick="toggleFacultyDropdown(event)">
-                <div class="admin-avatar">PM</div>
-                <span style="font-size:0.875rem; font-weight:600; color:var(--admin-text-main);">Panth Mistry <i data-lucide="chevron-down" style="width:14px; height:14px; vertical-align:middle;"></i></span>
+                <div class="admin-avatar">{{ admin_initials|default('RM') }}</div>
+                <span style="font-size:0.875rem; font-weight:600; color:var(--admin-text-main);">{{ admin_user or 'Prof. Riya Modi' }} <i data-lucide="chevron-down" style="width:14px; height:14px; vertical-align:middle;"></i></span>
                 <div id="faculty-profile-dropdown" class="faculty-dropdown-menu" style="display:none;">
                     <a href="/faculty/profile" class="faculty-dropdown-item"><i data-lucide="user"></i> My Profile</a>
                     <a href="/admin/analytics" class="faculty-dropdown-item"><i data-lucide="bar-chart-3"></i> Placement Analytics</a>

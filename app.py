@@ -5,6 +5,7 @@ NLP analysis engine, and static asset serving.
 """
 
 import os
+import re
 import time
 import random
 from flask import Flask, request, jsonify, render_template, send_from_directory, session, redirect, url_for
@@ -53,7 +54,10 @@ from database import (
     record_alumni_outreach,
     update_alumni_inquiry_status,
     record_student_quiz_completion,
-    get_db_connection
+    get_db_connection,
+    get_faculty_profile,
+    update_faculty_profile,
+    update_alumni_account
 )
 from mock_test_engine import generate_tailored_mock_test
 from sample_resumes import SAMPLE_RESUMES
@@ -162,10 +166,19 @@ def index():
         return redirect('/alumni/profile')
 
     if session.get('admin_logged_in'):
-        name_val = session.get('admin_user', 'Faculty Guide')
+        fac_p = get_faculty_profile()
+        name_val = session.get('faculty_name') or session.get('admin_user') or fac_p.get('name', 'Prof. Riya Modi')
+        clean_name = re.sub(r'^(prof\.?|dr\.?|mr\.?|mrs\.?|ms\.?)\s+', '', name_val, flags=re.IGNORECASE).strip()
+        clean_parts = [p for p in clean_name.split() if p]
+        if len(clean_parts) >= 2:
+            initials = (clean_parts[0][0] + clean_parts[1][0]).upper()
+        elif clean_parts:
+            initials = clean_parts[0][:2].upper()
+        else:
+            initials = "RM"
         current_user = {
             "name": name_val,
-            "initials": "FC",
+            "initials": initials,
             "type": "admin",
             "branch": "Placement Cell Faculty",
             "batch_year": "2025 - 2026",
@@ -174,7 +187,7 @@ def index():
             "resumes_analyzed": session.get('resume_upload_count', 3),
             "readiness_status": "Verified Faculty",
             "target_company": "45+ Partner Recruiters",
-            "dashboard_url": "/admin"
+            "dashboard_url": "/faculty/profile"
         }
         return render_template('index.html', user=current_user)
 
@@ -1002,7 +1015,13 @@ def student_update_profile():
     if not student:
         return jsonify({"error": "Student not found"}), 404
 
-    student['phone'] = data.get('phone', student.get('phone', '')).strip()
+    if data.get('name') and data['name'].strip():
+        student['name'] = data['name'].strip()
+        session['student_name'] = student['name']
+    if data.get('email') and data['email'].strip():
+        student['email'] = data['email'].strip()
+    if 'phone' in data:
+        student['phone'] = data.get('phone', '').strip()
     if data.get('target_company'):
         student['target_company'] = data.get('target_company').strip()
     if data.get('password') and data.get('password').strip():
@@ -1014,7 +1033,7 @@ def student_update_profile():
         conn.close()
 
     update_student_progress(student_id, student)
-    return jsonify({"success": True, "message": "Profile updated successfully!"})
+    return jsonify({"success": True, "message": "Profile updated successfully!", "student": student})
 
 
 # ==========================================
@@ -1046,7 +1065,7 @@ def alumni_profile_page():
     else:
         return redirect('/student/login?role=alumni')
 
-    # Compute 2-letter initials (e.g. Mistry Panth -> MP)
+    # Compute 2-letter initials (e.g. Riya Modi -> RM)
     parts = [p.strip() for p in alumni_data['name'].strip().split() if p.strip()]
     if len(parts) >= 2:
         alumni_data['initials'] = (parts[0][0] + parts[1][0]).upper()
@@ -1057,6 +1076,28 @@ def alumni_profile_page():
 
     metrics = get_alumni_outreach_metrics(alumni_id)
     return render_template('alumni_profile.html', alumni=alumni_data, metrics=metrics)
+
+
+@app.route('/api/alumni/update-profile', methods=['POST'])
+def alumni_update_profile():
+    """Allows logged-in alumni to update their profile details (company, role, package, phone, email, name, password)."""
+    if not session.get('alumni_logged_in') or not session.get('alumni_id'):
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    data = request.json or request.form.to_dict()
+    alumni_id = session.get('alumni_id')
+    
+    success = update_alumni_account(alumni_id, data)
+    if not success:
+        return jsonify({"error": "Failed to update alumni profile or account not found."}), 400
+    
+    if data.get('name'):
+        session['alumni_name'] = data['name'].strip()
+        
+    return jsonify({
+        "success": True, 
+        "message": "Alumni profile updated successfully!"
+    })
 
 
 @app.route('/api/alumni/dashboard-stats', methods=['GET'])
@@ -1240,25 +1281,42 @@ def alumni_auth_logout():
 # ADMIN AUTHENTICATION & CONTROL PORTAL
 # ==========================================
 
+def get_faculty_display_user():
+    """Returns the current faculty name and computed 2-letter initials (e.g. Riya Modi -> RM)."""
+    fac_p = get_faculty_profile()
+    name = session.get('faculty_name') or session.get('admin_user') or fac_p.get('name', 'Prof. Riya Modi')
+    clean = re.sub(r'^(prof\.?|dr\.?|mr\.?|mrs\.?|ms\.?)\s+', '', name, flags=re.IGNORECASE).strip()
+    parts = [p for p in clean.split() if p]
+    if len(parts) >= 2:
+        initials = (parts[0][0] + parts[1][0]).upper()
+    elif parts:
+        initials = parts[0][:2].upper()
+    else:
+        initials = 'RM'
+    return name, initials
+
 @app.route('/admin', methods=['GET'])
 def admin_portal():
     """Renders the standalone Faculty Dashboard or Login Page."""
     if session.get('admin_logged_in'):
-        return render_template('admin.html', admin_user=session.get('admin_user', 'Faculty Guide'))
+        name, initials = get_faculty_display_user()
+        return render_template('admin.html', admin_user=name, admin_initials=initials)
     return render_template('admin_login.html')
 
 @app.route('/admin/alumni', methods=['GET'])
 def admin_alumni_portal():
     """Renders the Faculty Alumni Records page."""
     if session.get('admin_logged_in'):
-        return render_template('admin_alumni.html', admin_user=session.get('admin_user', 'Faculty Guide'))
+        name, initials = get_faculty_display_user()
+        return render_template('admin_alumni.html', admin_user=name, admin_initials=initials)
     return redirect(url_for('admin_portal'))
 
 @app.route('/admin/settings', methods=['GET'])
 def admin_settings_portal():
     """Renders the Faculty Settings page (for freezing accounts, etc.)."""
     if session.get('admin_logged_in'):
-        return render_template('admin_settings.html', admin_user=session.get('admin_user', 'Faculty Guide'))
+        name, initials = get_faculty_display_user()
+        return render_template('admin_settings.html', admin_user=name, admin_initials=initials)
     return redirect(url_for('admin_portal'))
 
 # Route aliases for /faculty
@@ -1279,7 +1337,8 @@ def faculty_settings_portal():
 def admin_analytics_portal():
     """Renders the Placement Analytics page with dedicated graphs for ongoing and alumni students."""
     if session.get('admin_logged_in'):
-        return render_template('admin_analytics.html', admin_user=session.get('admin_user', 'Faculty Guide'))
+        name, initials = get_faculty_display_user()
+        return render_template('admin_analytics.html', admin_user=name, admin_initials=initials)
     return redirect(url_for('admin_portal'))
 
 @app.route('/api/admin/analytics/data', methods=['GET'])
@@ -1298,16 +1357,26 @@ def faculty_profile_page():
     if not session.get('admin_logged_in'):
         return redirect('/admin')
     
-    name_val = session.get('faculty_name') or session.get('admin_user', 'Prof. Panth Mistry')
+    fac_p = get_faculty_profile()
+    name_val = session.get('faculty_name') or session.get('admin_user') or fac_p.get('name', 'Prof. Riya Modi')
+    clean_name = re.sub(r'^(prof\.?|dr\.?|mr\.?|mrs\.?|ms\.?)\s+', '', name_val, flags=re.IGNORECASE).strip()
+    clean_parts = [n for n in clean_name.split() if n]
+    if len(clean_parts) >= 2:
+        initials = (clean_parts[0][0] + clean_parts[1][0]).upper()
+    elif clean_parts:
+        initials = clean_parts[0][:2].upper()
+    else:
+        initials = "RM"
+
     faculty_data = {
         "name": name_val,
-        "emp_id": session.get('faculty_emp_id', 'FAC-2025-081'),
-        "email": session.get('faculty_email', 'panth.mistry@charusat.ac.in'),
-        "phone": session.get('faculty_phone', '+91 98765 43210'),
-        "department": session.get('faculty_dept', 'Computer Science & Engineering'),
-        "designation": session.get('faculty_designation', 'Associate Professor & Placement Chair'),
-        "office": session.get('faculty_office', 'Room 304, Academic Block A'),
-        "initials": "".join([n[0] for n in name_val.split() if n])[:2].upper() or "PM"
+        "emp_id": session.get('faculty_emp_id') or fac_p.get('emp_id', 'FAC-2025-081'),
+        "email": session.get('faculty_email') or fac_p.get('email', 'riya.modi@charusat.ac.in'),
+        "phone": session.get('faculty_phone') or fac_p.get('phone', '+91 98765 43210'),
+        "department": session.get('faculty_dept') or fac_p.get('department', 'Computer Science & Engineering'),
+        "designation": session.get('faculty_designation') or fac_p.get('designation', 'Associate Professor & Placement Chair'),
+        "office": session.get('faculty_office') or fac_p.get('office', 'Room 304, Academic Block A'),
+        "initials": initials
     }
     stats = get_admin_dashboard_stats()
     total_st = stats.get('total_students', 0)
@@ -1327,39 +1396,49 @@ def faculty_profile_page():
 @admin_required
 def api_faculty_profile():
     """Fetches or updates faculty personal details and password."""
+    fac_p = get_faculty_profile()
     if request.method == 'GET':
-        name_val = session.get('faculty_name') or session.get('admin_user', 'Prof. Panth Mistry')
+        name_val = session.get('faculty_name') or session.get('admin_user') or fac_p.get('name', 'Prof. Riya Modi')
         return jsonify({
             "success": True,
             "faculty": {
                 "name": name_val,
-                "emp_id": session.get('faculty_emp_id', 'FAC-2025-081'),
-                "email": session.get('faculty_email', 'panth.mistry@charusat.ac.in'),
-                "phone": session.get('faculty_phone', '+91 98765 43210'),
-                "department": session.get('faculty_dept', 'Computer Science & Engineering'),
-                "designation": session.get('faculty_designation', 'Associate Professor & Placement Chair'),
-                "office": session.get('faculty_office', 'Room 304, Academic Block A')
+                "emp_id": session.get('faculty_emp_id') or fac_p.get('emp_id', 'FAC-2025-081'),
+                "email": session.get('faculty_email') or fac_p.get('email', 'riya.modi@charusat.ac.in'),
+                "phone": session.get('faculty_phone') or fac_p.get('phone', '+91 98765 43210'),
+                "department": session.get('faculty_dept') or fac_p.get('department', 'Computer Science & Engineering'),
+                "designation": session.get('faculty_designation') or fac_p.get('designation', 'Associate Professor & Placement Chair'),
+                "office": session.get('faculty_office') or fac_p.get('office', 'Room 304, Academic Block A')
             }
         })
     
     # POST - update profile
     data = request.json or request.form.to_dict()
+    update_faculty_profile(data)
+
     if data.get('name'):
-        session['faculty_name'] = data['name'].strip()
-        session['admin_user'] = data['name'].strip()
+        clean_name = data['name'].strip()
+        session['faculty_name'] = clean_name
+        session['admin_user'] = clean_name
     if data.get('email'):
         session['faculty_email'] = data['email'].strip()
     if data.get('phone'):
         session['faculty_phone'] = data['phone'].strip()
     if data.get('office'):
         session['faculty_office'] = data['office'].strip()
+    if data.get('department'):
+        session['faculty_dept'] = data['department'].strip()
+    if data.get('designation'):
+        session['faculty_designation'] = data['designation'].strip()
     if data.get('password'):
         global ADMIN_PASSWORD
         ADMIN_PASSWORD = data['password'].strip()
 
+    updated = get_faculty_profile()
     return jsonify({
         "success": True,
-        "message": "Faculty profile updated successfully!"
+        "message": "Faculty profile updated successfully!",
+        "faculty": updated
     })
 
 @app.route('/api/admin/students/toggle-freeze-by-roll', methods=['POST'])
@@ -1434,7 +1513,9 @@ def admin_login():
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
 
-    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+    fac_p = get_faculty_profile()
+    valid_passwords = [ADMIN_PASSWORD, fac_p.get('password')]
+    if username == ADMIN_USERNAME and (password in valid_passwords):
         session['pending_2fa_type'] = 'admin'
 
         return jsonify({
@@ -1462,7 +1543,10 @@ def admin_verify_2fa():
         session.pop('pending_2fa_type', None)
 
         session['admin_logged_in'] = True
-        session['admin_user'] = 'Faculty Guide'
+        fac_p = get_faculty_profile()
+        fac_name = fac_p.get('name', 'Prof. Riya Modi')
+        session['admin_user'] = fac_name
+        session['faculty_name'] = fac_name
 
         return jsonify({
             "success": True,
@@ -1481,6 +1565,7 @@ def admin_logout():
     """Logs out the admin and destroys the session."""
     session.pop('admin_logged_in', None)
     session.pop('admin_user', None)
+    session.pop('faculty_name', None)
     session.pop('pending_2fa_type', None)
     if request.method == 'GET':
         return redirect('/admin')

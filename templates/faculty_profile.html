@@ -241,10 +241,10 @@
         <!-- Welcome / Profile Banner -->
         <div class="faculty-hero-card">
             <div class="faculty-hero-profile">
-                <div class="faculty-avatar-portal" id="fac-avatar">{{ faculty.initials or 'PM' }}</div>
+                <div class="faculty-avatar-portal" id="fac-avatar">{{ faculty.initials or 'RM' }}</div>
                 <div>
                     <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;" id="fac-name">{{ faculty.name or 'Prof. Panth Mistry' }}</h1>
+                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;" id="fac-name">{{ faculty.name or 'Prof. Riya Modi' }}</h1>
                         <span class="badge badge-primary" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">Head Faculty Guide</span>
                         <span class="badge badge-success">Verified Faculty</span>
                     </div>
@@ -319,7 +319,7 @@
                 <div class="student-card-details mt-2">
                     <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
                         <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-user"></i> Full Name</span>
-                        <span class="detail-val" id="det-name" style="font-weight:700; color:#0F172A;">{{ faculty.name or 'Prof. Panth Mistry' }}</span>
+                        <span class="detail-val" id="det-name" style="font-weight:700; color:#0F172A;">{{ faculty.name or 'Prof. Riya Modi' }}</span>
                     </div>
                     <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
                         <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-id-card"></i> Faculty Employee ID</span>
@@ -327,7 +327,7 @@
                     </div>
                     <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
                         <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-envelope"></i> Official Email</span>
-                        <span class="detail-val" id="det-email" style="font-weight:600; color:#0F172A;">{{ faculty.email or 'panth.mistry@charusat.ac.in' }}</span>
+                        <span class="detail-val" id="det-email" style="font-weight:600; color:#0F172A;">{{ faculty.email or 'riya.modi@charusat.ac.in' }}</span>
                     </div>
                     <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
                         <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-phone"></i> Contact Phone</span>
@@ -434,12 +434,12 @@
             <form id="faculty-edit-form" onsubmit="handleFacultyProfileUpdate(event)">
                 <div class="form-group mb-3">
                     <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">Full Name / Title</label>
-                    <input type="text" id="edit-fac-name" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.name or 'Prof. Panth Mistry' }}" required>
+                    <input type="text" id="edit-fac-name" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.name or 'Prof. Riya Modi' }}" required>
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">Official Email</label>
-                    <input type="email" id="edit-fac-email" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.email or 'panth.mistry@charusat.ac.in' }}" required>
+                    <input type="email" id="edit-fac-email" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.email or 'riya.modi@charusat.ac.in' }}" required>
                 </div>
 
                 <div class="form-group mb-3">

@@ -40,6 +40,10 @@ class PGCursorWrapper:
         self._cur = raw_cursor
         self.lastrowid = None
 
+    @property
+    def rowcount(self):
+        return getattr(self._cur, 'rowcount', -1)
+
     def execute(self, sql, params=None):
         sql = sql.replace('?', '%s')
         clean_sql = sql.strip().upper()
@@ -419,7 +423,80 @@ def seed_dummy_alumni_students(cursor):
             ))
 
 
+def ensure_faculty_profile_table():
+    """Creates the faculty_profile table and seeds initial Prof. Riya Modi profile on both PostgreSQL and SQLite."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        is_pg = getattr(conn, "_is_pg", False)
+        if is_pg:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS faculty_profile (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                emp_id TEXT NOT NULL,
+                email TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                department TEXT NOT NULL,
+                designation TEXT NOT NULL,
+                office TEXT NOT NULL,
+                password TEXT DEFAULT 'charusat@123'
+            )
+            """)
+            cursor.execute("SELECT COUNT(*) as count FROM faculty_profile WHERE id = 1")
+            cnt_row = cursor.fetchone()
+            cnt = cnt_row.get("count", 0) if isinstance(cnt_row, dict) else (cnt_row[0] if cnt_row else 0)
+            if cnt == 0:
+                cursor.execute("""
+                INSERT INTO faculty_profile (id, name, emp_id, email, phone, department, designation, office, password)
+                VALUES (1, 'Prof. Riya Modi', 'FAC-2025-081', 'riya.modi@charusat.ac.in', '+91 98765 43210', 
+                        'Computer Science & Engineering', 'Associate Professor & Placement Chair', 
+                        'Room 304, Academic Block A', 'charusat@123')
+                ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, email = EXCLUDED.email
+                """)
+            else:
+                cursor.execute("""
+                UPDATE faculty_profile 
+                SET name = 'Prof. Riya Modi', email = 'riya.modi@charusat.ac.in'
+                WHERE id = 1 AND name LIKE '%Panth%'
+                """)
+        else:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS faculty_profile (
+                id INTEGER PRIMARY KEY DEFAULT 1,
+                name TEXT NOT NULL,
+                emp_id TEXT NOT NULL,
+                email TEXT NOT NULL,
+                phone TEXT NOT NULL,
+                department TEXT NOT NULL,
+                designation TEXT NOT NULL,
+                office TEXT NOT NULL,
+                password TEXT DEFAULT 'charusat@123'
+            )
+            """)
+            cursor.execute("SELECT COUNT(*) FROM faculty_profile WHERE id = 1")
+            if cursor.fetchone()[0] == 0:
+                cursor.execute("""
+                INSERT INTO faculty_profile (id, name, emp_id, email, phone, department, designation, office, password)
+                VALUES (1, 'Prof. Riya Modi', 'FAC-2025-081', 'riya.modi@charusat.ac.in', '+91 98765 43210', 
+                        'Computer Science & Engineering', 'Associate Professor & Placement Chair', 
+                        'Room 304, Academic Block A', 'charusat@123')
+                """)
+            else:
+                cursor.execute("""
+                UPDATE faculty_profile 
+                SET name = 'Prof. Riya Modi', email = 'riya.modi@charusat.ac.in'
+                WHERE id = 1 AND name LIKE '%Panth%'
+                """)
+        conn.commit()
+    except Exception as e:
+        print("[ensure_faculty_profile_table] Notice:", e)
+    finally:
+        conn.close()
+
+
 def init_database():
+    ensure_faculty_profile_table()
     conn = get_db_connection()
     if getattr(conn, "_is_pg", False):
         print("[Database] Connected to Supabase Cloud PostgreSQL (10,000+ Student Production Scale)")
@@ -585,6 +662,36 @@ def init_database():
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
+
+    # 9. Faculty Profile Table (Dynamic Persistent Profile)
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS faculty_profile (
+        id INTEGER PRIMARY KEY DEFAULT 1,
+        name TEXT NOT NULL,
+        emp_id TEXT NOT NULL,
+        email TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        department TEXT NOT NULL,
+        designation TEXT NOT NULL,
+        office TEXT NOT NULL,
+        password TEXT DEFAULT 'charusat@123'
+    )
+    """)
+    cursor.execute("SELECT COUNT(*) FROM faculty_profile WHERE id = 1")
+    if cursor.fetchone()[0] == 0:
+        cursor.execute("""
+        INSERT INTO faculty_profile (id, name, emp_id, email, phone, department, designation, office, password)
+        VALUES (1, 'Prof. Riya Modi', 'FAC-2025-081', 'riya.modi@charusat.ac.in', '+91 98765 43210', 
+                'Computer Science & Engineering', 'Associate Professor & Placement Chair', 
+                'Room 304, Academic Block A', 'charusat@123')
+        """)
+    else:
+        # Update any previous Panth Mistry references to Prof. Riya Modi
+        cursor.execute("""
+        UPDATE faculty_profile 
+        SET name = 'Prof. Riya Modi', email = 'riya.modi@charusat.ac.in'
+        WHERE id = 1 AND name LIKE '%Panth%'
+        """)
 
 
     # Ensure all questions are attributed to specific real alumni mentors rather than generic 'Alumni Mentor'
@@ -1609,6 +1716,115 @@ def delete_alumni_account(account_id):
     conn.commit()
     conn.close()
     return True
+
+
+def update_alumni_account(identifier: str, data: dict):
+    """Updates an existing alumni profile in alumni_accounts and synchronizes with alumni_experiences."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        acc = get_alumni_account_by_id(identifier)
+        if not acc:
+            return False
+        
+        name = data.get("name", acc.get("name", "")).strip()
+        email = data.get("email", acc.get("email", "")).strip()
+        phone = data.get("phone", acc.get("phone", "")).strip()
+        company = data.get("company", acc.get("company", "")).strip()
+        role = data.get("role", acc.get("role", "")).strip()
+        package_lpa = float(data.get("package_lpa", acc.get("package_lpa", 0)) or 0)
+        password = data.get("password", "").strip() or acc.get("password", "alumni123")
+        
+        cursor.execute("""
+        UPDATE alumni_accounts
+        SET name = ?, email = ?, phone = ?, company = ?, role = ?, package_lpa = ?, password = ?
+        WHERE UPPER(alumni_id) = ? OR id = ?
+        """, (name, email, phone, company, role, package_lpa, password, str(acc['alumni_id']).upper(), acc['id']))
+        
+        # Also sync corresponding experience in alumni_experiences if present
+        try:
+            cursor.execute("""
+            UPDATE alumni_experiences
+            SET student_name = ?, company = ?, role = ?, package_lpa = ?
+            WHERE LOWER(email) = LOWER(?) OR LOWER(student_name) = LOWER(?)
+            """, (name, company, role, package_lpa, acc.get('email', '').lower(), acc.get('name', '').lower()))
+        except Exception:
+            pass
+            
+        conn.commit()
+        return True
+    finally:
+        conn.close()
+
+
+def get_faculty_profile():
+    """Retrieves faculty profile record from database, defaulting to Prof. Riya Modi."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM faculty_profile WHERE id = 1")
+        row = cursor.fetchone()
+        if row:
+            if hasattr(row, 'keys'):
+                return dict(row)
+            return {
+                "id": row[0], "name": row[1], "emp_id": row[2], "email": row[3],
+                "phone": row[4], "department": row[5], "designation": row[6],
+                "office": row[7], "password": row[8] if len(row) > 8 else 'charusat@123'
+            }
+        return {
+            "id": 1, "name": "Prof. Riya Modi", "emp_id": "FAC-2025-081",
+            "email": "riya.modi@charusat.ac.in", "phone": "+91 98765 43210",
+            "department": "Computer Science & Engineering",
+            "designation": "Associate Professor & Placement Chair",
+            "office": "Room 304, Academic Block A", "password": "charusat@123"
+        }
+    except Exception:
+        return {
+            "id": 1, "name": "Prof. Riya Modi", "emp_id": "FAC-2025-081",
+            "email": "riya.modi@charusat.ac.in", "phone": "+91 98765 43210",
+            "department": "Computer Science & Engineering",
+            "designation": "Associate Professor & Placement Chair",
+            "office": "Room 304, Academic Block A", "password": "charusat@123"
+        }
+    finally:
+        conn.close()
+
+
+def update_faculty_profile(data: dict):
+    """Updates the faculty profile in the database persistently."""
+    ensure_faculty_profile_table()
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        curr = get_faculty_profile()
+        name = data.get('name', curr.get('name', 'Prof. Riya Modi')).strip()
+        emp_id = data.get('emp_id', curr.get('emp_id', 'FAC-2025-081')).strip()
+        email = data.get('email', curr.get('email', 'riya.modi@charusat.ac.in')).strip()
+        phone = data.get('phone', curr.get('phone', '+91 98765 43210')).strip()
+        dept = data.get('department', curr.get('department', 'Computer Science & Engineering')).strip()
+        desig = data.get('designation', curr.get('designation', 'Associate Professor & Placement Chair')).strip()
+        office = data.get('office', curr.get('office', 'Room 304, Academic Block A')).strip()
+        pwd = data.get('password', '').strip() or curr.get('password', 'charusat@123')
+        
+        cursor.execute("SELECT COUNT(*) as count FROM faculty_profile WHERE id = 1")
+        cnt_row = cursor.fetchone()
+        cnt = cnt_row.get("count", 0) if isinstance(cnt_row, dict) else (cnt_row[0] if cnt_row else 0)
+        if cnt == 0:
+            cursor.execute("""
+            INSERT INTO faculty_profile (id, name, emp_id, email, phone, department, designation, office, password)
+            VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (name, emp_id, email, phone, dept, desig, office, pwd))
+        else:
+            cursor.execute("""
+            UPDATE faculty_profile
+            SET name = ?, emp_id = ?, email = ?, phone = ?, department = ?, designation = ?, office = ?, password = ?
+            WHERE id = 1
+            """, (name, emp_id, email, phone, dept, desig, office, pwd))
+        conn.commit()
+        return True
+    finally:
+        conn.close()
 
 
 def authenticate_alumni(identifier: str, password: str):
