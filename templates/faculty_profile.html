@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Profile - AI Career Companion</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+    <link rel="apple-touch-icon" href="/static/images/favicon.png">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+
+    <style>
+        .faculty-portal-header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .portal-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .portal-brand i {
+            color: #3B82F6;
+            font-size: 1.4rem;
+        }
+
+        .faculty-hero-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            box-shadow: var(--nm-raised);
+        }
+
+        .faculty-hero-profile {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .faculty-avatar-portal {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            color: #ffffff;
+            font-size: 2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .faculty-info-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+
+        .meta-pill {
+            background: var(--bg-base);
+            border: 1px solid var(--border-glass);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .portal-grid-2 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .quick-action-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition-bounce);
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--nm-flat-sm);
+            margin-bottom: 0.85rem;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: var(--nm-raised);
+        }
+
+        .action-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .bg-icon-blue { background: linear-gradient(135deg, #2563EB, #3B82F6); }
+        .bg-icon-purple { background: linear-gradient(135deg, #7C3AED, #8B5CF6); }
+        .bg-icon-emerald { background: linear-gradient(135deg, #059669, #10B981); }
+        .bg-icon-amber { background: linear-gradient(135deg, #D97706, #F59E0B); }
+
+        .guideline-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .guideline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        .guideline-item:last-child {
+            border-bottom: none;
+        }
+
+        .guideline-icon {
+            color: #3B82F6;
+            font-size: 1.1rem;
+            margin-top: 0.15rem;
+        }
+
+        @media (max-width: 900px) {
+            .portal-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .faculty-portal-header {
+                padding: 0.75rem 1rem;
+            }
+            .faculty-hero-card {
+                padding: 1.5rem 1.25rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .faculty-hero-card > div:last-child {
+                width: 100%;
+            }
+            .faculty-hero-card > div:last-child .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .portal-grid-2 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="navbar saas-navbar">
+        <div class="nav-container saas-nav-container">
+            <a href="/admin" class="nav-brand" style="text-decoration:none;">
+                <img src="/static/images/logo.png" alt="Logo" class="brand-logo-img" style="width: 42px; height: 42px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <div class="brand-text">
+                    <span class="brand-title" style="font-size: 1.15rem; font-weight: 800; color: #0F172A;">AI Career Companion</span>
+                    <span class="brand-subtitle" style="font-size: 0.75rem; color: #64748B; font-weight: 500;">Faculty Portal</span>
+                </div>
+            </a>
+
+            <!-- Nav Actions -->
+            <div class="nav-actions saas-nav-actions">
+                <a href="/admin" class="btn btn-outline btn-sm" title="Cohort Management">
+                    <i class="fa-solid fa-users"></i> <span>Cohort Console</span>
+                </a>
+                <a href="/admin/analytics" class="btn btn-outline btn-sm" title="Placement Analytics">
+                    <i class="fa-solid fa-chart-line"></i> <span>Analytics</span>
+                </a>
+                <button class="btn btn-primary btn-sm" onclick="openFacultyEditModal()">
+                    <i class="fa-solid fa-user-pen"></i> <span>Edit Profile</span>
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="facultyLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container faculty-main-container" style="max-width: 1200px; margin: 0 auto; padding: 1.5rem;">
+        
+        <!-- Welcome / Profile Banner -->
+        <div class="faculty-hero-card">
+            <div class="faculty-hero-profile">
+                <div class="faculty-avatar-portal" id="fac-avatar">{{ faculty.initials or 'PM' }}</div>
+                <div>
+                    <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;" id="fac-name">{{ faculty.name or 'Prof. Panth Mistry' }}</h1>
+                        <span class="badge badge-primary" style="background:#EFF6FF; color:#2563EB; border:1px solid #BFDBFE;">Head Faculty Guide</span>
+                        <span class="badge badge-success">Verified Faculty</span>
+                    </div>
+                    <div class="faculty-info-meta">
+                        <span class="meta-pill"><i class="fa-solid fa-id-card text-primary"></i> <span id="fac-emp-id">{{ faculty.emp_id or 'FAC-2025-081' }}</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-building-columns text-emerald"></i> <span id="fac-dept">{{ faculty.department or 'Computer Science & Engineering' }}</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-chalkboard-user text-purple"></i> <span id="fac-designation">{{ faculty.designation or 'Associate Professor & Placement Chair' }}</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-door-open text-warning"></i> <span id="fac-office">{{ faculty.office or 'Room 304, Academic Block A' }}</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button class="btn btn-primary" onclick="openFacultyEditModal()">
+                    <i class="fa-solid fa-pen-to-square"></i> Update Contact / Password
+                </button>
+            </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="kpi-grid mt-4">
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-primary-soft">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Active Cohort Students</span>
+                    <h2 class="kpi-value" id="kpi-students-count">{{ stats.total_students or 142 }}</h2>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-success-soft">
+                    <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Cohort Placement Rate</span>
+                    <h2 class="kpi-value" id="kpi-placement-rate">{{ stats.placement_rate or 78 }}%</h2>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-warning-soft">
+                    <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Average ATS Readiness</span>
+                    <h2 class="kpi-value" style="font-size:1.45rem;" id="kpi-avg-ats">{{ stats.avg_ats or 76.5 }}%</h2>
+                </div>
+            </div>
+
+            <div class="card kpi-card">
+                <div class="kpi-icon-wrap bg-info-soft">
+                    <i class="fa-solid fa-handshake"></i>
+                </div>
+                <div class="kpi-info">
+                    <span class="kpi-label">Recruiter Network</span>
+                    <h2 class="kpi-value" style="font-size:1.45rem;" id="kpi-recruiters-count">45+ Partners</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2-Column Detail Layout -->
+        <div class="portal-grid-2">
+            <!-- Left Column: Faculty Details & Academic Credentials -->
+            <div class="card">
+                <div class="card-header-flex mb-3">
+                    <h3><i class="fa-solid fa-address-card text-primary"></i> Faculty Profile &amp; Academic Credentials</h3>
+                    <span class="badge badge-info">Faculty Administration</span>
+                </div>
+
+                <div class="student-card-details mt-2">
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-user"></i> Full Name</span>
+                        <span class="detail-val" id="det-name" style="font-weight:700; color:#0F172A;">{{ faculty.name or 'Prof. Panth Mistry' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-id-card"></i> Faculty Employee ID</span>
+                        <span class="detail-val" id="det-empid" style="font-weight:700; color:#0F172A; font-family:'Courier New', monospace;">{{ faculty.emp_id or 'FAC-2025-081' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-envelope"></i> Official Email</span>
+                        <span class="detail-val" id="det-email" style="font-weight:600; color:#0F172A;">{{ faculty.email or 'panth.mistry@charusat.ac.in' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-phone"></i> Contact Phone</span>
+                        <span class="detail-val" id="det-phone" style="font-weight:600; color:#0F172A;">{{ faculty.phone or '+91 98765 43210' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-building-columns"></i> Academic Department</span>
+                        <span class="detail-val" id="det-dept" style="font-weight:600; color:#0F172A;">{{ faculty.department or 'Computer Science & Engineering' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-chalkboard-user"></i> Academic Designation</span>
+                        <span class="detail-val" id="det-designation" style="font-weight:600; color:#0F172A;">{{ faculty.designation or 'Associate Professor & Placement Chair' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; border-bottom:1px solid #F1F5F9; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-door-open"></i> Cabin / Office Location</span>
+                        <span class="detail-val" id="det-office" style="font-weight:600; color:#0F172A;">{{ faculty.office or 'Room 304, Academic Block A' }}</span>
+                    </div>
+                    <div class="student-detail-row" style="padding:0.6rem 0; display:flex; justify-content:space-between;">
+                        <span class="detail-label" style="color:#64748B; font-weight:600;"><i class="fa-solid fa-shield-check"></i> System Privileges</span>
+                        <span class="detail-val" style="font-weight:700; color:#10B981;"><i class="fa-solid fa-check"></i> Full Placement & Cohort Authority</span>
+                    </div>
+                </div>
+
+                <!-- Mentorship Advisory Guidelines -->
+                <div class="guideline-card">
+                    <h4 style="margin:0 0 0.75rem 0; font-size:1rem; color:#0F172A;"><i class="fa-solid fa-lightbulb text-warning"></i> Faculty Mentorship Guidelines</h4>
+                    <div class="guideline-item">
+                        <i class="fa-solid fa-circle-check guideline-icon"></i>
+                        <span style="font-size:0.875rem; color:#475569;">Ensure students with ATS score under 65% receive personalized feedback on missing technical keywords before campus drives.</span>
+                    </div>
+                    <div class="guideline-item">
+                        <i class="fa-solid fa-circle-check guideline-icon"></i>
+                        <span style="font-size:0.875rem; color:#475569;">Encourage students to attempt mock tests tailored to company question banks contributed by verified alumni mentors.</span>
+                    </div>
+                    <div class="guideline-item">
+                        <i class="fa-solid fa-circle-check guideline-icon"></i>
+                        <span style="font-size:0.875rem; color:#475569;">Monitor placement freeze requests and unfreeze accounts promptly once student counseling is concluded.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Administration Actions -->
+            <div>
+                <div class="card">
+                    <h3 style="margin-bottom:1rem; font-size:1.1rem;"><i class="fa-solid fa-bolt text-warning"></i> Console Quick Jump</h3>
+                    <p style="font-size:0.85rem; color:#64748B; margin-bottom:1.25rem;">Direct navigation to key faculty modules.</p>
+
+                    <a href="/admin" class="quick-action-card">
+                        <div class="action-icon bg-icon-blue">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <strong style="display:block; font-size:0.95rem; color:#0F172A;">Cohort Management</strong>
+                            <span style="font-size:0.8rem; color:#64748B;">Inspect student profiles, ATS scores &amp; freeze status</span>
+                        </div>
+                    </a>
+
+                    <a href="/admin/alumni" class="quick-action-card">
+                        <div class="action-icon bg-icon-purple">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <strong style="display:block; font-size:0.95rem; color:#0F172A;">Alumni Placement Records</strong>
+                            <span style="font-size:0.8rem; color:#64748B;">Supervise verified alumni stories &amp; company packages</span>
+                        </div>
+                    </a>
+
+                    <a href="/admin/analytics" class="quick-action-card">
+                        <div class="action-icon bg-icon-emerald">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <strong style="display:block; font-size:0.95rem; color:#0F172A;">Placement Analytics</strong>
+                            <span style="font-size:0.8rem; color:#64748B;">Live graphs for ongoing &amp; alumni cohort progress</span>
+                        </div>
+                    </a>
+
+                    <a href="/admin/settings" class="quick-action-card">
+                        <div class="action-icon bg-icon-amber">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <strong style="display:block; font-size:0.95rem; color:#0F172A;">Access Control &amp; Settings</strong>
+                            <span style="font-size:0.8rem; color:#64748B;">Manage student account freezes &amp; security policies</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL: EDIT FACULTY PROFILE               -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="edit-faculty-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div class="modal-card" style="background:#FFFFFF; border-radius:18px; padding:2rem; width:100%; max-width:540px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); position:relative;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:#0F172A;">
+                    <i class="fa-solid fa-user-pen text-primary"></i> Edit Faculty Profile
+                </h3>
+                <button type="button" onclick="closeFacultyEditModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#94A3B8;">&times;</button>
+            </div>
+
+            <form id="faculty-edit-form" onsubmit="handleFacultyProfileUpdate(event)">
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">Full Name / Title</label>
+                    <input type="text" id="edit-fac-name" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.name or 'Prof. Panth Mistry' }}" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">Official Email</label>
+                    <input type="email" id="edit-fac-email" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.email or 'panth.mistry@charusat.ac.in' }}" required>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">Contact Phone</label>
+                    <input type="text" id="edit-fac-phone" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.phone or '+91 98765 43210' }}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">Cabin / Office Location</label>
+                    <input type="text" id="edit-fac-office" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" value="{{ faculty.office or 'Room 304, Academic Block A' }}">
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label" style="font-weight:600; font-size:0.85rem; color:#334155; margin-bottom:0.35rem; display:block;">New Password (leave blank to keep current)</label>
+                    <input type="password" id="edit-fac-password" class="form-input" style="width:100%; padding:0.65rem 0.85rem; border:1px solid #CBD5E1; border-radius:8px;" placeholder="Enter new faculty password">
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeFacultyEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-faculty-profile">
+                        <i class="fa-solid fa-check"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
+
+    <script>
+        function openFacultyEditModal() {
+            document.getElementById('edit-faculty-modal').style.display = 'flex';
+        }
+
+        function closeFacultyEditModal() {
+            document.getElementById('edit-faculty-modal').style.display = 'none';
+        }
+
+        async function handleFacultyProfileUpdate(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-faculty-profile');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+            const payload = {
+                name: document.getElementById('edit-fac-name').value.trim(),
+                email: document.getElementById('edit-fac-email').value.trim(),
+                phone: document.getElementById('edit-fac-phone').value.trim(),
+                office: document.getElementById('edit-fac-office').value.trim(),
+                password: document.getElementById('edit-fac-password').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/faculty/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || 'Faculty profile updated successfully!', 'success');
+                    // Update DOM
+                    if (payload.name) {
+                        document.getElementById('fac-name').innerText = payload.name;
+                        document.getElementById('det-name').innerText = payload.name;
+                        const initials = payload.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                        document.getElementById('fac-avatar').innerText = initials;
+                    }
+                    if (payload.email) document.getElementById('det-email').innerText = payload.email;
+                    if (payload.phone) document.getElementById('det-phone').innerText = payload.phone;
+                    if (payload.office) {
+                        document.getElementById('fac-office').innerText = payload.office;
+                        document.getElementById('det-office').innerText = payload.office;
+                    }
+                    closeFacultyEditModal();
+                } else {
+                    showToast(data.error || 'Failed to update profile.', 'error');
+                }
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Save Changes';
+            }
+        }
+
+        async function facultyLogout() {
+            try {
+                await fetch('/api/admin/logout', { method: 'POST' });
+                window.location.href = '/admin';
+            } catch (err) {
+                window.location.href = '/admin';
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.style.cssText = "background:#0F172A; color:#FFFFFF; padding:0.75rem 1.25rem; border-radius:10px; margin-top:0.5rem; display:flex; align-items:center; gap:0.5rem; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);";
+            const icon = type === 'success' ? 'fa-circle-check text-emerald' : 'fa-circle-exclamation text-danger';
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+    </script>
+</body>
+</html>

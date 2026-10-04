@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Career Companion - Placement Analytics</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for fallback -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --admin-bg: #F8FAFC;
+            --admin-sidebar-width: 0px;
+            --admin-nav-height: 70px;
+            --admin-primary: #3B82F6;
+            --admin-purple: #8B5CF6;
+            --admin-border: #E2E8F0;
+            --admin-text-main: #0F172A;
+            --admin-text-muted: #64748B;
+        }
+
+        body {
+            background-color: var(--admin-bg);
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--admin-text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Navbar */
+        .admin-top-nav {
+            height: var(--admin-nav-height);
+            background: white;
+            border-bottom: 1px solid var(--admin-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .admin-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: auto;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .admin-brand img {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+        }
+
+        .admin-brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-brand-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--admin-text-main);
+            line-height: 1.2;
+        }
+
+        .admin-brand-sub {
+            font-size: 0.75rem;
+            color: var(--admin-text-muted);
+            font-weight: 500;
+        }
+
+        .admin-nav-center {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .admin-nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--admin-text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-nav-link:hover {
+            color: var(--admin-text-main);
+            background: #F1F5F9;
+        }
+
+        .admin-nav-link.active {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-purple));
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59,130,246,0.2);
+        }
+
+        .admin-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .admin-nav-icon {
+            color: var(--admin-text-muted);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .admin-nav-icon-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #EF4444;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .admin-user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--admin-purple), var(--admin-primary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .faculty-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: #ffffff;
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+            width: 210px;
+            padding: 0.5rem 0;
+            z-index: 1000;
+        }
+
+        .faculty-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.65rem 1rem;
+            color: var(--admin-text-main);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: background 0.15s ease;
+        }
+
+        .faculty-dropdown-item:hover {
+            background: #F1F5F9;
+        }
+
+        .faculty-dropdown-item.text-danger {
+            color: #EF4444;
+        }
+
+        .faculty-dropdown-divider {
+            height: 1px;
+            background: var(--admin-border);
+            margin: 0.4rem 0;
+        }
+
+        /* App Layout */
+        .admin-app-layout {
+            display: flex;
+            margin-top: var(--admin-nav-height);
+            flex: 1;
+        }
+
+        .admin-main-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Hero */
+        .admin-hero {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            border: 1px solid var(--admin-border);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--admin-primary), var(--admin-purple));
+        }
+
+        .admin-hero-left {
+            max-width: 680px;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #EFF6FF;
+            color: var(--admin-primary);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            border: 1px solid #DBEAFE;
+        }
+
+        .admin-hero-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .admin-hero-title span {
+            background: linear-gradient(135deg, var(--admin-primary), var(--admin-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .admin-hero-desc {
+            color: var(--admin-text-muted);
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* KPI Metric Cards Grid */
+        .analytics-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.4rem 1.5rem;
+            border: 1px solid var(--admin-border);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .analytics-kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(15,23,42,0.06);
+        }
+
+        .ak-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .ak-icon-blue { background: #EFF6FF; color: #2563EB; }
+        .ak-icon-green { background: #ECFDF5; color: #10B981; }
+        .ak-icon-purple { background: #F5F3FF; color: #8B5CF6; }
+        .ak-icon-amber { background: #FFFBEB; color: #F59E0B; }
+
+        .ak-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ak-label {
+            font-size: 0.8rem;
+            color: var(--admin-text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.25rem;
+        }
+
+        .ak-value {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: var(--admin-text-main);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .ak-sub {
+            font-size: 0.78rem;
+            color: #10B981;
+            font-weight: 600;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Filter Toolbar */
+        .analytics-filter-toolbar {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--admin-border);
+            padding: 1rem 1.5rem;
+            margin-bottom: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-group-left {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-label-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--admin-text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .analytics-select {
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--admin-border);
+            background: #F8FAFC;
+            font-size: 0.85rem;
+            color: var(--admin-text-main);
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .analytics-select:focus {
+            border-color: var(--admin-primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+        }
+
+        /* Section Headers */
+        .analytics-section-header {
+            margin-bottom: 1.25rem;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 0.75rem;
+        }
+
+        .analytics-section-header h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--admin-text-main);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .analytics-section-header p {
+            font-size: 0.85rem;
+            color: var(--admin-text-muted);
+            margin: 0.25rem 0 0 0;
+        }
+
+        .section-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .tag-ongoing {
+            background: #EFF6FF;
+            color: #2563EB;
+            border: 1px solid #BFDBFE;
+        }
+
+        .tag-alumni {
+            background: #F5F3FF;
+            color: #7C3AED;
+            border: 1px solid #DDD6FE;
+        }
+
+        /* Charts Grid */
+        .charts-grid-2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--admin-border);
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            min-height: 380px;
+        }
+
+        .chart-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--admin-text-main);
+            margin: 0 0 0.2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-subtitle {
+            font-size: 0.8rem;
+            color: var(--admin-text-muted);
+            margin: 0;
+        }
+
+        .chart-pill {
+            background: #F1F5F9;
+            color: #475569;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .chart-body-wrapper {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            min-height: 280px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .analytics-kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid-2x2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-nav-center {
+                display: none;
+            }
+            .admin-main-content {
+                padding: 1rem;
+            }
+            .admin-hero {
+                padding: 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .analytics-kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="admin-top-nav">
+        <div class="admin-nav-left">
+            <a href="/" class="admin-brand">
+                <img src="/static/images/logo.png" alt="Logo">
+                <div class="admin-brand-text">
+                    <span class="admin-brand-title">AI Career Companion</span>
+                    <span class="admin-brand-sub">Faculty Console</span>
+                </div>
+            </a>
+        </div>
+        <div class="admin-nav-center">
+            <a href="/admin" class="admin-nav-link"><i data-lucide="layout-dashboard"></i> Cohort Management</a>
+            <a href="/admin/alumni" class="admin-nav-link"><i data-lucide="users"></i> Alumni Records</a>
+            <a href="/admin/analytics" class="admin-nav-link active"><i data-lucide="bar-chart-3"></i> Placement Analytics</a>
+            <a href="/faculty/profile" class="admin-nav-link"><i data-lucide="user-check"></i> Faculty Profile</a>
+            <a href="/admin/settings" class="admin-nav-link"><i data-lucide="settings"></i> Settings</a>
+        </div>
+        <div class="admin-nav-right">
+            <div class="admin-nav-icon">
+                <i data-lucide="bell"></i>
+                <div class="admin-nav-icon-badge"></div>
+            </div>
+            <div class="admin-user-profile" onclick="toggleFacultyDropdown(event)">
+                <div class="admin-avatar">PM</div>
+                <span style="font-size:0.875rem; font-weight:600; color:var(--admin-text-main);">Panth Mistry <i data-lucide="chevron-down" style="width:14px; height:14px; vertical-align:middle;"></i></span>
+                <div id="faculty-profile-dropdown" class="faculty-dropdown-menu" style="display:none;">
+                    <a href="/faculty/profile" class="faculty-dropdown-item"><i data-lucide="user"></i> My Profile</a>
+                    <a href="/admin/analytics" class="faculty-dropdown-item"><i data-lucide="bar-chart-3"></i> Placement Analytics</a>
+                    <div class="faculty-dropdown-divider"></div>
+                    <a href="javascript:void(0)" onclick="adminLogout()" class="faculty-dropdown-item text-danger"><i data-lucide="log-out"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-app-layout">
+        <main class="admin-main-content">
+            
+            <!-- HERO -->
+            <div class="admin-hero">
+                <div class="admin-hero-left">
+                    <div class="admin-badge">
+                        <i data-lucide="bar-chart-2" style="width:14px;height:14px;"></i> Placement Intelligence &amp; Analytics
+                    </div>
+                    <h1 class="admin-hero-title">Placement &amp; <span>Cohort Analytics</span></h1>
+                    <p class="admin-hero-desc">Real-time interactive graphical telemetry. Monitor ongoing students' preparation readiness, ATS scores, quiz performance, and contrast them with verified alumni packages and hiring trajectory.</p>
+                </div>
+                <div class="admin-hero-right">
+                    <button class="btn btn-outline" onclick="fetchAnalyticsData()" style="background:#FFFFFF; border:1px solid #CBD5E1; color:#0F172A; font-weight:600; padding:0.6rem 1.25rem; border-radius:10px; display:inline-flex; align-items:center; gap:0.5rem; cursor:pointer;">
+                        <i data-lucide="refresh-cw" style="width:15px; height:15px;"></i> Refresh Analytics
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI SUMMARY METRICS -->
+            <div class="analytics-kpi-grid">
+                <div class="analytics-kpi-card">
+                    <div class="ak-icon-wrap ak-icon-blue">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div class="ak-info">
+                        <span class="ak-label">Active Cohort Students</span>
+                        <h3 class="ak-value" id="kpi-total-students">--</h3>
+                        <span class="ak-sub"><i class="fa-solid fa-arrow-trend-up"></i> 100% Monitored</span>
+                    </div>
+                </div>
+
+                <div class="analytics-kpi-card">
+                    <div class="ak-icon-wrap ak-icon-green">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <div class="ak-info">
+                        <span class="ak-label">Cohort Placement Rate</span>
+                        <h3 class="ak-value" id="kpi-placement-rate">--%</h3>
+                        <span class="ak-sub"><i class="fa-solid fa-circle-check"></i> <span id="kpi-placed-count">--</span> Placed Offers</span>
+                    </div>
+                </div>
+
+                <div class="analytics-kpi-card">
+                    <div class="ak-icon-wrap ak-icon-purple">
+                        <i class="fa-solid fa-file-invoice"></i>
+                    </div>
+                    <div class="ak-info">
+                        <span class="ak-label">Average ATS Readiness</span>
+                        <h3 class="ak-value" id="kpi-avg-ats">--%</h3>
+                        <span class="ak-sub" style="color:#8B5CF6;"><i class="fa-solid fa-bolt"></i> AI ATS Powered</span>
+                    </div>
+                </div>
+
+                <div class="analytics-kpi-card">
+                    <div class="ak-icon-wrap ak-icon-amber">
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
+                    </div>
+                    <div class="ak-info">
+                        <span class="ak-label">Average Alumni Package</span>
+                        <h3 class="ak-value" id="kpi-avg-ctc">₹-- LPA</h3>
+                        <span class="ak-sub" style="color:#D97706;"><i class="fa-solid fa-trophy"></i> Highest: <span id="kpi-highest-ctc">₹-- LPA</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTER TOOLBAR -->
+            <div class="analytics-filter-toolbar">
+                <div class="filter-group-left">
+                    <span class="filter-label-title"><i data-lucide="filter" style="width:16px;height:16px;color:#3B82F6;"></i> Analytics Filters:</span>
+                    <select class="analytics-select" id="filter-branch" onchange="fetchAnalyticsData()">
+                        <option value="all">All Departments / Branches</option>
+                        <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Electronics & Communication">Electronics & Communication</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                    </select>
+
+                    <select class="analytics-select" id="filter-batch" onchange="fetchAnalyticsData()">
+                        <option value="all">All Batches</option>
+                        <option value="2026">Class of 2026 (Ongoing)</option>
+                        <option value="2025">Class of 2025</option>
+                        <option value="2024">Class of 2024</option>
+                        <option value="2023">Class of 2023</option>
+                    </select>
+                </div>
+                <div style="font-size:0.82rem; color:var(--admin-text-muted);">
+                    <i data-lucide="clock" style="width:13px;height:13px;vertical-align:middle;"></i> Live synchronization active
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- SECTION 1: ONGOING STUDENTS PROGRESS (DEDICATED GRAPHS)     -->
+            <!-- ============================================================ -->
+            <div class="analytics-section-header">
+                <div>
+                    <h2><i data-lucide="graduation-cap" style="color:#3B82F6;"></i> Ongoing Students Progress &amp; Readiness</h2>
+                    <p>Granular evaluation of students currently preparing for campus interviews, ATS screening, and mock tests.</p>
+                </div>
+                <span class="section-tag tag-ongoing">Ongoing Cohort</span>
+            </div>
+
+            <div class="charts-grid-2x2">
+                <!-- Chart 1: ATS Readiness Score Breakdown -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-chart-pie" style="color:#3B82F6;"></i> ATS Resume Score Distribution</h3>
+                            <p class="chart-subtitle">Cohort readiness based on evaluated resume benchmarks</p>
+                        </div>
+                        <span class="chart-pill">Readiness Tiers</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-ongoing-ats"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Branch-wise Average Readiness -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-chart-column" style="color:#10B981;"></i> Department-Wise ATS Readiness &amp; Placements</h3>
+                            <p class="chart-subtitle">Average resume ATS score and placement ready ratio by branch</p>
+                        </div>
+                        <span class="chart-pill">Branch Comparison</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-ongoing-branch"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Mock Test Engagement Frequency -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-laptop-code" style="color:#8B5CF6;"></i> Adaptive Mock Test Engagement</h3>
+                            <p class="chart-subtitle">Number of mock tests and quizzes completed by ongoing students</p>
+                        </div>
+                        <span class="chart-pill">Test Volume</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-ongoing-tests"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 4: Technical Competency Radar -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-compass" style="color:#EC4899;"></i> Core Skill Clusters Radar</h3>
+                            <p class="chart-subtitle">Current cohort skill strength vs target industry benchmark</p>
+                        </div>
+                        <span class="chart-pill">Competency</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-ongoing-radar"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- SECTION 2: ALUMNI STUDENTS PROGRESS (DEDICATED GRAPHS)       -->
+            <!-- ============================================================ -->
+            <div class="analytics-section-header">
+                <div>
+                    <h2><i data-lucide="award" style="color:#8B5CF6;"></i> Alumni Students Progress &amp; Placements</h2>
+                    <p>Verified placement packages (CTC), top recruiting partners, difficulty ratings, and yearly growth trends.</p>
+                </div>
+                <span class="section-tag tag-alumni">Alumni Success</span>
+            </div>
+
+            <div class="charts-grid-2x2">
+                <!-- Chart 5: Package / CTC Distribution -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-money-bill-trend-up" style="color:#10B981;"></i> Package (CTC) Distribution (LPA)</h3>
+                            <p class="chart-subtitle">Number of alumni placed across various salary brackets</p>
+                        </div>
+                        <span class="chart-pill">CTC Brackets</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-alumni-ctc"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 6: Top Recruiting Companies -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-building" style="color:#3B82F6;"></i> Top Recruiters &amp; Hiring Partners</h3>
+                            <p class="chart-subtitle">Total alumni placed across prominent tech enterprises</p>
+                        </div>
+                        <span class="chart-pill">Recruiters</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-alumni-companies"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 7: Interview Difficulty Breakdown -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-gauge-high" style="color:#F59E0B;"></i> Interview Round Difficulty Breakdown</h3>
+                            <p class="chart-subtitle">Alumni reporting on test difficulty &amp; technical rigour</p>
+                        </div>
+                        <span class="chart-pill">Interview Rigour</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-alumni-difficulty"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 8: Year-on-Year Placement Trajectory -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <h3 class="chart-title"><i class="fa-solid fa-arrow-trend-up" style="color:#6366F1;"></i> Year-on-Year Placement Trajectory</h3>
+                            <p class="chart-subtitle">Annual average salary progression and total alumni placed</p>
+                        </div>
+                        <span class="chart-pill">Annual Trend</span>
+                    </div>
+                    <div class="chart-body-wrapper">
+                        <canvas id="chart-alumni-trajectory"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Chart instances map
+        const chartInstances = {};
+
+        function toggleFacultyDropdown(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('faculty-profile-dropdown');
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        document.addEventListener('click', () => {
+            const dropdown = document.getElementById('faculty-profile-dropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        });
+
+        async function adminLogout() {
+            try {
+                const res = await fetch('/api/admin/logout', { method: 'POST' });
+                window.location.href = '/admin';
+            } catch (err) {
+                window.location.href = '/admin';
+            }
+        }
+
+        // Fetch Analytics Data and Build Charts
+        async function fetchAnalyticsData() {
+            const branch = document.getElementById('filter-branch')?.value || 'all';
+            const batch = document.getElementById('filter-batch')?.value || 'all';
+
+            try {
+                const res = await fetch(`/api/admin/analytics/data?branch=${encodeURIComponent(branch)}&batch=${encodeURIComponent(batch)}`);
+                const data = await res.json();
+                if (data.success) {
+                    updateKPICards(data.kpis);
+                    renderOngoingCharts(data.ongoing_students);
+                    renderAlumniCharts(data.alumni_progress);
+                }
+            } catch (err) {
+                console.error("Failed to fetch analytics:", err);
+            }
+        }
+
+        function updateKPICards(kpis) {
+            if (!kpis) return;
+            document.getElementById('kpi-total-students').innerText = kpis.total_students || 0;
+            document.getElementById('kpi-placement-rate').innerText = (kpis.placement_rate || 0) + '%';
+            document.getElementById('kpi-placed-count').innerText = kpis.placed_students || 0;
+            document.getElementById('kpi-avg-ats').innerText = (kpis.avg_ats || 0) + '%';
+            document.getElementById('kpi-avg-ctc').innerText = `₹${kpis.avg_ctc || 0} LPA`;
+            document.getElementById('kpi-highest-ctc').innerText = `₹${kpis.highest_ctc || 0} LPA`;
+        }
+
+        // ==========================================
+        // RENDER ONGOING STUDENTS CHARTS
+        // ==========================================
+        function renderOngoingCharts(ongoing) {
+            if (!ongoing) return;
+
+            // Chart 1: ATS Score Distribution (Doughnut)
+            if (chartInstances.ats) chartInstances.ats.destroy();
+            const ctxAts = document.getElementById('chart-ongoing-ats').getContext('2d');
+            chartInstances.ats = new Chart(ctxAts, {
+                type: 'doughnut',
+                data: {
+                    labels: ongoing.ats_distribution.labels,
+                    datasets: [{
+                        data: ongoing.ats_distribution.data,
+                        backgroundColor: ['#10B981', '#3B82F6', '#F59E0B', '#EF4444'],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF',
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } } }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // Chart 2: Branch-Wise Readiness (Bar)
+            if (chartInstances.branch) chartInstances.branch.destroy();
+            const ctxBranch = document.getElementById('chart-ongoing-branch').getContext('2d');
+            chartInstances.branch = new Chart(ctxBranch, {
+                type: 'bar',
+                data: {
+                    labels: ongoing.branch_readiness.labels,
+                    datasets: [
+                        {
+                            label: 'Avg ATS Score (%)',
+                            data: ongoing.branch_readiness.avg_ats,
+                            backgroundColor: '#3B82F6',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Placement Ready (%)',
+                            data: ongoing.branch_readiness.placed_pct,
+                            backgroundColor: '#10B981',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 3: Test Engagement (Bar)
+            if (chartInstances.tests) chartInstances.tests.destroy();
+            const ctxTests = document.getElementById('chart-ongoing-tests').getContext('2d');
+            chartInstances.tests = new Chart(ctxTests, {
+                type: 'bar',
+                data: {
+                    labels: ongoing.test_engagement.labels,
+                    datasets: [{
+                        label: 'Students Completed',
+                        data: ongoing.test_engagement.students_count,
+                        backgroundColor: '#8B5CF6',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Student Count' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 4: Skill Clusters Radar
+            if (chartInstances.radar) chartInstances.radar.destroy();
+            const ctxRadar = document.getElementById('chart-ongoing-radar').getContext('2d');
+            chartInstances.radar = new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ongoing.skill_radar.labels,
+                    datasets: [
+                        {
+                            label: 'Cohort Average Score',
+                            data: ongoing.skill_radar.cohort_score,
+                            borderColor: '#EC4899',
+                            backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                            pointBackgroundColor: '#EC4899'
+                        },
+                        {
+                            label: 'Industry Target Benchmark',
+                            data: ongoing.skill_radar.target_benchmark,
+                            borderColor: '#94A3B8',
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                            pointBackgroundColor: '#94A3B8'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } } }
+                    },
+                    scales: {
+                        r: { beginAtZero: true, max: 100, ticks: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // RENDER ALUMNI PROGRESS CHARTS
+        // ==========================================
+        function renderAlumniCharts(alumni) {
+            if (!alumni) return;
+
+            // Chart 5: Package / CTC Distribution (Bar)
+            if (chartInstances.ctc) chartInstances.ctc.destroy();
+            const ctxCtc = document.getElementById('chart-alumni-ctc').getContext('2d');
+            chartInstances.ctc = new Chart(ctxCtc, {
+                type: 'bar',
+                data: {
+                    labels: alumni.ctc_brackets.labels,
+                    datasets: [{
+                        label: 'Alumni Placed',
+                        data: alumni.ctc_brackets.counts,
+                        backgroundColor: ['#60A5FA', '#34D399', '#A78BFA', '#FBBF24', '#F43F5E'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'No. of Alumni' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 6: Top Companies (Horizontal Bar)
+            if (chartInstances.companies) chartInstances.companies.destroy();
+            const ctxCompanies = document.getElementById('chart-alumni-companies').getContext('2d');
+            chartInstances.companies = new Chart(ctxCompanies, {
+                type: 'bar',
+                data: {
+                    labels: alumni.top_companies.labels,
+                    datasets: [{
+                        label: 'Total Hires',
+                        data: alumni.top_companies.hires,
+                        backgroundColor: '#3B82F6',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, title: { display: true, text: 'Alumni Hired' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 7: Interview Difficulty Breakdown (Polar Area / Pie)
+            if (chartInstances.difficulty) chartInstances.difficulty.destroy();
+            const ctxDiff = document.getElementById('chart-alumni-difficulty').getContext('2d');
+            chartInstances.difficulty = new Chart(ctxDiff, {
+                type: 'pie',
+                data: {
+                    labels: alumni.difficulty_split.labels,
+                    datasets: [{
+                        data: alumni.difficulty_split.percentages,
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 2,
+                        borderColor: '#FFFFFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } } },
+                        tooltip: { callbacks: { label: item => ` ${item.label}: ${item.raw}%` } }
+                    }
+                }
+            });
+
+            // Chart 8: Year-on-Year Placement Trajectory (Line)
+            if (chartInstances.trajectory) chartInstances.trajectory.destroy();
+            const ctxTraj = document.getElementById('chart-alumni-trajectory').getContext('2d');
+            chartInstances.trajectory = new Chart(ctxTraj, {
+                type: 'line',
+                data: {
+                    labels: alumni.yearly_trajectory.labels,
+                    datasets: [
+                        {
+                            label: 'Avg Package (LPA ₹)',
+                            data: alumni.yearly_trajectory.avg_package,
+                            borderColor: '#3B82F6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Total Placed Alumni',
+                            data: alumni.yearly_trajectory.placed_count,
+                            borderColor: '#8B5CF6',
+                            backgroundColor: 'transparent',
+                            borderDash: [4, 4],
+                            tension: 0.35,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } } }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'Avg Package (₹ LPA)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: 'Total Placed Alumni' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAnalyticsData();
+        });
+    </script>
+    <script>if (typeof lucide !== 'undefined') lucide.createIcons();</script>
+</body>
+</html>
