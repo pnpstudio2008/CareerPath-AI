@@ -97,16 +97,17 @@ init_database()
 def index():
     """
     Primary Landing Page:
-    - If faculty/admin is logged in, they are NEVER allowed to access the student platform -> redirect to /admin.
     - If student is logged in, renders the main AI Career Companion platform.
     - If alumni is logged in, renders their profile dashboard (or platform if ?view=platform).
-    - If unauthenticated, redirects to Student Login Portal (the default entry point).
+    - If faculty is logged in, redirects to /admin.
+    - If unauthenticated, redirects to Student Login Portal (/student/login).
     """
-    # If faculty or anyone removes path from URL, redirect back to the student login portal
-    if session.get('admin_logged_in'):
-        return redirect('/student/login')
-
     if session.get('student_logged_in'):
+        # Ensure lingering admin or alumni sessions do not conflict with active student session
+        session.pop('admin_logged_in', None)
+        session.pop('admin_user', None)
+        session.pop('faculty_name', None)
+
         student_id = session.get('student_id')
         student_db = get_student_by_id(int(student_id)) if student_id else None
         if not student_db and session.get('student_roll_no'):
@@ -148,6 +149,7 @@ def index():
         return render_template('index.html', user=current_user)
 
     if session.get('alumni_logged_in'):
+        session.pop('admin_logged_in', None)
         if request.args.get('view') == 'platform':
             name_val = session.get('alumni_name', 'Alumni Mentor')
             parts = [p for p in name_val.split() if p]
@@ -168,6 +170,10 @@ def index():
             }
             return render_template('index.html', user=current_user)
         return redirect('/alumni/profile')
+
+    if session.get('admin_logged_in'):
+        # Faculty belongs in the Faculty Console
+        return redirect('/admin')
 
     # Unauthenticated visitors are redirected to the Student Login Portal
     return redirect('/student/login')
@@ -863,21 +869,23 @@ def student_login_page():
     """Renders the Student Login Portal."""
     if session.get('student_logged_in'):
         return redirect('/')
+    # If a faculty session is in cookies, remove it so the login portal is completely fresh
+    session.pop('admin_logged_in', None)
+    session.pop('admin_user', None)
+    session.pop('faculty_name', None)
     return render_template('student_login.html')
 
 
 @app.route('/student/profile', methods=['GET'])
 def student_profile_page():
     """Renders the logged-in Student's Personal Profile Dashboard."""
-    if session.get('admin_logged_in'):
-        return redirect('/admin')
     if not session.get('student_logged_in') or not session.get('student_id'):
-        return redirect('/')
+        return redirect('/student/login')
     student = get_student_by_id(session.get('student_id'))
     if not student:
         session.pop('student_logged_in', None)
         session.pop('student_id', None)
-        return redirect('/')
+        return redirect('/student/login')
     return render_template('student_profile.html', student=student)
 
 
@@ -897,6 +905,14 @@ def mask_email(email):
 @app.route('/api/student/login', methods=['POST'])
 def student_auth_login():
     """Step 1: Authenticates student credentials and initiates 2FA Enrollment Number verification."""
+    # Clear any old conflicting roles
+    session.pop('admin_logged_in', None)
+    session.pop('admin_user', None)
+    session.pop('faculty_name', None)
+    session.pop('alumni_logged_in', None)
+    session.pop('alumni_id', None)
+    session.pop('alumni_name', None)
+
     data = request.json or request.form.to_dict()
     identifier = (data.get('identifier') or data.get('roll_no') or '').strip()
     password = data.get('password', '').strip()
@@ -946,6 +962,14 @@ def student_verify_2fa():
         # Keep the enrollment for credential checks later
         student_enrollment = session.pop('pending_2fa_enrollment', None)
         session.pop('pending_2fa_type', None)
+
+        # Clear any old conflicting roles
+        session.pop('admin_logged_in', None)
+        session.pop('admin_user', None)
+        session.pop('faculty_name', None)
+        session.pop('alumni_logged_in', None)
+        session.pop('alumni_id', None)
+        session.pop('alumni_name', None)
 
         session['student_logged_in'] = True
         session['student_id'] = student_id
@@ -1233,6 +1257,15 @@ def alumni_verify_2fa():
         alumni_name = session.pop('pending_2fa_alumni_name', 'Alumni Mentor')
         session.pop('pending_2fa_alumni_code', None)
         session.pop('pending_2fa_type', None)
+
+        # Clear any student or admin sessions
+        session.pop('student_logged_in', None)
+        session.pop('student_id', None)
+        session.pop('student_name', None)
+        session.pop('student_roll_no', None)
+        session.pop('admin_logged_in', None)
+        session.pop('admin_user', None)
+        session.pop('faculty_name', None)
 
         session['alumni_logged_in'] = True
         session['alumni_id'] = alumni_id
@@ -1527,6 +1560,15 @@ def admin_verify_2fa():
 
     if code == "RM1813":
         session.pop('pending_2fa_type', None)
+
+        # Clear any student or alumni sessions
+        session.pop('student_logged_in', None)
+        session.pop('student_id', None)
+        session.pop('student_name', None)
+        session.pop('student_roll_no', None)
+        session.pop('alumni_logged_in', None)
+        session.pop('alumni_id', None)
+        session.pop('alumni_name', None)
 
         session['admin_logged_in'] = True
         fac_p = get_faculty_profile()
