@@ -64,18 +64,24 @@ def unpack_gaps_to_string(gaps_raw) -> str:
     return str(gaps_raw)
 
 
-def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str]:
+def generate_students_excel_report(students_data: list, base_url: str = None) -> tuple[bytes, str, str]:
     """
     Generates a full Excel report for all students.
+    Replaces static resume filename with direct downloadable hyperlinks to each student's report.
     Returns: (file_bytes, mimetype, filename)
     """
+    if not base_url:
+        import os
+        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'http://127.0.0.1:5000'
+    base_url = base_url.rstrip('/')
+
     now_str = datetime.datetime.now().strftime('%Y-%m-%d_%H%M')
     filename = f"AI_Career_Companion_Ongoing_Students_Report_{now_str}.xlsx"
     mimetype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     if not OPENPYXL_AVAILABLE:
         # Fallback to UTF-8 BOM CSV if openpyxl is not installed
-        return generate_students_csv_fallback(students_data)
+        return generate_students_csv_fallback(students_data, base_url=base_url)
 
     wb = openpyxl.Workbook()
 
@@ -127,7 +133,7 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
         "Target Company",
         "Distinct Resumes",
         "Total Analyses",
-        "Latest Resume File",
+        "Download Student Report (PDF)",
         "Best Matching Role",
         "Top Recruiter Match",
         "Extracted Skills",
@@ -182,7 +188,12 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
         distinct_cnt = int(s_dict.get("distinct_resumes_count", 0) or (1 if ats > 0 else 0))
         total_cnt = int(s_dict.get("total_resumes_count", 0) or distinct_cnt)
 
-        latest_file = s_dict.get("latest_resume_filename") or (f"{name.replace(' ', '_')}_Resume.pdf" if ats > 0 else "None Uploaded")
+        # Construct direct downloadable report URL for this specific student
+        student_id_val = s_dict.get("id")
+        download_target = student_id_val if student_id_val else roll_no
+        download_url = f"{base_url}/api/report/download/student/{download_target}"
+        report_link_formula = f'=HYPERLINK("{download_url}", "Download PDF Report")'
+
         best_role = s_dict.get("evaluated_best_role") or ("Full Stack Developer" if ats > 0 else "-")
         best_comp = s_dict.get("evaluated_best_match_company") or (tgt_comp if tgt_comp != "General" else ("Top Tech Recruiters" if ats > 0 else "-"))
 
@@ -209,7 +220,7 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
             tgt_comp,
             distinct_cnt,
             total_cnt,
-            latest_file,
+            report_link_formula,
             best_role,
             best_comp,
             skills_str or "Pending Upload",
@@ -235,6 +246,13 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
                 cell.alignment = align_center
             elif col_idx in [10]:
                 cell.alignment = align_right
+
+            # Report Download Link Column (Column 16 / P)
+            if col_idx == 16:
+                cell.value = report_link_formula
+                cell.hyperlink = download_url
+                cell.font = Font(name="Calibri", size=10, bold=True, color="2563EB", underline="single")
+                cell.alignment = align_center
 
             # Placement status pill coloring
             if col_idx == 8:
@@ -314,9 +332,14 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
     return out.getvalue(), mimetype, filename
 
 
-def generate_students_csv_fallback(students_data: list) -> tuple[bytes, str, str]:
-    """Generates an Excel-compatible UTF-8 BOM CSV fallback."""
+def generate_students_csv_fallback(students_data: list, base_url: str = None) -> tuple[bytes, str, str]:
+    """Generates an Excel-compatible UTF-8 BOM CSV fallback with report download URLs."""
     import csv
+    if not base_url:
+        import os
+        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'http://127.0.0.1:5000'
+    base_url = base_url.rstrip('/')
+
     output = io.StringIO()
     writer = csv.writer(output)
 
@@ -324,7 +347,7 @@ def generate_students_csv_fallback(students_data: list) -> tuple[bytes, str, str
         "Sr. No.", "Enrollment No.", "Student Name", "Branch", "Batch Year",
         "Email", "Phone", "Placement Status", "Placed Company", "Package (LPA)",
         "ATS Score (%)", "Readiness", "Target Company", "Distinct Resumes",
-        "Total Analyses", "Latest Resume", "Best Matching Role", "Top Recruiter",
+        "Total Analyses", "Download Student Report (PDF)", "Best Matching Role", "Top Recruiter",
         "Core Skills", "Skill Gaps", "Quizzes Completed", "Account Status", "Registered At"
     ]
     writer.writerow(headers)
@@ -332,9 +355,14 @@ def generate_students_csv_fallback(students_data: list) -> tuple[bytes, str, str
     for idx, s in enumerate(students_data, 1):
         s_dict = dict(s)
         ats = float(s_dict.get("ats_score", 0) or 0)
+        s_id = s_dict.get("id")
+        roll = s_dict.get("roll_no") or ""
+        download_target = s_id if s_id else roll
+        download_url = f"{base_url}/api/report/download/student/{download_target}"
+
         writer.writerow([
             idx,
-            s_dict.get("roll_no") or "",
+            roll,
             s_dict.get("name") or "",
             s_dict.get("branch") or "",
             s_dict.get("batch_year") or "",
@@ -348,7 +376,7 @@ def generate_students_csv_fallback(students_data: list) -> tuple[bytes, str, str
             s_dict.get("target_company") or "",
             s_dict.get("distinct_resumes_count", 0),
             s_dict.get("total_resumes_count", 0),
-            s_dict.get("latest_resume_filename") or "",
+            download_url,
             s_dict.get("evaluated_best_role") or "",
             s_dict.get("evaluated_best_match_company") or "",
             unpack_skills_to_string(s_dict.get("skills_json")),
