@@ -1,6 +1,7 @@
 """
 AI Career Companion - Resume Performance & ATS Audit Report Generator
-Generates an official, print-ready, SINGLE-PAGE executive evaluation document.
+Generates an official, print-ready, SINGLE-PAGE executive evaluation document
+with sections 1, 2, 3, 4 sequentially in-line and utilizing the entire page.
 """
 
 import io
@@ -18,16 +19,16 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     """
     Generates a clean, modern, single-page executive PDF report highlighting
     the specific performance, ATS scoring, company benchmark, and skill gaps
-    of a candidate's resume.
+    of a candidate's resume. Utilizes the full page with sections 1, 2, 3, 4 in line.
     """
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(
         buffer,
         pagesize=letter,
-        leftMargin=28,
-        rightMargin=28,
-        topMargin=26,
-        bottomMargin=26
+        leftMargin=26,
+        rightMargin=26,
+        topMargin=22,
+        bottomMargin=22
     )
 
     styles = getSampleStyleSheet()
@@ -47,8 +48,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         'DocTitle',
         parent=styles['Heading1'],
         fontName='Helvetica-Bold',
-        fontSize=14,
-        leading=17,
+        fontSize=15,
+        leading=19,
         textColor=colors.white
     )
 
@@ -56,8 +57,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         'SecTitle',
         parent=styles['Heading3'],
         fontName='Helvetica-Bold',
-        fontSize=9.5,
-        leading=12,
+        fontSize=10,
+        leading=13,
         textColor=C_SECONDARY,
         spaceBefore=0,
         spaceAfter=0
@@ -67,8 +68,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         'BodyDark',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=8,
-        leading=11,
+        fontSize=8.3,
+        leading=11.5,
         textColor=C_SECONDARY
     )
 
@@ -76,8 +77,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         'BodyBold',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=8,
-        leading=11,
+        fontSize=8.3,
+        leading=11.5,
         textColor=C_SECONDARY
     )
 
@@ -85,8 +86,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         'BodyMuted',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.2,
-        leading=9.5,
+        fontSize=7.6,
+        leading=10.5,
         textColor=C_TEXT_MUTED
     )
 
@@ -94,31 +95,31 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         'RecBullet',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.8,
-        leading=10.5,
+        fontSize=8.2,
+        leading=11.5,
         textColor=C_SECONDARY,
-        leftIndent=8,
-        firstLineIndent=-8
+        leftIndent=10,
+        firstLineIndent=-10
     )
 
     story = []
-    TOTAL_WIDTH = 556  # 612 - 56
+    TOTAL_WIDTH = 560  # 612 - 52
 
     # -------------------------------------------------------------
-    # 1. HEADER BANNER
+    # 1. HEADER BANNER BLOCK (Deep Primary Blue)
     # -------------------------------------------------------------
     candidate_name = student.get('name', 'Student Candidate')
     roll_no = student.get('roll_no', 'N/A')
-    branch = student.get('branch', 'CSE')
+    branch = student.get('branch', 'Computer Science & Engineering')
     eval_date = str(resume_record.get('created_at', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))[:10]
     
     header_content = [
         [
-            Paragraph("<b>AI CAREER COMPANION</b> &bull; RESUME PERFORMANCE AUDIT", title_p),
-            Paragraph(f"<b>Candidate:</b> {candidate_name} ({roll_no})<br/><b>Branch:</b> {branch} &bull; <b>Date:</b> {eval_date}", ParagraphStyle('HMeta', fontName='Helvetica', fontSize=7.5, leading=10, textColor=colors.white, alignment=2))
+            Paragraph("<b>AI CAREER COMPANION &bull; RESUME PERFORMANCE AUDIT</b>", title_p),
+            Paragraph(f"<b>Candidate:</b> {candidate_name} ({roll_no})<br/><b>Branch:</b> {branch} &bull; <b>Date:</b> {eval_date}", ParagraphStyle('HMeta', fontName='Helvetica', fontSize=7.6, leading=10.5, textColor=colors.white, alignment=2))
         ]
     ]
-    header_table = Table(header_content, colWidths=[336, 220])
+    header_table = Table(header_content, colWidths=[330, 230])
     header_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_PRIMARY),
         ('TOPPADDING', (0, 0), (-1, -1), 8),
@@ -128,10 +129,10 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(header_table)
-    story.append(Spacer(1, 7))
+    story.append(Spacer(1, 9))
 
     # -------------------------------------------------------------
-    # 2. OVERVIEW CARD (ATS SCORE & RESUME SNAPSHOT)
+    # 2. OVERVIEW CARD (ATS SCORE GAUGE & DETECTED METRICS)
     # -------------------------------------------------------------
     ats_score = float(resume_record.get('ats_score', 80) or 80)
     ats_int = int(round(ats_score))
@@ -152,7 +153,7 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     filename = str(resume_record.get('filename') or 'Resume.pdf')
     best_role = str(resume_record.get('best_role') or 'Software Development Engineer')
 
-    # Unpack skills
+    # Unpack skills (supports list, dict of categories, or JSON string)
     skills_raw = resume_record.get('skills', []) or []
     if isinstance(skills_raw, str):
         try:
@@ -182,45 +183,45 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             cleaned_skills.append(s_str)
     skills_list = cleaned_skills
 
-    skills_str = ", ".join(skills_list[:14]) if skills_list else "Python, SQL, Java, Flask, React, Git, REST APIs"
-    if len(skills_list) > 14:
-        skills_str += f", +{len(skills_list) - 14} more"
+    skills_str = ", ".join(skills_list[:16]) if skills_list else "Python, SQL, Java, Flask, React, Git, REST APIs"
+    if len(skills_list) > 16:
+        skills_str += f", +{len(skills_list) - 16} more"
 
     left_box = [
-        Paragraph(f"<font color='{C_PRIMARY.hexval()}' size='24'><b>{ats_int}%</b></font>", ParagraphStyle('ScoreBig', alignment=1, leading=24)),
-        Paragraph(f"<b>ATS SCORE</b>", ParagraphStyle('ScoreLbl', fontName='Helvetica-Bold', fontSize=7.5, leading=9, textColor=C_TEXT_MUTED, alignment=1)),
+        Paragraph(f"<font color='{C_PRIMARY.hexval()}' size='26'><b>{ats_int}%</b></font>", ParagraphStyle('ScoreBig', alignment=1, leading=26)),
+        Paragraph("<b>ATS SCORE</b>", ParagraphStyle('ScoreLbl', fontName='Helvetica-Bold', fontSize=7.5, leading=9, textColor=C_TEXT_MUTED, alignment=1)),
         Spacer(1, 3),
-        Paragraph(f"<font color='{tier_color}'><b>{tier_title}</b></font>", ParagraphStyle('ScoreTier', fontName='Helvetica-Bold', fontSize=7.5, leading=9.5, alignment=1))
+        Paragraph(f"<font color='{tier_color}'><b>{tier_title}</b></font>", ParagraphStyle('ScoreTier', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=1))
     ]
 
     right_box = [
         Paragraph(f"<b>Resume File:</b> <font color='#1E293B'>{filename}</font>", body_dark),
-        Spacer(1, 2),
+        Spacer(1, 3),
         Paragraph(f"<b>Primary Role Match:</b> <font color='#2563EB'><b>{best_role}</b></font>", body_dark),
-        Spacer(1, 2),
-        Paragraph(f"<b>Detected Core Skills ({len(skills_list)}):</b> <font color='#475569'>{skills_str}</font>", ParagraphStyle('SkP', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=C_SECONDARY))
+        Spacer(1, 3),
+        Paragraph(f"<b>Detected Core Skills ({len(skills_list)}):</b> <font color='#475569'>{skills_str}</font>", ParagraphStyle('SkP', fontName='Helvetica', fontSize=7.8, leading=10.5, textColor=C_SECONDARY))
     ]
 
-    overview_table = Table([[left_box, right_box]], colWidths=[130, 426])
+    overview_table = Table([[left_box, right_box]], colWidths=[135, 425])
     overview_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (0, 0), colors.HexColor(tier_bg)),
         ('BACKGROUND', (1, 0), (1, 0), C_BG_CARD),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 7),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 7),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(overview_table)
-    story.append(Spacer(1, 7))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
-    # 3. SUITABLE RECRUITERS (45-DATASET BENCHMARK) - TOP 3 MATCHES
+    # 3. SECTION 1: SUITABLE RECRUITER BENCHMARK (TOP MATCHES)
     # -------------------------------------------------------------
     story.append(Paragraph("<b>1. Suitable Recruiter Benchmark (Top Matches from 45 Campus Hiring Dataset)</b>", sec_title))
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 4))
 
     comp_matches = resume_record.get('suitable_companies', []) or []
     if isinstance(comp_matches, str):
@@ -245,7 +246,7 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             c_name = c.get('company', 'Top Recruiter')
             c_role = c.get('role', 'Software Engineer')
             c_score = f"{round(float(c.get('match_score', 80)), 1)}%"
-            c_ctc = c.get('indicative_ctc_range_lpa', '5.0 - 10.0 LPA')
+            c_ctc = c.get('indicative_ctc_range_lpa', '3.0 - 5.5 LPA')
             c_tier = c.get('fit_tier', 'Strong Match')
             comp_rows.append([
                 Paragraph(f"<b>{c_name}</b>", body_dark),
@@ -264,23 +265,59 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             Paragraph("<font color='#2563EB'>Strong Match</font>", body_dark)
         ])
 
-    comp_table = Table(comp_rows, colWidths=[140, 156, 65, 105, 90])
+    comp_table = Table(comp_rows, colWidths=[140, 160, 65, 105, 90])
     comp_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#F1F5F9')),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(comp_table)
-    story.append(Spacer(1, 7))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
-    # 4. TWO-COLUMN SPLIT: ROLE FIT TRAJECTORY (LEFT) & SKILL GAPS (RIGHT)
+    # 4. SECTION 2: ROLE FIT & CAREER TRAJECTORY (FULL WIDTH IN LINE!)
     # -------------------------------------------------------------
+    story.append(Paragraph("<b>2. Role Fit & Career Trajectory</b>", sec_title))
+    story.append(Spacer(1, 4))
+
+    career_recs = resume_record.get('career_recommendations', []) or []
+    if isinstance(career_recs, str):
+        try:
+            import json
+            career_recs = json.loads(career_recs)
+        except Exception:
+            career_recs = []
+
+    alt_roles_str = ", ".join([f"{cr.get('role')} ({cr.get('match', '80%')})" for cr in career_recs[:3]]) if career_recs else f"{best_role} (80%), Frontend Engineer (80%)"
+
+    role_content = [
+        [Paragraph(f"<b>Top Role Fit:</b> <font color='#2563EB'><b>{best_role}</b></font>", body_dark)],
+        [Paragraph(f"<b>Alternative Career Paths:</b> <font color='#475569'>{alt_roles_str}</font>", body_dark)],
+        [Paragraph("Profile demonstrates highest structural alignment with systems engineering and full-stack software tracks based on verified algorithmic modeling.", body_muted)]
+    ]
+    role_table = Table(role_content, colWidths=[TOTAL_WIDTH])
+    role_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), C_BG_CARD),
+        ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+    ]))
+    story.append(role_table)
+    story.append(Spacer(1, 10))
+
+    # -------------------------------------------------------------
+    # 5. SECTION 3: CRITICAL SKILL GAPS TO CLOSE (FULL WIDTH IN LINE!)
+    # -------------------------------------------------------------
+    story.append(Paragraph("<b>3. Critical Skill Gaps to Close</b>", sec_title))
+    story.append(Spacer(1, 4))
+
     skill_gaps_raw = resume_record.get('skill_gaps', []) or []
     if isinstance(skill_gaps_raw, str):
         try:
@@ -293,55 +330,29 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     else:
         skill_gaps = []
 
-    career_recs = resume_record.get('career_recommendations', []) or []
-    if isinstance(career_recs, str):
-        try:
-            import json
-            career_recs = json.loads(career_recs)
-        except Exception:
-            career_recs = []
+    gaps_display = ", ".join(skill_gaps[:6]) if skill_gaps else "No critical skill gaps identified (Strong role fit)"
 
-    alt_roles_str = ", ".join([f"{cr.get('role')} ({cr.get('match', '80%')})" for cr in career_recs[:2]]) if career_recs else "Backend Engineer, Full Stack Developer"
-
-    left_role_content = [
-        Paragraph("<b>2. Role Fit & Trajectory</b>", sec_title),
-        Spacer(1, 3),
-        Paragraph(f"<b>Top Role Fit:</b> <font color='#2563EB'><b>{best_role}</b></font>", body_dark),
-        Spacer(1, 2),
-        Paragraph(f"<b>Alternative Paths:</b> <font color='#475569'>{alt_roles_str}</font>", ParagraphStyle('AltR', fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=C_SECONDARY)),
-        Spacer(1, 2),
-        Paragraph("Demonstrates highest alignment with system architecture and full-stack software tracks.", body_muted)
+    gap_content = [
+        [Paragraph(f"<font color='#B91C1C'><b>Identified Missing In-Demand Skills:</b> {gaps_display}</font>", ParagraphStyle('GP', fontName='Helvetica-Bold', fontSize=8.5, leading=12, textColor=C_ROSE))],
+        [Paragraph("Closing these competencies through targeted practice tests and integrating them into a demonstrated technical project will boost candidate recruiter qualification rates to 95%+.", body_muted)]
     ]
-
-    gaps_display = ", ".join(skill_gaps[:5]) if skill_gaps else "No critical skill gaps identified (Strong role fit)"
-    right_gap_content = [
-        Paragraph("<b>3. Critical Skill Gaps to Close</b>", sec_title),
-        Spacer(1, 3),
-        Paragraph(f"<font color='#B91C1C'><b>Missing Skills:</b> {gaps_display}</font>", ParagraphStyle('GapP', fontName='Helvetica-Bold', fontSize=8, leading=10, textColor=C_ROSE)),
-        Spacer(1, 2),
-        Paragraph("Closing these competencies through targeted practice tests boosts recruiter qualification rates to 95%+.", body_muted)
-    ]
-
-    split_table = Table([[left_role_content, right_gap_content]], colWidths=[274, 274])
-    split_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (0, 0), C_BG_CARD),
-        ('BACKGROUND', (1, 0), (1, 0), C_ROSE_BG),
-        ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
-        ('INNERGRID', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+    gap_table = Table(gap_content, colWidths=[TOTAL_WIDTH])
+    gap_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, -1), C_ROSE_BG),
+        ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#FECACA')),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
     ]))
-    story.append(split_table)
-    story.append(Spacer(1, 7))
+    story.append(gap_table)
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
-    # 5. ACTIONABLE ATS OPTIMIZATION RECOMMENDATIONS (TOP 3)
+    # 6. SECTION 4: ACTIONABLE ATS OPTIMIZATION FIXES (FULL WIDTH IN LINE!)
     # -------------------------------------------------------------
     story.append(Paragraph("<b>4. Actionable ATS Optimization Fixes</b>", sec_title))
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 4))
 
     full_analysis = resume_record.get('full_analysis', {}) or {}
     if isinstance(full_analysis, str):
@@ -355,38 +366,38 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     recs = ats_breakdown.get('recommendations', []) if isinstance(ats_breakdown, dict) else []
     if not recs:
         recs = [
-            "Quantify project outcomes with measurable performance metrics (e.g. 'improved API response speed by 30%').",
-            "Incorporate high-demand deployment keywords (Docker, Cloud, REST APIs) to maximize recruiter screening pass rates.",
-            "Maintain standard single-column PDF hierarchy without nested graphics or tables for flawless parser ingestion."
+            "Add a dedicated 'Certifications / Achievements' section to improve ATS parser categorization pass rate.",
+            "Incorporate more impactful action verbs (e.g., 'Architected', 'Optimized', 'Automated', 'Spearheaded') to demonstrate technical ownership.",
+            "Quantify project impact with measurable outcomes (e.g., 'Reduced latency by 25%', 'Processed 10k+ records') for higher recruiter scoring."
         ]
 
     recs_content = []
     for idx, r in enumerate(recs[:3], 1):
-        recs_content.append(Paragraph(f"<b>{idx}.</b> {r}", bullet_p))
+        recs_content.append([Paragraph(f"<b>{idx}.</b> {r}", bullet_p)])
 
-    recs_table = Table([[rc] for rc in recs_content], colWidths=[TOTAL_WIDTH])
+    recs_table = Table(recs_content, colWidths=[TOTAL_WIDTH])
     recs_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_CARD),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 4),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
     ]))
     story.append(recs_table)
-    story.append(Spacer(1, 7))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
-    # 6. COMPACT ONE-LINE VERIFICATION FOOTER
+    # 7. INSTITUTIONAL VERIFICATION FOOTER
     # -------------------------------------------------------------
     footer_text = (
-        "<font size='7' color='#64748B'>"
+        "<font size='7.2' color='#64748B'>"
         "<b>AI Career Companion</b> &bull; Calibrated against 45-company recruitment dataset &bull; "
         "Designed &amp; Developed by <b>P&amp;P Studio</b> &bull; Faculty Guides <b>Riya Modi &amp; Diksha Durgapal</b>"
         "</font>"
     )
-    story.append(HRFlowable(width="100%", thickness=0.5, color=C_BORDER, spaceBefore=2, spaceAfter=3))
-    story.append(Paragraph(footer_text, ParagraphStyle('FooterP', fontName='Helvetica', fontSize=7, leading=9, alignment=1)))
+    story.append(HRFlowable(width="100%", thickness=0.6, color=C_BORDER, spaceBefore=2, spaceAfter=4))
+    story.append(Paragraph(footer_text, ParagraphStyle('FP', fontName='Helvetica', fontSize=7.2, leading=9.5, alignment=1)))
 
     doc.build(story)
     return buffer.getvalue()
