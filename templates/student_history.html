@@ -159,6 +159,7 @@
         }
 
         .hist-hero-title {
+            color: #FFFFFF !important;
             font-size: 2.2rem;
             font-weight: 900;
             margin: 0 0 0.5rem;
@@ -343,6 +344,8 @@
             color: var(--text-main);
             letter-spacing: -0.02em;
             line-height: 1.2;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
         .hist-kpi-sub {
@@ -910,6 +913,118 @@
             align-items: center;
             justify-content: space-between;
         }
+
+        @media (max-width: 768px) {
+            .hist-navbar {
+                padding: 0.65rem 1rem !important;
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+            .hist-brand-sub {
+                display: none !important;
+            }
+            .hist-nav-left {
+                gap: 0.5rem !important;
+            }
+            .hist-nav-right {
+                flex-wrap: wrap !important;
+                gap: 0.35rem !important;
+                width: 100% !important;
+                justify-content: flex-start !important;
+            }
+            .hist-nav-right .btn {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.78rem !important;
+                flex: 1 1 auto !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+            .hist-container {
+                padding: 1rem 0.75rem 2.5rem !important;
+            }
+            .hist-hero-banner {
+                padding: 1.5rem 1rem !important;
+                border-radius: 18px !important;
+            }
+            .hist-hero-title {
+                font-size: 1.35rem !important;
+            }
+            .hist-hero-desc {
+                font-size: 0.85rem !important;
+            }
+            .hist-pillars-box {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+                padding: 0.85rem !important;
+            }
+            .hist-kpi-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 0.75rem !important;
+            }
+            .hist-kpi-card {
+                padding: 0.85rem !important;
+                gap: 0.65rem !important;
+            }
+            .hist-kpi-circ {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            .hist-kpi-circ-num {
+                font-size: 0.85rem !important;
+            }
+            .hist-kpi-val {
+                font-size: 1.05rem !important;
+            }
+            .hist-resume-card {
+                padding: 1.15rem 1rem !important;
+            }
+            .hist-resume-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+            }
+            .hist-resume-title {
+                font-size: 1.05rem !important;
+                word-break: break-all !important;
+            }
+            .hist-resume-grid-3 {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+            }
+            .hist-resume-footer {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.75rem !important;
+            }
+            .hist-resume-footer .btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .hist-controls-bar {
+                padding: 0.85rem !important;
+            }
+            .hist-search-wrap {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            .hist-controls-actions {
+                width: 100% !important;
+            }
+            .hist-controls-actions .btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hist-kpi-grid {
+                grid-template-columns: 1fr !important;
+            }
+            .hist-nav-right .btn span {
+                font-size: 0.74rem !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -931,10 +1046,10 @@
                 <i class="fa-solid fa-house"></i> <span>Dashboard</span>
             </a>
             <a href="/?section=analyzer" class="btn btn-primary btn-sm" title="Analyze New Resume">
-                <i class="fa-solid fa-cloud-arrow-up"></i> <span>Upload &amp; Analyze</span>
+                <i class="fa-solid fa-cloud-arrow-up"></i> <span>Analyze</span>
             </a>
             <a href="/student/profile" class="btn btn-outline btn-sm" title="My Profile">
-                <i class="fa-solid fa-user"></i> <span>{{ user.name if user else 'Profile' }}</span>
+                <i class="fa-solid fa-user"></i> <span>{{ (user.name.split(' ')[0] if user and user.name else 'Profile') }}</span>
             </a>
             <a href="/api/student/logout" class="btn btn-outline btn-sm" style="color:#EF4444;" title="Sign Out">
                 <i class="fa-solid fa-right-from-bracket"></i>
