@@ -17,6 +17,11 @@ try:
 except Exception as _pdf_err:
     generate_resume_pdf_report = None
     print(f"[Notice] resume_report_generator not yet available: {_pdf_err}")
+try:
+    from excel_report_generator import generate_students_excel_report
+except Exception as _excel_err:
+    generate_students_excel_report = None
+    print(f"[Notice] excel_report_generator not yet available: {_excel_err}")
 from nlp_engine import (
     extract_text_from_pdf_bytes,
     extract_skills_from_text,
@@ -71,7 +76,8 @@ from database import (
     add_resume_analysis_record,
     get_student_resume_history,
     get_student_resume_detail,
-    get_distinct_resume_count
+    get_distinct_resume_count,
+    get_all_students_for_excel_report
 )
 from mock_test_engine import generate_tailored_mock_test
 from sample_resumes import SAMPLE_RESUMES
@@ -2081,6 +2087,37 @@ def fetch_admin_stats():
         "success": True,
         "stats": stats
     })
+
+
+@app.route('/api/admin/export-students-excel', methods=['GET'])
+@app.route('/admin/export-students-excel', methods=['GET'])
+def api_admin_export_students_excel():
+    """
+    Exports a comprehensive Microsoft Excel report (.xlsx) containing all student performance,
+    academic profiles, placement statuses, ATS scores, and evaluated skills in one sheet.
+    """
+    if not session.get('admin_logged_in'):
+        return redirect('/admin')
+
+    try:
+        global generate_students_excel_report
+        if generate_students_excel_report is None:
+            try:
+                from excel_report_generator import generate_students_excel_report
+            except Exception as _imp_err:
+                return jsonify({"success": False, "error": f"Excel report engine unavailable: {_imp_err}"}), 500
+
+        students = get_all_students_for_excel_report()
+        file_bytes, mimetype, filename = generate_students_excel_report(students)
+        return send_file(
+            io.BytesIO(file_bytes),
+            mimetype=mimetype,
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        print(f"[Admin Excel Export Error] {e}")
+        return jsonify({"success": False, "error": f"Failed to generate Excel report: {str(e)}"}), 500
 
 
 @app.route('/api/admin/students', methods=['GET'])

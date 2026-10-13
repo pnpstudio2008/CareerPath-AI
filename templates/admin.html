@@ -973,6 +973,23 @@
             .admin-table {
                 min-width: 600px !important;
             }
+            .admin-panel-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 1rem !important;
+                padding: 1.25rem 1rem !important;
+            }
+            .admin-header-actions {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 0.6rem !important;
+            }
+            .admin-header-actions > * {
+                flex: 1 1 auto !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1097,9 +1114,15 @@
                             <i data-lucide="graduation-cap" style="vertical-align:middle; margin-right:8px; color:var(--admin-primary);"></i> Student Cohort
                         </h3>
                     </div>
-                    <button class="admin-btn-primary" onclick="openCreateStudentLoginModal()" id="btn-add-student">
-                        <i data-lucide="plus"></i> Add Ongoing Student
-                    </button>
+                    <div class="admin-header-actions" style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+                        <a href="/api/admin/export-students-excel" class="admin-btn-outline" download id="btn-export-students-excel" onclick="if(typeof showToast==='function') showToast('Preparing student cohort Excel workbook for download...', 'info');" style="color:#047857; border: 1.5px solid #A7F3D0; font-weight:700; background:#ECFDF5; display:inline-flex; align-items:center; gap:0.55rem; text-decoration:none; padding: 0.55rem 1.05rem; border-radius: 8px; font-size: 0.875rem; box-shadow: 0 1px 2px rgba(16,185,129,0.08); transition: all 0.2s;" onmouseover="this.style.background='#D1FAE5'; this.style.borderColor='#6EE7B7';" onmouseout="this.style.background='#ECFDF5'; this.style.borderColor='#A7F3D0';" title="Download all student performance and evaluation records in one Excel workbook">
+                            <i class="fa-solid fa-file-excel" style="color:#059669; font-size:1.05rem;"></i>
+                            <span>Download Excel Report</span>
+                        </a>
+                        <button class="admin-btn-primary" onclick="openCreateStudentLoginModal()" id="btn-add-student">
+                            <i data-lucide="plus"></i> Add Ongoing Student
+                        </button>
+                    </div>
                 </div>
 
                 <div class="admin-filter-bar">

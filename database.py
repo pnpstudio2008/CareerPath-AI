@@ -2557,4 +2557,39 @@ def get_distinct_resume_count(student_id: int) -> int:
                     return 1
         return count or 0
     finally:
-        conn.close()
+        conn.close()
+
+
+def get_all_students_for_excel_report() -> list:
+    """
+    Returns complete student records joined with their latest resume evaluation metrics,
+    distinct resumes count, evaluated role, and skill analysis.
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT 
+                s.*,
+                COALESCE(rh.distinct_count, 0) as distinct_resumes_count,
+                COALESCE(rh.total_count, 0) as total_resumes_count,
+                latest.filename as latest_resume_filename,
+                latest.best_role as evaluated_best_role,
+                latest.best_match_company as evaluated_best_match_company,
+                latest.skills_json,
+                latest.skill_gaps_json,
+                latest.created_at as latest_resume_date
+            FROM students s
+            LEFT JOIN (
+                SELECT student_id, COUNT(DISTINCT resume_fingerprint) as distinct_count, COUNT(*) as total_count, MAX(id) as max_id
+                FROM student_resume_history
+                GROUP BY student_id
+            ) rh ON s.id = rh.student_id
+            LEFT JOIN student_resume_history latest ON latest.id = rh.max_id
+            ORDER BY s.id DESC
+        """)
+        rows = cursor.fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
