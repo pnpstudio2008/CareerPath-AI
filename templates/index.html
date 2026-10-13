@@ -867,6 +867,24 @@
             <!-- Analysis Results View -->
             <div id="analyzer-results" class="analyzer-results-wrapper" style="display:none;">
                 
+                <!-- Report Download Section Banner -->
+                <div class="card mb-4" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.25rem 1.75rem; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(37, 99, 235, 0.25); border: 1px solid rgba(59, 130, 246, 0.5); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #60A5FA; flex-shrink: 0;">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1.08rem; font-weight: 800; color: #FFFFFF;">Resume Performance &amp; ATS Evaluation Report</h4>
+                                <p style="margin: 0; font-size: 0.84rem; color: #94A3B8;">Download an official, print-ready PDF detailing your ATS compatibility score, 45-company match ratings, skill gaps, and custom action items.</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btn-download-live-report" onclick="downloadCurrentResumeReport()" style="background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); padding: 0.75rem 1.5rem; font-size: 0.92rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 12px; box-shadow: 0 4px 14px rgba(37,99,235,0.4); cursor: pointer; white-space: nowrap;">
+                            <i class="fa-solid fa-file-arrow-down"></i> Download Performance Report (PDF)
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Row 1: ATS Score Meter & Overview Summary -->
                 <div class="results-grid-2">
                     <div class="card ats-score-card">

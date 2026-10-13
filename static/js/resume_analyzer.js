@@ -429,6 +429,7 @@ async function submitResumeAnalysis() {
 }
 
 function renderAnalysisResults(data) {
+    window.currentResumeAnalysis = data;
     const resultsContainer = document.getElementById('analyzer-results');
     resultsContainer.style.display = 'block';
 
@@ -1011,4 +1012,72 @@ function toggleQuestionBody(idx) {
             icon.classList.toggle('fa-chevron-down');
         }
     }
+}
+
+function downloadCurrentResumeReport() {
+    if (!window.currentResumeAnalysis) {
+        alert("Please upload and analyze a resume first to generate your official performance report.");
+        return;
+    }
+    const data = window.currentResumeAnalysis;
+    // If the record was saved with a database history ID and user is logged in
+    if (data.history_record_id) {
+        window.location.href = `/api/student/resume-report/${data.history_record_id}`;
+        return;
+    }
+
+    // Otherwise stream generation on-the-fly
+    const btn = document.getElementById('btn-download-live-report');
+    const oldHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Report PDF...';
+    }
+
+    const payload = {
+        history_record_id: 0,
+        filename: data.filename || 'Evaluated_Resume.pdf',
+        ats_score: (data.ats_analysis && data.ats_analysis.ats_score) || 80,
+        resume_fingerprint: data.resume_fingerprint || '',
+        extracted_skills: data.extracted_skills || [],
+        extracted_achievements: data.extracted_achievements || [],
+        extracted_projects: data.extracted_projects || [],
+        suitable_companies: (data.dataset_matching && data.dataset_matching.top_matches) || [],
+        best_role: (data.career_recommendations && data.career_recommendations[0] && data.career_recommendations[0].role) || '',
+        best_match_company: (data.dataset_matching && data.dataset_matching.best_match_company && data.dataset_matching.best_match_company.company) || '',
+        skill_gaps: (data.dataset_matching && data.dataset_matching.top_matches && data.dataset_matching.top_matches[0] && data.dataset_matching.top_matches[0].missing_skills) || [],
+        career_recommendations: data.career_recommendations || [],
+        full_analysis: { ats_breakdown: data.ats_analysis || {} }
+    };
+
+    fetch('/api/resume/download-latest-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Report generation failed");
+        return res.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        const cleanName = (data.filename || 'Resume').replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_\-]/g, '_');
+        a.download = `${cleanName}_Performance_Report.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Failed to download performance report. Please try again.");
+    })
+    .finally(() => {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = oldHtml;
+        }
+    });
 }
