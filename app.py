@@ -12,7 +12,11 @@ import io
 import datetime
 from flask import Flask, request, jsonify, render_template, send_from_directory, session, redirect, url_for, send_file
 from functools import wraps
-from resume_report_generator import generate_resume_pdf_report
+try:
+    from resume_report_generator import generate_resume_pdf_report
+except Exception as _pdf_err:
+    generate_resume_pdf_report = None
+    print(f"[Notice] resume_report_generator not yet available: {_pdf_err}")
 from nlp_engine import (
     extract_text_from_pdf_bytes,
     extract_skills_from_text,
@@ -1272,6 +1276,13 @@ def api_student_resume_report_download(record_id):
             }
         }
 
+    global generate_resume_pdf_report
+    if generate_resume_pdf_report is None:
+        try:
+            from resume_report_generator import generate_resume_pdf_report
+        except Exception as _e:
+            return jsonify({"success": False, "error": f"PDF generator initializing: {_e}"}), 503
+
     try:
         pdf_bytes = generate_resume_pdf_report(student_db, record)
         clean_raw = str(record.get('filename') or 'Resume').replace('.pdf', '')
@@ -1321,6 +1332,13 @@ def api_resume_download_latest_report():
             "career_recommendations": payload.get('career_recommendations', []),
             "full_analysis": payload.get('full_analysis', {})
         }
+
+        global generate_resume_pdf_report
+        if generate_resume_pdf_report is None:
+            try:
+                from resume_report_generator import generate_resume_pdf_report
+            except Exception as _e:
+                return jsonify({"success": False, "error": f"PDF generator initializing: {_e}"}), 503
 
         pdf_bytes = generate_resume_pdf_report(student_info, record)
         clean_raw = str(record.get('filename') or 'Resume').replace('.pdf', '')

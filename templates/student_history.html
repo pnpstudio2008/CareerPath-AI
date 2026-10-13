@@ -594,12 +594,12 @@
         }
 
         .btn-download-report {
-            background: #FFFFFF;
-            color: #DC2626;
-            border: 1.5px solid #FCA5A5;
-            padding: 0.62rem 1.2rem;
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #FFFFFF !important;
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            padding: 0.65rem 1.3rem;
             border-radius: 12px;
-            font-size: 0.86rem;
+            font-size: 0.88rem;
             font-weight: 700;
             display: inline-flex;
             align-items: center;
@@ -607,15 +607,40 @@
             cursor: pointer;
             text-decoration: none;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+            white-space: nowrap;
         }
 
         .btn-download-report:hover {
-            background: #FEF2F2;
-            border-color: #EF4444;
-            color: #B91C1C;
             transform: translateY(-2px);
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.16);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+            color: #FFFFFF !important;
+            text-decoration: none;
+            background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+        }
+
+        .btn-download-report-pill {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: #FFFFFF !important;
+            border: none;
+            padding: 0.45rem 1rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.22);
+            white-space: nowrap;
+        }
+
+        .btn-download-report-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.32);
+            color: #FFFFFF !important;
             text-decoration: none;
         }
 
@@ -1208,6 +1233,11 @@
             </div>
 
             <div class="hist-controls-actions">
+                {% if history and history|length > 0 %}
+                <a href="/api/student/resume-report/{{ history[0].id }}" class="btn btn-outline" download style="padding:0.6rem 1.25rem; color:#DC2626; border-color:#FCA5A5; font-weight:700;" title="Download latest evaluated resume performance report">
+                    <i class="fa-solid fa-file-pdf"></i> Download Latest Report (PDF)
+                </a>
+                {% endif %}
                 <a href="/?section=analyzer" class="btn btn-primary" style="padding:0.6rem 1.25rem;">
                     <i class="fa-solid fa-plus"></i> Analyze Another Resume
                 </a>
@@ -1243,10 +1273,15 @@
                             </div>
                         </div>
 
-                        <!-- ATS Score Rating -->
-                        <div class="hist-score-badge {{ 'high' if r.ats_score >= 80 else ('avg' if r.ats_score >= 60 else '') }}">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            <span>{{ r.ats_score|round|int }}% ATS Score</span>
+                        <!-- ATS Score Rating & Report Download -->
+                        <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+                            <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report-pill" download title="Download Official PDF Performance Report">
+                                <i class="fa-solid fa-file-pdf"></i> Download Report (PDF)
+                            </a>
+                            <div class="hist-score-badge {{ 'high' if r.ats_score >= 80 else ('avg' if r.ats_score >= 60 else '') }}">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>{{ r.ats_score|round|int }}% ATS Score</span>
+                            </div>
                         </div>
                     </div>
 
