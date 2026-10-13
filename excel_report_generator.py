@@ -70,7 +70,7 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
     Returns: (file_bytes, mimetype, filename)
     """
     now_str = datetime.datetime.now().strftime('%Y-%m-%d_%H%M')
-    filename = f"AI_Career_Companion_Cohort_Report_{now_str}.xlsx"
+    filename = f"AI_Career_Companion_Ongoing_Students_Report_{now_str}.xlsx"
     mimetype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     if not OPENPYXL_AVAILABLE:
@@ -105,10 +105,10 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
     align_right = Alignment(horizontal="right", vertical="center")
 
     # -------------------------------------------------------------
-    # SHEET 1: STUDENT COHORT PERFORMANCE
+    # SHEET 1: ONGOING STUDENTS PERFORMANCE
     # -------------------------------------------------------------
     ws1 = wb.active
-    ws1.title = "Student Cohort Performance"
+    ws1.title = "Ongoing Students Performance"
     ws1.views.sheetView[0].showGridLines = True
 
     headers = [
@@ -255,7 +255,7 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
     ws2.views.sheetView[0].showGridLines = True
     ws2.row_dimensions[1].height = 30
 
-    sum_title = ws2.cell(row=1, column=1, value="AI CAREER COMPANION - COHORT EXECUTIVE SUMMARY")
+    sum_title = ws2.cell(row=1, column=1, value="AI CAREER COMPANION - ONGOING STUDENTS COHORT SUMMARY")
     sum_title.font = Font(name="Calibri", size=14, bold=True, color="1E293B")
 
     total_students = len(students_data)
@@ -265,7 +265,7 @@ def generate_students_excel_report(students_data: list) -> tuple[bytes, str, str
     summary_rows = [
         ("Metric Description", "Aggregated Value"),
         ("Report Export Date", datetime.datetime.now().strftime('%d %B %Y, %I:%M %p')),
-        ("Total Enrolled Cohort Students", total_students),
+        ("Total Enrolled Ongoing Students", total_students),
         ("Successfully Placed Candidates", placed_count),
         ("Currently Interviewing Candidates", interview_count),
         ("Placement Transition Rate", f"{placement_rate}%"),
