@@ -1115,6 +1115,10 @@
                         </h3>
                     </div>
                     <div class="admin-header-actions" style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+                        <button class="admin-btn-outline" onclick="openSpecificStudentReportModal()" id="btn-specific-student-report" style="color:#2563EB; border: 1.5px solid #BFDBFE; font-weight:700; background:#EFF6FF; display:inline-flex; align-items:center; gap:0.5rem; text-decoration:none; padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.875rem; cursor:pointer;" title="Download individual performance report for a specific ongoing student">
+                            <i class="fa-solid fa-file-waveform" style="color:#2563EB; font-size:1rem;"></i>
+                            <span>Specific Student Report</span>
+                        </button>
                         <a href="/api/admin/export-students-excel" class="admin-btn-outline" download id="btn-export-students-excel" onclick="if(typeof showToast==='function') showToast('Preparing student cohort Excel workbook for download...', 'info');" style="color:#047857; border: 1.5px solid #A7F3D0; font-weight:700; background:#ECFDF5; display:inline-flex; align-items:center; gap:0.55rem; text-decoration:none; padding: 0.55rem 1.05rem; border-radius: 8px; font-size: 0.875rem; box-shadow: 0 1px 2px rgba(16,185,129,0.08); transition: all 0.2s;" onmouseover="this.style.background='#D1FAE5'; this.style.borderColor='#6EE7B7';" onmouseout="this.style.background='#ECFDF5'; this.style.borderColor='#A7F3D0';" title="Download all student performance and evaluation records in one Excel workbook">
                             <i class="fa-solid fa-file-excel" style="color:#059669; font-size:1.05rem;"></i>
                             <span>Download Excel Report</span>
@@ -1617,6 +1621,53 @@
                     <button type="submit" class="btn btn-primary"><i class="fa-solid fa-award"></i> Publish to Alumni Hub</button>
                 </div>
             </form>
+        </div>
+    <!-- ========================================== -->
+    <!-- MODAL: DOWNLOAD SPECIFIC STUDENT REPORT    -->
+    <!-- ========================================== -->
+    <div class="modal-backdrop" id="specific-report-modal-backdrop" onclick="closeSpecificStudentReportModal(event)">
+        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:540px;">
+            <div class="modal-header">
+                <h3 style="margin:0; font-size:1.15rem; font-weight:700; color:#0F172A; display:flex; align-items:center; gap:0.5rem;">
+                    <i class="fa-solid fa-file-waveform text-primary" style="color:#2563EB;"></i> Download Specific Student Report
+                </h3>
+                <button class="modal-close-btn" onclick="closeSpecificStudentReportModal()">&times;</button>
+            </div>
+            <div style="padding: 1.5rem;">
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label class="form-label" style="font-weight:700; font-size:0.875rem; color:#334155; margin-bottom:0.4rem; display:block;">Select Ongoing Student</label>
+                    <select id="report-select-student" class="form-input" style="width:100%; padding:0.65rem; border-radius:8px; border:1px solid #CBD5E1; font-size:0.9rem;">
+                        <option value="">Loading ongoing students...</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label class="form-label" style="font-weight:700; font-size:0.875rem; color:#334155; margin-bottom:0.5rem; display:block;">Select Report Format</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+                        <label id="label-format-pdf" style="display:flex; align-items:flex-start; gap:0.6rem; padding:0.85rem; border:2px solid #2563EB; border-radius:10px; background:#F8FAFC; cursor:pointer;">
+                            <input type="radio" name="report-format-type" value="pdf" checked onchange="updateReportFormatUI()" style="margin-top:0.2rem;">
+                            <div>
+                                <div style="font-weight:700; color:#0F172A; font-size:0.9rem;"><i class="fa-solid fa-file-pdf" style="color:#DC2626; margin-right:4px;"></i> PDF Report</div>
+                                <div style="font-size:0.75rem; color:#64748B;">Print-ready single-page ATS audit & evaluation</div>
+                            </div>
+                        </label>
+                        <label id="label-format-excel" style="display:flex; align-items:flex-start; gap:0.6rem; padding:0.85rem; border:1px solid #CBD5E1; border-radius:10px; background:#F8FAFC; cursor:pointer;">
+                            <input type="radio" name="report-format-type" value="excel" onchange="updateReportFormatUI()" style="margin-top:0.2rem;">
+                            <div>
+                                <div style="font-weight:700; color:#0F172A; font-size:0.9rem;"><i class="fa-solid fa-file-excel" style="color:#059669; margin-right:4px;"></i> Excel Sheet</div>
+                                <div style="font-size:0.75rem; color:#64748B;">Individual performance & evaluation metrics</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="padding-top:1rem; border-top:1px solid #E2E8F0; display:flex; justify-content:flex-end; gap:0.75rem;">
+                    <button type="button" class="btn btn-outline btn-cancel" onclick="closeSpecificStudentReportModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="executeSpecificStudentReportDownload()" id="btn-execute-report-download" style="background:#2563EB; color:#FFFFFF; font-weight:700; display:inline-flex; align-items:center; gap:0.5rem; border:none; padding:0.6rem 1.25rem; border-radius:8px; cursor:pointer;">
+                        <i class="fa-solid fa-download"></i> Download Report
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

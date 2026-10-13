@@ -208,6 +208,9 @@ function renderAdminStudentsTable(students) {
             </td>
             <td>
                 <div class="table-actions">
+                    <button class="btn btn-outline btn-sm" onclick="openStudentReportOptionsModal(${s.id}, '${s.name.replace(/'/g, "\\'")}', '${s.roll_no}')" title="Download Performance Report for ${s.name}" style="color:#2563EB; border-color:#BFDBFE; background:#EFF6FF; font-weight:600; padding:0.35rem 0.65rem; border-radius:6px; display:inline-flex; align-items:center; gap:0.35rem;">
+                        <i class="fa-solid fa-file-arrow-down" style="color:#2563EB;"></i> Report
+                    </button>
                     <button class="btn btn-outline-success btn-sm" onclick="openPromoteModal(${s.id})" title="Promote to Alumni Hub">
                         <i class="fa-solid fa-graduation-cap"></i> Promote
                     </button>
@@ -815,4 +818,122 @@ async function submitCreateAlumniLoginForm(event) {
         showToast('Network error: ' + err.message, 'error');
     }
 }
+
+
+// ==========================================
+// SPECIFIC STUDENT REPORT MODAL & DOWNLOAD
+// ==========================================
+
+let allAdminStudentsCache = [];
+
+async function openSpecificStudentReportModal(preSelectedStudentId = null) {
+    const modal = document.getElementById('specific-report-modal-backdrop');
+    if (!modal) return;
+
+    const select = document.getElementById('report-select-student');
+    if (select) {
+        select.innerHTML = '<option value="">Loading ongoing students...</option>';
+    }
+
+    modal.classList.add('active');
+
+    try {
+        const res = await fetch('/api/admin/students');
+        const data = await safeJsonFetch(res);
+        if (data.success && data.students && data.students.length > 0) {
+            allAdminStudentsCache = data.students;
+            if (select) {
+                select.innerHTML = '';
+                data.students.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.textContent = `${s.name} (${s.roll_no}) - ${s.branch} [ATS: ${s.ats_score}%]`;
+                    if (preSelectedStudentId && String(s.id) === String(preSelectedStudentId)) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+            }
+        } else {
+            if (select) select.innerHTML = '<option value="">No ongoing students found</option>';
+        }
+    } catch (err) {
+        if (select) select.innerHTML = `<option value="">Error loading students: ${err.message}</option>`;
+    }
+}
+
+function openStudentReportOptionsModal(studentId, studentName, rollNo) {
+    openSpecificStudentReportModal(studentId);
+}
+
+function closeSpecificStudentReportModal(event) {
+    if (event && event.target !== document.getElementById('specific-report-modal-backdrop') && 
+        !event.target.classList.contains('modal-close-btn') && !event.target.classList.contains('btn-cancel')) {
+        return;
+    }
+    const modal = document.getElementById('specific-report-modal-backdrop');
+    if (modal) modal.classList.remove('active');
+}
+
+function updateReportFormatUI() {
+    const format = document.querySelector('input[name="report-format-type"]:checked')?.value || 'pdf';
+    const lblPdf = document.getElementById('label-format-pdf');
+    const lblXls = document.getElementById('label-format-excel');
+
+    if (lblPdf && lblXls) {
+        if (format === 'pdf') {
+            lblPdf.style.borderColor = '#2563EB';
+            lblPdf.style.borderWidth = '2px';
+            lblXls.style.borderColor = '#CBD5E1';
+            lblXls.style.borderWidth = '1px';
+        } else {
+            lblXls.style.borderColor = '#059669';
+            lblXls.style.borderWidth = '2px';
+            lblPdf.style.borderColor = '#CBD5E1';
+            lblPdf.style.borderWidth = '1px';
+        }
+    }
+}
+
+function executeSpecificStudentReportDownload() {
+    const select = document.getElementById('report-select-student');
+    const studentId = select ? select.value : null;
+
+    if (!studentId) {
+        showToast('Please select a student to download report.', 'warning');
+        return;
+    }
+
+    const format = document.querySelector('input[name="report-format-type"]:checked')?.value || 'pdf';
+    const btn = document.getElementById('btn-execute-report-download');
+    const originalText = btn ? btn.innerHTML : '';
+
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing...';
+    }
+
+    showToast(`Generating ${format.toUpperCase()} performance report for student...`, 'info');
+
+    const downloadUrl = format === 'pdf' 
+        ? `/api/admin/student/${studentId}/report-pdf`
+        : `/api/admin/student/${studentId}/report-excel`;
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setTimeout(() => {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+        closeSpecificStudentReportModal();
+        showToast('Report download initiated successfully!', 'success');
+    }, 1200);
+}
+
 
