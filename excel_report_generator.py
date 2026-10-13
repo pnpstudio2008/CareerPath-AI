@@ -72,7 +72,9 @@ def generate_students_excel_report(students_data: list, base_url: str = None) ->
     """
     if not base_url:
         import os
-        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'http://127.0.0.1:5000'
+        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'https://ai-career-companion.pnpstudio.in'
+    if base_url.startswith('http://') and 'ai-career-companion.pnpstudio.in' in base_url:
+        base_url = 'https://' + base_url[7:]
     base_url = base_url.rstrip('/')
 
     now_str = datetime.datetime.now().strftime('%Y-%m-%d_%H%M')
@@ -337,7 +339,9 @@ def generate_students_csv_fallback(students_data: list, base_url: str = None) ->
     import csv
     if not base_url:
         import os
-        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'http://127.0.0.1:5000'
+        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'https://ai-career-companion.pnpstudio.in'
+    if base_url.startswith('http://') and 'ai-career-companion.pnpstudio.in' in base_url:
+        base_url = 'https://' + base_url[7:]
     base_url = base_url.rstrip('/')
 
     output = io.StringIO()

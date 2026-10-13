@@ -1175,7 +1175,7 @@ def api_student_resume_report_download(record_id):
     Generates and streams the official PDF Performance & ATS Evaluation Report
     for a specific resume record of the authenticated student.
     """
-    if not session.get('student_logged_in'):
+    if not session.get('student_logged_in') and not session.get('admin_logged_in'):
         return redirect('/student/login')
 
     student_id = session.get('student_id')
@@ -1190,6 +1190,16 @@ def api_student_resume_report_download(record_id):
             student_id = student_db['id']
             session['student_id'] = student_id
         conn.close()
+
+    if not student_db and record_id > 0 and session.get('admin_logged_in'):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT student_id FROM student_resume_history WHERE id = ?", (record_id,))
+        h_row = cursor.fetchone()
+        conn.close()
+        if h_row:
+            student_id = h_row['student_id']
+            student_db = get_student_by_id(int(student_id))
 
     if not student_db:
         return redirect('/student/login')
@@ -1295,12 +1305,15 @@ def api_student_resume_report_download(record_id):
         clean_fn = re.sub(r'[^a-zA-Z0-9_\-]', '_', clean_raw)
         download_name = f"{clean_fn}_Performance_Report.pdf"
 
-        return send_file(
+        resp = send_file(
             io.BytesIO(pdf_bytes),
             mimetype='application/pdf',
             as_attachment=True,
             download_name=download_name
         )
+        resp.headers['Content-Type'] = 'application/pdf'
+        resp.headers['X-Content-Type-Options'] = 'nosniff'
+        return resp
     except Exception as e:
         print(f"[PDF Report Generation Error] {e}")
         return jsonify({"success": False, "error": f"Failed to generate PDF report: {str(e)}"}), 500
@@ -1351,12 +1364,15 @@ def api_resume_download_latest_report():
         clean_fn = re.sub(r'[^a-zA-Z0-9_\-]', '_', clean_raw)
         download_name = f"{clean_fn}_Performance_Report.pdf"
 
-        return send_file(
+        resp = send_file(
             io.BytesIO(pdf_bytes),
             mimetype='application/pdf',
             as_attachment=True,
             download_name=download_name
         )
+        resp.headers['Content-Type'] = 'application/pdf'
+        resp.headers['X-Content-Type-Options'] = 'nosniff'
+        return resp
     except Exception as e:
         print(f"[On-the-fly PDF Generation Error] {e}")
         return jsonify({"success": False, "error": str(e)}), 500
@@ -2098,7 +2114,7 @@ def api_admin_export_students_excel():
     Supports ?student_id=<id> query param to download a specific student's report.
     """
     if not session.get('admin_logged_in'):
-        return redirect('/admin')
+        return jsonify({"success": False, "error": "Faculty authentication required. Please log in to download."}), 401
 
     try:
         global generate_students_excel_report
@@ -2116,18 +2132,26 @@ def api_admin_export_students_excel():
                 students = filtered
 
         base_url = request.host_url.rstrip('/')
+        if request.headers.get('X-Forwarded-Proto') == 'https' and base_url.startswith('http://'):
+            base_url = 'https://' + base_url[7:]
+        if 'pnpstudio.in' in base_url and base_url.startswith('http://'):
+            base_url = 'https://' + base_url[7:]
+
         file_bytes, mimetype, filename = generate_students_excel_report(students, base_url=base_url)
         if target_student_id and students:
             s_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', str(students[0].get('name', 'Student')))
             s_roll = re.sub(r'[^a-zA-Z0-9_\-]', '_', str(students[0].get('roll_no', '')))
             filename = f"{s_name}_{s_roll}_Performance_Report.xlsx"
 
-        return send_file(
+        resp = send_file(
             io.BytesIO(file_bytes),
             mimetype=mimetype,
             as_attachment=True,
             download_name=filename
         )
+        resp.headers['Content-Type'] = mimetype
+        resp.headers['X-Content-Type-Options'] = 'nosniff'
+        return resp
     except Exception as e:
         print(f"[Admin Excel Export Error] {e}")
         return jsonify({"success": False, "error": f"Failed to generate Excel report: {str(e)}"}), 500
@@ -2139,7 +2163,7 @@ def api_admin_specific_student_report_excel(student_id):
     Exports dedicated Excel report (.xlsx) for a specific ongoing student.
     """
     if not session.get('admin_logged_in'):
-        return redirect('/admin')
+        return jsonify({"success": False, "error": "Faculty authentication required. Please log in to download."}), 401
 
     try:
         global generate_students_excel_report
@@ -2158,17 +2182,25 @@ def api_admin_specific_student_report_excel(student_id):
             target = [st]
 
         base_url = request.host_url.rstrip('/')
+        if request.headers.get('X-Forwarded-Proto') == 'https' and base_url.startswith('http://'):
+            base_url = 'https://' + base_url[7:]
+        if 'pnpstudio.in' in base_url and base_url.startswith('http://'):
+            base_url = 'https://' + base_url[7:]
+
         file_bytes, mimetype, _ = generate_students_excel_report(target, base_url=base_url)
         s_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', str(target[0].get('name', 'Student')))
         s_roll = re.sub(r'[^a-zA-Z0-9_\-]', '_', str(target[0].get('roll_no', '')))
         filename = f"{s_name}_{s_roll}_Performance_Report.xlsx"
 
-        return send_file(
+        resp = send_file(
             io.BytesIO(file_bytes),
             mimetype=mimetype,
             as_attachment=True,
             download_name=filename
         )
+        resp.headers['Content-Type'] = mimetype
+        resp.headers['X-Content-Type-Options'] = 'nosniff'
+        return resp
     except Exception as e:
         print(f"[Admin Student Excel Export Error] {e}")
         return jsonify({"success": False, "error": f"Failed to export student Excel report: {str(e)}"}), 500
@@ -2181,7 +2213,7 @@ def api_admin_specific_student_report_pdf(student_id):
     for a specific ongoing student.
     """
     if not session.get('admin_logged_in'):
-        return redirect('/admin')
+        return jsonify({"success": False, "error": "Faculty authentication required. Please log in to download."}), 401
 
     try:
         student_db = get_student_by_id(student_id)
@@ -2264,12 +2296,15 @@ def api_admin_specific_student_report_pdf(student_id):
         s_roll = re.sub(r'[^a-zA-Z0-9_\-]', '_', str(student_db.get('roll_no', '')))
         filename = f"{s_name}_{s_roll}_Performance_Report.pdf"
 
-        return send_file(
+        resp = send_file(
             io.BytesIO(pdf_bytes),
             mimetype='application/pdf',
             as_attachment=True,
             download_name=filename
         )
+        resp.headers['Content-Type'] = 'application/pdf'
+        resp.headers['X-Content-Type-Options'] = 'nosniff'
+        return resp
     except Exception as e:
         print(f"[Admin Student PDF Export Error] {e}")
         return jsonify({"success": False, "error": f"Failed to export student PDF report: {str(e)}"}), 500
@@ -2374,12 +2409,15 @@ def api_public_student_report_download(identifier):
         s_roll = re.sub(r'[^a-zA-Z0-9_\-]', '_', str(student_db.get('roll_no', '')))
         filename = f"{s_name}_{s_roll}_Performance_Report.pdf"
 
-        return send_file(
+        resp = send_file(
             io.BytesIO(pdf_bytes),
             mimetype='application/pdf',
             as_attachment=True,
             download_name=filename
         )
+        resp.headers['Content-Type'] = 'application/pdf'
+        resp.headers['X-Content-Type-Options'] = 'nosniff'
+        return resp
     except Exception as e:
         print(f"[Student PDF Download Link Error] {e}")
         return jsonify({"success": False, "error": f"Failed to download report: {str(e)}"}), 500
