@@ -192,7 +192,7 @@ def generate_students_excel_report(students_data: list, base_url: str = None) ->
         student_id_val = s_dict.get("id")
         download_target = student_id_val if student_id_val else roll_no
         download_url = f"{base_url}/api/report/download/student/{download_target}"
-        report_link_formula = f'=HYPERLINK("{download_url}", "Download PDF Report")'
+        report_display_text = "Download PDF Report"
 
         best_role = s_dict.get("evaluated_best_role") or ("Full Stack Developer" if ats > 0 else "-")
         best_comp = s_dict.get("evaluated_best_match_company") or (tgt_comp if tgt_comp != "General" else ("Top Tech Recruiters" if ats > 0 else "-"))
@@ -220,7 +220,7 @@ def generate_students_excel_report(students_data: list, base_url: str = None) ->
             tgt_comp,
             distinct_cnt,
             total_cnt,
-            report_link_formula,
+            report_display_text,
             best_role,
             best_comp,
             skills_str or "Pending Upload",
@@ -249,7 +249,7 @@ def generate_students_excel_report(students_data: list, base_url: str = None) ->
 
             # Report Download Link Column (Column 16 / P)
             if col_idx == 16:
-                cell.value = report_link_formula
+                cell.value = report_display_text
                 cell.hyperlink = download_url
                 cell.font = Font(name="Calibri", size=10, bold=True, color="2563EB", underline="single")
                 cell.alignment = align_center
