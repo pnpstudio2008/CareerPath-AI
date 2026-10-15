@@ -1133,10 +1133,10 @@
                             <i class="fa-solid fa-file-waveform" style="color:#2563EB; font-size:1rem;"></i>
                             <span>Specific Student Report</span>
                         </button>
-                        <a href="javascript:void(0)" class="admin-btn-outline" id="btn-export-students-excel" onclick="openExcelPasskeyModal(event)" style="color:#047857; border: 1.5px solid #A7F3D0; font-weight:700; background:#ECFDF5; display:inline-flex; align-items:center; gap:0.55rem; text-decoration:none; padding: 0.55rem 1.05rem; border-radius: 8px; font-size: 0.875rem; box-shadow: 0 1px 2px rgba(16,185,129,0.08); cursor:pointer; transition: all 0.2s;" onmouseover="this.style.background='#D1FAE5'; this.style.borderColor='#6EE7B7';" onmouseout="this.style.background='#ECFDF5'; this.style.borderColor='#A7F3D0';" title="Download all student performance and evaluation records in one Excel workbook">
+                        <button type="button" class="admin-btn-outline" id="btn-export-students-excel" onclick="openExcelPasskeyModal(event)" style="color:#047857; border: 1.5px solid #A7F3D0; font-weight:700; background:#ECFDF5; display:inline-flex; align-items:center; gap:0.55rem; text-decoration:none; padding: 0.55rem 1.05rem; border-radius: 8px; font-size: 0.875rem; box-shadow: 0 1px 2px rgba(16,185,129,0.08); cursor:pointer; transition: all 0.2s;" onmouseover="this.style.background='#D1FAE5'; this.style.borderColor='#6EE7B7';" onmouseout="this.style.background='#ECFDF5'; this.style.borderColor='#A7F3D0';" title="Download all student performance and evaluation records in one Excel workbook">
                             <i class="fa-solid fa-file-excel" style="color:#059669; font-size:1.05rem;"></i>
                             <span>Download Excel Report</span>
-                        </a>
+                        </button>
                         <button class="admin-btn-primary" onclick="openCreateStudentLoginModal()" id="btn-add-student">
                             <i data-lucide="plus"></i> Add Ongoing Student
                         </button>
@@ -1682,11 +1682,14 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
     <!-- ========================================== -->
     <!-- MODAL: ADMIN PASSKEY VERIFICATION FOR EXCEL -->
     <!-- ========================================== -->
-    <div class="modal-backdrop" id="excel-passkey-modal-backdrop" onclick="closeExcelPasskeyModal(event)">
-        <div class="modal-card" onclick="event.stopPropagation()" style="max-width:440px;">
+    <div class="modal-backdrop" id="excel-passkey-modal-backdrop" onclick="closeExcelPasskeyModal(event)" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99999; background:rgba(15,23,42,0.65); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
+        <div class="modal-card" onclick="event.stopPropagation()" style="background:#FFFFFF; border-radius:16px; width:92%; max-width:440px; box-shadow:0 20px 45px rgba(0,0,0,0.28); overflow:hidden;">
             <div class="modal-header" style="border-bottom: 1px solid #E2E8F0; padding: 1.25rem 1.5rem; display:flex; align-items:center; justify-content:space-between;">
                 <div style="display:flex; align-items:center; gap:0.75rem;">
                     <div style="width:40px; height:40px; border-radius:10px; background:#ECFDF5; display:flex; align-items:center; justify-content:center; color:#059669; font-size:1.15rem; flex-shrink:0;">
@@ -1735,11 +1738,14 @@
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="/static/js/admin_panel.js?v=20261015_04"></script>
+    <script src="/static/js/admin_panel.js?v=20261015_05"></script>
     <script>
     // Direct Native Download & Security Modal Handlers
     function openExcelPasskeyModal(e) {
-        if (e && e.preventDefault) e.preventDefault();
+        if (e) {
+            if (typeof e.preventDefault === 'function') e.preventDefault();
+            if (typeof e.stopPropagation === 'function') e.stopPropagation();
+        }
         const modal = document.getElementById('excel-passkey-modal-backdrop');
         if (!modal) return;
         
@@ -1765,6 +1771,7 @@
             submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> <span>Verify & Download</span>';
         }
         
+        modal.style.display = 'flex';
         modal.classList.add('active');
         setTimeout(() => {
             if (passInput) passInput.focus();
@@ -1778,7 +1785,10 @@
             return;
         }
         const modal = document.getElementById('excel-passkey-modal-backdrop');
-        if (modal) modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+        }
     }
 
     function toggleExcelPasskeyVisibility() {
@@ -1843,13 +1853,22 @@
                     showToast('Admin passkey verified! Downloading Excel report...', 'success');
                 }
                 
-                // Trigger Excel download
-                window.location.href = '/api/admin/export-students-excel?passkey=' + encodeURIComponent(passkey);
+                // Programmatic direct download
+                const downloadUrl = '/api/admin/export-students-excel?passkey=' + encodeURIComponent(passkey);
+                const dlLink = document.createElement('a');
+                dlLink.href = downloadUrl;
+                dlLink.setAttribute('download', 'AI_Career_Companion_Student_Cohort_Report.xlsx');
+                document.body.appendChild(dlLink);
+                dlLink.click();
+                setTimeout(() => { dlLink.remove(); }, 1500);
                 
                 // Close modal after brief delay
                 setTimeout(() => {
                     const modal = document.getElementById('excel-passkey-modal-backdrop');
-                    if (modal) modal.classList.remove('active');
+                    if (modal) {
+                        modal.classList.remove('active');
+                        modal.style.display = 'none';
+                    }
                     if (input) input.value = '';
                     if (submitBtn) {
                         submitBtn.disabled = false;

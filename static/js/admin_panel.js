@@ -896,7 +896,10 @@ function updateReportFormatUI() {
 }
 
 function openExcelPasskeyModal(e) {
-    if (e && e.preventDefault) e.preventDefault();
+    if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+    }
     const modal = document.getElementById('excel-passkey-modal-backdrop');
     if (!modal) return;
 
@@ -922,6 +925,7 @@ function openExcelPasskeyModal(e) {
         submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> <span>Verify & Download</span>';
     }
 
+    modal.style.display = 'flex';
     modal.classList.add('active');
     setTimeout(() => {
         if (passInput) passInput.focus();
@@ -935,7 +939,10 @@ function closeExcelPasskeyModal(e) {
         return;
     }
     const modal = document.getElementById('excel-passkey-modal-backdrop');
-    if (modal) modal.classList.remove('active');
+    if (modal) {
+        modal.classList.remove('active');
+        modal.style.display = 'none';
+    }
 }
 
 function toggleExcelPasskeyVisibility() {
@@ -1000,13 +1007,22 @@ async function submitAdminPasskeyForExcel(e) {
                 showToast('Admin passkey verified! Downloading Excel report...', 'success');
             }
 
-            // Trigger Excel download
-            window.location.href = '/api/admin/export-students-excel?passkey=' + encodeURIComponent(passkey);
+            // Programmatic direct download
+            const downloadUrl = '/api/admin/export-students-excel?passkey=' + encodeURIComponent(passkey);
+            const dlLink = document.createElement('a');
+            dlLink.href = downloadUrl;
+            dlLink.setAttribute('download', 'AI_Career_Companion_Student_Cohort_Report.xlsx');
+            document.body.appendChild(dlLink);
+            dlLink.click();
+            setTimeout(() => { dlLink.remove(); }, 1500);
 
             // Close modal after brief delay
             setTimeout(() => {
                 const modal = document.getElementById('excel-passkey-modal-backdrop');
-                if (modal) modal.classList.remove('active');
+                if (modal) {
+                    modal.classList.remove('active');
+                    modal.style.display = 'none';
+                }
                 if (input) input.value = '';
                 if (submitBtn) {
                     submitBtn.disabled = false;
