@@ -208,8 +208,23 @@
         if (shield) shield.classList.remove('active');
     }
 
-    // DevTools docked check disabled to avoid false positives on scaled or zoomed displays
-    // Keyboard shortcuts (F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S) provide strict, non-intrusive protection
+    // Check periodically on desktop viewports
+    if (window.innerWidth > 600) {
+        window.addEventListener('resize', checkDevToolsDimensions);
+        setInterval(checkDevToolsDimensions, 1000);
+    }
+
+    // 6. ANTI-DEBUGGER PAUSE TRAP
+    setInterval(function () {
+        const start = performance.now();
+        // Evaluates debugger in a dynamic function
+        (function () {}.constructor("debugger")());
+        const duration = performance.now() - start;
+        // If someone paused in debugger, duration will be > 100ms
+        if (duration > 150) {
+            handleDevToolsOpen();
+        }
+    }, 1200);
 
     // Initial console banner for curious inspectors
     try {

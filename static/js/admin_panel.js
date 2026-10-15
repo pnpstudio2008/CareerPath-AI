@@ -895,179 +895,82 @@ function updateReportFormatUI() {
     }
 }
 
-function openExcelPasskeyModal(e) {
-    if (e) {
-        if (typeof e.preventDefault === 'function') e.preventDefault();
-        if (typeof e.stopPropagation === 'function') e.stopPropagation();
-    }
-    const modal = document.getElementById('excel-passkey-modal-backdrop');
-    if (!modal) return;
-
-    const passInput = document.getElementById('admin-excel-passkey-input');
-    const errBox = document.getElementById('excel-passkey-error');
-    const submitBtn = document.getElementById('btn-verify-download-excel');
-
-    if (passInput) {
-        passInput.value = '';
-        passInput.type = 'password';
-        passInput.style.borderColor = '#CBD5E1';
-    }
-    const eyeIcon = document.getElementById('excel-passkey-eye-icon');
-    if (eyeIcon) {
-        eyeIcon.className = 'fa-solid fa-eye';
-    }
-    if (errBox) {
-        errBox.style.display = 'none';
-    }
-    if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.style.background = '#059669';
-        submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> <span>Verify & Download</span>';
-    }
-
-    modal.style.display = 'flex';
-    modal.classList.add('active');
-    setTimeout(() => {
-        if (passInput) passInput.focus();
-    }, 120);
-}
-
-function closeExcelPasskeyModal(e) {
-    if (e && e.target && e.target !== document.getElementById('excel-passkey-modal-backdrop') &&
-        !e.target.classList.contains('modal-close-btn') &&
-        !e.target.classList.contains('btn-cancel')) {
-        return;
-    }
-    const modal = document.getElementById('excel-passkey-modal-backdrop');
-    if (modal) {
-        modal.classList.remove('active');
-        modal.style.display = 'none';
-    }
-}
-
-function toggleExcelPasskeyVisibility() {
-    const input = document.getElementById('admin-excel-passkey-input');
-    const icon = document.getElementById('excel-passkey-eye-icon');
-    if (!input) return;
-    if (input.type === 'password') {
-        input.type = 'text';
-        if (icon) icon.className = 'fa-solid fa-eye-slash';
-    } else {
-        input.type = 'password';
-        if (icon) icon.className = 'fa-solid fa-eye';
-    }
-}
-
-async function submitAdminPasskeyForExcel(e) {
+async function downloadAdminCohortExcelReport(e) {
     if (e && e.preventDefault) e.preventDefault();
-    const input = document.getElementById('admin-excel-passkey-input');
-    const errBox = document.getElementById('excel-passkey-error');
-    const errText = document.getElementById('excel-passkey-error-text');
-    const submitBtn = document.getElementById('btn-verify-download-excel');
-
-    const passkey = input ? input.value.trim() : '';
-    if (!passkey) {
-        if (errBox && errText) {
-            errText.textContent = 'Please enter your Admin Passkey.';
-            errBox.style.display = 'flex';
-        }
-        if (input) {
-            input.style.borderColor = '#DC2626';
-            input.focus();
-        }
-        return;
+    const btn = document.getElementById('btn-export-students-excel');
+    const origHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.7';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#059669;"></i> <span>Generating Excel...</span>';
     }
-
-    if (errBox) errBox.style.display = 'none';
-    if (input) input.style.borderColor = '#CBD5E1';
-
-    const origHtml = submitBtn ? submitBtn.innerHTML : '';
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Verifying...</span>';
+    if (typeof showToast === 'function') {
+        showToast('Generating ongoing students cohort Excel report. Please wait...', 'info');
     }
 
     try {
-        const resp = await fetch('/api/admin/verify-passkey', {
-            method: 'POST',
+        const response = await fetch('/api/admin/export-students-excel', {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify({ passkey: passkey })
+                'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream'
+            }
         });
-        const data = await safeJsonFetch(resp);
 
-        if (resp.ok && data.success) {
-            if (submitBtn) {
-                submitBtn.style.background = '#047857';
-                submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>Verified! Downloading...</span>';
-            }
-            if (typeof showToast === 'function') {
-                showToast('Admin passkey verified! Downloading Excel report...', 'success');
-            }
+        if (!response.ok) {
+            let errorMsg = 'Failed to generate Excel report';
+            try {
+                const errData = await response.json();
+                if (errData && errData.error) errorMsg = errData.error;
+            } catch (_) {}
+            throw new Error(errorMsg);
+        }
 
-            // Programmatic direct download
-            const downloadUrl = '/api/admin/export-students-excel?passkey=' + encodeURIComponent(passkey);
-            const dlLink = document.createElement('a');
-            dlLink.href = downloadUrl;
-            dlLink.setAttribute('download', 'AI_Career_Companion_Student_Cohort_Report.xlsx');
-            document.body.appendChild(dlLink);
-            dlLink.click();
-            setTimeout(() => { dlLink.remove(); }, 1500);
+        const disposition = response.headers.get('Content-Disposition') || '';
+        let filename = 'AI_Career_Companion_Ongoing_Students_Report.xlsx';
+        const match = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\n]+)["']?/i);
+        if (match && match[1]) {
+            filename = decodeURIComponent(match[1].trim());
+        }
 
-            // Close modal after brief delay
-            setTimeout(() => {
-                const modal = document.getElementById('excel-passkey-modal-backdrop');
-                if (modal) {
-                    modal.classList.remove('active');
-                    modal.style.display = 'none';
-                }
-                if (input) input.value = '';
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.style.background = '#059669';
-                    submitBtn.innerHTML = origHtml;
-                }
-            }, 800);
-        } else {
-            const errorMsg = (data && data.error) ? data.error : 'Invalid Admin Passkey. Access Denied.';
-            if (errBox && errText) {
-                errText.textContent = errorMsg;
-                errBox.style.display = 'flex';
-            }
-            if (input) {
-                input.style.borderColor = '#DC2626';
-                input.select();
-                input.focus();
-            }
-            if (typeof showToast === 'function') {
-                showToast(errorMsg, 'error');
-            }
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = origHtml;
-            }
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.style.display = 'none';
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        setTimeout(() => {
+            try {
+                document.body.removeChild(downloadLink);
+                window.URL.revokeObjectURL(blobUrl);
+            } catch (_) {}
+        }, 300);
+
+        if (typeof showToast === 'function') {
+            showToast('Excel report downloaded successfully!', 'success');
         }
     } catch (err) {
-        console.error('Error verifying admin passkey:', err);
-        if (errBox && errText) {
-            errText.textContent = 'Server verification failed. Please try again.';
-            errBox.style.display = 'flex';
+        console.error('Cohort Excel download failed:', err);
+        if (typeof showToast === 'function') {
+            showToast(err.message || 'Error downloading report. Opening direct link...', 'warning');
         }
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = origHtml;
+        try {
+            window.open('/api/admin/export-students-excel', '_blank');
+        } catch (_) {
+            window.location.href = '/api/admin/export-students-excel';
+        }
+    } finally {
+        if (btn) {
+            btn.style.pointerEvents = 'auto';
+            btn.style.opacity = '1';
+            btn.innerHTML = origHtml;
         }
     }
 }
 
-function downloadAdminCohortExcelReport(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    openExcelPasskeyModal(e);
-}
-
-function executeSpecificStudentReportDownload() {
+async function executeSpecificStudentReportDownload() {
     const select = document.getElementById('report-select-student');
     const studentId = select ? select.value : null;
 
@@ -1086,28 +989,69 @@ function executeSpecificStudentReportDownload() {
     }
 
     if (typeof showToast === 'function') {
-        showToast(`Downloading ${format.toUpperCase()} report for student...`, 'info');
+        showToast(`Generating ${format.toUpperCase()} report for student...`, 'info');
     }
 
     const downloadUrl = format === 'pdf' 
         ? `/api/admin/student/${studentId}/report-pdf`
         : `/api/admin/student/${studentId}/report-excel`;
 
-    // Direct native browser download
-    window.location.href = downloadUrl;
-
-    setTimeout(() => {
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
+    try {
+        const response = await fetch(downloadUrl);
+        if (!response.ok) {
+            let errorMsg = `Failed to generate ${format.toUpperCase()} report`;
+            try {
+                const errData = await response.json();
+                if (errData && errData.error) errorMsg = errData.error;
+            } catch (_) {}
+            throw new Error(errorMsg);
         }
+
+        const disposition = response.headers.get('Content-Disposition') || '';
+        let filename = format === 'pdf' ? `Student_${studentId}_Performance_Report.pdf` : `Student_${studentId}_Performance_Report.xlsx`;
+        const match = disposition.match(/filename\*?=(?:UTF-8'')?["']?([^"';\n]+)["']?/i);
+        if (match && match[1]) {
+            filename = decodeURIComponent(match[1].trim());
+        }
+
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.style.display = 'none';
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+
+        setTimeout(() => {
+            try {
+                document.body.removeChild(downloadLink);
+                window.URL.revokeObjectURL(blobUrl);
+            } catch (_) {}
+        }, 300);
+
         if (typeof closeSpecificStudentReportModal === 'function') {
             closeSpecificStudentReportModal();
         }
         if (typeof showToast === 'function') {
-            showToast('Report download initiated successfully!', 'success');
+            showToast(`${format.toUpperCase()} report downloaded successfully!`, 'success');
         }
-    }, 1500);
+    } catch (err) {
+        console.error('Student report download failed:', err);
+        if (typeof showToast === 'function') {
+            showToast(err.message || 'Error downloading report. Opening direct link...', 'warning');
+        }
+        try {
+            window.open(downloadUrl, '_blank');
+        } catch (_) {
+            window.location.href = downloadUrl;
+        }
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
 }
 
 
