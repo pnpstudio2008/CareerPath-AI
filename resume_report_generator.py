@@ -13,6 +13,43 @@ from reportlab.platypus import (
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib import colors
+from reportlab.graphics.shapes import Drawing, Wedge, Circle, String
+
+
+def create_ats_score_graph(score: float, tier_color: str, tier_bg: str) -> Drawing:
+    """
+    Renders an executive circular progress ring (donut gauge) graph representing the ATS score.
+    """
+    score = max(0.0, min(100.0, float(score)))
+    score_int = int(round(score))
+
+    dwg_w = 125
+    dwg_h = 58
+    cx = dwg_w / 2.0
+    cy = (dwg_h / 2.0) + 1.0
+    r_out = 26.0
+    r_in = 17.5
+
+    d = Drawing(dwg_w, dwg_h)
+
+    # 1. Neutral track ring (full 360 degrees)
+    d.add(Wedge(cx, cy, r_out, 0, 360, strokeColor=None, fillColor=colors.HexColor('#E2E8F0')))
+
+    # 2. Score progression arc (sweeps clockwise starting from 12 o'clock / 90 degrees)
+    if score >= 99.5:
+        d.add(Circle(cx, cy, r_out, strokeColor=None, fillColor=colors.HexColor(tier_color)))
+    elif score > 0:
+        sweep = (score / 100.0) * 360.0
+        d.add(Wedge(cx, cy, r_out, 90.0 - sweep, 90.0, strokeColor=None, fillColor=colors.HexColor(tier_color)))
+
+    # 3. Inner circle cutout matching the background card
+    d.add(Circle(cx, cy, r_in, strokeColor=None, fillColor=colors.HexColor(tier_bg)))
+
+    # 4. Central score typography
+    d.add(String(cx, cy - 3.2, f"{score_int}%", textAnchor='middle', fontName='Helvetica-Bold', fontSize=11, fillColor=colors.HexColor('#0F172A')))
+    d.add(String(cx, cy - 9.2, "ATS SCORE", textAnchor='middle', fontName='Helvetica-Bold', fontSize=4.8, fillColor=colors.HexColor('#64748B')))
+
+    return d
 
 
 def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
@@ -187,11 +224,12 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     if len(skills_list) > 16:
         skills_str += f", +{len(skills_list) - 16} more"
 
+    score_graph = create_ats_score_graph(ats_score, tier_color, tier_bg)
+
     left_box = [
-        Paragraph(f"<font color='{C_PRIMARY.hexval()}' size='26'><b>{ats_int}%</b></font>", ParagraphStyle('ScoreBig', alignment=1, leading=26)),
-        Paragraph("<b>ATS SCORE</b>", ParagraphStyle('ScoreLbl', fontName='Helvetica-Bold', fontSize=7.5, leading=9, textColor=C_TEXT_MUTED, alignment=1)),
-        Spacer(1, 3),
-        Paragraph(f"<font color='{tier_color}'><b>{tier_title}</b></font>", ParagraphStyle('ScoreTier', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=1))
+        score_graph,
+        Spacer(1, 2),
+        Paragraph(f"<font color='{tier_color}'><b>{tier_title}</b></font>", ParagraphStyle('ScoreTier', fontName='Helvetica-Bold', fontSize=7.5, leading=9.5, alignment=1))
     ]
 
     right_box = [
