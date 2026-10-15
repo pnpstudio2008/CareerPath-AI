@@ -5899,7 +5899,7 @@ p {
 @media (max-width: 1024px) {
     .hof-hero { flex-direction: column; text-align: center; }
     .hof-hero-right { margin-top: 2rem; }
-    .hof-grid { grid-template-columns: repeat(2, 1fr); }
+    .hof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hof-header { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 768px) {
@@ -5908,9 +5908,158 @@ p {
         height: 250px;
         margin: 1.25rem auto 0;
     }
-    .hof-grid { grid-template-columns: 1fr; }
+    .hof-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
     .hof-filters { flex-direction: column; }
     .h-search-wrap, .h-select { width: 100%; }
+
+    .hof-card {
+        padding: 0.85rem 0.65rem !important;
+        border-radius: 16px !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+    }
+    .hc-header {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.35rem !important;
+        position: relative !important;
+        width: 100% !important;
+    }
+    .hc-avatar-wrap {
+        margin-left: 0 !important;
+        flex-shrink: 0 !important;
+    }
+    .hc-avatar {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 0.85rem !important;
+    }
+    .hc-score-ring {
+        width: 34px !important;
+        height: 34px !important;
+        flex-shrink: 0 !important;
+    }
+    .hc-user-info {
+        width: 100% !important;
+        margin-top: 0.35rem !important;
+        min-width: 0 !important;
+        flex: 1 1 100% !important;
+    }
+    .hc-name {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.15rem !important;
+        word-break: break-word !important;
+    }
+    .hc-role {
+        font-size: 0.68rem !important;
+        line-height: 1.25 !important;
+        color: var(--text-secondary) !important;
+        word-break: break-word !important;
+    }
+    .hc-package {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        color: #059669 !important;
+        margin-top: 0.2rem !important;
+    }
+    .hc-divider {
+        height: 1px !important;
+        margin: 0.6rem 0 !important;
+    }
+    .hc-challenge-info {
+        flex: 1 !important;
+        margin-bottom: 0.65rem !important;
+        min-width: 0 !important;
+    }
+    .hc-chal-title {
+        font-size: 0.72rem !important;
+        line-height: 1.25 !important;
+        margin-bottom: 0.4rem !important;
+        word-break: break-word !important;
+        display: flex !important;
+        gap: 0.35rem !important;
+    }
+    .hc-chal-title i {
+        font-size: 0.68rem !important;
+    }
+    .hc-skills {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.25rem !important;
+    }
+    .h-skill-chip {
+        font-size: 0.6rem !important;
+        padding: 0.15rem 0.4rem !important;
+        border-radius: 999px !important;
+    }
+    .hc-btn-solve {
+        width: 100% !important;
+        padding: 0.55rem 0.35rem !important;
+        font-size: 0.72rem !important;
+        border-radius: 999px !important;
+        white-space: normal !important;
+        text-align: center !important;
+        justify-content: center !important;
+        gap: 0.25rem !important;
+        line-height: 1.2 !important;
+        box-sizing: border-box !important;
+    }
+    .hc-btn-solve i.fa-arrow-right {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hof-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.5rem !important;
+    }
+    .hof-card {
+        padding: 0.7rem 0.45rem !important;
+        border-radius: 12px !important;
+    }
+    .hc-avatar {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.75rem !important;
+    }
+    .hc-score-ring {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    .hc-name {
+        font-size: 0.78rem !important;
+    }
+    .hc-role {
+        font-size: 0.62rem !important;
+    }
+    .hc-package {
+        font-size: 0.65rem !important;
+    }
+    .hc-chal-title {
+        font-size: 0.65rem !important;
+    }
+    .h-skill-chip {
+        font-size: 0.55rem !important;
+        padding: 0.1rem 0.3rem !important;
+    }
+    .hc-btn-solve {
+        font-size: 0.65rem !important;
+        padding: 0.45rem 0.25rem !important;
+    }
 }
 
 /* ==========================================================================
