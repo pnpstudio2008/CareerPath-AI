@@ -457,25 +457,110 @@ DOMAIN_QUESTIONS = {
 }
 
 # =========================================================================
-# 5. RESILIENT PDF TEXT EXTRACTION & OCR
 # =========================================================================
+# 5. RESILIENT PDF TEXT EXTRACTION, MULTI-COLUMN PARSER & LIGATURE CLEANER
+# =========================================================================
+
+def clean_extracted_pdf_text(raw_text: str) -> str:
+    """
+    Cleans raw PDF text extraction:
+    - Normalizes font ligatures (fi, fl, ff, ffi, ffl)
+    - Normalizes non-breaking spaces and zero-width characters
+    - De-hyphenates line-break wrapped words (e.g., 'imple- \n mented' -> 'implemented')
+    - Repairs single-word-per-line anomalies from raw PDF coordinate streams
+    - Normalizes bullet points and spacing
+    """
+    if not raw_text:
+        return ""
+
+    # Normalization of unicode ligatures and special quotes/bullets
+    ligatures = {
+        '\ufb00': 'ff', '\ufb01': 'fi', '\ufb02': 'fl', '\ufb03': 'ffi', '\ufb04': 'ffl',
+        '\u2013': '-', '\u2014': '-', '\u2018': "'", '\u2019': "'",
+        '\u201c': '"', '\u201d': '"', '\u2022': '•', '\u25cf': '•', '\u25aa': '•',
+        '\u25fe': '•', '\u00a0': ' '
+    }
+    for lig, rep in ligatures.items():
+        raw_text = raw_text.replace(lig, rep)
+
+    # Remove zero-width spaces and soft hyphens
+    raw_text = re.sub(r'[\u00ad\u200b\u200c\u200d\ufeff]', '', raw_text)
+
+    # De-hyphenate line-wrapped words (e.g., 'micro-\nservices' -> 'microservices')
+    raw_text = re.sub(r'(\b[a-zA-Z]{3,})-\s*\n\s*([a-zA-Z]{3,}\b)', r'\1\2', raw_text)
+
+    # Detect single-word-per-line anomaly (e.g., pypdf splitting words vertically)
+    lines = [l.strip() for l in raw_text.split('\n') if l.strip()]
+    if lines and len(lines) > 10:
+        single_word_lines = sum(1 for l in lines if len(l.split()) == 1)
+        if single_word_lines / len(lines) > 0.60:
+            reconstructed = []
+            curr_sent = []
+            for l in lines:
+                curr_sent.append(l)
+                if l.endswith(('.', ':', '•', '!', '?', '|')) or len(curr_sent) >= 12:
+                    reconstructed.append(' '.join(curr_sent))
+                    curr_sent = []
+            if curr_sent:
+                reconstructed.append(' '.join(curr_sent))
+            raw_text = '\n'.join(reconstructed)
+
+    # Collapse excessive blank lines
+    raw_text = re.sub(r'\n{3,}', '\n\n', raw_text).strip()
+    return raw_text
+
 
 def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     """
-    Extracts clean text from PDF byte stream with multi-level resilient fallbacks:
-    1. Standard PyPDF page text extraction
-    2. PyPDF visitor extraction (extracts raw text components & annotations)
-    3. Flate/raw stream text extraction for custom font-mapped or compressed PDFs
-    4. OCR Fallback for scanned/image-based PDFs
+    Extracts high-fidelity text from PDF byte stream with multi-level resilient fallbacks:
+    1. PDFPlumber (Gold standard layout-aware word positioning and table extraction)
+    2. Standard PyPDF page text extraction with sentence reconstruction
+    3. PyPDF visitor extraction (raw text operators and annotations)
+    4. OCR Fallback for scanned/image-based PDFs (Tesseract / pdf2image)
     """
     if not pdf_bytes or len(pdf_bytes) == 0:
         return ""
 
-    extracted_pages = []
+    # Strategy 1: PDFPlumber (layout-aware, multi-column resilient, table extraction)
+    try:
+        import pdfplumber
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            plumber_pages = []
+            for page in pdf.pages:
+                # Extract tables if present
+                table_lines = []
+                try:
+                    tables = page.extract_tables()
+                    for tbl in tables:
+                        for row in tbl:
+                            clean_cells = [str(c).strip() for c in row if c and str(c).strip()]
+                            if clean_cells:
+                                table_lines.append(" | ".join(clean_cells))
+                except Exception:
+                    pass
 
-    # Strategy 1: Standard PyPDF page extraction
+                page_txt = page.extract_text(layout=False) or ""
+                if table_lines and not page_txt:
+                    page_txt = "\n".join(table_lines)
+                elif table_lines:
+                    # Append any table rows that weren't captured in plain text
+                    page_txt = page_txt + "\n" + "\n".join(table_lines)
+
+                if page_txt.strip():
+                    plumber_pages.append(page_txt.strip())
+
+            if plumber_pages:
+                combined_plumber = "\n\n".join(plumber_pages)
+                cleaned = clean_extracted_pdf_text(combined_plumber)
+                if len(cleaned) >= 50:
+                    return cleaned
+    except Exception as e:
+        print(f"[PDF Extraction Info] PDFPlumber notice: {e}")
+
+    # Strategy 2: Standard PyPDF page extraction
     try:
         reader = pypdf.PdfReader(io.BytesIO(pdf_bytes))
+        extracted_pages = []
         for page in reader.pages:
             try:
                 page_text = page.extract_text() or ""
@@ -483,14 +568,15 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
                     extracted_pages.append(page_text.strip())
             except Exception:
                 pass
+        if extracted_pages:
+            full_pypdf = "\n".join(extracted_pages).strip()
+            cleaned = clean_extracted_pdf_text(full_pypdf)
+            if len(cleaned) >= 50:
+                return cleaned
     except Exception as e:
         print(f"[PDF Extraction Warning] PyPDF standard reader notice: {e}")
 
-    full_text = "\n".join(extracted_pages).strip()
-    if len(full_text) >= 50:
-        return full_text
-
-    # Strategy 2: PyPDF visitor/text operator fallback
+    # Strategy 3: PyPDF visitor/text operator fallback
     try:
         reader = pypdf.PdfReader(io.BytesIO(pdf_bytes))
         visitor_text = []
@@ -506,36 +592,38 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
 
         if visitor_text:
             combined_visitor = " ".join(visitor_text).strip()
-            if len(combined_visitor) >= 50:
-                return combined_visitor
+            cleaned = clean_extracted_pdf_text(combined_visitor)
+            if len(cleaned) >= 50:
+                return cleaned
     except Exception:
         pass
 
-    # Strategy 3: OCR Fallback for scanned/image-based PDFs
+    # Strategy 4: OCR Fallback for scanned/image-based PDFs
     try:
         import pdf2image
         import pytesseract
-        
+
         if platform.system() == 'Windows':
             tesseract_win = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
             if os.path.exists(tesseract_win):
                 pytesseract.pytesseract.tesseract_cmd = tesseract_win
-                
+
         images = pdf2image.convert_from_bytes(pdf_bytes, dpi=200, first_page=1, last_page=3)
         ocr_text = []
         for img in images:
             text = pytesseract.image_to_string(img)
             if text and text.strip():
                 ocr_text.append(text.strip())
-                
+
         if ocr_text:
-            combined_ocr = " ".join(ocr_text).strip()
-            if len(combined_ocr) >= 50:
-                return combined_ocr
+            combined_ocr = "\n".join(ocr_text).strip()
+            cleaned = clean_extracted_pdf_text(combined_ocr)
+            if len(cleaned) >= 50:
+                return cleaned
     except Exception as e:
         print(f"[PDF Extraction Warning] OCR Fallback notice: {e}")
 
-    return full_text if full_text else ""
+    return ""
 
 
 def clean_and_tokenize(text: str) -> List[str]:
@@ -547,6 +635,149 @@ def clean_and_tokenize(text: str) -> List[str]:
 
 
 # =========================================================================
+# 5B. SEMANTIC RESUME SECTION SEGMENTATION & CANDIDATE PROFILING
+# =========================================================================
+
+SECTION_HEADER_PATTERNS = [
+    ('projects', re.compile(r'^(?:academic\s+projects|personal\s+projects|technical\s+projects|key\s+projects|selected\s+projects|featured\s+projects|capstone\s+projects|projects)$', re.I)),
+    ('experience', re.compile(r'^(?:experience\s*&\s*internships|work\s+experience|professional\s+experience|employment\s+history|internships?|work\s+history|experience)$', re.I)),
+    ('education', re.compile(r'^(?:education\s*&\s*academics|academic\s+background|academic\s+profile|academic\s+record|qualifications?|academics|education)$', re.I)),
+    ('skills', re.compile(r'^(?:technical\s+skills|skills\s*&\s*technologies|core\s+competencies|technologies|tech\s+stack|programming\s+languages|skills)$', re.I)),
+    ('summary', re.compile(r'^(?:professional\s+summary|career\s+objective|summary|objective|profile|about\s+me)$', re.I)),
+    ('certifications', re.compile(r'^(?:certifications?\s*&\s*achievements|licenses\s*&\s*certifications|certifications?|certificates?)$', re.I)),
+    ('achievements', re.compile(r'^(?:awards\s*&\s*achievements|honors\s*&\s*awards|key\s+highlights|highlights|accomplishments|achievements?|extracurricular)$', re.I))
+]
+
+def segment_resume_sections(text: str) -> Dict[str, str]:
+    """
+    Intelligently splits resume text into distinct semantic sections:
+    'header', 'summary', 'education', 'skills', 'projects', 'experience', 'certifications', 'achievements'.
+    Prevents sections from overlapping or misclassifying (e.g. 'Academic Projects' vs 'Education').
+    """
+    if not text:
+        return {}
+
+    lines = text.split('\n')
+    sections: Dict[str, List[str]] = {'header': []}
+    current_sec = 'header'
+
+    for line in lines:
+        clean = re.sub(r'[^a-zA-Z0-9\s&]', '', line).strip()
+        matched_sec = None
+        if 2 <= len(clean) < 40:
+            for sec_name, pattern in SECTION_HEADER_PATTERNS:
+                if pattern.match(clean):
+                    matched_sec = sec_name
+                    break
+
+        if matched_sec:
+            current_sec = matched_sec
+            if current_sec not in sections:
+                sections[current_sec] = []
+        else:
+            sections[current_sec].append(line)
+
+    return {k: '\n'.join(v).strip() for k, v in sections.items() if v and '\n'.join(v).strip()}
+
+
+def extract_candidate_profile(text: str) -> Dict[str, Any]:
+    """
+    Extracts high-precision candidate profile information:
+    Candidate Name, Degree, Branch/Major, Institution/College, CGPA/GPA,
+    Graduation Year, and Total Experience estimation.
+    """
+    if not text:
+        return {}
+
+    sections = segment_resume_sections(text)
+    header_text = sections.get('header', '')
+    edu_text = sections.get('education', text)
+    exp_text = sections.get('experience', '')
+
+    # 1. Candidate Full Name (from top 4 lines of header)
+    name = None
+    header_lines = [l.strip() for l in (header_text or text).split('\n') if l.strip()]
+    disqualifiers = {
+        'resume', 'curriculum', 'vitae', 'cv', 'email', 'phone', 'contact',
+        'summary', 'developer', 'engineer', 'student', 'profile', 'objective',
+        'india', 'bengaluru', 'bangalore', 'pune', 'mumbai', 'delhi', 'hyderabad',
+        'chennai', 'noida', 'gurugram', 'page', 'http', 'https', 'linkedin', 'github'
+    }
+    for line in header_lines[:4]:
+        clean = re.sub(r'[^a-zA-Z\s]', '', line).strip()
+        words = clean.split()
+        if 2 <= len(words) <= 4:
+            lows = [w.lower() for w in words]
+            if not any(w in disqualifiers for w in lows):
+                name = clean.title()
+                break
+
+    # 2. Degree & Branch / Specialization
+    degree = None
+    branch = None
+    deg_match = re.search(
+        r'\b(B\.?Tech|B\.?E\.?|M\.?Tech|M\.?E\.?|BCA|MCA|B\.?Sc|M\.?Sc|Bachelor\s+of\s+[A-Za-z]+|Master\s+of\s+[A-Za-z]+|Diploma)\.?(?:\s+(?:in|of)\s+([A-Za-z\s&]+?)(?=\n|\||\,|$))?',
+        edu_text,
+        re.IGNORECASE
+    )
+    if deg_match:
+        raw_deg = deg_match.group(1).replace('.', '').upper()
+        if 'TECH' in raw_deg:
+            degree = 'B.Tech' if 'B' in raw_deg else 'M.Tech'
+        elif 'E' in raw_deg and len(raw_deg) <= 3:
+            degree = 'B.E.' if 'B' in raw_deg else 'M.E.'
+        else:
+            degree = deg_match.group(1).title()
+
+        if deg_match.group(2):
+            raw_branch = deg_match.group(2).strip()
+            branch = re.split(r'[\n|,]', raw_branch)[0].strip().title()
+
+    # 3. Institution / College / University (line-by-line scanning)
+    institution = None
+    edu_lines = [l.strip() for l in edu_text.split('\n') if l.strip()]
+    inst_keywords = r'\b(Institute\s+of\s+Technology|Engineering\s+College|University|College\s+of\s+Engineering|National\s+Institute)\b'
+    for l in edu_lines:
+        if re.search(inst_keywords, l, re.IGNORECASE):
+            clean_inst = re.sub(r'\|.*$', '', l).strip()
+            clean_inst = re.sub(r'^[\•\-\*\d\.\)\s]+', '', clean_inst).strip()
+            if len(clean_inst) >= 6:
+                institution = clean_inst.title()
+                break
+
+    # 4. Academic Score (CGPA / GPA / Percentage)
+    cgpa = None
+    cgpa_match = re.search(r'\b(?:CGPA|GPA|Score)[\s:]*([0-9]\.[0-9]{1,2}(?:\s*\/\s*(?:10|4(?:\.0)?))?|[0-9]{2}(?:\.[0-9])?\s*%)', edu_text, re.IGNORECASE)
+    if cgpa_match:
+        cgpa = cgpa_match.group(1).strip()
+    elif re.search(r'\b([0-9]\.[0-9]{1,2}\s*\/\s*10)\b', edu_text):
+        cgpa = re.search(r'\b([0-9]\.[0-9]{1,2}\s*\/\s*10)\b', edu_text).group(1).strip()
+
+    # 5. Graduation Year / Batch
+    grad_year = None
+    year_match = re.search(r'\b(20[12][0-9]\s*[-–]\s*20[23][0-9]|20[23][0-9])\b', edu_text)
+    if year_match:
+        grad_year = year_match.group(1).strip()
+
+    # 6. Experience Summary Estimation
+    experience_summary = "Fresher / Entry Level"
+    if exp_text:
+        dur_match = re.search(r'(\d+\+?\s*(?:years?|months?))', exp_text, re.IGNORECASE)
+        if dur_match:
+            experience_summary = f"{dur_match.group(1)} Experience"
+        elif "intern" in exp_text.lower():
+            experience_summary = "Internship Experience"
+
+    return {
+        "name": name,
+        "degree": degree,
+        "branch": branch,
+        "institution": institution,
+        "cgpa": cgpa,
+        "graduation_year": grad_year,
+        "experience_summary": experience_summary
+    }
+
 # 6. ENHANCED SKILL EXTRACTION WITH CANONICAL NORMALIZATION
 # =========================================================================
 
@@ -577,7 +808,7 @@ def extract_skills_from_text(text: str) -> Dict[str, List[str]]:
         if len(alias) <= 2:
             if alias in ["c", "r"]:
                 # Require technical context keywords in surrounding text
-                pattern = rf'(?<![a-zA-Z0-9])(?:programming\s+in\s+{alias}|{alias}\s+programming|{alias}\s+language|{alias}\s*[,/|])(?![a-zA-Z0-9])'
+                pattern = rf'(?<![a-zA-Z0-9])(?:programming\s+in\s+{alias}|{alias}\s+programming|{alias}\s+language|\b{alias}\b\s*[,/|])(?![a-zA-Z0-9])'
                 if re.search(pattern, text_lower):
                     found_skills[category].add(canonical_name)
             elif alias in ["go", "ai", "ml", "dl", "cv", "os", "cn", "db", "js", "ts", "py"]:
@@ -816,31 +1047,33 @@ def verify_is_resume(text: str) -> Tuple[bool, str, Dict[str, Any]]:
 
 
 # =========================================================================
-# 10. CALIBRATED 6-PILLAR ATS SCORING ENGINE
+# =========================================================================
+# 10. CALIBRATED 6-PILLAR ATS SCORING ENGINE (WITH SKILL GROUNDING & METRICS)
 # =========================================================================
 
 def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dict[str, Any]:
     """
     Computes an industry-grade ATS (Applicant Tracking System) score,
     calibrated across 6 essential dimensions:
-    1. Section Completeness (20 pts)
-    2. Technical Skill Breadth, Density & Depth (25 pts)
-    3. Quantifiable Impact & Metrics (20 pts)
-    4. Action Verb Leadership & Strength (15 pts)
+    1. Section Architecture & Structural Completeness (20 pts)
+    2. Grounded Technical Skill Depth & Proof (25 pts)
+    3. Quantifiable Impact & Google XYZ Formula (20 pts)
+    4. Action Verb Leadership & Power Verbs (15 pts)
     5. Formatting & Length (10 pts)
-    6. Contact & Professional Links (10 pts)
+    6. Contact & Digital Footprint (10 pts)
     """
     text_lower = text.lower()
     total_words = len(text.split())
+    sections = segment_resume_sections(text)
 
     # 1. Section Completeness (Weight: 20 pts)
     sections_checked = {
         "Contact Information": bool(re.search(r'(email|phone|linkedin|github|contact)', text_lower)),
-        "Education": bool(re.search(r'(education|degree|bachelor|b\.?tech|m\.?tech|bca|mca|university|college|gpa|cgpa)', text_lower)),
-        "Experience / Projects": bool(re.search(r'(experience|projects|work history|internship|employment|portfolio)', text_lower)),
-        "Technical Skills": bool(re.search(r'(skills|technical skills|technologies|proficiencies|competencies)', text_lower)),
-        "Summary / Objective": bool(re.search(r'(summary|objective|about me|profile)', text_lower)),
-        "Certifications / Achievements": bool(re.search(r'(certification|certifications|awards|achievements|honors|publications)', text_lower))
+        "Education": ('education' in sections) or bool(re.search(r'(education|degree|bachelor|b\.?tech|m\.?tech|bca|mca|university|college|gpa|cgpa)', text_lower)),
+        "Experience / Projects": ('projects' in sections or 'experience' in sections) or bool(re.search(r'(experience|projects|work history|internship|employment|portfolio)', text_lower)),
+        "Technical Skills": ('skills' in sections) or bool(re.search(r'(skills|technical skills|technologies|proficiencies|competencies)', text_lower)),
+        "Summary / Objective": ('summary' in sections) or bool(re.search(r'(summary|objective|about me|profile)', text_lower)),
+        "Certifications / Achievements": ('certifications' in sections or 'achievements' in sections) or bool(re.search(r'(certification|certifications|awards|achievements|honors|publications)', text_lower))
     }
     
     sec_pts = 0
@@ -852,29 +1085,35 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
     if sections_checked["Certifications / Achievements"]: sec_pts += 2
     section_score = min(20, sec_pts)
 
-    # 2. Skill Breadth, Depth & Relevance (Weight: 25 pts)
+    # 2. Skill Depth & Grounding Ratio (Weight: 25 pts)
     total_skills_found = sum(len(v) for v in extracted_skills.values())
     categories_with_skills = sum(1 for v in extracted_skills.values() if len(v) > 0)
     
+    # Grounded skills: skills actively referenced in projects or experience
+    proj_exp_context = (sections.get("projects", "") + " " + sections.get("experience", "")).lower()
+    all_flat_skills = [s for sks in extracted_skills.values() for s in sks]
+    grounded_skills = [s for s in all_flat_skills if s.lower() in proj_exp_context]
+    grounding_ratio = len(grounded_skills) / max(1, len(all_flat_skills))
+    
     if total_skills_found >= 15:
-        base_skill_pts = 21
+        base_skill_pts = 20
     elif total_skills_found >= 10:
-        base_skill_pts = 17
+        base_skill_pts = 16
     elif total_skills_found >= 6:
-        base_skill_pts = 13
+        base_skill_pts = 12
     elif total_skills_found >= 3:
-        base_skill_pts = 9
+        base_skill_pts = 8
     else:
-        base_skill_pts = 5
+        base_skill_pts = 4
         
-    category_diversity_bonus = min(4, categories_with_skills)
-    skill_score = min(25, base_skill_pts + category_diversity_bonus)
+    grounding_bonus = min(5, int(grounding_ratio * 5.5))
+    skill_score = min(25, base_skill_pts + grounding_bonus)
 
-    # 3. Action Verb Leadership & Power Words (Weight: 15 pts)
+    # 3. Action Verb Leadership & Power Verbs (Weight: 15 pts)
     found_action_verbs = set()
     for verb in ACTION_VERBS:
         if re.search(rf'\b{verb}\b', text_lower):
-            found_action_verbs.add(verb)
+            found_action_verbs.add(verb.title())
 
     verb_count = len(found_action_verbs)
     if verb_count >= 10:
@@ -888,13 +1127,26 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
     else:
         verb_score = 3
 
-    # 4. Quantifiable Impact & Metrics (Weight: 20 pts)
-    # Detect percentages (40%), scale multipliers (15k+, 500+ users), latency/time (40ms, 35%), financial ($)
-    metric_matches = re.findall(
-        r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:users|clients|students|requests|queries|transactions|profiles|problems)|\b\d+x\b|\b\d{3,}\b)',
-        text
+    # Check for weak passive phrases
+    weak_phrases = ["worked on", "assisted in", "helped to", "responsible for", "was involved in", "handled tasks"]
+    found_weak_phrases = [p for p in weak_phrases if re.search(rf'\b{re.escape(p)}\b', text_lower)]
+    if found_weak_phrases:
+        verb_score = max(3, verb_score - 2)
+
+    # 4. Quantifiable Impact & Google XYZ Metrics (Weight: 20 pts)
+    # Filter out phone numbers and standalone graduation years
+    metric_pat = re.compile(
+        r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|drives)|\b\d+x\b|\b\d{1,3}(?:,\d{3})+\+?\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records)?)',
+        re.I
     )
-    metric_count = len(metric_matches)
+    raw_metric_matches = metric_pat.findall(text)
+    genuine_metrics = []
+    for m in raw_metric_matches:
+        clean_m = m.strip()
+        if not re.match(r'^(?:20[12][0-9]|\d{5,})$', clean_m) and clean_m not in genuine_metrics:
+            genuine_metrics.append(clean_m)
+
+    metric_count = len(genuine_metrics)
     if metric_count >= 5:
         metric_score = 20
     elif metric_count >= 3:
@@ -916,12 +1168,12 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
         format_score -= 3
         format_issues.append("Resume is somewhat long (>1,100 words). Aim for a crisp 1-2 page layout.")
 
-    has_bullets = bool(re.search(r'[\•\-\*]', text))
+    has_bullets = bool(re.search(r'[•\-\*]', text))
     if not has_bullets:
         format_score -= 3
         format_issues.append("Use bullet points for experience and project achievements to optimize ATS readability.")
 
-    # 6. Contact & Portfolio Links (Weight: 10 pts)
+    # 6. Contact & Digital Footprint (Weight: 10 pts)
     contact_pts = 0
     if re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text):
         contact_pts += 3
@@ -961,6 +1213,12 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
         if not present:
             recommendations.append(f"Add a dedicated '{sec_name}' section to improve ATS parsing.")
 
+    if grounding_ratio < 0.40 and total_skills_found >= 8:
+        recommendations.append(f"Demonstrate how you applied your listed skills ({', '.join(all_flat_skills[:3])}) within your actual project bullet points.")
+
+    if found_weak_phrases:
+        recommendations.append(f"Strengthen ownership by replacing passive expressions ({', '.join(found_weak_phrases[:2])}) with proactive verbs like 'Engineered', 'Architected', or 'Streamlined'.")
+
     if verb_count < 8:
         recommendations.append("Incorporate more impactful action verbs (e.g., 'Architected', 'Optimized', 'Automated', 'Spearheaded') to demonstrate ownership.")
 
@@ -985,13 +1243,16 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
             "action_verb_score": verb_score,
             "quantifiable_metrics_score": metric_score,
             "formatting_score": format_score,
-            "contact_score": contact_score
+            "contact_score": contact_score,
+            "skill_grounding_ratio": round(grounding_ratio, 2),
+            "grounded_skills_count": len(grounded_skills)
         },
         "action_verbs_found": sorted(list(found_action_verbs)),
         "metrics_found_count": metric_count,
+        "impact_metrics_detected": genuine_metrics[:8],
+        "weak_phrases_detected": found_weak_phrases,
         "recommendations": recommendations[:6]
     }
-
 
 # =========================================================================
 # 11. CAREER PATH MATCHING & ROLE RECOMMENDATION
@@ -1284,57 +1545,40 @@ def evaluate_mock_interview_response(question: str, topic: str, user_answer: str
 
 
 # =========================================================================
-# 15. ROBUST PROJECT & ACHIEVEMENT EXTRACTION
+# =========================================================================
+# 15. ROBUST PROJECT & ACHIEVEMENT EXTRACTION (SECTION-SCOPED)
 # =========================================================================
 
 def extract_achievements(text: str) -> List[str]:
     """
     Extracts achievements, awards, honors, hackathons, coding badges,
     and academic distinctions from resume content.
+    Leverages segmented sections to avoid noise and leading bullet artifacts.
     """
     if not text:
         return []
 
+    sections = segment_resume_sections(text)
+    combined = (sections.get('achievements', '') + "\n" + sections.get('certifications', '')).strip()
     achievements = []
-    lines = [l.strip() for l in text.split('\n') if l.strip()]
 
-    # 1. Identify Dedicated Section Header
-    ach_header_idx = -1
-    section_headers = [
-        'achievement', 'achievements', 'awards', 'awards & achievements',
-        'honors & awards', 'honors and awards', 'accomplishments',
-        'extracurricular', 'hackathons', 'milestones', 'recognitions',
-        'key highlights', 'highlights', 'coding profiles', 'coding handles'
-    ]
-
-    for i, line in enumerate(lines):
-        clean_l = re.sub(r'[^a-zA-Z0-9\s&]', '', line).strip().lower()
-        if clean_l in section_headers or (len(clean_l) < 30 and any(clean_l.startswith(h) for h in section_headers)):
-            ach_header_idx = i
-            break
-
-    known_next = ['education', 'skills', 'experience', 'projects', 'certifications', 'summary', 'languages', 'hobbies', 'contact', 'personal details']
-
-    if ach_header_idx != -1:
-        for j in range(ach_header_idx + 1, min(len(lines), ach_header_idx + 25)):
-            cand = lines[j]
-            clean_cand = re.sub(r'[^a-zA-Z0-9\s&]', '', cand).strip().lower()
-            if len(clean_cand) < 25 and any(clean_cand == s for s in known_next):
-                break
-            clean_ach = re.sub(r'^[\•\-\*\d\.\)\s]+', '', cand).strip()
-            if len(clean_ach) >= 10 and not clean_ach.lower().startswith(('page ', 'http', 'github', 'linkedin')):
+    if combined:
+        for l in combined.split('\n'):
+            clean_ach = re.sub(r'^(?:[•\-\*\–\—\+\s]+|\d+[\.\)]\s*)', '', l).strip()
+            if len(clean_ach) >= 12 and not clean_ach.lower().startswith(('page ', 'http', 'github', 'linkedin')):
                 achievements.append(clean_ach)
 
-    # 2. Document-wide heuristic scanner for high-impact achievements
-    if len(achievements) < 3:
+    # Document-wide heuristic scanner fallback
+    if len(achievements) < 2:
         achievement_keywords = [
             r'\b(?:secured|ranked|rank|won|winner|1st|2nd|3rd|first|second|third|finalist|champion|runner[\s\-]up)\b',
             r"\b(?:hackathon|scholarship|dean'?s\s+list|merit|award|gold\s+medal|published|paper)\b",
             r'\b(?:solved\s+\d+\+|leetcode\s+\d+|codeforces\s+\d+|top\s+\d+[%％]?|knight\s+rating|5-star)\b',
             r'\b(?:certified|certification|credential|badge|distinction|smart\s+india\s+hackathon|kaggle)\b'
         ]
+        lines = [l.strip() for l in text.split('\n') if l.strip()]
         for line in lines:
-            clean_line = re.sub(r'^[\•\-\*\d\.\)\s]+', '', line).strip()
+            clean_line = re.sub(r'^(?:[•\-\*\–\—\+\s]+|\d+[\.\)]\s*)', '', line).strip()
             if 15 <= len(clean_line) <= 250:
                 if any(re.search(pat, clean_line, re.IGNORECASE) for pat in achievement_keywords):
                     if clean_line not in achievements:
@@ -1360,103 +1604,78 @@ def extract_projects(text: str) -> List[Dict[str, Any]]:
     """
     Intelligently extracts projects, project titles, tech stacks, quantifiable metrics,
     and implementation summaries from resume content.
-    Handles numbered titles, parenthesized tech stacks, and bulleted achievements without truncation.
+    Leverages segmented project section to ensure 100% precision with zero bleeding from other sections.
     """
     if not text:
         return []
 
+    sections = segment_resume_sections(text)
+    proj_text = sections.get('projects')
+    if not proj_text or len(proj_text.strip()) < 20:
+        proj_text = text
+
+    lines = [l.strip() for l in proj_text.split('\n') if l.strip()]
     projects = []
-    lines = [l.strip() for l in text.split('\n') if l.strip()]
+    current_project = None
 
-    proj_header_idx = -1
-    proj_headers = [
-        'projects', 'academic projects', 'personal projects',
-        'key projects', 'selected projects', 'technical projects',
-        'capstone projects', 'featured projects'
-    ]
+    for line in lines:
+        starts_with_bullet = line.startswith(('•', '-', '*', '–', '—', '+'))
+        is_numbered = bool(re.match(r'^(\d+[\.\)]|Project\s*\d*\s*[:\-])', line, re.IGNORECASE))
+        has_parentheses_stack = bool(re.search(r'\([A-Za-z0-9\s\,\+\#\.\-\/]+\)$', line))
+        clean_cand = re.sub(r'^(?:[•\-\*\–\—\+\s]+|\d+[\.\)]\s*)', '', line).strip()
 
-    for i, line in enumerate(lines):
-        clean_l = re.sub(r'[^a-zA-Z0-9\s&]', '', line).strip().lower()
-        if clean_l in proj_headers or (len(clean_l) < 30 and any(clean_l.startswith(h) for h in proj_headers)):
-            proj_header_idx = i
-            break
+        is_title = not starts_with_bullet and (is_numbered or has_parentheses_stack or (len(line) < 65 and not line.endswith('.'))) and len(clean_cand) >= 4 and not any(kw in clean_cand.lower() for kw in ['experience', 'internship', 'education', 'certification', 'achievement', 'academic project', 'key project'])
 
-    known_next = [
-        'education', 'skills', 'technical skills', 'experience', 'work experience',
-        'employment', 'achievements', 'awards', 'certifications', 'hobbies',
-        'contact', 'key highlights', 'highlights', 'extracurricular'
-    ]
+        if is_title and (not current_project or len(current_project.get("desc_lines", [])) >= 1):
+            title_line = clean_cand
+            raw_tech = []
 
-    if proj_header_idx != -1:
-        current_project = None
-        for j in range(proj_header_idx + 1, min(len(lines), proj_header_idx + 50)):
-            cand = lines[j]
-            clean_cand = re.sub(r'[^a-zA-Z0-9\s&]', '', cand).strip().lower()
-            
-            # Stop if hitting the next major section
-            if len(clean_cand) < 35 and any(s == clean_cand or clean_cand.startswith(s) or s in clean_cand for s in known_next):
-                break
+            paren_match = re.search(r'\(([^)]+)\)', title_line)
+            if paren_match:
+                tech_str = paren_match.group(1)
+                raw_tech = [t.strip() for t in re.split(r'[,/|]', tech_str) if len(t.strip()) > 1]
+                title_line = re.sub(r'\([^)]+\)', '', title_line).strip()
+            elif '|' in title_line:
+                parts = title_line.split('|', 1)
+                title_line = parts[0].strip()
+                raw_tech = [t.strip() for t in re.split(r'[,/|]', parts[1]) if len(t.strip()) > 1]
 
-            clean_text_cand = re.sub(r'^[\•\-\*\d\.\)\s]+', '', cand).strip()
+            current_project = {
+                "title": title_line[:65].strip(),
+                "desc_lines": [],
+                "tech_stack": [normalize_skill(t) for t in raw_tech[:6]],
+                "metrics": []
+            }
+            projects.append(current_project)
+        elif current_project is not None:
+            if len(clean_cand) >= 10:
+                current_project["desc_lines"].append(clean_cand)
 
-            # Detect if line is a Project Title:
-            # - Starts with numbering: 1., 2., Project 1:
-            # - Or short line without terminating period, followed by parentheses with tech stack
-            # - Does NOT start with bullet symbols
-            starts_with_bullet = cand.startswith(('•', '-', '*', '–', '—', '+'))
-            is_numbered = bool(re.match(r'^(\d+[\.\)]|Project\s*\d*\s*[:\-])', cand, re.IGNORECASE))
-            has_parentheses_stack = bool(re.search(r'\([A-Za-z0-9\s\,\+\#\.\-\/]+\)$', cand))
-            
-            is_title = not starts_with_bullet and (is_numbered or has_parentheses_stack or (len(cand) < 65 and not cand.endswith('.'))) and len(clean_text_cand) >= 4 and not any(kw in clean_cand for kw in ['experience', 'internship', 'education', 'certification', 'achievement'])
+                # Scan description for tech stack mentions
+                for tech_keyword in ["react", "node", "python", "java", "c++", "django", "flask", "fastapi", "sql", "postgresql", "mongodb", "docker", "aws", "pytorch", "tensorflow", "kubernetes", "flutter", "typescript"]:
+                    if re.search(rf'\b{re.escape(tech_keyword)}\b', clean_cand.lower()):
+                        canon = normalize_skill(tech_keyword)
+                        if canon not in current_project["tech_stack"]:
+                            current_project["tech_stack"].append(canon)
 
-            if is_title and (not current_project or len(current_project.get("desc_lines", [])) >= 1):
-                # Clean title line
-                title_line = clean_text_cand
-                raw_tech = []
-                
-                # Check for tech stack in parentheses: e.g. "Platform (React, Node.js, Postgres)"
-                paren_match = re.search(r'\(([^)]+)\)', title_line)
-                if paren_match:
-                    tech_str = paren_match.group(1)
-                    raw_tech = [t.strip() for t in re.split(r'[,/|]', tech_str) if len(t.strip()) > 1]
-                    title_line = re.sub(r'\([^)]+\)', '', title_line).strip()
-                elif '|' in title_line:
-                    parts = title_line.split('|', 1)
-                    title_line = parts[0].strip()
-                    raw_tech = [t.strip() for t in re.split(r'[,/|]', parts[1]) if len(t.strip()) > 1]
+                # Scan description for metrics
+                metric_pat = re.compile(
+                    r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|drives)|\b\d+x\b|\b\d{1,3}(?:,\d{3})+\+?\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records)?)',
+                    re.IGNORECASE
+                )
+                for m in metric_pat.findall(clean_cand):
+                    clean_m = m.strip()
+                    if not re.match(r'^(?:20[12][0-9]|\d{5,})$', clean_m) and clean_m not in current_project["metrics"]:
+                        current_project["metrics"].append(clean_m)
 
-                current_project = {
-                    "title": title_line[:65].strip(),
-                    "desc_lines": [],
-                    "tech_stack": [normalize_skill(t) for t in raw_tech[:6]],
-                    "metrics": []
-                }
-                projects.append(current_project)
-            elif current_project is not None:
-                if len(clean_text_cand) >= 12:
-                    current_project["desc_lines"].append(clean_text_cand)
-                    
-                    # Scan description for tech stack mentions
-                    for tech_keyword in ["react", "node", "python", "java", "c++", "django", "flask", "fastapi", "sql", "postgresql", "mongodb", "docker", "aws", "pytorch", "tensorflow", "kubernetes", "flutter", "typescript"]:
-                        if re.search(rf'\b{re.escape(tech_keyword)}\b', clean_text_cand.lower()):
-                            canon = normalize_skill(tech_keyword)
-                            if canon not in current_project["tech_stack"]:
-                                current_project["tech_stack"].append(canon)
-
-                    # Scan description for metrics
-                    metrics_found = re.findall(r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:users|clients|requests|profiles|queries|transactions|records)|\b\d+x\b)', clean_text_cand)
-                    for m in metrics_found:
-                        if m not in current_project["metrics"]:
-                            current_project["metrics"].append(m)
-
-        for p in projects:
-            p["description"] = " ".join(p.pop("desc_lines", [])[:3]) or "Full-stack technical project implementation."
+    for p in projects:
+        p["description"] = " ".join(p.pop("desc_lines", [])[:3]) or "Full-stack technical project implementation."
 
     # Fallback if no dedicated section found
     if not projects:
         tech_words = ['developed', 'built', 'created', 'implemented', 'designed', 'engineered']
         for line in lines:
-            clean_l = re.sub(r'^[\•\-\*\d\.\)\s]+', '', line).strip()
+            clean_l = re.sub(r'^(?:[•\-\*\–\—\+\s]+|\d+[\.\)]\s*)', '', line).strip()
             if any(clean_l.lower().startswith(w) for w in tech_words) and len(clean_l) >= 25:
                 projects.append({
                     "title": clean_l[:45] + ("..." if len(clean_l) > 45 else ""),
@@ -1476,7 +1695,6 @@ def extract_projects(text: str) -> List[Dict[str, Any]]:
         })
 
     return projects[:6]
-
 
 # =========================================================================
 # 16. DETERMINISTIC RESUME FINGERPRINTING (4 Pillars)

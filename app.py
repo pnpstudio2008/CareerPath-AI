@@ -35,7 +35,8 @@ from nlp_engine import (
     evaluate_mock_interview_response,
     extract_achievements,
     extract_projects,
-    compute_resume_fingerprint
+    compute_resume_fingerprint,
+    extract_candidate_profile
 )
 from database import (
     init_database,
@@ -345,8 +346,9 @@ def analyze_resume():
                 "verification": verification_details
             }), 400
 
-        # 1. Extract contact details
+        # 1. Extract contact details & candidate academic profile
         contact_info = extract_contact_info(resume_text)
+        candidate_profile = extract_candidate_profile(resume_text)
 
         # 2. Extract skills categorized by taxonomy
         extracted_skills = extract_skills_from_text(resume_text)
@@ -355,8 +357,8 @@ def analyze_resume():
         # 3. Analyze ATS score and formatting
         ats_analysis = analyze_resume_ats(resume_text, extracted_skills)
 
-        # 4. Career path recommendations
-        career_recommendations = recommend_career_paths(extracted_skills)
+        # 4. Career path recommendations with trajectory keyword alignment
+        career_recommendations = recommend_career_paths(extracted_skills, resume_text=resume_text)
 
         # 5. Tailored Interview questions based on resume technologies
         interview_questions = generate_personalized_interview_questions(extracted_skills, max_questions=8)
@@ -457,6 +459,7 @@ def analyze_resume():
             "is_resume": True,
             "verification": verification_details,
             "filename": filename,
+            "candidate_profile": candidate_profile,
             "contact_info": contact_info,
             "total_skills_count": total_skills,
             "extracted_skills": extracted_skills,
