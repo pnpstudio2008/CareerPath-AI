@@ -193,7 +193,7 @@ def generate_students_excel_report(students_data: list, base_url: str = None) ->
         # Construct direct downloadable report URL for this specific student
         student_id_val = s_dict.get("id")
         download_target = student_id_val if student_id_val else roll_no
-        download_url = f"{base_url}/api/report/download/student/{download_target}"
+        download_url = f"{base_url}/api/report/download/student/{download_target}/Performance_Report.pdf"
         report_display_text = "Download PDF Report"
 
         best_role = s_dict.get("evaluated_best_role") or ("Full Stack Developer" if ats > 0 else "-")
@@ -362,7 +362,7 @@ def generate_students_csv_fallback(students_data: list, base_url: str = None) ->
         s_id = s_dict.get("id")
         roll = s_dict.get("roll_no") or ""
         download_target = s_id if s_id else roll
-        download_url = f"{base_url}/api/report/download/student/{download_target}"
+        download_url = f"{base_url}/api/report/download/student/{download_target}/Performance_Report.pdf"
 
         writer.writerow([
             idx,

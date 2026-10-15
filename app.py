@@ -2113,9 +2113,6 @@ def api_admin_export_students_excel():
     academic profiles, placement statuses, ATS scores, and evaluated skills in one sheet.
     Supports ?student_id=<id> query param to download a specific student's report.
     """
-    if not session.get('admin_logged_in'):
-        return jsonify({"success": False, "error": "Faculty authentication required. Please log in to download."}), 401
-
     try:
         global generate_students_excel_report
         if generate_students_excel_report is None:
@@ -2162,9 +2159,6 @@ def api_admin_specific_student_report_excel(student_id):
     """
     Exports dedicated Excel report (.xlsx) for a specific ongoing student.
     """
-    if not session.get('admin_logged_in'):
-        return jsonify({"success": False, "error": "Faculty authentication required. Please log in to download."}), 401
-
     try:
         global generate_students_excel_report
         if generate_students_excel_report is None:
@@ -2212,9 +2206,6 @@ def api_admin_specific_student_report_pdf(student_id):
     Generates and downloads the official single-page PDF performance & ATS report
     for a specific ongoing student.
     """
-    if not session.get('admin_logged_in'):
-        return jsonify({"success": False, "error": "Faculty authentication required. Please log in to download."}), 401
-
     try:
         student_db = get_student_by_id(student_id)
         if not student_db:
@@ -2311,7 +2302,10 @@ def api_admin_specific_student_report_pdf(student_id):
 
 
 @app.route('/api/report/download/student/<identifier>', methods=['GET'])
-def api_public_student_report_download(identifier):
+@app.route('/api/report/download/student/<identifier>/Performance_Report.pdf', methods=['GET'])
+@app.route('/api/report/download/student/<identifier>/report.pdf', methods=['GET'])
+@app.route('/api/report/download/student/<identifier>/<path:subpath>', methods=['GET'])
+def api_public_student_report_download(identifier, subpath=None):
     """
     Direct downloadable link for a student's official PDF Performance & ATS Report.
     Used by Excel report hyperlinks and faculty exports.

@@ -895,62 +895,37 @@ function updateReportFormatUI() {
     }
 }
 
-async function downloadAdminCohortExcelReport() {
+function downloadAdminCohortExcelReport(e) {
+    if (e && e.preventDefault) e.preventDefault();
     const btn = document.getElementById('btn-export-students-excel');
-    const originalText = btn ? btn.innerHTML : '';
+    const origHtml = btn ? btn.innerHTML : '';
     if (btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.75';
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#059669;"></i> <span>Preparing Excel...</span>';
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '0.7';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:#059669;"></i> <span>Downloading Excel...</span>';
     }
-    showToast('Preparing ongoing students cohort Excel workbook...', 'info');
+    if (typeof showToast === 'function') {
+        showToast('Preparing ongoing students cohort Excel workbook for download...', 'info');
+    }
 
-    try {
-        const res = await fetch('/api/admin/export-students-excel');
-        const contentType = res.headers.get('content-type') || '';
+    // Direct native browser download
+    window.location.href = '/api/admin/export-students-excel';
 
-        if (!res.ok || contentType.includes('text/html')) {
-            showToast('Faculty session expired or unauthorized. Please re-login.', 'error');
-            setTimeout(() => { window.location.href = '/admin'; }, 1000);
-            return;
-        }
-
-        const blob = await res.blob();
-        let filename = 'AI_Career_Companion_Ongoing_Students_Report.xlsx';
-        const disp = res.headers.get('content-disposition');
-        if (disp && disp.includes('filename=')) {
-            const match = disp.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-            if (match && match[1]) filename = match[1].replace(/['"]/g, '');
-        }
-
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        a.remove();
-        showToast('Cohort Excel report downloaded successfully!', 'success');
-    } catch (err) {
-        console.error('Cohort Excel download failed:', err);
-        showToast('Failed to download Excel report: ' + err.message, 'error');
-    } finally {
+    setTimeout(() => {
         if (btn) {
-            btn.disabled = false;
+            btn.style.pointerEvents = 'auto';
             btn.style.opacity = '1';
-            btn.innerHTML = originalText;
+            btn.innerHTML = origHtml;
         }
-    }
+    }, 2500);
 }
 
-async function executeSpecificStudentReportDownload() {
+function executeSpecificStudentReportDownload() {
     const select = document.getElementById('report-select-student');
     const studentId = select ? select.value : null;
 
     if (!studentId) {
-        showToast('Please select a student to download report.', 'warning');
+        if (typeof showToast === 'function') showToast('Please select a student to download report.', 'warning');
         return;
     }
 
@@ -963,51 +938,29 @@ async function executeSpecificStudentReportDownload() {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing...';
     }
 
-    showToast(`Generating ${format.toUpperCase()} performance report for student...`, 'info');
+    if (typeof showToast === 'function') {
+        showToast(`Downloading ${format.toUpperCase()} report for student...`, 'info');
+    }
 
     const downloadUrl = format === 'pdf' 
         ? `/api/admin/student/${studentId}/report-pdf`
         : `/api/admin/student/${studentId}/report-excel`;
 
-    try {
-        const res = await fetch(downloadUrl);
-        const contentType = res.headers.get('content-type') || '';
+    // Direct native browser download
+    window.location.href = downloadUrl;
 
-        if (!res.ok || contentType.includes('text/html')) {
-            showToast('Faculty session expired or unauthorized. Please re-login.', 'error');
-            setTimeout(() => { window.location.href = '/admin'; }, 1000);
-            return;
-        }
-
-        const blob = await res.blob();
-        let filename = format === 'pdf' ? `Student_${studentId}_Performance_Report.pdf` : `Student_${studentId}_Performance_Report.xlsx`;
-        const disp = res.headers.get('content-disposition');
-        if (disp && disp.includes('filename=')) {
-            const match = disp.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-            if (match && match[1]) filename = match[1].replace(/['"]/g, '');
-        }
-
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        a.remove();
-
-        showToast('Report downloaded successfully!', 'success');
-        closeSpecificStudentReportModal();
-    } catch (err) {
-        console.error('Specific student report download failed:', err);
-        showToast('Failed to download report: ' + err.message, 'error');
-    } finally {
+    setTimeout(() => {
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
-    }
+        if (typeof closeSpecificStudentReportModal === 'function') {
+            closeSpecificStudentReportModal();
+        }
+        if (typeof showToast === 'function') {
+            showToast('Report download initiated successfully!', 'success');
+        }
+    }, 1500);
 }
 
 
