@@ -74,7 +74,7 @@ function handleFile(file) {
         if (fileInput) fileInput.value = '';
         const infoDiv = document.getElementById('selected-file-info');
         if (infoDiv) {
-            infoDiv.style.display = 'inline-block';
+            infoDiv.style.display = 'inline-flex';
             infoDiv.innerHTML = `<span style="color:#EF4444; font-weight:700;"><i class="fa-solid fa-shield-halved"></i> <strong>.docx files blocked:</strong> Prohibited due to malware security risks. Convert to PDF.</span>`;
         }
         showToast('Security Alert: .docx / Word files are blocked to prevent malware exploits. Please upload a PDF resume.', 'error');
@@ -88,7 +88,7 @@ function handleFile(file) {
         if (fileInput) fileInput.value = '';
         const infoDiv = document.getElementById('selected-file-info');
         if (infoDiv) {
-            infoDiv.style.display = 'inline-block';
+            infoDiv.style.display = 'inline-flex';
             infoDiv.innerHTML = `<span style="color:#EF4444; font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> Only PDF format (.pdf) is supported.</span>`;
         }
         showToast('Invalid file format: Only standard PDF documents (.pdf) are accepted.', 'error');
@@ -99,7 +99,7 @@ function handleFile(file) {
     window.AppState.selectedSampleText = null; // Prioritize real uploaded file
     const infoDiv = document.getElementById('selected-file-info');
     if (infoDiv) {
-        infoDiv.style.display = 'inline-block';
+        infoDiv.style.display = 'inline-flex';
         infoDiv.innerHTML = `<i class="fa-solid fa-file-pdf text-danger"></i> Selected: <strong>${file.name}</strong> (${(file.size / 1024).toFixed(1)} KB) <span class="badge badge-success ml-2" style="font-size:0.75rem;"><i class="fa-solid fa-shield-check"></i> PDF Verified</span>`;
     }
     showToast(`Loaded PDF: ${file.name}`, 'info');
