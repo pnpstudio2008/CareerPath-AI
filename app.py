@@ -96,6 +96,8 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
     SESSION_COOKIE_SECURE=False,
+    SESSION_COOKIE_PATH='/',
+    PERMANENT_SESSION_LIFETIME=datetime.timedelta(days=7),
     SEND_FILE_MAX_AGE_DEFAULT=31536000
 )
 app.secret_key = os.environ.get('SECRET_KEY', 'career_companion_secure_admin_key_2025')
@@ -131,7 +133,9 @@ def security_shield_filter():
     - Blocks path traversal attacks (../, %2e%2e, null bytes)
     - Blocks direct access to Python source code, databases, configuration files, and secrets
     - Restricts static directory strictly to approved web assets
+    - Ensures persistent sessions across all browser navigations
     """
+    session.permanent = True
     raw_path = request.path
     decoded_path = urllib.parse.unquote(raw_path).lower()
 
@@ -184,6 +188,14 @@ def apply_security_headers(response):
 def robots_txt():
     content = "User-agent: *\nDisallow: /admin\nDisallow: /api/\nDisallow: /static/js/\nDisallow: /student/\nDisallow: /alumni/\n"
     return content, 200, {'Content-Type': 'text/plain'}
+
+@app.route('/favicon.ico')
+def favicon():
+    """Serves the platform favicon directly, preventing 404 redirects."""
+    img_dir = os.path.join(app.root_path, 'static', 'images')
+    if os.path.exists(os.path.join(img_dir, 'favicon.png')):
+        return send_from_directory(img_dir, 'favicon.png', mimetype='image/png')
+    return send_from_directory(img_dir, 'logo.png', mimetype='image/png')
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "admin123"
@@ -318,9 +330,15 @@ from werkzeug.exceptions import HTTPException
 
 @app.errorhandler(404)
 def handle_404(e):
-    """If anyone removes anything from URL or visits an invalid URL, redirect to /student/login."""
+    """If anyone visits an invalid URL, redirect safely preserving user sessions."""
     if request.path.startswith('/api/'):
         return jsonify({"success": False, "error": "Endpoint not found"}), 404
+    if session.get('admin_logged_in'):
+        return redirect('/admin')
+    if session.get('student_logged_in'):
+        return redirect('/')
+    if session.get('alumni_logged_in'):
+        return redirect('/alumni/profile')
     return redirect('/student/login')
 
 @app.errorhandler(Exception)
@@ -328,6 +346,12 @@ def handle_exception(e):
     # Pass through HTTP errors
     if isinstance(e, HTTPException):
         if e.code == 404 and not request.path.startswith('/api/'):
+            if session.get('admin_logged_in'):
+                return redirect('/admin')
+            if session.get('student_logged_in'):
+                return redirect('/')
+            if session.get('alumni_logged_in'):
+                return redirect('/alumni/profile')
             return redirect('/student/login')
         # Return JSON for all API routes
         if request.path.startswith('/api/'):
@@ -1067,10 +1091,10 @@ def student_login_page():
     """Renders the Student Login Portal."""
     if session.get('student_logged_in'):
         return redirect('/')
-    # If a faculty session is in cookies, remove it so the login portal is completely fresh
-    session.pop('admin_logged_in', None)
-    session.pop('admin_user', None)
-    session.pop('faculty_name', None)
+    if session.get('admin_logged_in'):
+        return redirect('/admin')
+    if session.get('alumni_logged_in'):
+        return redirect('/alumni/profile')
     return render_template('student_login.html')
 
 
