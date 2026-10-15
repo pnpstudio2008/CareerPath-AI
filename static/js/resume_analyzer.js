@@ -424,14 +424,16 @@ async function submitResumeAnalysis() {
         if (activeRevealController) {
             activeRevealController.cancel();
         }
-        showToast('Network error while analyzing resume: ' + err.message, 'error');
+        console.error('Error analyzing resume:', err);
+        showToast((err.name === 'TypeError' || err.name === 'ReferenceError' ? 'Analysis rendering error: ' : 'Error while analyzing resume: ') + err.message, 'error');
     }
 }
 
 function renderAnalysisResults(data) {
     window.currentResumeAnalysis = data;
+    const ats = data.ats_analysis || {};
     const resultsContainer = document.getElementById('analyzer-results');
-    resultsContainer.style.display = 'block';
+    if (resultsContainer) resultsContainer.style.display = 'block';
 
     // Show verified resume security badge
     const verifBadge = document.getElementById('resume-verified-badge');
@@ -487,7 +489,7 @@ function renderAnalysisResults(data) {
 
         const cgpaVal = document.getElementById('cpc-cgpa-val');
         if (cgpaVal) {
-            cgpaVal.innerText = prof.cgpa || (ats ? `${ats.ats_score}% ATS` : '--');
+            cgpaVal.innerText = prof.cgpa || (ats && ats.ats_score !== undefined ? `${ats.ats_score}% ATS` : '--');
         }
 
         // Contact strip
@@ -517,11 +519,21 @@ function renderAnalysisResults(data) {
     }
 
     // 1. ATS Score Gauge Animation
-    animateGauge(ats.ats_score, ats.rating_color);
-    document.getElementById('ats-rating-badge').innerText = `${ats.rating} (${ats.ats_score}/100)`;
-    document.getElementById('ats-rating-badge').style.borderColor = ats.rating_color;
-    document.getElementById('ats-rating-badge').style.color = ats.rating_color;
-    document.getElementById('ats-feedback-text').innerText = ats.feedback_summary;
+    if (typeof animateGauge === 'function') {
+        animateGauge(ats.ats_score || 0, ats.rating_color || '#3B82F6');
+    }
+    const ratingBadge = document.getElementById('ats-rating-badge');
+    if (ratingBadge) {
+        ratingBadge.innerText = `${ats.rating || 'Evaluated'} (${ats.ats_score || 0}/100)`;
+        if (ats.rating_color) {
+            ratingBadge.style.borderColor = ats.rating_color;
+            ratingBadge.style.color = ats.rating_color;
+        }
+    }
+    const feedbackText = document.getElementById('ats-feedback-text');
+    if (feedbackText) {
+        feedbackText.innerText = ats.feedback_summary || 'Resume evaluated against modern ATS standards.';
+    }
 
     // --- UPDATE HERO CARDS DYNAMICALLY ---
     const heroScore = document.getElementById('hero-ats-score');
@@ -655,30 +667,41 @@ function renderAnalysisResults(data) {
     // ------------------------------------
 
     // Metric counters
-    document.getElementById('metric-word-count').innerText = ats.word_count;
-    document.getElementById('metric-skills-count').innerText = data.total_skills_count;
-    document.getElementById('metric-verbs-count').innerText = ats.action_verbs_found.length;
-    document.getElementById('metric-metrics-count').innerText = ats.metrics_found_count;
+    const wordCountEl = document.getElementById('metric-word-count');
+    if (wordCountEl) wordCountEl.innerText = ats.word_count || 0;
+
+    const skillsCountEl = document.getElementById('metric-skills-count');
+    if (skillsCountEl) skillsCountEl.innerText = data.total_skills_count || 0;
+
+    const verbsCountEl = document.getElementById('metric-verbs-count');
+    if (verbsCountEl) verbsCountEl.innerText = (ats.action_verbs_found || []).length;
+
+    const metricsCountEl = document.getElementById('metric-metrics-count');
+    if (metricsCountEl) metricsCountEl.innerText = ats.metrics_found_count || 0;
 
     // 2. Section Completeness Checklist
     const checklistDiv = document.getElementById('section-checklist');
-    checklistDiv.innerHTML = '';
-    const sections = ats.section_breakdown.sections;
-    for (const [secName, isPresent] of Object.entries(sections)) {
-        const item = document.createElement('div');
-        item.className = `check-item ${isPresent ? 'passed' : 'missing'}`;
-        item.innerHTML = `<i class="fa-solid ${isPresent ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${secName}`;
-        checklistDiv.appendChild(item);
+    if (checklistDiv) {
+        checklistDiv.innerHTML = '';
+        const sections = (ats.section_breakdown && ats.section_breakdown.sections) || {};
+        for (const [secName, isPresent] of Object.entries(sections)) {
+            const item = document.createElement('div');
+            item.className = `check-item ${isPresent ? 'passed' : 'missing'}`;
+            item.innerHTML = `<i class="fa-solid ${isPresent ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> ${secName}`;
+            checklistDiv.appendChild(item);
+        }
     }
 
     // Recommendations list
     const recList = document.getElementById('recommendation-list');
-    recList.innerHTML = '';
-    ats.recommendations.forEach(rec => {
-        const li = document.createElement('li');
-        li.innerText = rec;
-        recList.appendChild(li);
-    });
+    if (recList) {
+        recList.innerHTML = '';
+        (ats.recommendations || []).forEach(rec => {
+            const li = document.createElement('li');
+            li.innerText = rec;
+            recList.appendChild(li);
+        });
+    }
 
     // Render 6-Pillar Dimension Calibration Bars
     const dimBarsContainer = document.getElementById('ats-dimension-bars');
@@ -713,58 +736,61 @@ function renderAnalysisResults(data) {
     }
 
     // 3. Extracted Skills Taxonomy
-    document.getElementById('skills-total-badge').innerText = `${data.total_skills_count} Skills Detected`;
+    const skillsTotalBadge = document.getElementById('skills-total-badge');
+    if (skillsTotalBadge) skillsTotalBadge.innerText = `${data.total_skills_count || 0} Skills Detected`;
     const skillsGrid = document.getElementById('skills-taxonomy-container');
-    skillsGrid.innerHTML = '';
+    if (skillsGrid && data.extracted_skills) {
+        skillsGrid.innerHTML = '';
 
-    const categoryIcons = {
-        languages: 'fa-code',
-        frameworks_libraries: 'fa-cubes',
-        databases: 'fa-database',
-        cloud_devops: 'fa-cloud',
-        core_cs: 'fa-microchip',
-        ai_ml_data: 'fa-brain',
-        soft_skills: 'fa-comments'
-    };
+        const categoryIcons = {
+            languages: 'fa-code',
+            frameworks_libraries: 'fa-cubes',
+            databases: 'fa-database',
+            cloud_devops: 'fa-cloud',
+            core_cs: 'fa-microchip',
+            ai_ml_data: 'fa-brain',
+            soft_skills: 'fa-comments'
+        };
 
-    const categoryNames = {
-        languages: 'Programming Languages',
-        frameworks_libraries: 'Frameworks & Libraries',
-        databases: 'Databases & Storage',
-        cloud_devops: 'Cloud, DevOps & Tools',
-        core_cs: 'Core Computer Science',
-        ai_ml_data: 'AI / ML & Data Science',
-        soft_skills: 'Soft Skills & Leadership'
-    };
+        const categoryNames = {
+            languages: 'Programming Languages',
+            frameworks_libraries: 'Frameworks & Libraries',
+            databases: 'Databases & Storage',
+            cloud_devops: 'Cloud, DevOps & Tools',
+            core_cs: 'Core Computer Science',
+            ai_ml_data: 'AI / ML & Data Science',
+            soft_skills: 'Soft Skills & Leadership'
+        };
 
-    for (const [catKey, skillList] of Object.entries(data.extracted_skills)) {
-        if (skillList.length === 0) continue;
+        for (const [catKey, skillList] of Object.entries(data.extracted_skills)) {
+            if (!Array.isArray(skillList) || skillList.length === 0) continue;
 
-        const block = document.createElement('div');
-        block.className = 'skill-category-block';
+            const block = document.createElement('div');
+            block.className = 'skill-category-block';
 
-        const title = document.createElement('div');
-        title.className = 'skill-category-title';
-        title.innerHTML = `<i class="fa-solid ${categoryIcons[catKey] || 'fa-tag'}"></i> ${categoryNames[catKey] || catKey} (${skillList.length})`;
-        block.appendChild(title);
+            const title = document.createElement('div');
+            title.className = 'skill-category-title';
+            title.innerHTML = `<i class="fa-solid ${categoryIcons[catKey] || 'fa-tag'}"></i> ${categoryNames[catKey] || catKey} (${skillList.length})`;
+            block.appendChild(title);
 
-        const pillsWrap = document.createElement('div');
-        pillsWrap.className = 'skill-pills-wrap';
-        skillList.forEach(skill => {
-            const pill = document.createElement('span');
-            pill.className = 'skill-pill';
-            pill.innerText = skill;
-            pill.setAttribute('data-skill', skill);
-            pill.setAttribute('title', `Click to filter 45-company matches for ${skill}`);
-            pill.onclick = (e) => {
-                e.stopPropagation();
-                filterBySkill(skill);
-            };
-            pillsWrap.appendChild(pill);
-        });
+            const pillsWrap = document.createElement('div');
+            pillsWrap.className = 'skill-pills-wrap';
+            skillList.forEach(skill => {
+                const pill = document.createElement('span');
+                pill.className = 'skill-pill';
+                pill.innerText = skill;
+                pill.setAttribute('data-skill', skill);
+                pill.setAttribute('title', `Click to filter 45-company matches for ${skill}`);
+                pill.onclick = (e) => {
+                    e.stopPropagation();
+                    filterBySkill(skill);
+                };
+                pillsWrap.appendChild(pill);
+            });
 
-        block.appendChild(pillsWrap);
-        skillsGrid.appendChild(block);
+            block.appendChild(pillsWrap);
+            skillsGrid.appendChild(block);
+        }
     }
 
     // Render Extracted Technical Projects
@@ -817,26 +843,28 @@ function renderAnalysisResults(data) {
 
     // 4. Career Role Recommendations
     const rolesGrid = document.getElementById('career-roles-container');
-    rolesGrid.innerHTML = '';
-    data.career_recommendations.slice(0, 6).forEach(role => {
-        const card = document.createElement('div');
-        card.className = 'career-role-card';
-        card.innerHTML = `
-            <div class="career-role-header">
-                <h4>${role.role}</h4>
-                <span class="match-pct-badge">${role.match_percentage}% Match</span>
-            </div>
-            <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: ${role.match_percentage}%"></div>
-            </div>
-            <p class="text-muted" style="font-size:0.84rem; margin-bottom:0.6rem;">${role.description}</p>
-            <div style="font-size:0.8rem;">
-                <strong class="text-success">Matched:</strong> ${role.matched_skills.slice(0, 4).join(', ') || 'Basic'}
-                ${role.missing_skills.length ? `<br><strong class="text-warning">Missing:</strong> ${role.missing_skills.slice(0, 3).join(', ')}` : ''}
-            </div>
-        `;
-        rolesGrid.appendChild(card);
-    });
+    if (rolesGrid && Array.isArray(data.career_recommendations)) {
+        rolesGrid.innerHTML = '';
+        data.career_recommendations.slice(0, 6).forEach(role => {
+            const card = document.createElement('div');
+            card.className = 'career-role-card';
+            card.innerHTML = `
+                <div class="career-role-header">
+                    <h4>${role.role}</h4>
+                    <span class="match-pct-badge">${role.match_percentage}% Match</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: ${role.match_percentage}%"></div>
+                </div>
+                <p class="text-muted" style="font-size:0.84rem; margin-bottom:0.6rem;">${role.description}</p>
+                <div style="font-size:0.8rem;">
+                    <strong class="text-success">Matched:</strong> ${(role.matched_skills || []).slice(0, 4).join(', ') || 'Basic'}
+                    ${(role.missing_skills || []).length ? `<br><strong class="text-warning">Missing:</strong> ${role.missing_skills.slice(0, 3).join(', ')}` : ''}
+                </div>
+            `;
+            rolesGrid.appendChild(card);
+        });
+    }
 
     // 4. 45-Company Hiring Dataset Matching & Benchmark
     if (data.cohort_benchmark) {
@@ -870,25 +898,27 @@ function renderAnalysisResults(data) {
 
     // 5. Tailored Interview Questions Accordion
     const questionsContainer = document.getElementById('resume-questions-container');
-    questionsContainer.innerHTML = '';
-    data.interview_questions.forEach((q, idx) => {
-        const qCard = document.createElement('div');
-        qCard.className = 'question-card';
-        qCard.innerHTML = `
-            <div class="question-header" onclick="toggleQuestionBody(${idx})">
-                <div class="question-title-wrap">
-                    <span class="badge badge-primary">${q.type}</span>
-                    <span>${q.question}</span>
+    if (questionsContainer && Array.isArray(data.interview_questions)) {
+        questionsContainer.innerHTML = '';
+        data.interview_questions.forEach((q, idx) => {
+            const qCard = document.createElement('div');
+            qCard.className = 'question-card';
+            qCard.innerHTML = `
+                <div class="question-header" onclick="toggleQuestionBody(${idx})">
+                    <div class="question-title-wrap">
+                        <span class="badge badge-primary">${q.type}</span>
+                        <span>${q.question}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-muted" id="q-icon-${idx}"></i>
                 </div>
-                <i class="fa-solid fa-chevron-down text-muted" id="q-icon-${idx}"></i>
-            </div>
-            <div class="question-body" id="q-body-${idx}">
-                <div class="model-answer-badge"><i class="fa-solid fa-lightbulb"></i> Key Answering Points & Solution Concept</div>
-                <p style="font-size:0.9rem; color:var(--text-secondary);">${q.model_answer}</p>
-            </div>
-        `;
-        questionsContainer.appendChild(qCard);
-    });
+                <div class="question-body" id="q-body-${idx}">
+                    <div class="model-answer-badge"><i class="fa-solid fa-lightbulb"></i> Key Answering Points & Solution Concept</div>
+                    <p style="font-size:0.9rem; color:var(--text-secondary);">${q.model_answer}</p>
+                </div>
+            `;
+            questionsContainer.appendChild(qCard);
+        });
+    }
 
     // 6. Tailored Skill Mock Test Callout Banner Tags
     const mockCtaTags = document.getElementById('resume-mock-skills-tags');
