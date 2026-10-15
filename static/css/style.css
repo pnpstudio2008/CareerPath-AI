@@ -5909,6 +5909,31 @@ p {
         height: 250px;
         margin: 1.25rem auto 0;
     }
+    .hof-main-container {
+        padding: 1.25rem 0.6rem !important;
+        border-radius: 20px !important;
+        margin-bottom: 1.5rem !important;
+    }
+    .hof-header {
+        margin-bottom: 1rem !important;
+    }
+    .hof-header-left {
+        gap: 0.75rem !important;
+    }
+    .hof-title {
+        font-size: 1.15rem !important;
+    }
+    .hof-sub {
+        font-size: 0.8rem !important;
+    }
+    .hof-filters {
+        flex-direction: column !important;
+        gap: 0.6rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+    .h-search-wrap, .h-select {
+        width: 100% !important;
+    }
     .hof-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 0.5rem !important;
@@ -5916,11 +5941,9 @@ p {
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
-    .hof-filters { flex-direction: column; }
-    .h-search-wrap, .h-select { width: 100%; }
 
     .hof-card {
-        padding: 0.75rem 0.45rem !important;
+        padding: 0.85rem 0.55rem !important;
         border-radius: 14px !important;
         min-width: 0 !important;
         box-sizing: border-box !important;
@@ -5928,24 +5951,28 @@ p {
         flex-direction: column !important;
         justify-content: space-between !important;
         height: 100% !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
     }
     .hc-header {
         display: flex !important;
         flex-direction: column !important;
         align-items: flex-start !important;
-        gap: 0.35rem !important;
+        gap: 0.4rem !important;
         position: relative !important;
         width: 100% !important;
-        margin-bottom: 0.5rem !important;
+        margin-bottom: 0.6rem !important;
     }
     .hc-avatar-wrap {
         margin-left: 0 !important;
         flex-shrink: 0 !important;
     }
     .hc-avatar {
-        width: 34px !important;
-        height: 34px !important;
-        font-size: 0.8rem !important;
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 0.92rem !important;
+        border: 2px solid white !important;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08) !important;
     }
     .hc-user-info {
         width: 100% !important;
@@ -5954,29 +5981,33 @@ p {
         flex: 1 1 auto !important;
     }
     .hc-name {
-        font-size: 0.78rem !important;
-        font-weight: 700 !important;
-        line-height: 1.2 !important;
-        margin-bottom: 0.1rem !important;
+        font-size: 0.86rem !important;
+        font-weight: 800 !important;
+        line-height: 1.25 !important;
+        margin-bottom: 0.15rem !important;
         word-break: break-word !important;
+        color: #0F172A !important;
     }
     .hc-role {
-        font-size: 0.62rem !important;
-        line-height: 1.25 !important;
-        color: var(--text-secondary) !important;
+        font-size: 0.7rem !important;
+        line-height: 1.3 !important;
+        color: #475569 !important;
         word-break: break-word !important;
     }
+    .hc-role strong {
+        color: #0F172A !important;
+    }
     .hc-package {
-        font-size: 0.68rem !important;
-        font-weight: 700 !important;
+        font-size: 0.78rem !important;
+        font-weight: 800 !important;
         color: #059669 !important;
-        margin-top: 0.2rem !important;
+        margin-top: 0.3rem !important;
     }
     .hc-btn-solve {
         width: 100% !important;
         margin-top: auto !important;
-        padding: 0.42rem 0.2rem !important;
-        font-size: 0.65rem !important;
+        padding: 0.5rem 0.3rem !important;
+        font-size: 0.72rem !important;
         font-weight: 700 !important;
         border-radius: 999px !important;
         white-space: nowrap !important;
@@ -5984,12 +6015,12 @@ p {
         text-overflow: ellipsis !important;
         text-align: center !important;
         justify-content: center !important;
-        gap: 0.25rem !important;
+        gap: 0.3rem !important;
         line-height: 1.15 !important;
         box-sizing: border-box !important;
     }
     .hc-btn-solve i {
-        font-size: 0.58rem !important;
+        font-size: 0.65rem !important;
     }
     .hc-btn-solve i.fa-arrow-right {
         display: none !important;
@@ -5997,38 +6028,53 @@ p {
 }
 
 @media (max-width: 480px) {
+    .hof-main-container {
+        padding: 0.85rem 0.35rem !important;
+        border-radius: 16px !important;
+        margin-left: -0.45rem !important;
+        margin-right: -0.45rem !important;
+        width: calc(100% + 0.9rem) !important;
+        box-sizing: border-box !important;
+    }
+    .hof-filters {
+        gap: 0.45rem !important;
+        margin-bottom: 0.85rem !important;
+    }
     .hof-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 0.35rem !important;
+        width: 100% !important;
     }
     .hof-card {
-        padding: 0.55rem 0.3rem !important;
-        border-radius: 10px !important;
+        padding: 0.75rem 0.45rem !important;
+        border-radius: 12px !important;
     }
     .hc-avatar {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 0.72rem !important;
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 0.85rem !important;
     }
     .hc-name {
-        font-size: 0.72rem !important;
-        line-height: 1.15 !important;
+        font-size: 0.82rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.12rem !important;
     }
     .hc-role {
-        font-size: 0.58rem !important;
-        line-height: 1.15 !important;
+        font-size: 0.66rem !important;
+        line-height: 1.25 !important;
     }
     .hc-package {
-        font-size: 0.64rem !important;
-        font-weight: 700 !important;
-        margin-top: 0.15rem !important;
+        font-size: 0.75rem !important;
+        font-weight: 800 !important;
+        margin-top: 0.25rem !important;
     }
     .hc-btn-solve {
-        font-size: 0.6rem !important;
-        padding: 0.36rem 0.15rem !important;
+        font-size: 0.68rem !important;
+        padding: 0.45rem 0.2rem !important;
+        letter-spacing: -0.01em !important;
     }
     .hc-btn-solve i {
-        font-size: 0.52rem !important;
+        font-size: 0.6rem !important;
     }
 }
 
