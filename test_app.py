@@ -57,7 +57,10 @@ class TestCareerCompanion(unittest.TestCase):
         print(f"[OK] Mock Interview Evaluator Passed (Score: {eval_res['score']})")
 
     def test_flask_endpoints(self):
-        # 1. Test Home Page
+        # 1. Test Home Page (with active student session)
+        with self.app.session_transaction() as sess:
+            sess['student_logged_in'] = True
+            sess['student_roll_no'] = '24C11018'
         res = self.app.get('/')
         self.assertEqual(res.status_code, 200)
 

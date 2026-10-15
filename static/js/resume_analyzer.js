@@ -437,7 +437,84 @@ function renderAnalysisResults(data) {
     const verifBadge = document.getElementById('resume-verified-badge');
     if (verifBadge) verifBadge.style.display = 'inline-flex';
 
-    const ats = data.ats_analysis;
+    // 0. Candidate Profile Intelligence Summary
+    const profCard = document.getElementById('candidate-profile-card');
+    if (profCard && data.candidate_profile) {
+        const prof = data.candidate_profile;
+        profCard.style.display = 'block';
+
+        const nameEl = document.getElementById('cpc-name');
+        const avatarEl = document.getElementById('cpc-avatar');
+        const cName = prof.name || (data.contact_info && data.contact_info.email ? data.contact_info.email.split('@')[0].toUpperCase() : 'Candidate');
+        if (nameEl) nameEl.innerText = cName;
+        if (avatarEl) {
+            const initials = cName.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() || 'CV';
+            avatarEl.innerText = initials;
+        }
+
+        const expBadge = document.getElementById('cpc-exp-badge');
+        if (expBadge) {
+            expBadge.innerHTML = `<i class="fa-solid fa-user-graduate"></i> ${prof.experience_summary || 'Fresher / Entry Level'}`;
+        }
+
+        const rollBadge = document.getElementById('cpc-roll-badge');
+        const rollVal = document.getElementById('cpc-roll-val');
+        if (rollBadge && rollVal) {
+            if (prof.roll_no) {
+                rollBadge.style.display = 'inline-flex';
+                rollVal.innerText = prof.roll_no;
+            } else {
+                rollBadge.style.display = 'none';
+            }
+        }
+
+        const degBranchEl = document.getElementById('cpc-degree-branch');
+        if (degBranchEl) {
+            let degText = prof.degree || 'Degree in Tech';
+            if (prof.branch) degText += ` &bull; ${prof.branch}`;
+            degBranchEl.innerHTML = `<i class="fa-solid fa-graduation-cap text-primary"></i> ${degText}`;
+        }
+
+        const instEl = document.getElementById('cpc-institution');
+        if (instEl) {
+            instEl.innerHTML = `<i class="fa-solid fa-building-columns text-purple"></i> ${prof.institution || 'Engineering & Technology Institute'}`;
+        }
+
+        const batchEl = document.getElementById('cpc-batch');
+        if (batchEl) {
+            batchEl.innerHTML = `<i class="fa-solid fa-calendar-days text-amber"></i> ${prof.graduation_year ? 'Batch of ' + prof.graduation_year : 'Recent Graduate'}`;
+        }
+
+        const cgpaVal = document.getElementById('cpc-cgpa-val');
+        if (cgpaVal) {
+            cgpaVal.innerText = prof.cgpa || (ats ? `${ats.ats_score}% ATS` : '--');
+        }
+
+        // Contact strip
+        const contactStrip = document.getElementById('cpc-contact-strip');
+        if (contactStrip) {
+            contactStrip.innerHTML = '';
+            const email = prof.email || (data.contact_info && data.contact_info.email);
+            const phone = prof.phone || (data.contact_info && data.contact_info.phone);
+            const linkedin = prof.linkedin || (data.contact_info && data.contact_info.linkedin);
+            const github = prof.github || (data.contact_info && data.contact_info.github);
+
+            if (email) {
+                contactStrip.innerHTML += `<a href="mailto:${email}" class="cpc-contact-chip"><i class="fa-solid fa-envelope text-primary"></i> ${email}</a>`;
+            }
+            if (phone) {
+                contactStrip.innerHTML += `<span class="cpc-contact-chip"><i class="fa-solid fa-phone text-success"></i> ${phone}</span>`;
+            }
+            if (linkedin) {
+                const cleanLi = linkedin.replace(/^https?:\/\//i, '');
+                contactStrip.innerHTML += `<a href="https://${cleanLi}" target="_blank" rel="noopener noreferrer" class="cpc-contact-chip"><i class="fa-brands fa-linkedin text-primary"></i> ${cleanLi}</a>`;
+            }
+            if (github) {
+                const cleanGh = github.replace(/^https?:\/\//i, '');
+                contactStrip.innerHTML += `<a href="https://${cleanGh}" target="_blank" rel="noopener noreferrer" class="cpc-contact-chip"><i class="fa-brands fa-github"></i> ${cleanGh}</a>`;
+            }
+        }
+    }
 
     // 1. ATS Score Gauge Animation
     animateGauge(ats.ats_score, ats.rating_color);
@@ -603,6 +680,38 @@ function renderAnalysisResults(data) {
         recList.appendChild(li);
     });
 
+    // Render 6-Pillar Dimension Calibration Bars
+    const dimBarsContainer = document.getElementById('ats-dimension-bars');
+    if (dimBarsContainer && ats && ats.dimension_scores) {
+        dimBarsContainer.innerHTML = '';
+        const groundingBadge = document.getElementById('ats-grounding-ratio-badge');
+        if (groundingBadge && ats.section_breakdown && ats.section_breakdown.skill_grounding_ratio !== undefined) {
+            const grPct = Math.round(ats.section_breakdown.skill_grounding_ratio * 100);
+            groundingBadge.innerText = `Grounding: ${grPct}%`;
+        }
+
+        ats.dimension_scores.forEach(dim => {
+            let fillClass = '';
+            if (dim.percentage >= 85) fillClass = 'emerald';
+            else if (dim.percentage >= 70) fillClass = '';
+            else if (dim.percentage >= 50) fillClass = 'amber';
+            else fillClass = 'purple';
+
+            const row = document.createElement('div');
+            row.className = 'ats-dim-row';
+            row.innerHTML = `
+                <div class="ats-dim-meta">
+                    <span><i class="fa-solid ${dim.icon || 'fa-chart-bar'}"></i> ${dim.label}</span>
+                    <span>${dim.score} / ${dim.max} (${dim.percentage}%)</span>
+                </div>
+                <div class="ats-dim-track">
+                    <div class="ats-dim-fill ${fillClass}" style="width: ${dim.percentage}%;"></div>
+                </div>
+            `;
+            dimBarsContainer.appendChild(row);
+        });
+    }
+
     // 3. Extracted Skills Taxonomy
     document.getElementById('skills-total-badge').innerText = `${data.total_skills_count} Skills Detected`;
     const skillsGrid = document.getElementById('skills-taxonomy-container');
@@ -656,6 +765,54 @@ function renderAnalysisResults(data) {
 
         block.appendChild(pillsWrap);
         skillsGrid.appendChild(block);
+    }
+
+    // Render Extracted Technical Projects
+    const projCard = document.getElementById('extracted-projects-card');
+    const projContainer = document.getElementById('extracted-projects-container');
+    const projCountBadge = document.getElementById('extracted-projects-count-badge');
+    if (projCard && projContainer) {
+        const projs = data.extracted_projects || [];
+        if (projs.length > 0) {
+            projCard.style.display = 'block';
+            if (projCountBadge) projCountBadge.innerText = `${projs.length} Projects Verified`;
+            projContainer.innerHTML = projs.map(p => {
+                const techPills = (p.tech_stack || []).map(t => `<span class="proj-tech-pill">${t}</span>`).join('');
+                const metricPills = (p.metrics || []).map(m => `<span class="proj-metric-pill"><i class="fa-solid fa-arrow-trend-up"></i> ${m}</span>`).join('');
+                return `
+                    <div class="proj-card">
+                        <div>
+                            <h4 class="proj-title"><i class="fa-solid fa-cube text-primary"></i> ${p.title}</h4>
+                            <p class="proj-desc">${p.description}</p>
+                            ${techPills ? `<div class="proj-tech-wrap">${techPills}</div>` : ''}
+                        </div>
+                        ${metricPills ? `<div class="proj-metrics-wrap">${metricPills}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        } else {
+            projCard.style.display = 'none';
+        }
+    }
+
+    // Render Key Achievements & Honors
+    const achCard = document.getElementById('extracted-achievements-card');
+    const achContainer = document.getElementById('extracted-achievements-container');
+    const achCountBadge = document.getElementById('extracted-achievements-count-badge');
+    if (achCard && achContainer) {
+        const achs = data.extracted_achievements || [];
+        if (achs.length > 0) {
+            achCard.style.display = 'block';
+            if (achCountBadge) achCountBadge.innerText = `${achs.length} Distinctions Found`;
+            achContainer.innerHTML = achs.map(a => `
+                <div class="ach-item">
+                    <div class="ach-icon"><i class="fa-solid fa-award"></i></div>
+                    <div class="ach-text">${a}</div>
+                </div>
+            `).join('');
+        } else {
+            achCard.style.display = 'none';
+        }
     }
 
     // 4. Career Role Recommendations

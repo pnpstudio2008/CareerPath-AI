@@ -885,6 +885,35 @@
                     </div>
                 </div>
 
+                <!-- Candidate Profile Intelligence Summary Card -->
+                <div class="card mb-4 candidate-profile-card" id="candidate-profile-card" style="display:none;">
+                    <div class="cpc-header">
+                        <div class="cpc-avatar" id="cpc-avatar">--</div>
+                        <div class="cpc-title-wrap">
+                            <div class="cpc-name-row">
+                                <h3 id="cpc-name" class="cpc-name">Candidate Profile</h3>
+                                <span class="badge badge-success" id="cpc-exp-badge"><i class="fa-solid fa-user-graduate"></i> Fresher</span>
+                                <span class="badge badge-primary" id="cpc-roll-badge" style="display:none;"><i class="fa-solid fa-id-card"></i> <span id="cpc-roll-val"></span></span>
+                            </div>
+                            <div class="cpc-academic-line">
+                                <span id="cpc-degree-branch"><i class="fa-solid fa-graduation-cap text-primary"></i> Degree &amp; Branch</span>
+                                <span class="cpc-divider">&bull;</span>
+                                <span id="cpc-institution"><i class="fa-solid fa-building-columns text-purple"></i> University / College</span>
+                                <span class="cpc-divider">&bull;</span>
+                                <span id="cpc-batch"><i class="fa-solid fa-calendar-days text-amber"></i> Batch</span>
+                            </div>
+                        </div>
+                        <div class="cpc-score-badge" id="cpc-score-badge">
+                            <span class="cpc-score-lbl">Academic Score</span>
+                            <span class="cpc-score-val" id="cpc-cgpa-val">--</span>
+                        </div>
+                    </div>
+                    <!-- Contact & Digital Presence Strip -->
+                    <div class="cpc-contact-strip" id="cpc-contact-strip">
+                        <!-- Populated dynamically: email, phone, linkedin, github -->
+                    </div>
+                </div>
+
                 <!-- Row 1: ATS Score Meter & Overview Summary -->
                 <div class="results-grid-2">
                     <div class="card ats-score-card">
@@ -918,6 +947,17 @@
                                 <div class="metric-lbl">Measurable Metrics</div>
                             </div>
                         </div>
+
+                        <!-- Calibrated 6-Pillar ATS Dimension Scores -->
+                        <div class="ats-dimensions-block mt-4" id="ats-dimensions-block">
+                            <div class="adb-header">
+                                <h4><i class="fa-solid fa-sliders text-primary"></i> 6-Pillar ATS Scoring Calibration</h4>
+                                <span class="badge badge-info" id="ats-grounding-ratio-badge">Grounding: 0%</span>
+                            </div>
+                            <div class="ats-dimension-bars" id="ats-dimension-bars">
+                                <!-- Populated dynamically by resume_analyzer.js -->
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card section-audit-card">
@@ -936,6 +976,34 @@
                         <span class="badge badge-info" id="skills-total-badge">0 Skills Detected</span>
                     </div>
                     <div class="skills-taxonomy-grid" id="skills-taxonomy-container"></div>
+                </div>
+
+                <!-- Row 2B: Extracted Projects & Quantifiable Impact Showcase -->
+                <div class="card mt-4" id="extracted-projects-card" style="display:none;">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fa-solid fa-diagram-project text-primary"></i> Extracted Technical Projects &amp; Impact Proof</h3>
+                            <p class="text-muted">High-precision extraction of projects, architectures, tech stacks, and quantifiable results.</p>
+                        </div>
+                        <span class="badge badge-primary" id="extracted-projects-count-badge">0 Projects Verified</span>
+                    </div>
+                    <div class="extracted-projects-grid" id="extracted-projects-container">
+                        <!-- Populated dynamically by resume_analyzer.js -->
+                    </div>
+                </div>
+
+                <!-- Row 2C: Extracted Achievements, Hackathons & Honors -->
+                <div class="card mt-4" id="extracted-achievements-card" style="display:none;">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3><i class="fa-solid fa-trophy text-amber"></i> Key Achievements, Competitions &amp; Distinctions</h3>
+                            <p class="text-muted">Verified hackathons, competitive programming milestones, scholarships, and academic honors.</p>
+                        </div>
+                        <span class="badge badge-warning" id="extracted-achievements-count-badge">0 Honors Found</span>
+                    </div>
+                    <div class="extracted-achievements-list" id="extracted-achievements-container">
+                        <!-- Populated dynamically by resume_analyzer.js -->
+                    </div>
                 </div>
 
                 <!-- Row 3: Career Path Recommendations -->
@@ -2124,6 +2192,263 @@
             font-size: 0.875rem;
             color: #64748B;
             margin: 0;
+        }
+
+        /* Candidate Profile Intelligence Card */
+        .candidate-profile-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-radius: 18px;
+            padding: 1.5rem 1.75rem;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+        }
+        .cpc-header {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+        .cpc-avatar {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563EB, #8B5CF6);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            flex-shrink: 0;
+        }
+        .cpc-title-wrap {
+            flex: 1;
+            min-width: 240px;
+        }
+        .cpc-name-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.35rem;
+        }
+        .cpc-name {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin: 0;
+        }
+        .cpc-academic-line {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            font-size: 0.88rem;
+            color: #475569;
+            font-weight: 600;
+        }
+        .cpc-divider {
+            color: #CBD5E1;
+        }
+        .cpc-score-badge {
+            background: rgba(37, 99, 235, 0.08);
+            border: 1px solid rgba(37, 99, 235, 0.25);
+            border-radius: 14px;
+            padding: 0.65rem 1.15rem;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .cpc-score-lbl {
+            display: block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            color: #2563EB;
+        }
+        .cpc-score-val {
+            display: block;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #0F172A;
+        }
+        .cpc-contact-strip {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .cpc-contact-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: #F1F5F9;
+            color: #334155;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .cpc-contact-chip:hover {
+            background: #E2E8F0;
+            color: #0F172A;
+        }
+
+        /* 6-Pillar Dimension Calibration Scores */
+        .ats-dimensions-block {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 1.15rem 1.25rem;
+        }
+        .adb-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.9rem;
+        }
+        .adb-header h4 {
+            margin: 0;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #0F172A;
+        }
+        .ats-dim-row {
+            margin-bottom: 0.7rem;
+        }
+        .ats-dim-row:last-child {
+            margin-bottom: 0;
+        }
+        .ats-dim-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 0.3rem;
+        }
+        .ats-dim-track {
+            height: 7px;
+            background: #E2E8F0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .ats-dim-fill {
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #2563EB, #3B82F6);
+            transition: width 0.8s ease;
+        }
+        .ats-dim-fill.emerald { background: linear-gradient(90deg, #10B981, #059669); }
+        .ats-dim-fill.amber { background: linear-gradient(90deg, #F59E0B, #D97706); }
+        .ats-dim-fill.purple { background: linear-gradient(90deg, #8B5CF6, #6D28D9); }
+
+        /* Extracted Projects Showcase */
+        .extracted-projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.15rem;
+            margin-top: 1rem;
+        }
+        .proj-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .proj-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.08);
+            border-color: #CBD5E1;
+        }
+        .proj-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin: 0 0 0.5rem;
+        }
+        .proj-desc {
+            font-size: 0.86rem;
+            color: #64748B;
+            line-height: 1.55;
+            margin-bottom: 0.75rem;
+            flex: 1;
+        }
+        .proj-tech-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.6rem;
+        }
+        .proj-tech-pill {
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563EB;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+        }
+        .proj-metrics-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #E2E8F0;
+        }
+        .proj-metric-pill {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* Achievements list */
+        .extracted-achievements-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        .ach-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 0.85rem 1.15rem;
+            font-size: 0.88rem;
+            color: #334155;
+            line-height: 1.5;
+        }
+        .ach-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.15);
+            color: #D97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            margin-top: 1px;
         }
     </style>
     <script>

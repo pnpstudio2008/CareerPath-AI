@@ -324,16 +324,22 @@ def normalize_skill(skill_str: str) -> str:
 # =========================================================================
 ACTION_VERBS = [
     # Leadership & Architecture
-    "accelerated", "achieved", "analyzed", "architected", "automated", "built",
-    "championed", "collaborated", "configured", "constructed", "created", "debugged",
-    "delivered", "deployed", "designed", "developed", "devised", "directed",
-    "documented", "engineered", "enhanced", "established", "executed", "formulated",
-    "founded", "implemented", "improved", "increased", "initiated", "integrated",
-    "launched", "led", "leveraged", "maintained", "managed", "migrated", "modeled",
-    "modernized", "monitored", "optimized", "orchestrated", "overhauled", "pioneered",
-    "programmed", "refactored", "resolved", "restructured", "revamped", "scaled",
-    "simplified", "spearheaded", "standardized", "streamlined", "supervised", "tested",
-    "trained", "transformed", "upgraded", "utilized", "validated"
+    "accelerated", "achieved", "administered", "allocated", "analyzed", "architected",
+    "authored", "automated", "benchmarked", "built", "calculated", "centralized",
+    "championed", "collaborated", "compiled", "configured", "consolidated", "constructed",
+    "containerized", "created", "customized", "debugged", "decreased", "delivered",
+    "deployed", "designed", "developed", "devised", "directed", "documented",
+    "eliminated", "engineered", "enhanced", "established", "executed", "expedited",
+    "formulated", "founded", "generated", "hardened", "implemented", "improved",
+    "increased", "indexed", "initiated", "instrumented", "integrated", "isolated",
+    "launched", "led", "leveraged", "maintained", "managed", "maximized", "migrated",
+    "minimized", "modeled", "modernized", "monitored", "navigated", "optimized",
+    "orchestrated", "originated", "overhauled", "partitioned", "pioneered", "programmed",
+    "provisioned", "quantified", "re-engineered", "rebuilt", "refactored", "remediated",
+    "researched", "resolved", "restructured", "revamped", "scaled", "secured",
+    "sharded", "simplified", "simulated", "spearheaded", "standardized", "streamlined",
+    "strengthened", "supervised", "synthesized", "tested", "trained", "transformed",
+    "troubleshot", "unified", "upgraded", "utilized", "validated", "visualized"
 ]
 
 # =========================================================================
@@ -684,7 +690,8 @@ def extract_candidate_profile(text: str) -> Dict[str, Any]:
     """
     Extracts high-precision candidate profile information:
     Candidate Name, Degree, Branch/Major, Institution/College, CGPA/GPA,
-    Graduation Year, and Total Experience estimation.
+    Graduation Year, Roll Number, Contact Info (Email, Phone, LinkedIn, GitHub),
+    and Total Experience estimation.
     """
     if not text:
         return {}
@@ -712,31 +719,60 @@ def extract_candidate_profile(text: str) -> Dict[str, Any]:
                 name = clean.title()
                 break
 
-    # 2. Degree & Branch / Specialization
+    # Fallback to email username if name could not be identified
+    email_match = re.search(r'([a-zA-Z0-9_.+-]+)@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
+    if not name and email_match:
+        user_part = email_match.group(1).split('.')[0]
+        if len(user_part) >= 3 and not re.search(r'\d{3,}', user_part):
+            name = user_part.capitalize()
+
+    # 2. Degree & Branch / Specialization (Supports parenthesized abbreviations & all standard formats)
     degree = None
     branch = None
-    deg_match = re.search(
-        r'\b(B\.?Tech|B\.?E\.?|M\.?Tech|M\.?E\.?|BCA|MCA|B\.?Sc|M\.?Sc|Bachelor\s+of\s+[A-Za-z]+|Master\s+of\s+[A-Za-z]+|Diploma)\.?(?:\s+(?:in|of)\s+([A-Za-z\s&]+?)(?=\n|\||\,|$))?',
-        edu_text,
+    deg_list = [
+        r'Bachelor\s+of\s+Technology', r'Bachelor\s+of\s+Engineering', r'Bachelor\s+of\s+Science',
+        r'Master\s+of\s+Technology', r'Master\s+of\s+Engineering', r'Master\s+of\s+Science',
+        r'Master\s+of\s+Computer\s+Applications', r'Bachelor\s+of\s+Computer\s+Applications',
+        r'B\.?Tech', r'B\.?E\.?', r'M\.?Tech', r'M\.?E\.?', r'MCA', r'BCA', r'B\.?Sc', r'M\.?Sc',
+        r'Diploma'
+    ]
+    deg_pat = r'\b(' + '|'.join(deg_list) + r')\b'
+    deg_regex = re.compile(
+        deg_pat + r'\.?(?:\s*\((?:B\.?Tech|B\.?E\.?|M\.?Tech|M\.?E\.?|MCA|BCA|B\.?Sc|M\.?Sc|[A-Z]+)\))?'
+        r'(?:(?:\s*\(\s*([A-Za-z\s&]+?)\s*\))|'
+        r'(?:[\s\-:,|]+(?:in|of)?\s*([A-Za-z\s&]+?)(?=\n|\||\,|$|\()))?',
         re.IGNORECASE
     )
-    if deg_match:
-        raw_deg = deg_match.group(1).replace('.', '').upper()
-        if 'TECH' in raw_deg:
-            degree = 'B.Tech' if 'B' in raw_deg else 'M.Tech'
-        elif 'E' in raw_deg and len(raw_deg) <= 3:
-            degree = 'B.E.' if 'B' in raw_deg else 'M.E.'
+    m = deg_regex.search(edu_text)
+    if m:
+        raw_deg = m.group(1).replace('.', '').upper()
+        if 'BTECH' in raw_deg or 'BACHELOR OF TECHNOLOGY' in raw_deg:
+            degree = 'B.Tech'
+        elif 'BE' == raw_deg or 'BACHELOR OF ENGINEERING' in raw_deg:
+            degree = 'B.E.'
+        elif 'MTECH' in raw_deg or 'MASTER OF TECHNOLOGY' in raw_deg:
+            degree = 'M.Tech'
+        elif 'MCA' in raw_deg or 'MASTER OF COMPUTER APPLICATIONS' in raw_deg:
+            degree = 'MCA'
+        elif 'BCA' in raw_deg or 'BACHELOR OF COMPUTER APPLICATIONS' in raw_deg:
+            degree = 'BCA'
+        elif 'BSC' in raw_deg or 'BACHELOR OF SCIENCE' in raw_deg:
+            degree = 'B.Sc'
+        elif 'MSC' in raw_deg or 'MASTER OF SCIENCE' in raw_deg:
+            degree = 'M.Sc'
         else:
-            degree = deg_match.group(1).title()
+            degree = m.group(1).title()
 
-        if deg_match.group(2):
-            raw_branch = deg_match.group(2).strip()
-            branch = re.split(r'[\n|,]', raw_branch)[0].strip().title()
+        raw_branch = m.group(2) or m.group(3)
+        if raw_branch:
+            raw_branch = re.split(r'[\n|,]', raw_branch.strip())[0].strip().title()
+            if raw_branch.lower() not in ['in', 'of', 'and', 'the']:
+                branch = raw_branch
 
-    # 3. Institution / College / University (line-by-line scanning)
+    # 3. Institution / College / University (line-by-line scanning with expanded keywords)
     institution = None
     edu_lines = [l.strip() for l in edu_text.split('\n') if l.strip()]
-    inst_keywords = r'\b(Institute\s+of\s+Technology|Engineering\s+College|University|College\s+of\s+Engineering|National\s+Institute)\b'
+    inst_keywords = r'\b(Institute\s+of\s+Technology|Engineering\s+College|University|College\s+of\s+Engineering|National\s+Institute|Technological\s+University|School\s+of\s+Engineering|Polytechnic|Academy\s+of\s+Technology|Indian\s+Institute|International\s+Institute|Birla\s+Institute|Autonomous\s+College)\b'
     for l in edu_lines:
         if re.search(inst_keywords, l, re.IGNORECASE):
             clean_inst = re.sub(r'\|.*$', '', l).strip()
@@ -747,19 +783,28 @@ def extract_candidate_profile(text: str) -> Dict[str, Any]:
 
     # 4. Academic Score (CGPA / GPA / Percentage)
     cgpa = None
-    cgpa_match = re.search(r'\b(?:CGPA|GPA|Score)[\s:]*([0-9]\.[0-9]{1,2}(?:\s*\/\s*(?:10|4(?:\.0)?))?|[0-9]{2}(?:\.[0-9])?\s*%)', edu_text, re.IGNORECASE)
+    cgpa_match = re.search(r'\b(?:CGPA|Cumulative\s+GPA|GPA|Aggregate|Grade|Score)[\s:\-]*([0-9]\.[0-9]{1,2}(?:\s*\/\s*(?:10(?:\.0)?|4(?:\.0)?))?|[0-9]{2}(?:\.[0-9]{1,2})?\s*%)', edu_text, re.IGNORECASE)
     if cgpa_match:
         cgpa = cgpa_match.group(1).strip()
-    elif re.search(r'\b([0-9]\.[0-9]{1,2}\s*\/\s*10)\b', edu_text):
-        cgpa = re.search(r'\b([0-9]\.[0-9]{1,2}\s*\/\s*10)\b', edu_text).group(1).strip()
+    elif re.search(r'\b([0-9]\.[0-9]{1,2}\s*\/\s*10(?:\.0)?)\b', edu_text):
+        cgpa = re.search(r'\b([0-9]\.[0-9]{1,2}\s*\/\s*10(?:\.0)?)\b', edu_text).group(1).strip()
 
     # 5. Graduation Year / Batch
     grad_year = None
-    year_match = re.search(r'\b(20[12][0-9]\s*[-–]\s*20[23][0-9]|20[23][0-9])\b', edu_text)
+    year_match = re.search(r'\b(?:Batch\s+of\s+)?(20[12][0-9]\s*[-–]\s*20[23][0-9]|20[23][0-9])\b', edu_text, re.IGNORECASE)
     if year_match:
         grad_year = year_match.group(1).strip()
 
-    # 6. Experience Summary Estimation
+    # 6. Roll Number / Student ID / PRN
+    roll_no = None
+    roll_match = re.search(r'\b(?:Roll\s*(?:No\.?|Number)|PRN|Enrollment\s*(?:No\.?|Number)|Student\s*ID)[\s:\-]*([A-Za-z0-9\-]+)', header_text or text, re.IGNORECASE)
+    if roll_match:
+        roll_no = roll_match.group(1).strip()
+
+    # 7. Contact Details
+    contact = extract_contact_info(text)
+
+    # 8. Experience Summary Estimation
     experience_summary = "Fresher / Entry Level"
     if exp_text:
         dur_match = re.search(r'(\d+\+?\s*(?:years?|months?))', exp_text, re.IGNORECASE)
@@ -775,6 +820,11 @@ def extract_candidate_profile(text: str) -> Dict[str, Any]:
         "institution": institution,
         "cgpa": cgpa,
         "graduation_year": grad_year,
+        "roll_no": roll_no,
+        "email": contact.get("email"),
+        "phone": contact.get("phone"),
+        "linkedin": contact.get("linkedin"),
+        "github": contact.get("github"),
         "experience_summary": experience_summary
     }
 
@@ -922,22 +972,35 @@ def extract_certifications_from_text(text: str) -> List[str]:
 # =========================================================================
 
 def extract_contact_info(text: str) -> Dict[str, Optional[str]]:
-    """Extracts email, phone, linkedin, and github links."""
+    """Extracts email, phone (international/Indian/standard), linkedin, github, and portfolio links."""
     email_pattern = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
-    phone_pattern = r'(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}'
+    phone_pattern = r'(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,5}\)?[-.\s]?)?\d{3,5}[-.\s]?\d{4,5}\b'
     linkedin_pattern = r'(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+'
     github_pattern = r'(?:https?:\/\/)?(?:www\.)?github\.com\/[a-zA-Z0-9_-]+'
+    portfolio_pattern = r'(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9_-]+\.(?:dev|me|io|tech|app|site|in|com))\b'
 
     emails = re.findall(email_pattern, text)
-    phones = re.findall(phone_pattern, text)
+    raw_phones = re.findall(phone_pattern, text)
+    valid_phones = []
+    for p in raw_phones:
+        clean_digits = re.sub(r'\D', '', p)
+        if 10 <= len(clean_digits) <= 13:
+            valid_phones.append(p.strip())
+
     linkedins = re.findall(linkedin_pattern, text, re.IGNORECASE)
     githubs = re.findall(github_pattern, text, re.IGNORECASE)
+    
+    portfolios = []
+    for pot in re.findall(portfolio_pattern, text, re.IGNORECASE):
+        if not any(x in pot.lower() for x in ['linkedin', 'github', 'gmail', 'yahoo', 'outlook']):
+            portfolios.append(pot)
 
     return {
         "email": emails[0] if emails else None,
-        "phone": phones[0] if phones else None,
+        "phone": valid_phones[0] if valid_phones else None,
         "linkedin": linkedins[0] if linkedins else None,
-        "github": githubs[0] if githubs else None
+        "github": githubs[0] if githubs else None,
+        "portfolio": portfolios[0] if portfolios else None
     }
 
 
@@ -1136,7 +1199,7 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
     # 4. Quantifiable Impact & Google XYZ Metrics (Weight: 20 pts)
     # Filter out phone numbers and standalone graduation years
     metric_pat = re.compile(
-        r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|drives)|\b\d+x\b|\b\d{1,3}(?:,\d{3})+\+?\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records)?)',
+        r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|drives|coders|developers|engineers|customers|downloads|stars|commits|contributors|visitors|participants|attendees|tests|endpoints|services|qps|rps|tps|fps|ms|latency|speedup|accuracy|precision|recall|f1|dataset|rows|samples)|\b\d+x\b|\b\d{1,3}(?:,\d{3})+\+?\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|coders|developers|customers|downloads)?)',
         re.I
     )
     raw_metric_matches = metric_pat.findall(text)
@@ -1230,12 +1293,22 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
 
     recommendations.extend(format_issues)
 
+    dimension_scores = [
+        {"key": "section_completeness", "label": "Section Architecture", "score": section_score, "max": 20, "percentage": int((section_score / 20) * 100), "icon": "fa-list-check"},
+        {"key": "skills_grounding", "label": "Technical Skills & Grounding", "score": skill_score, "max": 25, "percentage": int((skill_score / 25) * 100), "icon": "fa-microchip"},
+        {"key": "quantifiable_metrics", "label": "Google XYZ Impact Metrics", "score": metric_score, "max": 20, "percentage": int((metric_score / 20) * 100), "icon": "fa-chart-line"},
+        {"key": "action_verbs", "label": "Action Verb Leadership", "score": verb_score, "max": 15, "percentage": int((verb_score / 15) * 100), "icon": "fa-bolt"},
+        {"key": "formatting", "label": "Formatting & Layout", "score": format_score, "max": 10, "percentage": int((format_score / 10) * 100), "icon": "fa-file-lines"},
+        {"key": "contact", "label": "Contact & Digital Footprint", "score": contact_score, "max": 10, "percentage": int((contact_score / 10) * 100), "icon": "fa-id-badge"}
+    ]
+
     return {
         "ats_score": total_ats_score,
         "rating": rating,
         "rating_color": rating_color,
         "feedback_summary": feedback_summary,
         "word_count": total_words,
+        "dimension_scores": dimension_scores,
         "section_breakdown": {
             "sections": sections_checked,
             "section_score": section_score,
@@ -1249,7 +1322,7 @@ def analyze_resume_ats(text: str, extracted_skills: Dict[str, List[str]]) -> Dic
         },
         "action_verbs_found": sorted(list(found_action_verbs)),
         "metrics_found_count": metric_count,
-        "impact_metrics_detected": genuine_metrics[:8],
+        "impact_metrics_detected": genuine_metrics[:10],
         "weak_phrases_detected": found_weak_phrases,
         "recommendations": recommendations[:6]
     }
@@ -1660,7 +1733,7 @@ def extract_projects(text: str) -> List[Dict[str, Any]]:
 
                 # Scan description for metrics
                 metric_pat = re.compile(
-                    r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|drives)|\b\d+x\b|\b\d{1,3}(?:,\d{3})+\+?\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records)?)',
+                    r'(\d+(?:\.\d+)?%|\b\d+[kKmMbB]\+?\b|\b\d+\+\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|drives|coders|developers|engineers|customers|downloads|stars|commits|contributors|visitors|participants|attendees|tests|endpoints|services|qps|rps|tps|fps|ms|latency|speedup|accuracy|precision|recall|f1|dataset|rows|samples)|\b\d+x\b|\b\d{1,3}(?:,\d{3})+\+?\s*(?:[a-zA-Z]+\s+)?(?:users|clients|students|requests|queries|transactions|profiles|problems|records|coders|developers|customers|downloads)?)',
                     re.IGNORECASE
                 )
                 for m in metric_pat.findall(clean_cand):
