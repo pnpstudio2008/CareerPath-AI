@@ -1,0 +1,242 @@
+/**
+ * AI Career Companion - Advanced Client-Side Security Guard
+ * Intellectual Property & Source Code Anti-Inspection Protection
+ * 
+ * Protects against:
+ * - View Page Source (Ctrl+U)
+ * - Developer Tools (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C)
+ * - Right-Click Context Menu Inspection
+ * - Page Saving & Scraping (Ctrl+S, Drag & Drop)
+ * - DevTools Console Tampering & Reverse Engineering
+ */
+
+(function () {
+    'use strict';
+
+    // Last toast notification timestamp to prevent alert flood
+    let lastToastTime = 0;
+
+    function showSecurityToast(message) {
+        const now = Date.now();
+        if (now - lastToastTime < 2500) return;
+        lastToastTime = now;
+
+        let container = document.getElementById('security-toast-box');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'security-toast-box';
+            container.style.cssText = `
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%) translateY(20px);
+                background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+                color: #FFFFFF;
+                border: 1px solid rgba(239, 68, 68, 0.4);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 20px rgba(239, 68, 68, 0.25);
+                padding: 12px 24px;
+                border-radius: 999px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif;
+                font-size: 13px;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                z-index: 10000000;
+                pointer-events: none;
+                opacity: 0;
+                transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            `;
+            container.innerHTML = `<span style="color:#EF4444; font-size:16px;">🛡️</span> <span id="sec-toast-msg"></span>`;
+            document.body.appendChild(container);
+        }
+
+        const msgSpan = document.getElementById('sec-toast-msg');
+        if (msgSpan) msgSpan.textContent = message;
+
+        // Animate in
+        requestAnimationFrame(() => {
+            container.style.opacity = '1';
+            container.style.transform = 'translateX(-50%) translateY(0)';
+        });
+
+        // Animate out
+        setTimeout(() => {
+            if (container) {
+                container.style.opacity = '0';
+                container.style.transform = 'translateX(-50%) translateY(15px)';
+            }
+        }, 2200);
+    }
+
+    // 1. DISABLE RIGHT-CLICK CONTEXT MENU (ANTI-INSPECT)
+    document.addEventListener('contextmenu', function (e) {
+        // Allow right-click ONLY on editable inputs/textareas for pasting
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) {
+            return true;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        showSecurityToast('Source inspection and context menus are restricted for security.');
+        return false;
+    }, true);
+
+    // 2. DISABLE DEVELOPER KEYBOARD SHORTCUTS
+    document.addEventListener('keydown', function (e) {
+        // F12 key
+        if (e.keyCode === 123) {
+            e.preventDefault();
+            e.stopPropagation();
+            showSecurityToast('Developer Tools access is locked by security policy.');
+            return false;
+        }
+
+        const ctrlOrMeta = e.ctrlKey || e.metaKey;
+
+        // Ctrl + Shift + I (Inspect)
+        // Ctrl + Shift + J (Console)
+        // Ctrl + Shift + C (Element picker)
+        // Ctrl + Shift + K (Firefox console)
+        if (ctrlOrMeta && e.shiftKey) {
+            const key = (e.key || '').toUpperCase();
+            if (key === 'I' || key === 'J' || key === 'C' || key === 'K') {
+                e.preventDefault();
+                e.stopPropagation();
+                showSecurityToast('Developer Tools shortcut is disabled.');
+                return false;
+            }
+        }
+
+        // Ctrl + U (View Source)
+        if (ctrlOrMeta && (e.key === 'u' || e.key === 'U')) {
+            e.preventDefault();
+            e.stopPropagation();
+            showSecurityToast('Viewing page source is protected.');
+            return false;
+        }
+
+        // Ctrl + S (Save Page As)
+        if (ctrlOrMeta && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault();
+            e.stopPropagation();
+            showSecurityToast('Saving platform source code is blocked.');
+            return false;
+        }
+
+        // Ctrl + P (Print Page - except when user clicks explicit print buttons)
+        if (ctrlOrMeta && (e.key === 'p' || e.key === 'P')) {
+            const isInput = ['input', 'textarea'].includes((e.target.tagName || '').toLowerCase());
+            if (!isInput) {
+                e.preventDefault();
+                e.stopPropagation();
+                showSecurityToast('Document export is protected.');
+                return false;
+            }
+        }
+    }, true);
+
+    // 3. DISABLE DRAG & DROP FILE/IMAGE SCRAPING
+    document.addEventListener('dragstart', function (e) {
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'img' || tag === 'svg' || tag === 'a') {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+
+    // 4. OVERRIDE CONSOLE IN PRODUCTION (HIDE INTERNAL LOGS / CREDENTIALS)
+    try {
+        const noop = function () {};
+        const isLocalDev = window.location.hostname === 'localhost' && window.location.port === '99999'; // disabled in normal runs
+        if (!isLocalDev) {
+            window.console.log = noop;
+            window.console.info = noop;
+            window.console.warn = noop;
+            window.console.debug = noop;
+            window.console.table = noop;
+        }
+    } catch (_) {}
+
+    // 5. DEVTOOLS OPEN DETECTION & SECURITY BLUR
+    let devToolsOpen = false;
+    const threshold = 160;
+
+    function checkDevToolsDimensions() {
+        const widthDiff = window.outerWidth - window.innerWidth > threshold;
+        const heightDiff = window.outerHeight - window.innerHeight > threshold;
+        
+        // If DevTools is docked
+        if (widthDiff || heightDiff) {
+            if (!devToolsOpen) {
+                devToolsOpen = true;
+                handleDevToolsOpen();
+            }
+        } else {
+            if (devToolsOpen) {
+                devToolsOpen = false;
+                handleDevToolsClosed();
+            }
+        }
+    }
+
+    function handleDevToolsOpen() {
+        let shield = document.getElementById('security-tamper-shield');
+        if (!shield) {
+            shield = document.createElement('div');
+            shield.id = 'security-tamper-shield';
+            shield.className = 'security-tamper-shield';
+            shield.innerHTML = `
+                <div style="max-width: 440px; background: #1E293B; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 20px; padding: 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.6);">
+                    <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); color: #EF4444; font-size: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.5rem;">Security Shield Active</h3>
+                    <p style="font-size: 0.88rem; color: #94A3B8; line-height: 1.5; margin-bottom: 1.25rem;">
+                        Source code inspection and developer debugging are locked to prevent intellectual property theft and unauthorized tampering.
+                    </p>
+                    <p style="font-size: 0.78rem; color: #64748B;">Please close Developer Tools to continue using AI Career Companion.</p>
+                </div>
+            `;
+            document.body.appendChild(shield);
+        }
+        shield.classList.add('active');
+    }
+
+    function handleDevToolsClosed() {
+        const shield = document.getElementById('security-tamper-shield');
+        if (shield) shield.classList.remove('active');
+    }
+
+    // Check periodically on desktop viewports
+    if (window.innerWidth > 600) {
+        window.addEventListener('resize', checkDevToolsDimensions);
+        setInterval(checkDevToolsDimensions, 1000);
+    }
+
+    // 6. ANTI-DEBUGGER PAUSE TRAP
+    setInterval(function () {
+        const start = performance.now();
+        // Evaluates debugger in a dynamic function
+        (function () {}.constructor("debugger")());
+        const duration = performance.now() - start;
+        // If someone paused in debugger, duration will be > 100ms
+        if (duration > 150) {
+            handleDevToolsOpen();
+        }
+    }, 1200);
+
+    // Initial console banner for curious inspectors
+    try {
+        const styles = [
+            'color: #EF4444',
+            'font-size: 18px',
+            'font-weight: bold',
+            'padding: 8px 12px',
+            'background: #1E293B',
+            'border-radius: 8px'
+        ].join(';');
+        console.clear();
+    } catch (_) {}
+
+})();

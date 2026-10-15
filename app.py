@@ -88,10 +88,102 @@ from hiring_dataset import (
     benchmark_candidate_against_dataset
 )
 from mailer import send_2fa_email, send_welcome_student_email
+import urllib.parse
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max file upload
-app.secret_key = 'career_companion_secure_admin_key_2025'
+app.config.update(
+    MAX_CONTENT_LENGTH=16 * 1024 * 1024,  # 16 MB max file upload
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=False,
+    SEND_FILE_MAX_AGE_DEFAULT=31536000
+)
+app.secret_key = os.environ.get('SECRET_KEY', 'career_companion_secure_admin_key_2025')
+
+# ==========================================
+# ADVANCED SOURCE CODE & FILE ACCESS SHIELD
+# ==========================================
+
+FORBIDDEN_EXTENSIONS = {
+    '.py', '.pyc', '.pyd', '.pyo', '.env', '.git', '.gitignore',
+    '.db', '.sqlite', '.sqlite3', '.sql', '.bak', '.log', '.ini',
+    '.cfg', '.config', '.yml', '.yaml', '.toml', '.sh', '.bat',
+    '.cmd', '.ps1', '.md', '.dockerfile', '.lock', '.map', '.tar',
+    '.gz', '.zip', '.rar', '.7z', '.jsonl'
+}
+
+FORBIDDEN_PATHS = (
+    '/.git', '/.env', '/__pycache__', '/venv', '/env', '/tests',
+    '/.vscode', '/.idea', '/.gemini', '/requirements.txt',
+    '/career_companion.db', '/careerpath.db', '/database.db'
+)
+
+ALLOWED_STATIC_EXTENSIONS = {
+    '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg',
+    '.webp', '.ico', '.woff', '.woff2', '.ttf', '.eot',
+    '.pdf', '.xlsx', '.mp3', '.mp4'
+}
+
+@app.before_request
+def security_shield_filter():
+    """
+    Strict security filter protecting every file and backend endpoint:
+    - Blocks path traversal attacks (../, %2e%2e, null bytes)
+    - Blocks direct access to Python source code, databases, configuration files, and secrets
+    - Restricts static directory strictly to approved web assets
+    """
+    raw_path = request.path
+    decoded_path = urllib.parse.unquote(raw_path).lower()
+
+    # 1. Block null bytes and path traversal patterns
+    if '\x00' in decoded_path or '..' in decoded_path or '%2e%2e' in raw_path or '\\' in raw_path:
+        return jsonify({"success": False, "error": "Access Denied: Path traversal signature detected."}), 403
+
+    # 2. Block direct access to hidden / system / repository files and directories
+    for forbidden in FORBIDDEN_PATHS:
+        if decoded_path == forbidden or decoded_path.startswith(forbidden + '/') or ('/' + forbidden.lstrip('/')) in decoded_path:
+            return jsonify({"success": False, "error": "Access Denied: Protected system resource."}), 403
+
+    # 3. Block any request ending with forbidden source code extensions
+    for ext in FORBIDDEN_EXTENSIONS:
+        if decoded_path.endswith(ext) or (ext + '/') in decoded_path or (ext + '?') in decoded_path:
+            return jsonify({"success": False, "error": f"Access Denied: Source code file {ext} is strictly confidential."}), 403
+
+    # 4. Strict Static Assets White-list
+    if decoded_path.startswith('/static/'):
+        clean_static = decoded_path.split('?')[0]
+        base_name = os.path.basename(clean_static)
+        if '.' in base_name:
+            file_ext = os.path.splitext(clean_static)[1]
+            if file_ext not in ALLOWED_STATIC_EXTENSIONS:
+                return jsonify({"success": False, "error": "Access Denied: File type not permitted in public assets."}), 403
+
+@app.after_request
+def apply_security_headers(response):
+    """
+    Enforces enterprise HTTP security headers across every response:
+    - Prevents MIME-sniffing, Clickjacking, framing, and unauthorized browser caching
+    - Disguises server header
+    """
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'camera=(), microphone=(), geolocation=(), payment=()'
+    response.headers['Server'] = 'CloudGuard/4.2 (Anti-Inspection Active)'
+
+    # Prevent disk caching for dynamic API responses and authenticated sessions
+    if request.path.startswith('/api/') or request.path.startswith('/admin') or request.path.startswith('/student'):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+
+    return response
+
+@app.route('/robots.txt')
+def robots_txt():
+    content = "User-agent: *\nDisallow: /admin\nDisallow: /api/\nDisallow: /static/js/\nDisallow: /student/\nDisallow: /alumni/\n"
+    return content, 200, {'Content-Type': 'text/plain'}
 
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD = "admin123"
@@ -245,14 +337,15 @@ def handle_exception(e):
             }), e.code
         return e
 
-    # Handle non-HTTP exceptions
+    # Handle non-HTTP exceptions safely without exposing internal paths or tracebacks
+    print(f"[Security Log] Internal error on {request.path}: {e}")
     if request.path.startswith('/api/'):
         return jsonify({
             "success": False,
-            "error": "An unexpected server error occurred: " + str(e)
+            "error": "A secure server error occurred. Internal details have been logged."
         }), 500
     
-    return "Internal Server Error", 500
+    return "500 - Internal Server Error", 500
 
 
 # ==========================================
@@ -2693,5 +2786,5 @@ if __name__ == '__main__':
     print("=========================================================")
     print("[START] AI Career Companion Platform is starting...")
     print("[URL]   http://127.0.0.1:5000")
-    print("=========================================================")
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    is_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ('true', '1', 't')
+    app.run(host='0.0.0.0', port=5000, debug=is_debug)

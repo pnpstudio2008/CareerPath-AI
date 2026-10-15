@@ -3,6 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Security Shield: Anti-Inspection & Source Code Protection -->
+    <script>
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }, { capture: true });
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123 || 
+                ((e.ctrlKey || e.metaKey) && (e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) ||
+                ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) {
+                e.preventDefault();
+                return false;
+            }
+        }, { capture: true });
+    </script>
+    <script src="/static/js/security_guard.js"></script>
+
     <title>AI Career Companion - Placement Analytics</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
