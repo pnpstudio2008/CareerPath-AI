@@ -5813,6 +5813,8 @@ p {
     box-shadow: 0 12px 36px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 }
 .hof-card:hover {
     transform: translateY(-3px);
@@ -5850,10 +5852,10 @@ p {
 .hc-rank-ribbon.rank-neutral { background: #CBD5E1; }
 .hc-rank-ribbon i { font-size: 0.8rem; margin-bottom: 2px; }
 
-.hc-avatar-wrap { position: relative; margin-left: 1rem; }
+.hc-avatar-wrap { position: relative; margin-left: 0; }
 .hc-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #E0E7FF, #C7D2FE); color: #4F46E5; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-.hc-user-info { flex: 1; }
+.hc-user-info { flex: 1; min-width: 0; }
 .hc-name { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem; }
 .hc-role { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.3; }
 .hc-role strong { color: var(--text-primary); }
@@ -5877,6 +5879,7 @@ p {
 
 .hc-btn-solve {
     width: 100%;
+    margin-top: auto;
     background: #EFF6FF;
     color: #2563EB;
     border: none;
@@ -5891,9 +5894,7 @@ p {
     cursor: pointer;
     transition: all 0.2s ease;
 }
-.hc-btn-solve i.fa-arrow-right { margin-left: auto; transition: transform 0.2s ease; }
 .hc-btn-solve:hover { background: linear-gradient(135deg, #2563EB, #8B5CF6); color: white; }
-.hc-btn-solve:hover i.fa-arrow-right { transform: translateX(3px); }
 
 /* Responsive */
 @media (max-width: 1024px) {
@@ -5919,22 +5920,23 @@ p {
     .h-search-wrap, .h-select { width: 100%; }
 
     .hof-card {
-        padding: 0.65rem 0.4rem !important;
+        padding: 0.75rem 0.45rem !important;
         border-radius: 14px !important;
         min-width: 0 !important;
         box-sizing: border-box !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
+        height: 100% !important;
     }
     .hc-header {
         display: flex !important;
-        flex-wrap: wrap !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 0.25rem !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.35rem !important;
         position: relative !important;
         width: 100% !important;
+        margin-bottom: 0.5rem !important;
     }
     .hc-avatar-wrap {
         margin-left: 0 !important;
@@ -5945,16 +5947,11 @@ p {
         height: 34px !important;
         font-size: 0.8rem !important;
     }
-    .hc-score-ring {
-        width: 28px !important;
-        height: 28px !important;
-        flex-shrink: 0 !important;
-    }
     .hc-user-info {
         width: 100% !important;
-        margin-top: 0.25rem !important;
+        margin-top: 0 !important;
         min-width: 0 !important;
-        flex: 1 1 100% !important;
+        flex: 1 1 auto !important;
     }
     .hc-name {
         font-size: 0.78rem !important;
@@ -5965,7 +5962,7 @@ p {
     }
     .hc-role {
         font-size: 0.62rem !important;
-        line-height: 1.2 !important;
+        line-height: 1.25 !important;
         color: var(--text-secondary) !important;
         word-break: break-word !important;
     }
@@ -5973,50 +5970,26 @@ p {
         font-size: 0.68rem !important;
         font-weight: 700 !important;
         color: #059669 !important;
-        margin-top: 0.15rem !important;
-    }
-    .hc-divider {
-        height: 1px !important;
-        margin: 0.45rem 0 !important;
-    }
-    .hc-challenge-info {
-        flex: 1 !important;
-        margin-bottom: 0.45rem !important;
-        min-width: 0 !important;
-    }
-    .hc-chal-title {
-        font-size: 0.65rem !important;
-        line-height: 1.2 !important;
-        margin-bottom: 0.3rem !important;
-        word-break: break-word !important;
-        display: flex !important;
-        gap: 0.25rem !important;
-    }
-    .hc-chal-title i {
-        font-size: 0.62rem !important;
-    }
-    .hc-skills {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 0.2rem !important;
-    }
-    .h-skill-chip {
-        font-size: 0.55rem !important;
-        padding: 0.12rem 0.35rem !important;
-        border-radius: 999px !important;
-        line-height: 1.1 !important;
+        margin-top: 0.2rem !important;
     }
     .hc-btn-solve {
         width: 100% !important;
-        padding: 0.45rem 0.25rem !important;
+        margin-top: auto !important;
+        padding: 0.42rem 0.2rem !important;
         font-size: 0.65rem !important;
+        font-weight: 700 !important;
         border-radius: 999px !important;
-        white-space: normal !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
         text-align: center !important;
         justify-content: center !important;
-        gap: 0.2rem !important;
+        gap: 0.25rem !important;
         line-height: 1.15 !important;
         box-sizing: border-box !important;
+    }
+    .hc-btn-solve i {
+        font-size: 0.58rem !important;
     }
     .hc-btn-solve i.fa-arrow-right {
         display: none !important;
@@ -6029,17 +6002,13 @@ p {
         gap: 0.35rem !important;
     }
     .hof-card {
-        padding: 0.5rem 0.25rem !important;
+        padding: 0.55rem 0.3rem !important;
         border-radius: 10px !important;
     }
     .hc-avatar {
         width: 28px !important;
         height: 28px !important;
         font-size: 0.72rem !important;
-    }
-    .hc-score-ring {
-        width: 24px !important;
-        height: 24px !important;
     }
     .hc-name {
         font-size: 0.72rem !important;
@@ -6050,22 +6019,16 @@ p {
         line-height: 1.15 !important;
     }
     .hc-package {
-        font-size: 0.62rem !important;
-    }
-    .hc-divider {
-        margin: 0.35rem 0 !important;
-    }
-    .hc-chal-title {
-        font-size: 0.6rem !important;
-        line-height: 1.15 !important;
-    }
-    .h-skill-chip {
-        font-size: 0.5rem !important;
-        padding: 0.08rem 0.25rem !important;
+        font-size: 0.64rem !important;
+        font-weight: 700 !important;
+        margin-top: 0.15rem !important;
     }
     .hc-btn-solve {
         font-size: 0.6rem !important;
-        padding: 0.35rem 0.15rem !important;
+        padding: 0.36rem 0.15rem !important;
+    }
+    .hc-btn-solve i {
+        font-size: 0.52rem !important;
     }
 }
 

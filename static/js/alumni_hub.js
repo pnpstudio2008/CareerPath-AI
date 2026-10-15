@@ -107,16 +107,14 @@ function renderAlumniExperiences(experiences) {
         
         const initials = getInitials(exp.student_name);
         
-        // Use realistic dummy skills for the challenge test if none exist
-        const challengeSkills = exp.difficulty === 'Hard' ? ['DSA', 'System Design', 'OS'] : ['DSA', 'OOP', 'Database'];
-        const skillsHtml = challengeSkills.map(s => `<span class="h-skill-chip">${s}</span>`).join('');
-        
         // Format package if exists
         const packageInfo = exp.package_lpa ? `<div class="hc-package">₹${exp.package_lpa} LPA</div>` : '';
 
+        const safeCompany = (exp.company || '').replace(/'/g, "\\'");
+        const safeRole = (exp.role || '').replace(/'/g, "\\'");
+
         card.innerHTML = `
             <div class="hc-header">
-                
                 <div class="hc-avatar-wrap">
                     <div class="hc-avatar">${initials}</div>
                 </div>
@@ -126,30 +124,10 @@ function renderAlumniExperiences(experiences) {
                     <div class="hc-role">${exp.role} at <strong>${exp.company}</strong></div>
                     ${packageInfo}
                 </div>
-                
-                <div class="hc-score-ring">
-                    <svg viewBox="0 0 36 36" class="circular-chart green">
-                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <path class="circle" stroke-dasharray="100, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                        <text x="18" y="20.35" class="percentage">100%</text>
-                    </svg>
-                </div>
             </div>
             
-            <div class="hc-divider"></div>
-            
-            <div class="hc-challenge-info">
-                <div class="hc-chal-title">
-                    <i class="fa-solid fa-trophy"></i>
-                    <span>${exp.company} ${exp.role} Placement Challenge</span>
-                </div>
-                <div class="hc-skills">
-                    ${skillsHtml}
-                </div>
-            </div>
-            
-            <button class="hc-btn-solve" onclick="startAlumniChallenge('${exp.company}', '${exp.role}')">
-                <i class="fa-solid fa-play"></i> Solve ${exp.student_name.split(' ')[0]}'s Test <i class="fa-solid fa-arrow-right"></i>
+            <button class="hc-btn-solve" onclick="startAlumniChallenge('${safeCompany}', '${safeRole}')">
+                <i class="fa-solid fa-play"></i> Solve Test
             </button>
         `;
         feed.appendChild(card);
