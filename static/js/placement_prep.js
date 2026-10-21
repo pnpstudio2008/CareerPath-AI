@@ -254,9 +254,12 @@ function renderTopScorerCards(records = TOP_SCORERS) {
             }
         }
 
-        // Clean role / designation
+        // Clean role / designation to match concise mockup titles
         let displayRole = scorer.designation || '';
-        if (scorer.company && !displayRole.toLowerCase().includes(scorer.company.toLowerCase())) {
+        displayRole = displayRole.replace(/Software Development Engineer\s*\((SDE-?[1I])\)/i, '$1');
+        displayRole = displayRole.replace(/Software Development Engineer/i, 'SDE');
+        displayRole = displayRole.replace(/Senior Software Engineer at General/i, 'Senior Software Engineer at GE');
+        if (scorer.company && !displayRole.toLowerCase().includes(scorer.company.toLowerCase()) && !displayRole.toLowerCase().includes('ge')) {
             displayRole = `${displayRole} at ${scorer.company}`;
         }
 

@@ -1338,13 +1338,19 @@
         background: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
         border-radius: 24px !important;
-        padding: 1.75rem 2rem !important;
+        padding: 1.5rem 1.65rem !important;
         margin-bottom: 2rem !important;
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
     .tsh-header {
-        margin-bottom: 1.5rem !important;
+        margin-bottom: 1.35rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .tsh-top-row {
@@ -1353,31 +1359,40 @@
         align-items: center !important;
         gap: 1rem !important;
         flex-wrap: wrap !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    /* Grid Layout: 3 Columns on Laptop */
+    /* Grid Layout: Exactly 3 Columns on Laptop with minmax(0, 1fr) to guarantee NO overflow */
     .top-scorers-grid {
         display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 1.25rem !important;
-        margin-top: 1.25rem !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 0.85rem !important;
+        margin-top: 1.15rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
-    /* Desktop Scorer Row Card */
+    /* Desktop Scorer Row Card: Fits cleanly within its grid column */
     .scorer-row {
         background: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
-        border-radius: 20px !important;
-        padding: 1.15rem 1.2rem !important;
+        border-radius: 18px !important;
+        padding: 0.85rem 0.95rem !important;
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        gap: 0.85rem !important;
+        gap: 0.65rem !important;
         box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03) !important;
         transition: all 0.22s ease !important;
         cursor: pointer !important;
         position: relative !important;
         text-decoration: none !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .scorer-row:nth-child(even) {
@@ -1392,71 +1407,82 @@
 
     /* Rank Badge Col */
     .scorer-rank-col {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     .scorer-rank-wrap {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.95rem;
-        font-weight: 800;
-        position: relative;
+        width: 28px !important;
+        height: 28px !important;
+        min-width: 28px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.86rem !important;
+        font-weight: 800 !important;
+        position: relative !important;
     }
 
     .scorer-rank-wrap.rank-1 {
-        background: #FEF3C7;
-        color: #D97706;
+        background: #FEF3C7 !important;
+        color: #D97706 !important;
     }
 
     .scorer-rank-wrap.rank-1 .rank-crown {
-        position: absolute;
-        top: -11px;
-        font-size: 0.75rem;
-        color: #F59E0B;
-        line-height: 1;
+        position: absolute !important;
+        top: -10px !important;
+        font-size: 0.68rem !important;
+        color: #F59E0B !important;
+        line-height: 1 !important;
     }
 
     .scorer-rank-wrap.rank-2 {
-        background: #F1F5F9;
-        color: #475569;
+        background: #F1F5F9 !important;
+        color: #475569 !important;
     }
 
     .scorer-rank-wrap.rank-3 {
-        background: #FFEDD5;
-        color: #EA580C;
+        background: #FFEDD5 !important;
+        color: #EA580C !important;
     }
 
     .scorer-rank-wrap.rank-other {
-        background: #F8FAFC;
-        color: #64748B;
-        border: 1px solid #E2E8F0;
+        background: #F8FAFC !important;
+        color: #64748B !important;
+        border: 1px solid #E2E8F0 !important;
     }
 
     /* Logo Card */
     .scorer-logo-card {
-        width: 56px;
-        height: 56px;
-        border-radius: 16px;
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        overflow: hidden;
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        border-radius: 14px !important;
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+        padding: 4px !important;
+    }
+
+    .scorer-logo-card svg {
+        max-width: 30px !important;
+        max-height: 30px !important;
+        width: auto !important;
+        height: auto !important;
     }
 
     /* Info Column */
     .scorer-info-card {
-        flex: 1 !important;
+        flex: 1 1 0 !important;
         min-width: 0 !important;
         background: transparent !important;
         border: none !important;
@@ -1465,10 +1491,11 @@
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important;
+        overflow: hidden !important;
     }
 
     .scorer-name {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
         font-weight: 700 !important;
         color: #0F172A !important;
         margin: 0 0 2px 0 !important;
@@ -1478,51 +1505,53 @@
     }
 
     .scorer-role {
-        font-size: 0.78rem !important;
+        font-size: 0.74rem !important;
         font-weight: 500 !important;
         color: #64748B !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 3px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        line-height: 1.3 !important;
+        line-height: 1.25 !important;
     }
 
     .scorer-package {
-        font-size: 0.98rem !important;
+        font-size: 0.92rem !important;
         font-weight: 800 !important;
         color: #059669 !important;
         letter-spacing: -0.01em !important;
+        line-height: 1.2 !important;
     }
 
     /* Arrow Action Col */
     .scorer-arrow-col {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     .scorer-arrow-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        color: #1E293B;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.82rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        border-radius: 50% !important;
+        background: #F8FAFC !important;
+        border: 1px solid #E2E8F0 !important;
+        color: #1E293B !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 0.75rem !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
     }
 
     .scorer-row:hover .scorer-arrow-btn {
-        background: #2563EB;
-        color: #FFFFFF;
-        border-color: #2563EB;
-        transform: translateX(2px);
+        background: #2563EB !important;
+        color: #FFFFFF !important;
+        border-color: #2563EB !important;
+        transform: translateX(2px) !important;
     }
 
     .desktop-only {
