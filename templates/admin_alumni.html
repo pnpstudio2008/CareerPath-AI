@@ -908,10 +908,50 @@
             .admin-hero { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
             .admin-hero-left { max-width: 100%; }
             .admin-metrics-grid { grid-template-columns: repeat(2, 1fr); }
-            .admin-nav-center { display: none; }
+            
         }
 
         @media (max-width: 768px) {
+            .admin-top-nav {
+                height: auto !important;
+                padding: 0.5rem 0.85rem !important;
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+                position: sticky !important;
+            }
+            .admin-app-layout {
+                margin-top: 0 !important;
+            }
+            .admin-nav-left {
+                width: auto !important;
+            }
+            .admin-brand-text {
+                display: flex !important;
+            }
+            .admin-user-name {
+                display: none !important;
+            }
+            .admin-user-profile {
+                padding: 0.25rem 0.4rem !important;
+            }
+            .admin-nav-center {
+                display: flex !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                -webkit-overflow-scrolling: touch !important;
+                padding: 0.25rem 0 0.4rem 0 !important;
+                gap: 0.4rem !important;
+                scrollbar-width: none !important;
+            }
+            .admin-nav-center::-webkit-scrollbar {
+                display: none !important;
+            }
+            .admin-nav-link {
+                font-size: 0.78rem !important;
+                padding: 0.4rem 0.75rem !important;
+                flex-shrink: 0 !important;
+            }
             .admin-sidebar { display: none; }
             .admin-main-content { margin-left: 0; max-width: 100vw; padding: 1rem; }
             .admin-metrics-grid { grid-template-columns: 1fr; }
@@ -952,7 +992,7 @@
                     <a href="/faculty/profile" class="faculty-dropdown-item"><i data-lucide="user"></i> My Profile</a>
                     <a href="/admin/analytics" class="faculty-dropdown-item"><i data-lucide="bar-chart-3"></i> Placement Analytics</a>
                     <div class="faculty-dropdown-divider"></div>
-                    <a href="javascript:void(0)" onclick="adminLogout()" class="faculty-dropdown-item text-danger"><i data-lucide="log-out"></i> Logout</a>
+                    <button type="button" onclick="adminLogout()" class="faculty-dropdown-item text-danger" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;"><i data-lucide="log-out"></i> Logout</button>
                 </div>
             </div>
         </div>
