@@ -173,134 +173,35 @@ function renderTopScorerCards() {
     TOP_SCORERS.forEach(scorer => {
         const card = document.createElement('div');
         card.className = 'scorer-card';
-        card.onclick = () => openScorerDetailModal(scorer.id);
-        card.style.cursor = 'pointer';
-
-        // Clean role and format package
-        const roleClean = (scorer.designation || '').replace(/\s*\(₹.*?\)\s*/, '');
-        const cleanCtc = (scorer.ctc || '').replace(/[^\d.]/g, '');
-        const packageInfo = cleanCtc ? `<div class="scorer-package">₹${cleanCtc} LPA</div>` : '';
+        card.onclick = () => startTopScorerChallenge(scorer.id);
 
         card.innerHTML = `
-            <div class="scorer-card-header">
-                <div class="scorer-avatar">
-                    <i class="fa-solid ${scorer.avatarIcon || 'fa-user-graduate'}"></i>
-                    <span class="scorer-avatar-crown"><i class="fa-solid fa-crown"></i></span>
+            <div>
+                <div class="scorer-card-header">
+                    <div class="scorer-avatar">
+                        <i class="fa-solid ${scorer.avatarIcon}"></i>
+                        <span class="scorer-avatar-crown"><i class="fa-solid fa-crown"></i></span>
+                    </div>
+                    <div class="scorer-info">
+                        <h4>${scorer.name}</h4>
+                        <span class="desig">${scorer.designation} (${scorer.ctc})</span>
+                    </div>
                 </div>
-                <div class="scorer-info">
-                    <h4>${scorer.name}</h4>
-                    <span class="desig">${roleClean}</span>
-                    ${packageInfo}
+
+                <div class="scorer-stats-row">
+                    <span><i class="fa-solid fa-trophy text-amber"></i> ${scorer.testTitle}</span>
+                    <span class="record-score"><i class="fa-solid fa-star"></i> ${scorer.score}</span>
                 </div>
             </div>
 
             <button class="btn btn-primary btn-sm scorer-card-btn" onclick="event.stopPropagation(); startTopScorerChallenge('${scorer.id}')">
-                <i class="fa-solid fa-play"></i> Solve Test
+                <i class="fa-solid fa-play"></i> Solve ${scorer.name.split(' ')[0]}'s Test
             </button>
         `;
 
         grid.appendChild(card);
     });
 }
-
-// ==========================================
-// TOP SCORER BENCHMARK DETAIL MODAL
-// ==========================================
-function openScorerDetailModal(scorerId) {
-    const scorer = TOP_SCORERS.find(s => s.id === scorerId) || TOP_SCORERS[0];
-    if (!scorer) return;
-
-    const modal = document.getElementById('scorer-detail-modal');
-    if (!modal) return;
-
-    const nameEl = document.getElementById('scorer-modal-name');
-    const avatarEl = document.getElementById('scorer-modal-avatar');
-    const subtitleEl = document.getElementById('scorer-modal-subtitle');
-    const bodyEl = document.getElementById('scorer-modal-body');
-    const startBtn = document.getElementById('scorer-modal-start-btn');
-
-    const roleClean = (scorer.designation || '').replace(/\s*\(₹.*?\)\s*/, '');
-    const initials = (scorer.name || 'Senior').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-
-    if (nameEl) nameEl.textContent = scorer.name;
-    if (avatarEl) avatarEl.textContent = initials;
-    if (subtitleEl) subtitleEl.textContent = `${roleClean} • ${scorer.company || 'Placement Senior'}`;
-
-    const tagsHtml = (scorer.tags && scorer.tags.length > 0)
-        ? scorer.tags.map(t => `<span class="badge badge-outline" style="font-size:0.75rem; padding:0.25rem 0.6rem; border-radius:999px;">${t}</span>`).join('')
-        : '';
-
-    if (bodyEl) {
-        bodyEl.innerHTML = `
-            <div class="alumni-badges-row mb-3" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                <span class="badge badge-primary"><i class="fa-solid fa-building"></i> ${scorer.company || 'Company'}</span>
-                <span class="badge badge-outline"><i class="fa-solid fa-user-tie"></i> ${roleClean}</span>
-                <span class="ctc-badge" style="background:#ECFDF5; color:#059669; border:1px solid #A7F3D0; font-weight:700; padding:0.25rem 0.65rem; border-radius:999px; font-size:0.8rem;">
-                    ${scorer.ctc} Package
-                </span>
-                <span class="badge badge-success"><i class="fa-solid fa-circle-check"></i> 100% Benchmark Clear</span>
-            </div>
-
-            <div class="card mb-3" style="background:linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color:#FFFFFF; border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:1.25rem; box-shadow:0 8px 20px rgba(0,0,0,0.15);">
-                <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:#94A3B8; margin-bottom:0.35rem;">
-                    <i class="fa-solid fa-trophy text-amber"></i> Exact Benchmark Challenge Set
-                </div>
-                <h4 style="font-size:1.05rem; font-weight:800; color:#FFFFFF; margin:0 0 0.65rem 0; line-height:1.35;">${scorer.testTitle}</h4>
-                <div style="display:flex; gap:1.25rem; font-size:0.85rem; color:#CBD5E1; flex-wrap:wrap;">
-                    <span><i class="fa-solid fa-star text-amber"></i> Benchmark Score: <strong style="color:#10B981;">${scorer.score}</strong></span>
-                    <span><i class="fa-solid fa-stopwatch text-primary"></i> Benchmark Time: <strong>${scorer.timeTaken || '4m 30s'}</strong></span>
-                    <span><i class="fa-solid fa-list-check text-purple"></i> Questions: <strong>${scorer.scoreFraction || '10 / 10'}</strong></span>
-                </div>
-            </div>
-
-            ${tagsHtml ? `
-                <div class="alumni-section-title mt-3" style="font-weight:700; font-size:0.9rem; color:var(--text-primary); margin-bottom:0.4rem;">
-                    <i class="fa-solid fa-tags text-primary"></i> Key Topics & Focus Areas:
-                </div>
-                <div style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1rem;">
-                    ${tagsHtml}
-                </div>
-            ` : ''}
-
-            ${scorer.goldenTip ? `
-                <div class="alumni-section-title mt-3" style="font-weight:700; font-size:0.9rem; color:var(--text-primary); margin-bottom:0.4rem;">
-                    <i class="fa-solid fa-lightbulb text-amber"></i> Senior's Preparation Advice:
-                </div>
-                <div class="alumni-quote" style="background:#FFFBEB; border-left:4px solid #F59E0B; padding:0.85rem 1rem; border-radius:8px; font-size:0.9rem; color:#92400E; line-height:1.55;">
-                    "${scorer.goldenTip}"
-                </div>
-            ` : ''}
-        `;
-    }
-
-    if (startBtn) {
-        startBtn.innerHTML = `<i class="fa-solid fa-play"></i> Solve ${scorer.name.split(' ')[0]}'s Test Now`;
-        startBtn.onclick = () => {
-            closeScorerDetailModal();
-            startTopScorerChallenge(scorer.id);
-        };
-    }
-
-    modal.classList.add('active');
-}
-
-function closeScorerDetailModal(e) {
-    if (e && e.target && e.target !== e.currentTarget && !e.target.classList.contains('modal-close')) {
-        return;
-    }
-    const modal = document.getElementById('scorer-detail-modal');
-    if (modal) modal.classList.remove('active');
-}
-
-// Close on Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        const modal = document.getElementById('scorer-detail-modal');
-        if (modal && modal.classList.contains('active')) {
-            modal.classList.remove('active');
-        }
-    }
-});
 
 // ==========================================
 // START SPECIFIC TOP SCORER CHALLENGE
