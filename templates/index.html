@@ -1318,61 +1318,203 @@
         <!-- SECTION 3: ALUMNI EXPERIENCE PORTAL       -->
         <!-- ========================================== -->
         
+        <!-- ========================================== -->
+        <!-- SECTION: ALUMNI HUB & LEADERBOARD          -->
+        <!-- ========================================== -->
         <section id="section-alumni" class="app-section">
-            
-            <!-- ALUMNI HERO SECTION -->
-            <div class="hof-hero">
-                <div class="hof-hero-left">
-                    <div class="h-badge">
-                        <i class="fa-solid fa-trophy"></i> Hall of Fame
+            <div class="alumni-hub-wrapper">
+
+                <!-- 1. TOP HERO SECTION WITH PODIUM & STATS -->
+                <div class="alumni-hub-hero">
+                    
+                    <!-- Left: Header info -->
+                    <div class="ahh-left">
+                        <div class="ahh-badge">
+                            <i class="fa-solid fa-trophy"></i> Hall of Fame
+                        </div>
+                        <h1 class="ahh-title">
+                            Top <span class="highlight-blue">Performers</span><br>
+                            <span class="ahh-subtitle-sub">(Hall of Fame)</span>
+                        </h1>
+                        <p class="ahh-desc">
+                            Celebrate our alumni who have solved the most problems and achieved the highest scores.
+                        </p>
                     </div>
-                    <h2 class="h-title">Best Scorers' <span class="gradient-text">Challenge Tests</span></h2>
-                    <p class="h-desc">
-                        Solve curated mock test sets cleared with perfect 100% scores by our top placed alumni seniors.
-                    </p>
-                </div>
 
-            </div>
+                    <!-- Center: 3D Olympic Podium -->
+                    <div class="ahh-podium-center">
+                        <div class="alumni-podium-display" id="alumni-podium-display">
+                            
+                            <!-- Rank 2: Left -->
+                            <div class="podium-col rank-2-col" onclick="openAlumniDetailByRank(2)">
+                                <div class="podium-crown crown-silver">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="podium-avatar-wrap ring-silver">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80" alt="Sophie" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="podium-initials" style="display:none;">SP</div>
+                                </div>
+                                <div class="podium-identity">
+                                    <span class="podium-flag">🇫🇷</span>
+                                    <span class="podium-name" id="podium-name-2">Sophie</span>
+                                </div>
+                                <div class="podium-problems-pill pill-silver" id="podium-prob-2">1,449 Problems</div>
+                                <div class="podium-base base-2">
+                                    <span class="podium-number">2</span>
+                                </div>
+                            </div>
 
-            <!-- MAIN HALL OF FAME CONTAINER -->
-            <div class="hof-main-container">
-                
-                <div class="hof-header">
-                    <div class="hof-header-left">
-                        <div class="hof-icon"><i class="fa-solid fa-trophy"></i></div>
-                        <div>
-                            <h3 class="hof-title">Top Performers (Hall of Fame)</h3>
-                            <p class="hof-sub">Learn from the best. Solve their exact test sets and challenge yourself.</p>
+                            <!-- Rank 1: Center (Elevated) -->
+                            <div class="podium-col rank-1-col" onclick="openAlumniDetailByRank(1)">
+                                <div class="podium-crown crown-gold">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="podium-avatar-wrap ring-gold">
+                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80" alt="Alex" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="podium-initials" style="display:none;">AX</div>
+                                </div>
+                                <div class="podium-identity">
+                                    <span class="podium-flag">🇵🇹</span>
+                                    <span class="podium-name" id="podium-name-1">Alex</span>
+                                </div>
+                                <div class="podium-problems-pill pill-gold" id="podium-prob-1">2,569 Problems</div>
+                                <div class="podium-base base-1">
+                                    <div class="wreath-graphic">
+                                        <svg viewBox="0 0 100 100" class="laurel-svg" aria-hidden="true">
+                                            <path d="M 50 15 C 32 15 20 32 20 55 C 20 72 32 85 50 85 C 68 85 80 72 80 55 C 80 32 68 15 50 15" fill="none" stroke="#FDE68A" stroke-width="4" stroke-dasharray="4 6" opacity="0.6"/>
+                                            <circle cx="28" cy="40" r="3" fill="#FDE68A"/>
+                                            <circle cx="24" cy="55" r="3.5" fill="#FDE68A"/>
+                                            <circle cx="28" cy="70" r="3" fill="#FDE68A"/>
+                                            <circle cx="72" cy="40" r="3" fill="#FDE68A"/>
+                                            <circle cx="76" cy="55" r="3.5" fill="#FDE68A"/>
+                                            <circle cx="72" cy="70" r="3" fill="#FDE68A"/>
+                                        </svg>
+                                        <span class="podium-number">1</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rank 3: Right -->
+                            <div class="podium-col rank-3-col" onclick="openAlumniDetailByRank(3)">
+                                <div class="podium-crown crown-bronze">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="podium-avatar-wrap ring-bronze">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80" alt="Ethan" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="podium-initials" style="display:none;">ET</div>
+                                </div>
+                                <div class="podium-identity">
+                                    <span class="podium-flag">🇨🇦</span>
+                                    <span class="podium-name" id="podium-name-3">Ethan</span>
+                                </div>
+                                <div class="podium-problems-pill pill-bronze" id="podium-prob-3">1,035 Problems</div>
+                                <div class="podium-base base-3">
+                                    <span class="podium-number">3</span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-                
-                <!-- Filter bar (hidden behind a collapse/button or styled neatly) -->
-                <div class="hof-filters">
-                    <div class="h-search-wrap">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" id="alumni-search-input" placeholder="Search by name, company, role..." oninput="debounceAlumniSearch()">
+
+                    <!-- Right: Total Alumni Stat Card & Background Trophy Art -->
+                    <div class="ahh-right">
+                        <div class="total-alumni-card">
+                            <div class="tac-icon">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div class="tac-content">
+                                <span class="tac-label">Total Alumni</span>
+                                <div class="tac-value" id="total-alumni-count">200+</div>
+                                <span class="tac-sub">Active on Platform</span>
+                            </div>
+                        </div>
+
+                        <!-- Trophy Graphic Illustration in Background -->
+                        <div class="hero-trophy-watermark" aria-hidden="true">
+                            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M70 40H130V95C130 111.569 116.569 125 100 125C83.4315 125 70 111.569 70 95V40Z" fill="url(#trophyGrad)" stroke="#93C5FD" stroke-width="3"/>
+                                <path d="M70 55H50C41.7157 55 35 61.7157 35 70C35 78.2843 41.7157 85 50 85H70" stroke="#93C5FD" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M130 55H150C158.284 55 165 61.7157 165 70C165 78.2843 158.284 85 150 85H130" stroke="#93C5FD" stroke-width="3" stroke-linecap="round"/>
+                                <path d="M100 125V150M80 150H120" stroke="#93C5FD" stroke-width="4" stroke-linecap="round"/>
+                                <defs>
+                                    <linearGradient id="trophyGrad" x1="100" y1="40" x2="100" y2="125" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#DBEAFE" stop-opacity="0.8"/>
+                                        <stop stop-color="#BFDBFE" stop-opacity="0.4"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
                     </div>
-                    <select id="alumni-company-filter" class="h-select" onchange="fetchAlumniExperiences()">
-                        <option value="all">All Companies</option>
-                        <option value="Amazon">Amazon</option>
-                        <option value="Google">Google</option>
-                        <option value="TCS">TCS</option>
-                        <option value="Infosys">Infosys</option>
-                    </select>
-                    <select id="alumni-difficulty-filter" class="h-select" onchange="fetchAlumniExperiences()">
-                        <option value="all">All Difficulties</option>
-                        <option value="Hard">High Bar (Hard)</option>
-                        <option value="Medium">Standard (Medium)</option>
-                        <option value="Easy">Foundation (Easy)</option>
-                    </select>
+
                 </div>
 
-                <!-- Alumni Grid -->
-                <div class="hof-grid" id="alumni-feed-container">
-                    <!-- Javascript will inject the cards here -->
+                <!-- 2. MAIN LEADERBOARD CARD -->
+                <div class="alumni-leaderboard-card">
+                    
+                    <!-- Filters & Search Toolbar -->
+                    <div class="alumni-toolbar">
+                        <!-- Left: Metric Tabs -->
+                        <div class="alumni-filter-tabs" role="tablist">
+                            <button type="button" class="alumni-tab-btn active" id="tab-experience" onclick="switchAlumniMetric('experience')">
+                                <i class="fa-solid fa-users"></i> <span>Experience</span>
+                            </button>
+                            <button type="button" class="alumni-tab-btn" id="tab-badges" onclick="switchAlumniMetric('badges')">
+                                <i class="fa-solid fa-shield-halved"></i> <span>Badges</span>
+                            </button>
+                            <button type="button" class="alumni-tab-btn" id="tab-problems" onclick="switchAlumniMetric('problems')">
+                                <i class="fa-regular fa-file-lines"></i> <span>Problems Solved</span>
+                            </button>
+                            <button type="button" class="alumni-tab-btn" id="tab-achievements" onclick="switchAlumniMetric('achievements')">
+                                <i class="fa-regular fa-star"></i> <span>Achievements</span>
+                            </button>
+                        </div>
+
+                        <!-- Right: Search & Time Filter -->
+                        <div class="alumni-toolbar-right">
+                            <div class="alumni-search-input-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="alumni-search-input" placeholder="Search by name, company, role..." oninput="debounceAlumniSearch()">
+                            </div>
+                            <div class="alumni-time-select-wrap">
+                                <i class="fa-regular fa-calendar"></i>
+                                <select id="alumni-time-filter" onchange="filterAlumniTimeRange(this.value)">
+                                    <option value="all">All Time</option>
+                                    <option value="year">This Year</option>
+                                    <option value="month">This Month</option>
+                                    <option value="top_packages">Top CTC Packages</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down select-chevron"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Leaderboard Table -->
+                    <div class="alumni-table-container">
+                        <table class="alumni-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px; text-align: center;">#</th>
+                                    <th>Username</th>
+                                    <th>Experience</th>
+                                    <th>Badges</th>
+                                    <th>Problems Solved</th>
+                                    <th>Achievements</th>
+                                    <th style="text-align: right; width: 140px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alumni-feed-container">
+                                <!-- Populated dynamically by renderAlumniExperiences() in alumni_hub.js -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="alumni-pagination" id="alumni-pagination-container">
+                        <!-- Populated by renderPagination() in alumni_hub.js -->
+                    </div>
+
                 </div>
-                
+
             </div>
         </section>
 
