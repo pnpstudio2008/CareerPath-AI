@@ -2161,6 +2161,21 @@
     .chart-box {
         height: 250px;
     }
+
+    .top-scorers-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.75rem !important;
+    }
+
+    .scorer-card {
+        padding: 0.85rem 0.65rem !important;
+        border-radius: 14px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        box-sizing: border-box !important;
+    }
 }
 
 @media (max-width: 600px) {
@@ -2190,33 +2205,32 @@
         grid-template-columns: 1fr !important;
     }
 
-    /* Practice Section: Top Scorers Challenge Tests Grid Format on Mobile */
     .top-scorers-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 0.65rem !important;
-        margin-top: 1rem !important;
+        gap: 0.6rem !important;
     }
 
     .scorer-card {
-        padding: 0.85rem 0.65rem !important;
+        padding: 0.75rem 0.55rem !important;
         border-radius: 14px !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
         height: 100% !important;
-        min-width: 0 !important;
         box-sizing: border-box !important;
     }
 
     .scorer-card-header {
-        gap: 0.5rem !important;
+        display: flex !important;
         align-items: flex-start !important;
+        gap: 0.45rem !important;
     }
 
     .scorer-avatar {
         width: 36px !important;
         height: 36px !important;
         font-size: 0.95rem !important;
+        flex-shrink: 0 !important;
     }
 
     .scorer-avatar-crown {
@@ -2227,71 +2241,130 @@
 
     .scorer-info {
         min-width: 0 !important;
-        flex: 1 !important;
+        flex: 1 1 auto !important;
     }
 
     .scorer-info h4 {
-        font-size: 0.86rem !important;
-        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        font-weight: 800 !important;
         line-height: 1.2 !important;
         margin-bottom: 0.15rem !important;
         word-break: break-word !important;
+        color: var(--text-primary) !important;
     }
 
     .scorer-info .desig {
         font-size: 0.68rem !important;
         line-height: 1.25 !important;
+        color: var(--text-muted) !important;
         word-break: break-word !important;
     }
 
     .scorer-stats-row {
-        margin: 0.5rem 0 !important;
-        padding: 0.35rem 0.5rem !important;
-        font-size: 0.68rem !important;
-        line-height: 1.25 !important;
+        margin: 0.45rem 0 !important;
+        padding: 0.35rem 0.45rem !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 0.25rem !important;
+        align-items: flex-start !important;
+        gap: 0.2rem !important;
         border-radius: 8px !important;
     }
 
+    .scorer-stats-row span:first-child {
+        line-height: 1.25 !important;
+        font-size: 0.66rem !important;
+        word-break: break-word !important;
+        font-weight: 600 !important;
+    }
+
     .scorer-stats-row .record-score {
+        align-self: flex-start !important;
         font-size: 0.72rem !important;
         font-weight: 800 !important;
-        align-self: flex-start !important;
+        color: var(--accent-emerald) !important;
     }
 
     .scorer-card-btn {
         width: 100% !important;
         margin-top: auto !important;
-        padding: 0.45rem 0.3rem !important;
+        padding: 0.45rem 0.25rem !important;
         font-size: 0.72rem !important;
         font-weight: 700 !important;
         border-radius: 999px !important;
+        text-align: center !important;
+        justify-content: center !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-        text-align: center !important;
-        justify-content: center !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.3rem !important;
         box-sizing: border-box !important;
     }
-
     .scorer-card-btn i {
-        font-size: 0.65rem !important;
-    }
-}
-
-@media (min-width: 580px) and (max-width: 768px) {
-    .top-scorers-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 0.75rem !important;
+        font-size: 0.62rem !important;
     }
 }
 
 @media (max-width: 480px) {
+    .top-scorers-showcase {
+        padding: 1.15rem 0.65rem !important;
+    }
+
+    .top-scorers-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.45rem !important;
+    }
+
+    .scorer-card {
+        padding: 0.65rem 0.45rem !important;
+        border-radius: 12px !important;
+    }
+
+    .scorer-card-header {
+        gap: 0.35rem !important;
+    }
+
+    .scorer-avatar {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .scorer-avatar-crown {
+        top: -4px !important;
+        right: -3px !important;
+        font-size: 0.6rem !important;
+    }
+
+    .scorer-info h4 {
+        font-size: 0.8rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.1rem !important;
+    }
+
+    .scorer-info .desig {
+        font-size: 0.64rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .scorer-stats-row {
+        margin: 0.35rem 0 !important;
+        padding: 0.3rem 0.4rem !important;
+        gap: 0.15rem !important;
+    }
+
+    .scorer-stats-row span:first-child {
+        font-size: 0.62rem !important;
+        line-height: 1.2 !important;
+    }
+
+    .scorer-stats-row .record-score {
+        font-size: 0.68rem !important;
+    }
+
+    .scorer-card-btn {
+        font-size: 0.68rem !important;
+        padding: 0.4rem 0.2rem !important;
+    }
+
     .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.65rem;
@@ -2375,47 +2448,6 @@
     .skill-tag-pill {
         font-size: 0.76rem;
         padding: 0.25rem 0.6rem;
-    }
-
-    .top-scorers-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 0.45rem !important;
-    }
-
-    .scorer-card {
-        padding: 0.75rem 0.5rem !important;
-        border-radius: 12px !important;
-    }
-
-    .scorer-avatar {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 0.85rem !important;
-    }
-
-    .scorer-avatar-crown {
-        top: -4px !important;
-        right: -2px !important;
-        font-size: 0.6rem !important;
-    }
-
-    .scorer-info h4 {
-        font-size: 0.8rem !important;
-    }
-
-    .scorer-info .desig {
-        font-size: 0.64rem !important;
-    }
-
-    .scorer-stats-row {
-        margin: 0.4rem 0 !important;
-        padding: 0.3rem 0.4rem !important;
-        font-size: 0.64rem !important;
-    }
-
-    .scorer-card-btn {
-        font-size: 0.68rem !important;
-        padding: 0.4rem 0.25rem !important;
     }
 }
 
