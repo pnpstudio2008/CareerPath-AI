@@ -1149,53 +1149,55 @@
 
 .scorer-floating-crown {
     position: absolute;
-    top: -2px;
+    top: -3px;
     right: -2px;
     font-size: 1.15rem;
     color: #FBBF24;
     transform: rotate(20deg);
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.22));
     line-height: 1;
 }
 
 .scorer-info-card {
     flex: 1;
     min-width: 0;
-    background: #F8FAFD;
-    border: 1px solid #E2E8F0;
+    background: #F0F6FF;
+    border: 1px solid rgba(191, 219, 254, 0.7);
     border-radius: 18px;
     padding: 0.85rem 1.15rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.04);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .scorer-row:hover .scorer-info-card {
-    border-color: #CBD5E1;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    border-color: #93C5FD;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
 }
 
 .scorer-info-card .scorer-name {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 700;
     color: #0F172A;
-    margin: 0 0 0.15rem 0;
+    margin: 0 0 0.18rem 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .scorer-info-card .scorer-role {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 500;
     color: #64748B;
     margin-bottom: 0.55rem;
     line-height: 1.35;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .scorer-bottom-row {
@@ -2226,28 +2228,70 @@
 
     /* Best Scorers Practice Section - Mobile Zig-Zag Showcase */
     .top-scorers-showcase {
-        padding: 1.15rem 0.95rem !important;
-        border-radius: 18px !important;
+        padding: 1.25rem 1rem !important;
+        border-radius: 20px !important;
     }
 
     .top-scorers-grid {
         display: flex !important;
         flex-direction: column !important;
-        gap: 0.85rem !important;
-        margin-top: 0.85rem !important;
+        gap: 0.95rem !important;
+        margin-top: 0.95rem !important;
     }
 
     .scorer-row {
         gap: 0.85rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    .scorer-row:nth-child(even) {
+        flex-direction: row-reverse !important;
     }
 
     .scorer-trophy-circle {
-        width: 72px !important;
-        height: 72px !important;
+        width: 78px !important;
+        height: 78px !important;
+        min-width: 78px !important;
+        min-height: 78px !important;
     }
 
     .scorer-trophy-circle > i.fa-trophy {
-        font-size: 1.85rem !important;
+        font-size: 1.95rem !important;
+    }
+
+    .scorer-floating-crown {
+        font-size: 1.15rem !important;
+        top: -3px !important;
+        right: -2px !important;
+    }
+
+    .scorer-info-card {
+        background: #F0F6FF !important;
+        border: 1px solid rgba(191, 219, 254, 0.7) !important;
+        border-radius: 18px !important;
+        padding: 0.85rem 1rem !important;
+    }
+
+    .scorer-info-card .scorer-name {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+    }
+
+    .scorer-info-card .scorer-role {
+        font-size: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.35 !important;
+    }
+
+    .scorer-package {
+        font-size: 0.98rem !important;
+        font-weight: 800 !important;
+    }
+
+    .scorer-btn-solve {
+        padding: 0.4rem 0.95rem !important;
+        font-size: 0.76rem !important;
+        font-weight: 600 !important;
     }
 
     .kpi-grid {
@@ -2403,69 +2447,79 @@
 
 @media (max-width: 480px) {
     .top-scorers-showcase {
-        padding: 0.95rem 0.75rem !important;
-        border-radius: 16px !important;
+        padding: 1.1rem 0.85rem !important;
+        border-radius: 18px !important;
     }
 
     .tsh-title {
-        font-size: 0.92rem !important;
+        font-size: 0.95rem !important;
     }
 
     .tsh-badge {
-        font-size: 0.62rem !important;
-        padding: 0.2rem 0.55rem !important;
+        font-size: 0.64rem !important;
+        padding: 0.22rem 0.6rem !important;
     }
 
     .tsh-subtitle {
-        font-size: 0.74rem !important;
+        font-size: 0.76rem !important;
     }
 
     .top-scorers-grid {
         display: flex !important;
         flex-direction: column !important;
-        gap: 0.75rem !important;
+        gap: 0.85rem !important;
     }
 
     .scorer-row {
-        gap: 0.65rem !important;
+        gap: 0.75rem !important;
+        margin-bottom: 0 !important;
+    }
+
+    .scorer-row:nth-child(even) {
+        flex-direction: row-reverse !important;
     }
 
     .scorer-trophy-circle {
-        width: 66px !important;
-        height: 66px !important;
+        width: 74px !important;
+        height: 74px !important;
+        min-width: 74px !important;
+        min-height: 74px !important;
     }
 
     .scorer-trophy-circle > i.fa-trophy {
-        font-size: 1.65rem !important;
+        font-size: 1.85rem !important;
     }
 
     .scorer-floating-crown {
-        font-size: 1rem !important;
+        font-size: 1.1rem !important;
         top: -3px !important;
-        right: -3px !important;
+        right: -2px !important;
     }
 
     .scorer-info-card {
-        padding: 0.7rem 0.85rem !important;
+        padding: 0.75rem 0.85rem !important;
         border-radius: 16px !important;
+        background: #F0F6FF !important;
+        border: 1px solid rgba(191, 219, 254, 0.7) !important;
     }
 
     .scorer-info-card .scorer-name {
-        font-size: 0.92rem !important;
+        font-size: 0.96rem !important;
     }
 
     .scorer-info-card .scorer-role {
-        font-size: 0.7rem !important;
+        font-size: 0.72rem !important;
         margin-bottom: 0.45rem !important;
+        line-height: 1.35 !important;
     }
 
     .scorer-package {
-        font-size: 0.92rem !important;
+        font-size: 0.95rem !important;
     }
 
     .scorer-btn-solve {
-        padding: 0.35rem 0.75rem !important;
-        font-size: 0.72rem !important;
+        padding: 0.38rem 0.85rem !important;
+        font-size: 0.74rem !important;
     }
 
     .kpi-grid {
@@ -4033,3 +4087,77 @@
     }
 }
 
+
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION DOCK (Native App Experience)
+   ========================================================================== */
+.mobile-bottom-nav {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-nav {
+        display: flex !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid #E2E8F0;
+        box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.05);
+        z-index: 9999;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 0.5rem;
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+
+    body {
+        padding-bottom: 74px !important;
+    }
+
+    .mobile-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        text-decoration: none !important;
+        color: #64748B !important;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 0.45rem 0.85rem;
+        border-radius: 14px;
+        transition: all 0.2s ease;
+        min-width: 58px;
+    }
+
+    .mobile-nav-item i {
+        font-size: 1.15rem;
+        color: #64748B;
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .mobile-nav-item:hover {
+        color: #2563EB !important;
+    }
+
+    .mobile-nav-item:hover i {
+        color: #2563EB;
+    }
+
+    .mobile-nav-item.active {
+        background: #EFF6FF !important;
+        color: #2563EB !important;
+        font-weight: 700 !important;
+    }
+
+    .mobile-nav-item.active i {
+        color: #2563EB !important;
+        transform: scale(1.05);
+    }
+}

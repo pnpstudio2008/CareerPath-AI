@@ -1868,6 +1868,32 @@
     </main>
 
     <!-- ========================================== -->
+    <!-- MOBILE BOTTOM NAVIGATION DOCK (Native App) -->
+    <!-- ========================================== -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Navigation">
+        <a href="#home" class="mobile-nav-item nav-link active" onclick="navigateTo('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="#analyzer" class="mobile-nav-item nav-link" onclick="navigateTo('analyzer')">
+            <i class="fa-regular fa-file-lines"></i>
+            <span>Resume</span>
+        </a>
+        <a href="#mocktest" class="mobile-nav-item nav-link" onclick="navigateTo('mocktest')">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <span>Mock Test</span>
+        </a>
+        <a href="#prep" class="mobile-nav-item nav-link" onclick="navigateTo('prep')">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Practice</span>
+        </a>
+        <a href="#alumni" class="mobile-nav-item nav-link" onclick="navigateTo('alumni')">
+            <i class="fa-solid fa-users"></i>
+            <span>Alumni</span>
+        </a>
+    </nav>
+
+    <!-- ========================================== -->
     <!-- ALUMNI STORY FULLSCREEN DETAIL MODAL       -->
     <!-- ========================================== -->
     <div id="alumni-detail-modal" class="modal-backdrop" onclick="closeAlumniDetailModal(event)">
