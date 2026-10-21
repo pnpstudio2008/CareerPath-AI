@@ -206,7 +206,13 @@ async function fetchAndRenderLiveTopScorers() {
             data.experiences.forEach(exp => {
                 const existing = TOP_SCORERS.find(s => s.name.toLowerCase() === (exp.student_name || '').toLowerCase());
                 if (existing) {
-                    if (exp.role) existing.designation = `${exp.role} at ${exp.company}`;
+                    if (exp.role) {
+                        let cleanRole = exp.role;
+                        cleanRole = cleanRole.replace(/Software Development Engineer\s*\((SDE-?[1I])\)/i, '$1');
+                        cleanRole = cleanRole.replace(/Software Development Engineer/i, 'SDE');
+                        cleanRole = cleanRole.replace(/Senior Software Engineer/i, 'Senior Software Engineer');
+                        existing.designation = (cleanRole + ' at ' + (exp.company || '')).trim();
+                    }
                     if (exp.company) existing.company = exp.company;
                     if (exp.package_lpa) existing.ctc = `₹${parseFloat(exp.package_lpa).toFixed(2)} LPA`;
                     if (exp.advice_to_juniors || exp.preparation_tips) {

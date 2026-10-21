@@ -1338,7 +1338,7 @@
         background: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
         border-radius: 24px !important;
-        padding: 1.5rem 1.65rem !important;
+        padding: 1.25rem 1.45rem !important;
         margin-bottom: 2rem !important;
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
         width: 100% !important;
@@ -1348,7 +1348,7 @@
     }
 
     .tsh-header {
-        margin-bottom: 1.35rem !important;
+        margin-bottom: 1.15rem !important;
         width: 100% !important;
         box-sizing: border-box !important;
     }
@@ -1357,7 +1357,7 @@
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
-        gap: 1rem !important;
+        gap: 0.85rem !important;
         flex-wrap: wrap !important;
         width: 100% !important;
         box-sizing: border-box !important;
@@ -1367,8 +1367,8 @@
     .top-scorers-grid {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 0.85rem !important;
-        margin-top: 1.15rem !important;
+        gap: 0.65rem !important;
+        margin-top: 1rem !important;
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
@@ -1378,13 +1378,13 @@
     .scorer-row {
         background: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
-        border-radius: 18px !important;
-        padding: 0.85rem 0.95rem !important;
+        border-radius: 16px !important;
+        padding: 0.75rem 0.8rem !important;
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        gap: 0.65rem !important;
-        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03) !important;
+        gap: 0.5rem !important;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03) !important;
         transition: all 0.22s ease !important;
         cursor: pointer !important;
         position: relative !important;
@@ -1393,6 +1393,7 @@
         max-width: 100% !important;
         width: 100% !important;
         box-sizing: border-box !important;
+        overflow: hidden !important;
     }
 
     .scorer-row:nth-child(even) {
@@ -1401,7 +1402,7 @@
 
     .scorer-row:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.09) !important;
+        box-shadow: 0 8px 22px rgba(37, 99, 235, 0.08) !important;
         border-color: #BFDBFE !important;
     }
 
@@ -1414,14 +1415,14 @@
     }
 
     .scorer-rank-wrap {
-        width: 28px !important;
-        height: 28px !important;
-        min-width: 28px !important;
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
         border-radius: 50% !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 0.86rem !important;
+        font-size: 0.82rem !important;
         font-weight: 800 !important;
         position: relative !important;
     }
@@ -1433,8 +1434,8 @@
 
     .scorer-rank-wrap.rank-1 .rank-crown {
         position: absolute !important;
-        top: -10px !important;
-        font-size: 0.68rem !important;
+        top: -9px !important;
+        font-size: 0.65rem !important;
         color: #F59E0B !important;
         line-height: 1 !important;
     }
@@ -1457,25 +1458,25 @@
 
     /* Logo Card */
     .scorer-logo-card {
-        width: 48px !important;
-        height: 48px !important;
-        min-width: 48px !important;
-        border-radius: 14px !important;
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        border-radius: 12px !important;
         background: #FFFFFF !important;
         border: 1px solid #E2E8F0 !important;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         flex-shrink: 0 !important;
         overflow: hidden !important;
         box-sizing: border-box !important;
-        padding: 4px !important;
+        padding: 3px !important;
     }
 
     .scorer-logo-card svg {
-        max-width: 30px !important;
-        max-height: 30px !important;
+        max-width: 26px !important;
+        max-height: 26px !important;
         width: auto !important;
         height: auto !important;
     }
@@ -1484,6 +1485,7 @@
     .scorer-info-card {
         flex: 1 1 0 !important;
         min-width: 0 !important;
+        width: 0 !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -1494,33 +1496,51 @@
         overflow: hidden !important;
     }
 
+    .scorer-info-card .scorer-name,
     .scorer-name {
-        font-size: 0.95rem !important;
+        font-size: 0.88rem !important;
         font-weight: 700 !important;
         color: #0F172A !important;
         margin: 0 0 2px 0 !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
+    .scorer-info-card .scorer-role,
     .scorer-role {
-        font-size: 0.74rem !important;
+        font-size: 0.72rem !important;
         font-weight: 500 !important;
         color: #64748B !important;
-        margin-bottom: 3px !important;
+        margin-bottom: 2px !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
         line-height: 1.25 !important;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .scorer-bottom-row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden !important;
     }
 
     .scorer-package {
-        font-size: 0.92rem !important;
+        font-size: 0.86rem !important;
         font-weight: 800 !important;
         color: #059669 !important;
         letter-spacing: -0.01em !important;
         line-height: 1.2 !important;
+        white-space: nowrap !important;
     }
 
     /* Arrow Action Col */
@@ -1532,9 +1552,9 @@
     }
 
     .scorer-arrow-btn {
-        width: 32px !important;
-        height: 32px !important;
-        min-width: 32px !important;
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
         border-radius: 50% !important;
         background: #F8FAFC !important;
         border: 1px solid #E2E8F0 !important;
@@ -1542,9 +1562,10 @@
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        font-size: 0.75rem !important;
+        font-size: 0.72rem !important;
         cursor: pointer !important;
         transition: all 0.2s ease !important;
+        flex-shrink: 0 !important;
     }
 
     .scorer-row:hover .scorer-arrow-btn {
@@ -1616,215 +1637,199 @@
         justify-content: space-between;
         flex-wrap: wrap;
     }
-}
 
-.top-scorers-showcase {
-    background: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 20px;
-    padding: 1.35rem 1.25rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-}
-
-.tsh-header {
-    margin-bottom: 1.25rem;
-}
-
-.tsh-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.tsh-title {
-    font-size: 1.08rem;
-    font-weight: 800;
-    color: #0F172A;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.tsh-title i.text-amber {
-    color: #F59E0B;
-}
-
-.tsh-badge {
-    background: #FEF3C7;
-    color: #D97706;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    flex-shrink: 0;
-}
-
-.tsh-subtitle {
-    font-size: 0.82rem;
-    color: #64748B;
-    margin: 0.35rem 0 0 0;
-    line-height: 1.45;
-}
-
-/* Scorer List & Alternating Rows */
-.top-scorers-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.95rem;
-    margin-top: 1rem;
-}
-
-@media (min-width: 1024px) {
-    .top-scorers-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.15rem;
+    .top-scorers-showcase {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 20px;
+        padding: 1.35rem 1.25rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
-}
 
-.scorer-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    cursor: pointer;
-    text-decoration: none;
-}
+    .tsh-header {
+        margin-bottom: 1.25rem;
+    }
 
-.scorer-row:nth-child(even) {
-    flex-direction: row-reverse;
-}
+    .tsh-title {
+        font-size: 1.08rem;
+        font-weight: 800;
+        color: #0F172A;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-.scorer-badge-col {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .tsh-title i.text-amber {
+        color: #F59E0B;
+    }
 
-.scorer-trophy-circle {
-    width: 76px;
-    height: 76px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #FFB800 0%, #FF8A00 100%);
-    box-shadow: 0 8px 20px rgba(245, 138, 0, 0.32);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
+    .tsh-badge {
+        background: #FEF3C7;
+        color: #D97706;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 0.3rem 0.75rem;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-shrink: 0;
+    }
 
-.scorer-row:hover .scorer-trophy-circle {
-    transform: scale(1.05);
-    box-shadow: 0 10px 24px rgba(245, 138, 0, 0.42);
-}
+    .tsh-subtitle {
+        font-size: 0.82rem;
+        color: #64748B;
+        margin: 0.35rem 0 0 0;
+        line-height: 1.45;
+    }
 
-.scorer-trophy-circle > i.fa-trophy {
-    font-size: 1.95rem;
-    color: #FFFFFF;
-}
+    /* Scorer List & Alternating Rows (Mobile Only) */
+    .top-scorers-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.95rem;
+        margin-top: 1rem;
+    }
 
-.scorer-floating-crown {
-    position: absolute;
-    top: -3px;
-    right: -2px;
-    font-size: 1.15rem;
-    color: #FBBF24;
-    transform: rotate(20deg);
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.22));
-    line-height: 1;
-}
+    .scorer-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        cursor: pointer;
+        text-decoration: none;
+    }
 
-.scorer-info-card {
-    flex: 1;
-    min-width: 0;
-    background: #F0F6FF;
-    border: 1px solid rgba(191, 219, 254, 0.7);
-    border-radius: 18px;
-    padding: 0.85rem 1.15rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.04);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
+    .scorer-row:nth-child(even) {
+        flex-direction: row-reverse;
+    }
 
-.scorer-row:hover .scorer-info-card {
-    border-color: #93C5FD;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
-}
+    .scorer-badge-col {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.scorer-info-card .scorer-name {
-    font-size: 1.02rem;
-    font-weight: 700;
-    color: #0F172A;
-    margin: 0 0 0.18rem 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    .scorer-trophy-circle {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #FFB800 0%, #FF8A00 100%);
+        box-shadow: 0 8px 20px rgba(245, 138, 0, 0.32);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
 
-.scorer-info-card .scorer-role {
-    font-size: 0.76rem;
-    font-weight: 500;
-    color: #64748B;
-    margin-bottom: 0.55rem;
-    line-height: 1.35;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-}
+    .scorer-row:hover .scorer-trophy-circle {
+        transform: scale(1.05);
+        box-shadow: 0 10px 24px rgba(245, 138, 0, 0.42);
+    }
 
-.scorer-bottom-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-}
+    .scorer-trophy-circle > i.fa-trophy {
+        font-size: 1.95rem;
+        color: #FFFFFF;
+    }
 
-.scorer-package {
-    font-size: 1rem;
-    font-weight: 800;
-    color: #059669;
-    letter-spacing: -0.01em;
-}
+    .scorer-floating-crown {
+        position: absolute;
+        top: -3px;
+        right: -2px;
+        font-size: 1.15rem;
+        color: #FBBF24;
+        transform: rotate(20deg);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.22));
+        line-height: 1;
+    }
 
-.scorer-btn-solve {
-    background: #2563EB;
-    color: #FFFFFF;
-    border: none;
-    border-radius: 999px;
-    padding: 0.4rem 1.05rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
+    .scorer-info-card {
+        flex: 1;
+        min-width: 0;
+        background: #F0F6FF;
+        border: 1px solid rgba(191, 219, 254, 0.7);
+        border-radius: 18px;
+        padding: 0.85rem 1.15rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.04);
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.scorer-btn-solve i {
-    font-size: 0.65rem;
-}
+    .scorer-row:hover .scorer-info-card {
+        border-color: #93C5FD;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+    }
 
-.scorer-btn-solve:hover {
-    background: #1D4ED8;
-    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
-    transform: translateY(-1px);
+    .scorer-info-card .scorer-name {
+        font-size: 1.02rem;
+        font-weight: 700;
+        color: #0F172A;
+        margin: 0 0 0.18rem 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .scorer-info-card .scorer-role {
+        font-size: 0.76rem;
+        font-weight: 500;
+        color: #64748B;
+        margin-bottom: 0.55rem;
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        word-break: break-word;
+    }
+
+    .scorer-bottom-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    .scorer-package {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #059669;
+        letter-spacing: -0.01em;
+    }
+
+    .scorer-btn-solve {
+        background: #2563EB;
+        color: #FFFFFF;
+        border: none;
+        border-radius: 999px;
+        padding: 0.4rem 1.05rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .scorer-btn-solve i {
+        font-size: 0.65rem;
+    }
+
+    .scorer-btn-solve:hover {
+        background: #1D4ED8;
+        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
+        transform: translateY(-1px);
+    }
 }
 
 /* Scorer Live Banner during Quiz */
