@@ -958,107 +958,285 @@
 }
 
 /* ==========================================================================
-   TOP SCORERS BENCHMARK CHALLENGE (PRACTICE PAGE)
+   TOP SCORERS BENCHMARK CHALLENGE (PRACTICE PAGE - HALL OF FAME)
    ========================================================================== */
-.top-scorers-showcase {
-    margin-bottom: 1.75rem;
-}
-
-.top-scorers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.15rem;
-    margin-top: 1.15rem;
-}
-
-.scorer-card {
-    background: var(--bg-surface);
-    border-radius: var(--radius-md);
-    box-shadow: var(--nm-flat-sm);
-    border: 1px solid var(--border-subtle);
-    padding: 1.25rem;
+.prep-section-header {
+    text-align: center;
+    margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative;
-    border: 1px solid rgba(245, 158, 11, 0.22);
-    transition: var(--transition-bounce);
-    cursor: pointer;
+    align-items: center;
 }
 
-.scorer-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--nm-raised), 0 0 16px rgba(245, 158, 11, 0.25);
-    border: 1px solid var(--border-subtle);
-    border-color: rgba(245, 158, 11, 0.55);
+.prep-module-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: #EFF6FF;
+    color: #2563EB;
+    border: 1px solid #BFDBFE;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.35rem 0.95rem;
+    border-radius: 999px;
+    margin-bottom: 0.75rem;
 }
 
-.scorer-card-header {
+.prep-main-title {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.prep-main-desc {
+    font-size: 0.88rem;
+    color: #64748B;
+    max-width: 620px;
+    margin: 0 auto 1.15rem auto;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.prep-action-wrap {
     display: flex;
+    justify-content: center;
+}
+
+.prep-hall-of-fame-btn {
+    background: #EFF6FF !important;
+    border: 1px solid #BFDBFE !important;
+    color: #2563EB !important;
+    border-radius: 999px !important;
+    padding: 0.5rem 1.25rem !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08) !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+.prep-hall-of-fame-btn:hover {
+    background: #DBEAFE !important;
+    color: #1D4ED8 !important;
+    transform: translateY(-1px);
+}
+
+.prep-hall-of-fame-btn i.fa-chevron-right {
+    font-size: 0.68rem;
+    opacity: 0.85;
+}
+
+.top-scorers-showcase {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 1.35rem 1.25rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.tsh-header {
+    margin-bottom: 1.25rem;
+}
+
+.tsh-top-row {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
-.scorer-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #F59E0B, #D97706);
-    color: #FFFFFF;
+.tsh-title {
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: #0F172A;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tsh-title i.text-amber {
+    color: #F59E0B;
+}
+
+.tsh-badge {
+    background: #FEF3C7;
+    color: #D97706;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.tsh-subtitle {
+    font-size: 0.82rem;
+    color: #64748B;
+    margin: 0.35rem 0 0 0;
+    line-height: 1.45;
+}
+
+/* Scorer List & Alternating Rows */
+.top-scorers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+    margin-top: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .top-scorers-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.15rem;
+    }
+}
+
+.scorer-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.scorer-row:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.scorer-badge-col {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
-    flex-shrink: 0;
+}
+
+.scorer-trophy-circle {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FFB800 0%, #FF8A00 100%);
+    box-shadow: 0 8px 20px rgba(245, 138, 0, 0.32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
-.scorer-avatar-crown {
+.scorer-row:hover .scorer-trophy-circle {
+    transform: scale(1.05);
+    box-shadow: 0 10px 24px rgba(245, 138, 0, 0.42);
+}
+
+.scorer-trophy-circle > i.fa-trophy {
+    font-size: 1.95rem;
+    color: #FFFFFF;
+}
+
+.scorer-floating-crown {
     position: absolute;
-    top: -6px;
-    right: -4px;
-    font-size: 0.75rem;
+    top: -2px;
+    right: -2px;
+    font-size: 1.15rem;
     color: #FBBF24;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+    transform: rotate(20deg);
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    line-height: 1;
 }
 
-.scorer-info h4 {
-    font-size: 1.02rem;
-    margin-bottom: 0.15rem;
-    color: var(--text-primary);
+.scorer-info-card {
+    flex: 1;
+    min-width: 0;
+    background: #F8FAFD;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    padding: 0.85rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.scorer-info .desig {
+.scorer-row:hover .scorer-info-card {
+    border-color: #CBD5E1;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.scorer-info-card .scorer-name {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0 0 0.15rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scorer-info-card .scorer-role {
     font-size: 0.78rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    line-height: 1.3;
-    display: block;
+    font-weight: 500;
+    color: #64748B;
+    margin-bottom: 0.55rem;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.scorer-stats-row {
+.scorer-bottom-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0.85rem 0;
-    padding: 0.45rem 0.75rem;
-    background: var(--bg-base);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    font-size: 0.8rem;
+    gap: 0.5rem;
 }
 
-.scorer-stats-row .record-score {
-    color: var(--accent-emerald);
+.scorer-package {
+    font-size: 1rem;
     font-weight: 800;
+    color: #059669;
+    letter-spacing: -0.01em;
 }
 
-.scorer-card-btn {
-    width: 100%;
-    margin-top: 0.45rem;
-    font-size: 0.84rem;
-    padding: 0.5rem 0.85rem;
+.scorer-btn-solve {
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 999px;
+    padding: 0.4rem 1.05rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.scorer-btn-solve i {
+    font-size: 0.65rem;
+}
+
+.scorer-btn-solve:hover {
+    background: #1D4ED8;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.35);
+    transform: translateY(-1px);
 }
 
 /* Scorer Live Banner during Quiz */
@@ -2046,115 +2224,30 @@
         gap: 0.5rem;
     }
 
-    /* Best Scorers Practice Section - 2 Profiles per Row on Mobile */
+    /* Best Scorers Practice Section - Mobile Zig-Zag Showcase */
     .top-scorers-showcase {
-        padding: 1.15rem 0.85rem !important;
+        padding: 1.15rem 0.95rem !important;
+        border-radius: 18px !important;
     }
 
     .top-scorers-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 0.75rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.85rem !important;
         margin-top: 0.85rem !important;
     }
 
-    .scorer-card {
-        padding: 0.85rem 0.65rem !important;
-        border-radius: 14px !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        flex-direction: column !important;
-        justify-content: space-between !important;
-        height: 100% !important;
+    .scorer-row {
+        gap: 0.85rem !important;
     }
 
-    .scorer-card-header {
-        display: flex !important;
-        align-items: flex-start !important;
-        gap: 0.5rem !important;
+    .scorer-trophy-circle {
+        width: 72px !important;
+        height: 72px !important;
     }
 
-    .scorer-avatar {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 0.95rem !important;
-        flex-shrink: 0 !important;
-    }
-
-    .scorer-avatar-crown {
-        top: -5px !important;
-        right: -3px !important;
-        font-size: 0.65rem !important;
-    }
-
-    .scorer-info {
-        min-width: 0 !important;
-        flex: 1 1 auto !important;
-    }
-
-    .scorer-info h4 {
-        font-size: 0.85rem !important;
-        font-weight: 700 !important;
-        line-height: 1.25 !important;
-        margin-bottom: 0.15rem !important;
-        word-break: break-word !important;
-        color: var(--text-primary) !important;
-    }
-
-    .scorer-info .desig {
-        font-size: 0.68rem !important;
-        line-height: 1.25 !important;
-        word-break: break-word !important;
-        display: block !important;
-    }
-
-    .scorer-stats-row {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 0.25rem !important;
-        margin: 0.55rem 0 !important;
-        padding: 0.4rem 0.5rem !important;
-        font-size: 0.68rem !important;
-        border-radius: 8px !important;
-        line-height: 1.25 !important;
-    }
-
-    .scorer-stats-row span:first-child {
-        word-break: break-word !important;
-        display: -webkit-box !important;
-        -webkit-line-clamp: 2 !important;
-        -webkit-box-orient: vertical !important;
-        overflow: hidden !important;
-    }
-
-    .scorer-stats-row .record-score {
-        align-self: flex-end !important;
-        font-size: 0.75rem !important;
-        font-weight: 800 !important;
-        color: #059669 !important;
-    }
-
-    .scorer-card-btn {
-        width: 100% !important;
-        margin-top: auto !important;
-        padding: 0.45rem 0.25rem !important;
-        font-size: 0.7rem !important;
-        font-weight: 700 !important;
-        border-radius: 999px !important;
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-        text-align: center !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 0.25rem !important;
-        box-sizing: border-box !important;
-    }
-
-    .scorer-card-btn i {
-        font-size: 0.62rem !important;
+    .scorer-trophy-circle > i.fa-trophy {
+        font-size: 1.85rem !important;
     }
 
     .kpi-grid {
@@ -2302,69 +2395,77 @@
     }
 
     .top-scorers-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 0.65rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.8rem !important;
     }
 }
 
 @media (max-width: 480px) {
     .top-scorers-showcase {
-        padding: 0.95rem 0.65rem !important;
+        padding: 0.95rem 0.75rem !important;
+        border-radius: 16px !important;
+    }
+
+    .tsh-title {
+        font-size: 0.92rem !important;
+    }
+
+    .tsh-badge {
+        font-size: 0.62rem !important;
+        padding: 0.2rem 0.55rem !important;
+    }
+
+    .tsh-subtitle {
+        font-size: 0.74rem !important;
     }
 
     .top-scorers-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 0.45rem !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.75rem !important;
     }
 
-    .scorer-card {
-        padding: 0.75rem 0.45rem !important;
-        border-radius: 12px !important;
+    .scorer-row {
+        gap: 0.65rem !important;
     }
 
-    .scorer-card-header {
-        gap: 0.4rem !important;
+    .scorer-trophy-circle {
+        width: 66px !important;
+        height: 66px !important;
     }
 
-    .scorer-avatar {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 0.85rem !important;
+    .scorer-trophy-circle > i.fa-trophy {
+        font-size: 1.65rem !important;
     }
 
-    .scorer-avatar-crown {
-        top: -4px !important;
+    .scorer-floating-crown {
+        font-size: 1rem !important;
+        top: -3px !important;
         right: -3px !important;
-        font-size: 0.6rem !important;
     }
 
-    .scorer-info h4 {
-        font-size: 0.8rem !important;
-        line-height: 1.2 !important;
+    .scorer-info-card {
+        padding: 0.7rem 0.85rem !important;
+        border-radius: 16px !important;
     }
 
-    .scorer-info .desig {
-        font-size: 0.62rem !important;
-        line-height: 1.2 !important;
+    .scorer-info-card .scorer-name {
+        font-size: 0.92rem !important;
     }
 
-    .scorer-stats-row {
-        margin: 0.45rem 0 !important;
-        padding: 0.35rem 0.4rem !important;
-        font-size: 0.64rem !important;
-    }
-
-    .scorer-stats-row .record-score {
+    .scorer-info-card .scorer-role {
         font-size: 0.7rem !important;
+        margin-bottom: 0.45rem !important;
     }
 
-    .scorer-card-btn {
-        font-size: 0.65rem !important;
-        padding: 0.4rem 0.2rem !important;
+    .scorer-package {
+        font-size: 0.92rem !important;
     }
 
-    .scorer-card-btn i {
-        font-size: 0.58rem !important;
+    .scorer-btn-solve {
+        padding: 0.35rem 0.75rem !important;
+        font-size: 0.72rem !important;
     }
 
     .kpi-grid {

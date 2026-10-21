@@ -171,35 +171,46 @@ function renderTopScorerCards() {
 
     grid.innerHTML = '';
     TOP_SCORERS.forEach(scorer => {
-        const card = document.createElement('div');
-        card.className = 'scorer-card';
-        card.onclick = () => startTopScorerChallenge(scorer.id);
+        const row = document.createElement('div');
+        row.className = 'scorer-row';
+        row.onclick = () => startTopScorerChallenge(scorer.id);
 
-        card.innerHTML = `
-            <div>
-                <div class="scorer-card-header">
-                    <div class="scorer-avatar">
-                        <i class="fa-solid ${scorer.avatarIcon}"></i>
-                        <span class="scorer-avatar-crown"><i class="fa-solid fa-crown"></i></span>
-                    </div>
-                    <div class="scorer-info">
-                        <h4>${scorer.name}</h4>
-                        <span class="desig">${scorer.designation} (${scorer.ctc})</span>
-                    </div>
-                </div>
+        // Format CTC cleanly (e.g. ₹35.00 LPA)
+        let formattedCtc = scorer.ctc || '';
+        const numMatch = String(formattedCtc).match(/[\d.]+/);
+        if (numMatch) {
+            const numVal = parseFloat(numMatch[0]);
+            if (!isNaN(numVal)) {
+                formattedCtc = `₹${numVal.toFixed(2)} LPA`;
+            }
+        }
 
-                <div class="scorer-stats-row">
-                    <span><i class="fa-solid fa-trophy text-amber"></i> ${scorer.testTitle}</span>
-                    <span class="record-score"><i class="fa-solid fa-star"></i> ${scorer.score}</span>
+        // Clean role / designation
+        let displayRole = scorer.designation || '';
+        if (scorer.company && !displayRole.toLowerCase().includes(scorer.company.toLowerCase())) {
+            displayRole = `${displayRole} at ${scorer.company}`;
+        }
+
+        row.innerHTML = `
+            <div class="scorer-badge-col">
+                <div class="scorer-trophy-circle">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span class="scorer-floating-crown"><i class="fa-solid fa-crown"></i></span>
                 </div>
             </div>
-
-            <button class="btn btn-primary btn-sm scorer-card-btn" onclick="event.stopPropagation(); startTopScorerChallenge('${scorer.id}')">
-                <i class="fa-solid fa-play"></i> Solve ${scorer.name.split(' ')[0]}'s Test
-            </button>
+            <div class="scorer-info-card">
+                <h4 class="scorer-name">${scorer.name}</h4>
+                <div class="scorer-role">${displayRole}</div>
+                <div class="scorer-bottom-row">
+                    <span class="scorer-package">${formattedCtc}</span>
+                    <button type="button" class="scorer-btn-solve" onclick="event.stopPropagation(); startTopScorerChallenge('${scorer.id}')">
+                        <i class="fa-solid fa-play"></i> Solve Test
+                    </button>
+                </div>
+            </div>
         `;
 
-        grid.appendChild(card);
+        grid.appendChild(row);
     });
 }
 
