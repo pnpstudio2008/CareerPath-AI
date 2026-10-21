@@ -1131,14 +1131,70 @@
         <!-- SECTION 2: PLACEMENT PREPARATION HUB      -->
         <!-- ========================================== -->
         <section id="section-prep" class="app-section">
-            <div class="prep-section-header">
-                <div class="section-badge prep-module-badge"><i class="fa-solid fa-book-open"></i> Module 2</div>
-                <h2 class="section-title prep-main-title">Placement Preparation & Practice Quizzes</h2>
-                <p class="section-desc prep-main-desc">Subject-wise MCQs, company-specific test papers, and theoretical question banks with instant evaluation and detailed explanations.</p>
-                <div class="prep-action-wrap">
-                    <button type="button" class="btn prep-hall-of-fame-btn" onclick="navigateTo('alumni')">
-                        <i class="fa-solid fa-trophy"></i> Explore Alumni Hall of Fame <i class="fa-solid fa-chevron-right"></i>
+            <!-- Placement Practice Hero Banner (matches design mockup) -->
+            <div class="prep-hero-banner">
+                <div class="prep-hero-left">
+                    <div class="prep-module-pill">
+                        <i class="fa-solid fa-book-bookmark"></i> Module 2
+                    </div>
+                    <h1 class="prep-hero-title">
+                        Placement <span class="text-blue">Practice</span>
+                    </h1>
+                    <p class="prep-hero-subtitle">
+                        Solve curated mock tests from top placed alumni.
+                    </p>
+                    <button type="button" class="btn prep-hero-cta" onclick="navigateTo('alumni')">
+                        <i class="fa-solid fa-trophy"></i> Explore Alumni Hall of Fame <i class="fa-solid fa-arrow-right"></i>
                     </button>
+                </div>
+
+                <!-- 3D Graphic (visible on laptop/desktop) -->
+                <div class="prep-hero-graphic" aria-hidden="true">
+                    <div class="prep-hero-canvas">
+                        <svg class="prep-wave-bg" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 160C80 120 160 200 260 140C340 90 370 120 400 80V240H0V160Z" fill="url(#waveGradPrep)" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="waveGradPrep" x1="0" y1="80" x2="400" y2="240" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#DBEAFE" stop-opacity="0.7"/>
+                                    <stop stop-color="#EDE9FE" stop-opacity="0.3"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+
+                        <!-- Tilted Checklist Card -->
+                        <div class="prep-checklist-card">
+                            <div class="check-item item-blue">
+                                <span class="check-circle circle-blue"><i class="fa-solid fa-check"></i></span>
+                                <div class="check-lines">
+                                    <span class="line line-long"></span>
+                                    <span class="line line-short"></span>
+                                </div>
+                            </div>
+                            <div class="check-item item-teal">
+                                <span class="check-circle circle-teal"><i class="fa-solid fa-check"></i></span>
+                                <div class="check-lines">
+                                    <span class="line line-long"></span>
+                                    <span class="line line-short"></span>
+                                </div>
+                            </div>
+                            <div class="check-item item-pink">
+                                <span class="check-circle circle-pink"><i class="fa-solid fa-check"></i></span>
+                                <div class="check-lines">
+                                    <span class="line line-long"></span>
+                                    <span class="line line-short"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating 3D Bar Chart Card -->
+                        <div class="prep-chart-card">
+                            <div class="chart-bars">
+                                <span class="bar bar-1"></span>
+                                <span class="bar bar-2"></span>
+                                <span class="bar bar-3"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1146,10 +1202,24 @@
             <div class="card top-scorers-showcase">
                 <div class="tsh-header">
                     <div class="tsh-top-row">
-                        <h3 class="tsh-title"><i class="fa-solid fa-crown text-amber"></i> Best Scorers' Challenge Tests (Hall of Fame)</h3>
-                        <span class="tsh-badge"><i class="fa-solid fa-chart-simple"></i> TOP BENCHMARKS</span>
+                        <div class="tsh-left-group">
+                            <div class="tsh-crown-box"><i class="fa-solid fa-crown"></i></div>
+                            <div class="tsh-header-titles">
+                                <h3 class="tsh-title">Best Scorers' Challenge Tests</h3>
+                                <p class="tsh-subtitle">Practice with real test sets solved by our top placed alumni seniors.</p>
+                            </div>
+                        </div>
+                        <div class="tsh-header-actions">
+                            <div class="tsh-pill-tabs" role="tablist">
+                                <button type="button" class="tsh-tab-pill active" onclick="filterScorersTimeRange('all', this)">All</button>
+                                <button type="button" class="tsh-tab-pill" onclick="filterScorersTimeRange('month', this)">This Month</button>
+                                <button type="button" class="tsh-tab-pill" onclick="filterScorersTimeRange('semester', this)">This Semester</button>
+                            </div>
+                            <div class="tsh-benchmark-tag">
+                                <i class="fa-solid fa-chart-simple"></i> Top Benchmarks
+                            </div>
+                        </div>
                     </div>
-                    <p class="tsh-subtitle">Solve curated mock test sets cleared with perfect 100% scores by our top placed alumni seniors.</p>
                 </div>
                 <div class="top-scorers-grid" id="top-scorers-grid">
                     <!-- Dynamic Top Scorer Cards populated by placement_prep.js -->

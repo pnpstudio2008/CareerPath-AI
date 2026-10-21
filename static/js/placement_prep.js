@@ -23,6 +23,66 @@ let quizTimerInterval = null;
 let secondsRemaining = 600; // 10 minutes
 let activeTopScorer = null; // Track current benchmark senior
 
+// Company Logo Vector Helper (retina-ready SVG)
+function getCompanyLogoSvg(company) {
+    const comp = (company || '').toLowerCase();
+    if (comp.includes('google')) {
+        return `<svg viewBox="0 0 48 48" width="32" height="32">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>`;
+    }
+    if (comp.includes('amazon')) {
+        return `<svg viewBox="0 0 48 48" width="34" height="34">
+            <path fill="#111827" d="M22.5 14.2c-5.2 0-9.4 3.1-9.4 8.2 0 4.2 2.7 6.8 6.5 6.8 3.3 0 5.8-1.8 7.1-3.7v3.2h4.5V14.7h-4.5v2.8c-1.3-2-3.8-3.3-6.2-3.3zm2.5 9.8c-.8 1.8-2.6 3.1-4.7 3.1-2.6 0-4.3-1.8-4.3-4.5 0-3.1 2-4.9 4.8-4.9 2 0 3.6 1.1 4.2 2.7v3.6z"/>
+            <path fill="#FF9900" d="M37.5 33.2c-7.8 5.7-19.1 7.2-28.5 2.5-.4-.2-.5-.7-.1-1 .3-.3.8-.3 1.2-.1 8.7 4.3 19.1 2.9 26.4-2.3.5-.4 1.1.2 1 1z"/>
+            <path fill="#FF9900" d="M38.8 30.8c-.4-.5-2.6-.2-3.9.1-.4.1-.4-.3-.1-.5 1.8-1.3 4.8-1 5.3-.4.5.6-.2 3.6-1.9 5.1-.3.3-.6.1-.5-.2.4-1.2 1.5-3.6 1.1-4.1z"/>
+        </svg>`;
+    }
+    if (comp.includes('general') || comp.includes('ge')) {
+        return `<svg viewBox="0 0 48 48" width="36" height="36">
+            <circle cx="24" cy="24" r="22" fill="#005EB8"/>
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="3 2" opacity="0.8"/>
+            <text x="24" y="30" font-family="'Brush Script MT', 'Segoe Script', cursive, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" text-anchor="middle" font-style="italic">GE</text>
+        </svg>`;
+    }
+    if (comp.includes('microsoft')) {
+        return `<svg viewBox="0 0 48 48" width="30" height="30">
+            <rect x="7" y="7" width="15" height="15" fill="#F25022"/>
+            <rect x="26" y="7" width="15" height="15" fill="#7FBA00"/>
+            <rect x="7" y="26" width="15" height="15" fill="#00A4EF"/>
+            <rect x="26" y="26" width="15" height="15" fill="#FFB900"/>
+        </svg>`;
+    }
+    if (comp.includes('tcs')) {
+        return `<svg viewBox="0 0 60 48" width="42" height="34">
+            <text x="30" y="32" font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" font-size="25" font-weight="900" fill="#E61C24" text-anchor="middle" letter-spacing="-1">tcs</text>
+        </svg>`;
+    }
+    if (comp.includes('infosys')) {
+        return `<svg viewBox="0 0 66 48" width="48" height="32">
+            <text x="33" y="30" font-family="'Trebuchet MS', Arial, sans-serif" font-size="19" font-weight="800" fill="#007CC3" text-anchor="middle" letter-spacing="-0.5">Infosys</text>
+        </svg>`;
+    }
+    if (comp.includes('accenture')) {
+        return `<svg viewBox="0 0 54 48" width="36" height="32">
+            <path d="M14 30L27 16L40 30" fill="none" stroke="#A100FF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`;
+    }
+    if (comp.includes('wipro')) {
+        return `<svg viewBox="0 0 48 48" width="32" height="32">
+            <circle cx="17" cy="17" r="6" fill="#F48024"/>
+            <circle cx="31" cy="17" r="6" fill="#3AA655"/>
+            <circle cx="17" cy="31" r="6" fill="#994D99"/>
+            <circle cx="31" cy="31" r="6" fill="#0072CE"/>
+            <circle cx="24" cy="24" r="3" fill="#FFFFFF"/>
+        </svg>`;
+    }
+    return `<div class="generic-company-icon" style="color:#2563EB; font-size:1.4rem;"><i class="fa-solid fa-building"></i></div>`;
+}
+
 // ==========================================
 // BEST SCORERS' HALL OF FAME BENCHMARK DATA
 // ==========================================
@@ -30,7 +90,7 @@ const TOP_SCORERS = [
     {
         id: 'priya',
         name: 'Priya Patel',
-        designation: 'Software Development Engineer (SDE-I) at Google',
+        designation: 'SDE-1 at Google',
         company: 'Google',
         ctc: '₹35.00 LPA',
         batch: 'Batch of 2024',
@@ -47,7 +107,7 @@ const TOP_SCORERS = [
     {
         id: 'aarav',
         name: 'Aarav Sharma',
-        designation: 'Software Development Engineer (SDE-I) at Amazon',
+        designation: 'SDE-1 at Amazon',
         company: 'Amazon',
         ctc: '₹28.50 LPA',
         batch: 'Batch of 2024',
@@ -64,7 +124,7 @@ const TOP_SCORERS = [
     {
         id: 'karan',
         name: 'Karan Mehta',
-        designation: 'Senior Software Engineer at General',
+        designation: 'Senior Software Engineer at General Electric',
         company: 'General',
         ctc: '₹14.00 LPA',
         batch: 'Batch of 2023',
@@ -142,25 +202,17 @@ async function fetchAndRenderLiveTopScorers() {
         const res = await fetch('/api/alumni/experiences');
         const data = await safeJsonFetch(res);
         if (data.experiences && data.experiences.length > 0) {
-            TOP_SCORERS.length = 0;
+            // Update or enrich benchmark challenges with live DB data while preserving the curated priority order
             data.experiences.forEach(exp => {
-                TOP_SCORERS.push({
-                    id: 'exp_' + exp.id,
-                    name: exp.student_name,
-                    designation: `${exp.role} at ${exp.company}`,
-                    company: exp.company,
-                    ctc: `₹${exp.package_lpa} LPA`,
-                    batch: `Batch of ${exp.batch_year}`,
-                    subject: 'all',
-                    companyFilter: exp.company,
-                    score: '100%',
-                    scoreFraction: '10 / 10',
-                    timeTaken: '4m 30s',
-                    testTitle: `${exp.company} ${exp.role} Placement Challenge`,
-                    avatarIcon: 'fa-user-graduate',
-                    goldenTip: exp.advice_to_juniors || exp.preparation_tips || 'Master core CS concepts and practice coding rounds with speed and accuracy.',
-                    tags: ['Interview Prep', exp.company, exp.role, 'Assessment']
-                });
+                const existing = TOP_SCORERS.find(s => s.name.toLowerCase() === (exp.student_name || '').toLowerCase());
+                if (existing) {
+                    if (exp.role) existing.designation = `${exp.role} at ${exp.company}`;
+                    if (exp.company) existing.company = exp.company;
+                    if (exp.package_lpa) existing.ctc = `₹${parseFloat(exp.package_lpa).toFixed(2)} LPA`;
+                    if (exp.advice_to_juniors || exp.preparation_tips) {
+                        existing.goldenTip = exp.advice_to_juniors || exp.preparation_tips;
+                    }
+                }
             });
         }
     } catch (e) {
@@ -182,12 +234,12 @@ function syncTopScorerDropdown() {
     });
 }
 
-function renderTopScorerCards() {
+function renderTopScorerCards(records = TOP_SCORERS) {
     const grid = document.getElementById('top-scorers-grid');
     if (!grid) return;
 
     grid.innerHTML = '';
-    TOP_SCORERS.forEach(scorer => {
+    records.forEach((scorer, idx) => {
         const row = document.createElement('div');
         row.className = 'scorer-row';
         row.onclick = () => startTopScorerChallenge(scorer.id);
@@ -208,28 +260,88 @@ function renderTopScorerCards() {
             displayRole = `${displayRole} at ${scorer.company}`;
         }
 
+        const rankNum = idx + 1;
+        let rankBadgeHtml = '';
+        if (rankNum === 1) {
+            rankBadgeHtml = `
+                <div class="scorer-rank-wrap rank-1">
+                    <span class="rank-crown"><i class="fa-solid fa-crown"></i></span>
+                    <span class="rank-num">1</span>
+                </div>
+            `;
+        } else if (rankNum === 2) {
+            rankBadgeHtml = `
+                <div class="scorer-rank-wrap rank-2">
+                    <span class="rank-num">2</span>
+                </div>
+            `;
+        } else if (rankNum === 3) {
+            rankBadgeHtml = `
+                <div class="scorer-rank-wrap rank-3">
+                    <span class="rank-num">3</span>
+                </div>
+            `;
+        } else {
+            rankBadgeHtml = `
+                <div class="scorer-rank-wrap rank-other">
+                    <span class="rank-num">${rankNum}</span>
+                </div>
+            `;
+        }
+
         row.innerHTML = `
-            <div class="scorer-badge-col">
+            <!-- Desktop Layout Elements (min-width: 992px) -->
+            <div class="scorer-rank-col desktop-only">
+                ${rankBadgeHtml}
+            </div>
+            <div class="scorer-logo-card desktop-only">
+                ${getCompanyLogoSvg(scorer.company)}
+            </div>
+
+            <!-- Mobile Layout Elements: Trophy Circle (max-width: 991px) -->
+            <div class="scorer-badge-col mobile-only">
                 <div class="scorer-trophy-circle">
                     <i class="fa-solid fa-trophy"></i>
                     <span class="scorer-floating-crown"><i class="fa-solid fa-crown"></i></span>
                 </div>
             </div>
+
+            <!-- Content Column -->
             <div class="scorer-info-card">
                 <h4 class="scorer-name">${scorer.name}</h4>
                 <div class="scorer-role">${displayRole}</div>
                 <div class="scorer-bottom-row">
                     <span class="scorer-package">${formattedCtc}</span>
-                    <button type="button" class="scorer-btn-solve" onclick="event.stopPropagation(); startTopScorerChallenge('${scorer.id}')">
+                    <button type="button" class="scorer-btn-solve mobile-only" onclick="event.stopPropagation(); startTopScorerChallenge('${scorer.id}')">
                         <i class="fa-solid fa-play"></i> Solve Test
                     </button>
                 </div>
+            </div>
+
+            <!-- Desktop Arrow Button (min-width: 992px) -->
+            <div class="scorer-arrow-col desktop-only">
+                <button type="button" class="scorer-arrow-btn" aria-label="Solve Test">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
         `;
 
         grid.appendChild(row);
     });
 }
+
+window.filterScorersTimeRange = function(range, btn) {
+    document.querySelectorAll('.tsh-tab-pill').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    
+    let filtered = [...TOP_SCORERS];
+    if (range === 'month') {
+        filtered = TOP_SCORERS.slice(0, 4);
+    } else if (range === 'semester') {
+        filtered = TOP_SCORERS.slice(0, 6);
+    }
+    renderTopScorerCards(filtered);
+};
 
 // ==========================================
 // START SPECIFIC TOP SCORER CHALLENGE

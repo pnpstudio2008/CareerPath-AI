@@ -1032,6 +1032,563 @@
     opacity: 0.85;
 }
 
+/* ========================================================
+   PRACTICE SECTION HERO BANNER & 3D GRAPHIC
+   Matches laptop design mockup media_1792602417116_ae1f66b0.png
+   ======================================================== */
+
+.prep-hero-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.25rem 2.75rem;
+    border-radius: 28px;
+    background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F5F3FF 100%);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
+}
+
+.prep-hero-left {
+    max-width: 520px;
+    z-index: 2;
+}
+
+.prep-module-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: #EFF6FF;
+    color: #2563EB;
+    border: 1px solid #DBEAFE;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.85rem;
+}
+
+.prep-hero-title {
+    font-size: 2.85rem;
+    font-weight: 900;
+    color: #0F172A;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin: 0 0 0.65rem 0;
+}
+
+.prep-hero-title .text-blue {
+    color: #2563EB;
+}
+
+.prep-hero-subtitle {
+    font-size: 1.12rem;
+    color: #64748B;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+}
+
+.prep-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF !important;
+    padding: 0.85rem 1.75rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.32);
+    border: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.prep-hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.42);
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+}
+
+.prep-hero-cta i.fa-arrow-right {
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+}
+
+.prep-hero-cta:hover i.fa-arrow-right {
+    transform: translateX(4px);
+}
+
+/* Hero Graphic Right */
+.prep-hero-graphic {
+    position: relative;
+    width: 380px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.prep-hero-canvas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prep-wave-bg {
+    position: absolute;
+    right: -30px;
+    bottom: -30px;
+    width: 420px;
+    height: 240px;
+    pointer-events: none;
+}
+
+/* Checklist Card */
+.prep-checklist-card {
+    position: absolute;
+    right: 45px;
+    top: 15px;
+    width: 220px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 1.15rem 1rem;
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transform: rotate(-3deg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    z-index: 2;
+}
+
+.check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.check-circle {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.circle-blue { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+.circle-teal { background: linear-gradient(135deg, #10B981, #059669); }
+.circle-pink { background: linear-gradient(135deg, #F43F5E, #E11D48); }
+
+.check-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.check-lines .line {
+    height: 5px;
+    border-radius: 999px;
+    background: #E2E8F0;
+}
+
+.check-lines .line-long { width: 75%; }
+.check-lines .line-short { width: 45%; }
+
+/* Chart Card */
+.prep-chart-card {
+    position: absolute;
+    right: 10px;
+    bottom: 25px;
+    width: 80px;
+    height: 80px;
+    background: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 18px;
+    box-shadow: 0 16px 32px rgba(37, 99, 235, 0.18), 0 2px 6px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 14px;
+    transform: rotate(6deg);
+    z-index: 3;
+}
+
+.chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.chart-bars .bar {
+    width: 8px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);
+}
+
+.chart-bars .bar-1 { height: 16px; opacity: 0.85; }
+.chart-bars .bar-2 { height: 26px; }
+.chart-bars .bar-3 { height: 38px; }
+
+/* Header Elements */
+.tsh-left-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.tsh-crown-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #FFF7ED;
+    border: 1px solid #FFEDD5;
+    color: #EA580C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.tsh-header-titles h3 {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #0F172A !important;
+    margin: 0 0 2px 0 !important;
+}
+
+.tsh-header-titles p {
+    font-size: 0.86rem !important;
+    color: #64748B !important;
+    margin: 0 !important;
+}
+
+.tsh-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.tsh-pill-tabs {
+    display: flex;
+    align-items: center;
+    background: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.tsh-tab-pill {
+    background: transparent;
+    border: none;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #64748B;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tsh-tab-pill:hover {
+    color: #2563EB;
+}
+
+.tsh-tab-pill.active {
+    background: #EFF6FF;
+    color: #2563EB;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+}
+
+.tsh-benchmark-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #FFF7ED;
+    border: 1px solid #FFEDD5;
+    color: #D97706;
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+/* ========================================================
+   LAPTOP / DESKTOP VIEW SPECIFIC STYLES (min-width: 992px)
+   ======================================================== */
+@media (min-width: 992px) {
+    .top-scorers-showcase {
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 24px !important;
+        padding: 1.75rem 2rem !important;
+        margin-bottom: 2rem !important;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
+    }
+
+    .tsh-header {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .tsh-top-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 1rem !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Grid Layout: 3 Columns on Laptop */
+    .top-scorers-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 1.25rem !important;
+        margin-top: 1.25rem !important;
+    }
+
+    /* Desktop Scorer Row Card */
+    .scorer-row {
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 20px !important;
+        padding: 1.15rem 1.2rem !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 0.85rem !important;
+        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03) !important;
+        transition: all 0.22s ease !important;
+        cursor: pointer !important;
+        position: relative !important;
+        text-decoration: none !important;
+    }
+
+    .scorer-row:nth-child(even) {
+        flex-direction: row !important;
+    }
+
+    .scorer-row:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 10px 25px rgba(37, 99, 235, 0.09) !important;
+        border-color: #BFDBFE !important;
+    }
+
+    /* Rank Badge Col */
+    .scorer-rank-col {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scorer-rank-wrap {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 800;
+        position: relative;
+    }
+
+    .scorer-rank-wrap.rank-1 {
+        background: #FEF3C7;
+        color: #D97706;
+    }
+
+    .scorer-rank-wrap.rank-1 .rank-crown {
+        position: absolute;
+        top: -11px;
+        font-size: 0.75rem;
+        color: #F59E0B;
+        line-height: 1;
+    }
+
+    .scorer-rank-wrap.rank-2 {
+        background: #F1F5F9;
+        color: #475569;
+    }
+
+    .scorer-rank-wrap.rank-3 {
+        background: #FFEDD5;
+        color: #EA580C;
+    }
+
+    .scorer-rank-wrap.rank-other {
+        background: #F8FAFC;
+        color: #64748B;
+        border: 1px solid #E2E8F0;
+    }
+
+    /* Logo Card */
+    .scorer-logo-card {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    /* Info Column */
+    .scorer-info-card {
+        flex: 1 !important;
+        min-width: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+
+    .scorer-name {
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: #0F172A !important;
+        margin: 0 0 2px 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .scorer-role {
+        font-size: 0.78rem !important;
+        font-weight: 500 !important;
+        color: #64748B !important;
+        margin-bottom: 4px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        line-height: 1.3 !important;
+    }
+
+    .scorer-package {
+        font-size: 0.98rem !important;
+        font-weight: 800 !important;
+        color: #059669 !important;
+        letter-spacing: -0.01em !important;
+    }
+
+    /* Arrow Action Col */
+    .scorer-arrow-col {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scorer-arrow-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
+        color: #1E293B;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .scorer-row:hover .scorer-arrow-btn {
+        background: #2563EB;
+        color: #FFFFFF;
+        border-color: #2563EB;
+        transform: translateX(2px);
+    }
+
+    .desktop-only {
+        display: flex !important;
+    }
+
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* ========================================================
+   MOBILE / TABLET VIEW SCOPING (max-width: 991px)
+   Keeps mobile UI 100% identical to current design
+   ======================================================== */
+@media (max-width: 991px) {
+    .desktop-only {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: flex !important;
+    }
+
+    .scorer-btn-solve.mobile-only {
+        display: inline-flex !important;
+    }
+
+    .prep-hero-graphic {
+        display: none !important;
+    }
+    
+    .prep-hero-banner {
+        padding: 1.35rem 1.15rem;
+        border-radius: 20px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .prep-hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .prep-hero-subtitle {
+        font-size: 0.92rem;
+        margin-bottom: 1.15rem;
+    }
+    
+    .prep-hero-cta {
+        padding: 0.65rem 1.35rem;
+        font-size: 0.88rem;
+    }
+
+    .tsh-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.85rem;
+    }
+
+    .tsh-header-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+}
+
 .top-scorers-showcase {
     background: #FFFFFF;
     border: 1px solid #E2E8F0;
