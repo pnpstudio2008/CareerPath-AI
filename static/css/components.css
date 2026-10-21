@@ -1037,6 +1037,18 @@
     display: block;
 }
 
+.scorer-package {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #059669;
+    margin-top: 0.25rem;
+    display: inline-block;
+}
+
+[data-theme="dark"] .scorer-package {
+    color: #34D399;
+}
+
 .scorer-stats-row {
     display: flex;
     align-items: center;
@@ -2249,6 +2261,13 @@
         word-break: break-word !important;
     }
 
+    .scorer-package {
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        color: #059669 !important;
+        margin-top: 0.2rem !important;
+    }
+
     .scorer-stats-row {
         margin: 0.5rem 0 !important;
         padding: 0.4rem 0.5rem !important;
@@ -2337,6 +2356,13 @@
     .scorer-info .desig {
         font-size: 0.62rem !important;
         line-height: 1.2 !important;
+    }
+
+    .scorer-package {
+        font-size: 0.68rem !important;
+        font-weight: 700 !important;
+        color: #059669 !important;
+        margin-top: 0.15rem !important;
     }
 
     .scorer-stats-row {

@@ -104,6 +104,8 @@ function renderAlumniExperiences(experiences) {
     experiences.forEach((exp, index) => {
         const card = document.createElement('div');
         card.className = 'hof-card';
+        card.style.cursor = 'pointer';
+        card.onclick = () => openAlumniDetail(exp.id);
         
         const initials = getInitials(exp.student_name);
         
@@ -126,7 +128,7 @@ function renderAlumniExperiences(experiences) {
                 </div>
             </div>
             
-            <button class="hc-btn-solve" onclick="startAlumniChallenge('${safeCompany}', '${safeRole}')">
+            <button class="hc-btn-solve" onclick="event.stopPropagation(); startAlumniChallenge('${safeCompany}', '${safeRole}')">
                 <i class="fa-solid fa-play"></i> Solve Test
             </button>
         `;
