@@ -5677,7 +5677,7 @@ p {
 
 .hof-hero-left {
     flex: 1;
-    max-width: 600px;
+    max-width: 850px;
 }
 
 .h-badge {
@@ -5953,10 +5953,8 @@ p {
     .hof-header { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 768px) {
-    .hof-hero-right {
-        max-width: 320px;
-        height: 250px;
-        margin: 1.25rem auto 0;
+    .hof-hero {
+        padding: 1.25rem 0 1.5rem !important;
     }
     .hof-main-container {
         padding: 1.25rem 0.6rem !important;
