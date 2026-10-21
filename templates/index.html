@@ -34,8 +34,8 @@
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Custom Stylesheets -->
-    <link rel="stylesheet" href="/static/css/style.css?v=20261021_v5">
-    <link rel="stylesheet" href="/static/css/components.css?v=20261021_v5">
+    <link rel="stylesheet" href="/static/css/style.css?v=20261021_v6">
+    <link rel="stylesheet" href="/static/css/components.css?v=20261021_v6">
 </head>
 <body>
     <!-- Background Glow Accents -->
@@ -2063,7 +2063,7 @@
     <!-- ========================================== -->
     <div id="alumni-detail-modal" class="modal-backdrop" onclick="closeAlumniDetailModal(event)">
         <div class="modal-card alumni-detail-modal-card" onclick="event.stopPropagation()">
-            <div class="modal-header">
+            <div class="modal-header alumni-detail-modal-header">
                 <div class="alumni-modal-header-profile">
                     <div class="alumni-modal-avatar" id="alumni-detail-avatar">AP</div>
                     <div>
@@ -2074,7 +2074,7 @@
                         <p class="text-muted mb-0" id="alumni-detail-subtitle" style="font-size:0.88rem;">Batch of 2022 • On-Campus Placement</p>
                     </div>
                 </div>
-                <button class="modal-close" onclick="closeAlumniDetailModal()">&times;</button>
+                <button type="button" class="modal-close alumni-modal-close-btn" onclick="closeAlumniDetailModal()" aria-label="Close modal">&times;</button>
             </div>
 
             <div class="modal-body alumni-detail-modal-body" id="alumni-detail-body">
@@ -2082,18 +2082,18 @@
             </div>
 
             <div class="modal-footer alumni-detail-modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeAlumniDetailModal()">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Grid
+                <button type="button" class="btn btn-outline alumni-modal-back-btn" onclick="closeAlumniDetailModal()">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Back to Grid</span>
                 </button>
-                <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-                    <button class="upvote-btn" id="alumni-detail-upvote-btn">
-                        <i class="fa-solid fa-heart"></i> <span id="alumni-detail-upvote-count" class="upvote-count">0</span> Helpful
+                <div class="alumni-detail-footer-actions">
+                    <button class="upvote-btn alumni-detail-upvote-action" id="alumni-detail-upvote-btn" type="button">
+                        <i class="fa-solid fa-heart"></i> <span id="alumni-detail-upvote-count" class="upvote-count">0</span> <span>Helpful</span>
                     </button>
                     <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" class="btn btn-linkedin-action" id="alumni-detail-linkedin-btn" title="Open LinkedIn Profile">
-                        <i class="fa-brands fa-linkedin"></i> LinkedIn
+                        <i class="fa-brands fa-linkedin"></i> <span>LinkedIn</span>
                     </a>
-                    <button class="btn btn-primary btn-gmail-action" id="alumni-detail-gmail-btn">
-                        <i class="fa-brands fa-google"></i> Contact Senior via Gmail
+                    <button class="btn btn-primary btn-gmail-action" id="alumni-detail-gmail-btn" type="button">
+                        <i class="fa-brands fa-google"></i> <span>Contact Senior via Gmail</span>
                     </button>
                 </div>
             </div>
@@ -2277,11 +2277,11 @@
     </footer>
 
     <!-- JavaScript Files -->
-    <script src="/static/js/app.js?v=20261021_v5"></script>
+    <script src="/static/js/app.js?v=20261021_v6"></script>
     <script src="/static/js/resume_analyzer.js"></script>
     <script src="/static/js/mock_test.js"></script>
-    <script src="/static/js/placement_prep.js?v=20261021_v5"></script>
-    <script src="/static/js/alumni_hub.js?v=20261021_v5"></script>
+    <script src="/static/js/placement_prep.js?v=20261021_v6"></script>
+    <script src="/static/js/alumni_hub.js?v=20261021_v6"></script>
 
     <!-- CREDENTIAL MODAL (Official Welcome Email Format) -->
     <div id="credential-modal" class="modal-backdrop" onclick="closeCredentialModal(event)">

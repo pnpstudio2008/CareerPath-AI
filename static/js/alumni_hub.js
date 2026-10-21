@@ -618,6 +618,7 @@ function openAlumniDetail(expId) {
     const gmailBtnEl = document.getElementById('alumni-detail-gmail-btn');
 
     if (!modal) return;
+    if (bodyEl) bodyEl.scrollTop = 0;
 
     const initials = exp.initials || getInitials(exp.student_name);
     const difficultyColor = exp.difficulty === 'Hard' ? 'badge-danger' : exp.difficulty === 'Medium' ? 'badge-warning' : 'badge-success';
