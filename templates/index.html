@@ -1344,21 +1344,20 @@
                     <!-- Center: 3D Olympic Podium -->
                     <div class="ahh-podium-center">
                         <div class="alumni-podium-display" id="alumni-podium-display">
-                            
                             <!-- Rank 2: Left -->
                             <div class="podium-col rank-2-col" onclick="openAlumniDetailByRank(2)">
                                 <div class="podium-crown crown-silver">
                                     <i class="fa-solid fa-crown"></i>
                                 </div>
                                 <div class="podium-avatar-wrap ring-silver">
-                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80" alt="Sophie" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="podium-initials" style="display:none;">SP</div>
+                                    <img id="podium-img-2" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=256&q=80" alt="Aarav Sharma" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="podium-initials" id="podium-init-2" style="display:none;">AS</div>
                                 </div>
                                 <div class="podium-identity">
-                                    <span class="podium-flag">🇫🇷</span>
-                                    <span class="podium-name" id="podium-name-2">Sophie</span>
+                                    <span class="podium-name" id="podium-name-2">Aarav Sharma</span>
+                                    <span class="podium-company" id="podium-comp-2">Amazon</span>
                                 </div>
-                                <div class="podium-problems-pill pill-silver" id="podium-prob-2">1,449 Problems</div>
+                                <div class="podium-problems-pill pill-silver" id="podium-prob-2">1,840 Problems</div>
                                 <div class="podium-base base-2">
                                     <span class="podium-number">2</span>
                                 </div>
@@ -1370,12 +1369,12 @@
                                     <i class="fa-solid fa-crown"></i>
                                 </div>
                                 <div class="podium-avatar-wrap ring-gold">
-                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80" alt="Alex" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="podium-initials" style="display:none;">AX</div>
+                                    <img id="podium-img-1" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80" alt="Priya Patel" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="podium-initials" id="podium-init-1" style="display:none;">PP</div>
                                 </div>
                                 <div class="podium-identity">
-                                    <span class="podium-flag">🇵🇹</span>
-                                    <span class="podium-name" id="podium-name-1">Alex</span>
+                                    <span class="podium-name" id="podium-name-1">Priya Patel</span>
+                                    <span class="podium-company" id="podium-comp-1">Google</span>
                                 </div>
                                 <div class="podium-problems-pill pill-gold" id="podium-prob-1">2,569 Problems</div>
                                 <div class="podium-base base-1">
@@ -1400,14 +1399,14 @@
                                     <i class="fa-solid fa-crown"></i>
                                 </div>
                                 <div class="podium-avatar-wrap ring-bronze">
-                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80" alt="Ethan" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="podium-initials" style="display:none;">ET</div>
+                                    <img id="podium-img-3" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80" alt="Sneha Kulkarni" class="podium-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="podium-initials" id="podium-init-3" style="display:none;">SK</div>
                                 </div>
                                 <div class="podium-identity">
-                                    <span class="podium-flag">🇨🇦</span>
-                                    <span class="podium-name" id="podium-name-3">Ethan</span>
+                                    <span class="podium-name" id="podium-name-3">Sneha Kulkarni</span>
+                                    <span class="podium-company" id="podium-comp-3">Microsoft</span>
                                 </div>
-                                <div class="podium-problems-pill pill-bronze" id="podium-prob-3">1,035 Problems</div>
+                                <div class="podium-problems-pill pill-bronze" id="podium-prob-3">1,620 Problems</div>
                                 <div class="podium-base base-3">
                                     <span class="podium-number">3</span>
                                 </div>
@@ -1494,7 +1493,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px; text-align: center;">#</th>
-                                    <th>Username</th>
+                                    <th>Alumni</th>
                                     <th>Experience</th>
                                     <th>Badges</th>
                                     <th>Problems Solved</th>

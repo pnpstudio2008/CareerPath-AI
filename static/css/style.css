@@ -6946,17 +6946,31 @@ p {
 
 .podium-identity {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.88rem;
+    gap: 0.15rem;
+    margin: 0.45rem 0 0.35rem;
+    text-align: center;
+}
+
+.podium-name {
+    font-size: 0.92rem;
     font-weight: 700;
     color: #0F172A;
-    margin: 0.4rem 0 0.25rem;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.podium-company {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748B;
+    line-height: 1.2;
     white-space: nowrap;
 }
 
 .podium-flag {
-    font-size: 1rem;
+    display: none !important;
 }
 
 .podium-problems-pill {
@@ -7387,18 +7401,28 @@ p {
 .user-meta {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 2px;
 }
 
-.user-handle {
-    font-size: 0.88rem;
+.user-full-name {
+    font-size: 0.92rem;
     font-weight: 700;
     color: #0F172A;
+    line-height: 1.25;
 }
 
-.user-subtitle {
-    font-size: 0.74rem;
+.user-company-name {
+    font-size: 0.78rem;
+    font-weight: 500;
     color: #64748B;
+    line-height: 1.2;
     white-space: nowrap;
+}
+
+.user-handle,
+.user-subtitle {
+    display: none !important;
 }
 
 /* Experience */
@@ -7604,4 +7628,19 @@ p {
     .podium-number { font-size: 2rem; }
     .podium-avatar-wrap { width: 52px; height: 52px; }
     .rank-1-col .podium-avatar-wrap { width: 62px; height: 62px; }
+    .podium-identity {
+        margin: 0.3rem 0 0.2rem;
+    }
+    .podium-name {
+        font-size: 0.80rem;
+    }
+    .podium-company {
+        font-size: 0.68rem;
+    }
+    .user-full-name {
+        font-size: 0.86rem;
+    }
+    .user-company-name {
+        font-size: 0.72rem;
+    }
 }

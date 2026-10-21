@@ -21,95 +21,10 @@ let currentTimeFilter = 'all';
 let currentAlumniPage = 1;
 const ITEMS_PER_PAGE = 5;
 
-// Base rich performers dataset accurately matching design mockup
+// Base rich performers dataset accurately matching college alumni
 const BASE_MOCK_PERFORMERS = [
     {
         id: 1,
-        student_name: 'Alexandre Silva',
-        company: 'Google',
-        role: 'Senior Software Engineer (L5)',
-        package_lpa: 48.00,
-        batch_year: '2022',
-        offer_type: 'International Campus Drive',
-        difficulty: 'Hard',
-        email: 'alex.silva@google.com',
-        username: '@alex_dev',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
-        initials: 'AX',
-        country_flag: '🇵🇹',
-        country_name: 'Portugal',
-        xp: '2,569 XP',
-        xp_num: 2569,
-        badges: 15,
-        problems: { easy: 724, medium: 512, hard: 233, total: 1469 },
-        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>', '<i class="fa-solid fa-medal text-blue"></i>'],
-        achievements_count: 5,
-        rounds: [
-            { round_name: 'Round 1: DSA & Complex Dynamic Programming', details: 'Graph shortest path algorithms and multidimensional memoization.' },
-            { round_name: 'Round 2: Low-Level System Architecture', details: 'Designed an in-memory high-throughput LRU cache with concurrency locks.' },
-            { round_name: 'Round 3: Googleyness & Cultural Leadership', details: 'Behavioral cross-functional conflict resolution scenarios.' }
-        ],
-        preparation_tips: 'Master LeetCode Hard graph algorithms, concurrency in C++/Go, and understand distributed systems trade-offs.',
-        advice_to_juniors: 'Build real projects, explain your trade-offs clearly, and never guess time complexities during coding rounds.'
-    },
-    {
-        id: 2,
-        student_name: 'Sophie Laurent',
-        company: 'Microsoft',
-        role: 'Cloud Solutions Architect',
-        package_lpa: 42.00,
-        batch_year: '2023',
-        offer_type: 'On-Campus Placement',
-        difficulty: 'Hard',
-        email: 'sophie.laurent@microsoft.com',
-        username: '@sophie_code',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
-        initials: 'SP',
-        country_flag: '🇫🇷',
-        country_name: 'France',
-        xp: '1,449 XP',
-        xp_num: 1449,
-        badges: 12,
-        problems: { easy: 610, medium: 430, hard: 409, total: 1449 },
-        achievements_icons: ['<i class="fa-solid fa-trophy text-blue"></i>', '<i class="fa-solid fa-medal text-silver"></i>'],
-        achievements_count: 3,
-        rounds: [
-            { round_name: 'Round 1: Cloud Architecture & Scalability', details: 'Microservices event streaming with Azure Service Bus.' },
-            { round_name: 'Round 2: OS Internals & Paging Logic', details: 'Virtual memory paging, thread synchronization, and deadlocks.' }
-        ],
-        preparation_tips: 'Focus on distributed systems, OS memory internals, and SQL database index optimization.',
-        advice_to_juniors: 'Clarity of thought and clean code structure matter just as much as solving the problem.'
-    },
-    {
-        id: 3,
-        student_name: 'Ethan Tremblay',
-        company: 'Amazon',
-        role: 'Distributed Systems SDE',
-        package_lpa: 38.00,
-        batch_year: '2023',
-        offer_type: 'On-Campus Placement',
-        difficulty: 'Hard',
-        email: 'ethan.tremblay@amazon.com',
-        username: '@ethan_dev',
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
-        initials: 'ET',
-        country_flag: '🇨🇦',
-        country_name: 'Canada',
-        xp: '1,035 XP',
-        xp_num: 1035,
-        badges: 10,
-        problems: { easy: 430, medium: 380, hard: 225, total: 1035 },
-        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>', '<i class="fa-solid fa-medal text-purple"></i>'],
-        achievements_count: 2,
-        rounds: [
-            { round_name: 'Round 1: Amazon Leadership Principles & Coding', details: 'Tree traversal problem + Customer Obsession leadership stories.' },
-            { round_name: 'Round 2: System Design & Resilience', details: 'Rate limiting and circuit breaker pattern implementation.' }
-        ],
-        preparation_tips: 'Practice STAR format for all Amazon leadership principles alongside tree/graph algorithms.',
-        advice_to_juniors: 'Be relentless with edge cases and test your algorithms dry-run before writing code.'
-    },
-    {
-        id: 4,
         student_name: 'Priya Patel',
         company: 'Google',
         role: 'Software Development Engineer (SDE-1)',
@@ -118,54 +33,52 @@ const BASE_MOCK_PERFORMERS = [
         offer_type: 'On-Campus Placement',
         difficulty: 'Hard',
         email: 'priya.patel@gmail.com',
-        username: '@priya_pat',
         avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
         initials: 'PP',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '980 XP',
-        xp_num: 980,
-        badges: 8,
-        problems: { easy: 400, medium: 320, hard: 260, total: 980 },
-        achievements_icons: ['<i class="fa-solid fa-gem text-blue"></i>', '<i class="fa-solid fa-award text-purple"></i>'],
-        achievements_count: 1,
+        xp: '2,569 XP',
+        xp_num: 2569,
+        badges: 15,
+        problems: { easy: 724, medium: 512, hard: 233, total: 1469 },
+        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>', '<i class="fa-solid fa-medal text-blue"></i>'],
+        achievements_count: 5,
         rounds: [
-            { round_name: 'Round 1: Data Structures & Algorithms', details: 'Binary tree boundary traversals & topological sort.' },
-            { round_name: 'Round 2: System Design & Object Oriented Patterns', details: 'Designing a real-time collaborative document editor.' }
+            { round_name: 'Round 1: Online Coding Assessment', details: 'Solved 2 LeetCode Medium/Hard algorithmic challenges on Graph Traversal and Dynamic Programming with optimal time/space complexity.' },
+            { round_name: 'Round 2: Technical Interview 1', details: 'In-depth problem solving on Binary Trees, Maximum Path Sum, and Trie prefix search implementation with live test-case dry running.' },
+            { round_name: 'Round 3: Technical Interview 2', details: 'Distributed Systems and Concurrency: Design a resilient cache invalidation pipeline and discuss thread contention with lock-free structures.' },
+            { round_name: 'Round 4: Googleyness & Leadership', details: 'Scenario-based behavioral questions on handling ambiguity, cross-team conflict resolution, and commitment to open engineering practices.' }
         ],
-        preparation_tips: 'Solve standard Striver SDE sheet and NeetCode 150 thoroughly.',
-        advice_to_juniors: 'Consistency is everything. 2 problems a day for 6 months beats cramming for a week.'
+        preparation_tips: 'Solved 450+ LeetCode problems with special emphasis on Dynamic Programming, Graphs, and Trees. Practiced writing clean code on Google Docs without IDE auto-complete.',
+        advice_to_juniors: 'Never jump straight into writing code. Explain your brute force first, discuss trade-offs, and verify edge cases out loud before typing.'
     },
     {
-        id: 5,
-        student_name: 'Karan Mehta',
-        company: 'General',
-        role: 'Senior Software Engineer',
-        package_lpa: 14.00,
+        id: 2,
+        student_name: 'Aarav Sharma',
+        company: 'Amazon',
+        role: 'Software Development Engineer (SDE-1)',
+        package_lpa: 28.50,
         batch_year: '2024',
         offer_type: 'On-Campus Placement',
-        difficulty: 'Medium',
-        email: 'karan.mehta@gmail.com',
-        username: '@karan_mehta',
-        avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80',
-        initials: 'KM',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '875 XP',
-        xp_num: 875,
-        badges: 7,
-        problems: { easy: 390, medium: 280, hard: 205, total: 875 },
-        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>', '<i class="fa-solid fa-award text-blue"></i>'],
-        achievements_count: 1,
+        difficulty: 'Hard',
+        email: 'aarav.sharma@amazon.com',
+        avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=256&q=80',
+        initials: 'AS',
+        xp: '1,840 XP',
+        xp_num: 1840,
+        badges: 12,
+        problems: { easy: 610, medium: 430, hard: 409, total: 1449 },
+        achievements_icons: ['<i class="fa-solid fa-trophy text-blue"></i>', '<i class="fa-solid fa-medal text-silver"></i>'],
+        achievements_count: 4,
         rounds: [
-            { round_name: 'Round 1: Core Python & Backend Architecture', details: 'FastAPI async generators, SQL connection pooling.' },
-            { round_name: 'Round 2: Fullstack Integration & Debugging', details: 'Live debugging of race condition in database transactions.' }
+            { round_name: 'Round 1: Online Assessment (OA2)', details: 'Two algorithmic coding problems on Monotonic Stack and Sliding Window, followed by Amazon Work Style behavioral simulation.' },
+            { round_name: 'Round 2: Technical Round 1', details: 'Data Structures and Algorithms: Solved Top-K Frequent Elements using Min-Heap and discussed complexity optimizations.' },
+            { round_name: 'Round 3: Technical Round 2', details: 'Object-Oriented Design & LLD: Designed an extensible Parking Lot system using Factory and Strategy design patterns with database schemas.' },
+            { round_name: 'Round 4: Bar Raiser Interview', details: 'Rigorous evaluation across Amazon 16 Leadership Principles using the STAR format, plus past production project architecture breakdown.' }
         ],
-        preparation_tips: 'Deep dive into Python GIL, database indexing, and REST architectural constraints.',
-        advice_to_juniors: 'Understand how memory and databases actually work underneath high-level libraries.'
+        preparation_tips: 'Thoroughly prepared 2-3 detailed stories for each of Amazon 16 Leadership Principles using the STAR method, and mastered the Blind 75 LeetCode list.',
+        advice_to_juniors: 'Customer obsession and ownership are real culture pillars at Amazon. Tie every technical trade-off back to how it impacts end-user experience.'
     },
     {
-        id: 6,
+        id: 3,
         student_name: 'Sneha Kulkarni',
         company: 'Microsoft',
         role: 'Software Engineer',
@@ -174,54 +87,48 @@ const BASE_MOCK_PERFORMERS = [
         offer_type: 'On-Campus Placement',
         difficulty: 'Hard',
         email: 'sneha.kulkarni@gmail.com',
-        username: '@sneha_dev',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
         initials: 'SK',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '820 XP',
-        xp_num: 820,
-        badges: 7,
-        problems: { easy: 360, medium: 270, hard: 190, total: 820 },
-        achievements_icons: ['<i class="fa-solid fa-medal text-blue"></i>', '<i class="fa-solid fa-gem text-emerald"></i>'],
-        achievements_count: 2,
+        xp: '1,620 XP',
+        xp_num: 1620,
+        badges: 10,
+        problems: { easy: 430, medium: 380, hard: 225, total: 1035 },
+        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>', '<i class="fa-solid fa-gem text-emerald"></i>'],
+        achievements_count: 3,
         rounds: [
             { round_name: 'Round 1: Operating Systems & DSA', details: 'Process scheduling algorithms, LRU Cache, and semaphore deadlock prevention.' },
-            { round_name: 'Round 2: High Level Architecture', details: 'Distributed key-value store with consistent hashing.' }
+            { round_name: 'Round 2: High Level Architecture', details: 'Distributed key-value store with consistent hashing and partition tolerance.' }
         ],
         preparation_tips: 'Master OS concurrency, virtual memory paging, and cloud microservices.',
         advice_to_juniors: 'Know your operating systems and computer network fundamentals inside out.'
     },
     {
-        id: 7,
-        student_name: 'Aarav Sharma',
-        company: 'Amazon',
-        role: 'Software Development Engineer (SDE-1)',
-        package_lpa: 28.50,
-        batch_year: '2024',
+        id: 4,
+        student_name: 'Karan Mehta',
+        company: 'General',
+        role: 'Senior Software Engineer',
+        package_lpa: 14.00,
+        batch_year: '2023',
         offer_type: 'On-Campus Placement',
-        difficulty: 'Hard',
-        email: 'aarav.sharma@gmail.com',
-        username: '@aarav_sde',
-        avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=256&q=80',
-        initials: 'AS',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '760 XP',
-        xp_num: 760,
-        badges: 6,
-        problems: { easy: 320, medium: 250, hard: 190, total: 760 },
-        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>'],
+        difficulty: 'Medium',
+        email: 'karan.mehta@gmail.com',
+        avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=256&q=80',
+        initials: 'KM',
+        xp: '1,120 XP',
+        xp_num: 1120,
+        badges: 8,
+        problems: { easy: 390, medium: 280, hard: 205, total: 875 },
+        achievements_icons: ['<i class="fa-solid fa-trophy text-amber"></i>', '<i class="fa-solid fa-award text-blue"></i>'],
         achievements_count: 2,
         rounds: [
-            { round_name: 'Round 1: Online Assessment (OA2)', details: 'Two medium-hard algorithmic questions involving dynamic programming and graphs.' },
-            { round_name: 'Round 2: Technical Interview', details: 'Subtree with Maximum Average and Trie implementation for prefix auto-complete.' }
+            { round_name: 'Round 1: Core Python & Backend Architecture', details: 'FastAPI async generators, SQL connection pooling.' },
+            { round_name: 'Round 2: Fullstack Integration & Debugging', details: 'Live debugging of race condition in database transactions.' }
         ],
-        preparation_tips: 'Practice Amazon tagged questions on LeetCode and understand AWS fundamental building blocks.',
-        advice_to_juniors: 'Communicate constantly during the interview. The interviewer wants to hear your thought process.'
+        preparation_tips: 'Deep dive into Python GIL, database indexing, and REST architectural constraints.',
+        advice_to_juniors: 'Understand how memory and databases actually work underneath high-level libraries.'
     },
     {
-        id: 8,
+        id: 5,
         student_name: 'Ananya Joshi',
         company: 'Infosys',
         role: 'Specialist Programmer (SP)',
@@ -230,17 +137,14 @@ const BASE_MOCK_PERFORMERS = [
         offer_type: 'On-Campus Placement',
         difficulty: 'Hard',
         email: 'ananya.joshi@gmail.com',
-        username: '@ananya_j',
         avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=256&q=80',
         initials: 'AJ',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '710 XP',
-        xp_num: 710,
-        badges: 6,
+        xp: '980 XP',
+        xp_num: 980,
+        badges: 7,
         problems: { easy: 310, medium: 230, hard: 170, total: 710 },
         achievements_icons: ['<i class="fa-solid fa-award text-purple"></i>'],
-        achievements_count: 1,
+        achievements_count: 2,
         rounds: [
             { round_name: 'Round 1: HackWithInfy Finalist Round', details: 'Advanced DP and Fenwick tree problem.' },
             { round_name: 'Round 2: Technical Interview', details: 'Java JVM internals, garbage collection tuning, and SQL join algorithms.' }
@@ -249,7 +153,7 @@ const BASE_MOCK_PERFORMERS = [
         advice_to_juniors: 'Participate actively in coding contests like HackWithInfy, CodeChef, and LeetCode Biweekly.'
     },
     {
-        id: 9,
+        id: 6,
         student_name: 'Rohan Deshmukh',
         company: 'TCS',
         role: 'TCS Digital Developer',
@@ -258,14 +162,11 @@ const BASE_MOCK_PERFORMERS = [
         offer_type: 'On-Campus Placement',
         difficulty: 'Medium',
         email: 'rohan.deshmukh@gmail.com',
-        username: '@rohan_tcs',
         avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=256&q=80',
         initials: 'RD',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '640 XP',
-        xp_num: 640,
-        badges: 5,
+        xp: '820 XP',
+        xp_num: 820,
+        badges: 6,
         problems: { easy: 290, medium: 210, hard: 140, total: 640 },
         achievements_icons: ['<i class="fa-solid fa-medal text-blue"></i>'],
         achievements_count: 1,
@@ -277,7 +178,7 @@ const BASE_MOCK_PERFORMERS = [
         advice_to_juniors: 'Dont neglect aptitude and communication skills; they open the door to technical rounds.'
     },
     {
-        id: 10,
+        id: 7,
         student_name: 'Rahul Verma',
         company: 'Accenture',
         role: 'Advanced App Engineering Analyst',
@@ -285,15 +186,12 @@ const BASE_MOCK_PERFORMERS = [
         batch_year: '2024',
         offer_type: 'On-Campus Placement',
         difficulty: 'Easy',
-        email: 'rahul.verma@gmail.com',
-        username: '@rahul_v',
+        email: 'rahul.verma@accenture.com',
         avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=256&q=80',
         initials: 'RV',
-        country_flag: '🇮🇳',
-        country_name: 'India',
-        xp: '580 XP',
-        xp_num: 580,
-        badges: 4,
+        xp: '680 XP',
+        xp_num: 680,
+        badges: 5,
         problems: { easy: 260, medium: 190, hard: 130, total: 580 },
         achievements_icons: ['<i class="fa-solid fa-award text-amber"></i>'],
         achievements_count: 1,
@@ -303,6 +201,31 @@ const BASE_MOCK_PERFORMERS = [
         ],
         preparation_tips: 'Revise DBMS normalization, SDLC agile methodology, and basic data structures.',
         advice_to_juniors: 'Be completely honest on your resume; every project you list will be tested in depth.'
+    },
+    {
+        id: 8,
+        student_name: 'Meera Nair',
+        company: 'Wipro',
+        role: 'Project Engineer (Turbo)',
+        package_lpa: 6.50,
+        batch_year: '2024',
+        offer_type: 'On-Campus Placement',
+        difficulty: 'Medium',
+        email: 'meera.nair@wipro.com',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=80',
+        initials: 'MN',
+        xp: '590 XP',
+        xp_num: 590,
+        badges: 4,
+        problems: { easy: 240, medium: 170, hard: 100, total: 510 },
+        achievements_icons: ['<i class="fa-solid fa-award text-blue"></i>'],
+        achievements_count: 1,
+        rounds: [
+            { round_name: 'Round 1: Elite National Talent Hunt', details: 'Quantitative, logical, and hands-on programming problems.' },
+            { round_name: 'Round 2: Turbo Upgrade Coding Challenge', details: 'Trees, recursion, and greedy algorithms.' }
+        ],
+        preparation_tips: 'Solved practice tests on HackerRank and thoroughly reviewed OS paging and database indexing.',
+        advice_to_juniors: 'Take the Turbo upgrade test seriously—it elevates the standard offer to a premium technology role.'
     }
 ];
 
@@ -314,16 +237,25 @@ async function fetchAlumniExperiences() {
         const data = await safeJsonFetch(res);
 
         if (data.success && Array.isArray(data.experiences) && data.experiences.length > 0) {
-            // Merge database records with base mock performers to preserve custom alumni accounts
             const dbRecords = data.experiences.map((e, idx) => {
-                const existing = BASE_MOCK_PERFORMERS.find(p => p.id === e.id || p.student_name.toLowerCase() === e.student_name.toLowerCase());
-                if (existing) {
-                    return { ...existing, ...e };
-                }
                 const cleanName = e.student_name || 'Alumni Senior';
+                const existing = BASE_MOCK_PERFORMERS.find(p => p.id === e.id || p.student_name.toLowerCase() === cleanName.toLowerCase());
+                if (existing) {
+                    return {
+                        ...existing,
+                        ...e,
+                        problems: existing.problems,
+                        xp: existing.xp,
+                        xp_num: existing.xp_num,
+                        badges: existing.badges,
+                        achievements_icons: existing.achievements_icons,
+                        achievements_count: existing.achievements_count,
+                        avatar: existing.avatar,
+                        initials: existing.initials
+                    };
+                }
                 const parts = cleanName.trim().split(' ');
                 const inits = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : cleanName.slice(0, 2).toUpperCase();
-                const handle = `@${parts[0].toLowerCase()}_${(parts[1] || 'dev').toLowerCase()}`;
                 const pkg = parseFloat(e.package_lpa) || 12.0;
                 const calculatedXp = Math.round(pkg * 60) + (100 - idx * 10);
                 
@@ -336,12 +268,9 @@ async function fetchAlumniExperiences() {
                     batch_year: e.batch_year || '2024',
                     offer_type: e.offer_type || 'On-Campus Placement',
                     difficulty: e.difficulty || 'Medium',
-                    email: e.email || `${cleanName.toLowerCase().replace(/\\s+/g, '.')}@gmail.com`,
-                    username: handle,
+                    email: e.email || `${cleanName.toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
                     avatar: `https://images.unsplash.com/photo-${1500000000000 + (idx * 1111111)}?auto=format&fit=crop&w=256&q=80`,
                     initials: inits,
-                    country_flag: '🇮🇳',
-                    country_name: 'India',
                     xp: `${calculatedXp.toLocaleString()} XP`,
                     xp_num: calculatedXp,
                     badges: Math.max(3, Math.round(pkg / 3)),
@@ -359,10 +288,17 @@ async function fetchAlumniExperiences() {
                 };
             });
 
-            // Combine prioritizing mockup top performers first
+            // Combine prioritizing baseline alumni list
             const combinedMap = new Map();
             BASE_MOCK_PERFORMERS.forEach(item => combinedMap.set(item.id, item));
-            dbRecords.forEach(item => combinedMap.set(item.id, item));
+            dbRecords.forEach(item => {
+                const existingKey = Array.from(combinedMap.entries()).find(([_, v]) => v.student_name.toLowerCase() === item.student_name.toLowerCase());
+                if (existingKey) {
+                    combinedMap.set(existingKey[0], { ...existingKey[1], ...item });
+                } else {
+                    combinedMap.set(item.id, item);
+                }
+            });
             allEnrichedAlumni = Array.from(combinedMap.values());
         }
     } catch (err) {
@@ -377,28 +313,58 @@ async function fetchAlumniExperiences() {
 }
 
 function updatePodiumDisplay() {
-    if (allEnrichedAlumni.length >= 3) {
-        const top1 = allEnrichedAlumni[0];
-        const top2 = allEnrichedAlumni[1];
-        const top3 = allEnrichedAlumni[2];
+    // Sort by XP descending so top 3 are reliably displayed on the podium
+    const sortedPodium = [...allEnrichedAlumni].sort((a, b) => (b.xp_num || 0) - (a.xp_num || 0));
 
-        // Update Rank 1
+    if (sortedPodium.length >= 3) {
+        const top1 = sortedPodium[0];
+        const top2 = sortedPodium[1];
+        const top3 = sortedPodium[2];
+
+        // Update Rank 1 (Center)
         const name1 = document.getElementById('podium-name-1');
+        const comp1 = document.getElementById('podium-comp-1');
         const prob1 = document.getElementById('podium-prob-1');
-        if (name1) name1.innerText = top1.student_name.split(' ')[0] || top1.username;
-        if (prob1) prob1.innerText = `${(top1.problems?.total || 2569).toLocaleString()} Problems`;
+        const img1 = document.getElementById('podium-img-1');
+        const init1 = document.getElementById('podium-init-1');
+        if (name1) name1.innerText = top1.student_name;
+        if (comp1) comp1.innerText = top1.company;
+        if (prob1) prob1.innerText = `${(top1.problems?.total || top1.xp_num || 2569).toLocaleString()} Problems`;
+        if (img1 && top1.avatar) {
+            img1.src = top1.avatar;
+            img1.alt = top1.student_name;
+        }
+        if (init1) init1.innerText = top1.initials || 'PP';
 
-        // Update Rank 2
+        // Update Rank 2 (Left)
         const name2 = document.getElementById('podium-name-2');
+        const comp2 = document.getElementById('podium-comp-2');
         const prob2 = document.getElementById('podium-prob-2');
-        if (name2) name2.innerText = top2.student_name.split(' ')[0] || top2.username;
-        if (prob2) prob2.innerText = `${(top2.problems?.total || 1449).toLocaleString()} Problems`;
+        const img2 = document.getElementById('podium-img-2');
+        const init2 = document.getElementById('podium-init-2');
+        if (name2) name2.innerText = top2.student_name;
+        if (comp2) comp2.innerText = top2.company;
+        if (prob2) prob2.innerText = `${(top2.problems?.total || top2.xp_num || 1840).toLocaleString()} Problems`;
+        if (img2 && top2.avatar) {
+            img2.src = top2.avatar;
+            img2.alt = top2.student_name;
+        }
+        if (init2) init2.innerText = top2.initials || 'AS';
 
-        // Update Rank 3
+        // Update Rank 3 (Right)
         const name3 = document.getElementById('podium-name-3');
+        const comp3 = document.getElementById('podium-comp-3');
         const prob3 = document.getElementById('podium-prob-3');
-        if (name3) name3.innerText = top3.student_name.split(' ')[0] || top3.username;
-        if (prob3) prob3.innerText = `${(top3.problems?.total || 1035).toLocaleString()} Problems`;
+        const img3 = document.getElementById('podium-img-3');
+        const init3 = document.getElementById('podium-init-3');
+        if (name3) name3.innerText = top3.student_name;
+        if (comp3) comp3.innerText = top3.company;
+        if (prob3) prob3.innerText = `${(top3.problems?.total || top3.xp_num || 1620).toLocaleString()} Problems`;
+        if (img3 && top3.avatar) {
+            img3.src = top3.avatar;
+            img3.alt = top3.student_name;
+        }
+        if (init3) init3.innerText = top3.initials || 'SK';
     }
 
     const countEl = document.getElementById('total-alumni-count');
@@ -408,8 +374,9 @@ function updatePodiumDisplay() {
 }
 
 function openAlumniDetailByRank(rankNumber) {
-    if (allEnrichedAlumni && allEnrichedAlumni[rankNumber - 1]) {
-        openAlumniDetail(allEnrichedAlumni[rankNumber - 1].id);
+    const sortedPodium = [...allEnrichedAlumni].sort((a, b) => (b.xp_num || 0) - (a.xp_num || 0));
+    if (sortedPodium && sortedPodium[rankNumber - 1]) {
+        openAlumniDetail(sortedPodium[rankNumber - 1].id);
     }
 }
 
@@ -445,11 +412,10 @@ function renderAlumniLeaderboard() {
     let records = [...allEnrichedAlumni];
     const query = document.getElementById('alumni-search-input')?.value.trim().toLowerCase() || '';
 
-    // Search Filter
+    // Search Filter by student name, company, or role
     if (query) {
         records = records.filter(r => 
             (r.student_name && r.student_name.toLowerCase().includes(query)) ||
-            (r.username && r.username.toLowerCase().includes(query)) ||
             (r.company && r.company.toLowerCase().includes(query)) ||
             (r.role && r.role.toLowerCase().includes(query))
         );
@@ -514,8 +480,6 @@ function renderAlumniLeaderboard() {
             rowClass = 'rank-row-other';
         }
 
-        const safeCompany = (item.company || '').replace(/'/g, "\\'");
-        const safeRole = (item.role || '').replace(/'/g, "\\'");
         const achievementsList = (item.achievements_icons || ['<i class="fa-solid fa-trophy text-amber"></i>']).join(' ');
 
         return `
@@ -528,13 +492,13 @@ function renderAlumniLeaderboard() {
                             <div class="user-avatar-initials" style="display:none;">${item.initials || 'AL'}</div>
                         </div>
                         <div class="user-meta">
-                            <span class="user-handle">${item.username}</span>
-                            <span class="user-subtitle">${item.student_name} • ${item.company}</span>
+                            <span class="user-full-name">${item.student_name}</span>
+                            <span class="user-company-name">${item.company}</span>
                         </div>
                     </div>
                 </td>
                 <td class="td-xp">
-                    <strong>${item.xp || (item.xp_num ? item.xp_num + ' XP' : '850 XP')}</strong>
+                    <strong>${item.xp || (item.xp_num ? item.xp_num.toLocaleString() + ' XP' : '850 XP')}</strong>
                 </td>
                 <td class="td-badges">
                     <span>${item.badges || 5}</span>
