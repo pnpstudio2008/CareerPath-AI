@@ -904,6 +904,7 @@ def submit_mock_test():
     # Calculate skill percentages
     for skill, stats in skill_breakdown.items():
         stats["score_pct"] = int((stats["correct"] / max(1, stats["total"])) * 100)
+        stats["accuracy"] = stats["score_pct"]
 
     score_pct = int((correct_count / max(1, total_questions)) * 100)
 
