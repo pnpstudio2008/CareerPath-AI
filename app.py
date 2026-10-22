@@ -390,17 +390,7 @@ def analyze_resume():
     Performs skill extraction, ATS scoring, career path mapping,
     45-company synthetic hiring dataset matching, and personalized question generation.
     """
-    # --- RATE LIMITING ---
-    last_upload = session.get('resume_last_upload_time', 0)
-    if time.time() - last_upload > 24 * 3600:
-        session['resume_upload_count'] = 0
-
-    if session.get('resume_upload_count', 0) >= 10:
-        return jsonify({
-            'success': False, 
-            'error': 'You have reached your daily limit of 10 resume analyses. Please try again after 24 hours to help us reduce network consumption.'
-        }), 429
-    # ---------------------
+    # Unlimited resume analyses allowed (Rate limit removed per user request)
 
     try:
         session['resume_upload_count'] = session.get('resume_upload_count', 0) + 1
