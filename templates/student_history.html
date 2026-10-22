@@ -1287,11 +1287,25 @@
                             </div>
                         </div>
 
-                        <!-- ATS Score Rating & Report Download -->
+                        <!-- ATS Score, Assessment Status Badge & Report Download -->
                         <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
-                            <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report-pill" download title="Download Official PDF Performance Report">
-                                <i class="fa-solid fa-file-pdf"></i> Download Report (PDF)
+                            {% if r.test_completed or (r.mocktest_score and r.mocktest_score > 0) %}
+                            <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report-pill" download title="Download Official Verified PDF Performance Report">
+                                <i class="fa-solid fa-file-pdf"></i> Download Verified Report (PDF)
                             </a>
+                            <div class="hist-score-badge high" style="background:#ECFDF5; color:#065F46; border:1px solid #A7F3D0;">
+                                <i class="fa-solid fa-award"></i>
+                                <span>Test: {{ r.mocktest_score|round|int }}% • {{ r.mocktest_rating }}</span>
+                            </div>
+                            {% else %}
+                            <a href="/?section=analyzer" class="btn-download-report-pill" style="background:#F59E0B; border-color:#D97706; box-shadow:none;" title="Practical assessment must be completed to unlock report">
+                                <i class="fa-solid fa-lock"></i> Test Required to Unlock
+                            </a>
+                            <div class="hist-score-badge" style="background:#FFFBEB; color:#B45309; border:1px solid #FDE68A;">
+                                <i class="fa-solid fa-clock"></i>
+                                <span>Assessment Pending</span>
+                            </div>
+                            {% endif %}
                             <div class="hist-score-badge {{ 'high' if r.ats_score >= 80 else ('avg' if r.ats_score >= 60 else '') }}">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                                 <span>{{ r.ats_score|round|int }}% ATS Score</span>
@@ -1363,11 +1377,17 @@
                         </div>
 
                         <div class="hist-footer-actions">
-                            <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report" download title="Download official PDF performance report for this resume">
-                                <i class="fa-solid fa-file-pdf"></i> Download Report (PDF)
+                            {% if r.test_completed or (r.mocktest_score and r.mocktest_score > 0) %}
+                            <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report" download title="Download official verified performance report">
+                                <i class="fa-solid fa-file-pdf"></i> Download Verified Report (PDF)
                             </a>
+                            {% else %}
+                            <a href="/?section=analyzer" class="btn-download-report" style="background:#FFFBEB; color:#B45309; border-color:#FDE68A;" title="Complete mandatory practical assessment to unlock report">
+                                <i class="fa-solid fa-lock"></i> Assessment Required to Unlock
+                            </a>
+                            {% endif %}
                             <button type="button" class="btn-show-more" onclick="openDetailModal({{ loop.index0 }})">
-                                <i class="fa-solid fa-expand"></i> Show More Data &amp; Detailed Breakdown
+                                <i class="fa-solid fa-expand"></i> Show Full 5-Step Structure &amp; Breakdown
                             </button>
                         </div>
                     </div>
@@ -1431,18 +1451,57 @@
                 <div>
                     <h4 class="hist-section-title">
                         <i class="fa-solid fa-building-circle-check text-primary"></i>
-                        1. Suitable Companies (Top Matches from 45-Recruiter Dataset)
+                        1. Suitable Recruiter Benchmark (Top Matches from 45-Recruiter Dataset)
                     </h4>
                     <div class="hist-comp-grid" id="modal-companies-list">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <!-- 2. Skill Gap Analysis -->
+                <!-- 2. Step 2 Intelligence: Company Required Skills vs Candidate Alignment -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-code-compare text-primary"></i>
+                        2. Step 2 Company Required Skills vs. Candidate Skill Alignment
+                    </h4>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 14px; padding: 1.15rem;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.65rem;">
+                                <strong style="color: #166534; font-size: 0.9rem;"><i class="fa-solid fa-circle-check"></i> Recruiter Demanded Skills Verified</strong>
+                                <span class="badge badge-success" id="modal-matched-cs-count" style="font-size:0.75rem;">0 Matched</span>
+                            </div>
+                            <div class="hist-missing-pills" id="modal-matched-cs-container" style="gap:0.4rem;">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 14px; padding: 1.15rem;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.65rem;">
+                                <strong style="color: #991B1B; font-size: 0.9rem;"><i class="fa-solid fa-triangle-exclamation"></i> Recruiter Skill Gaps (Target Deficits)</strong>
+                                <span class="badge badge-warning" id="modal-missing-cs-count" style="background:#FEE2E2; color:#991B1B; font-size:0.75rem;">0 Gaps</span>
+                            </div>
+                            <div class="hist-missing-pills" id="modal-missing-cs-container" style="gap:0.4rem;">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Step 3 & 4 Practical Technical Assessment & Candidate Scorecard -->
+                <div>
+                    <h4 class="hist-section-title">
+                        <i class="fa-solid fa-square-poll-vertical text-purple"></i>
+                        3. Practical Technical Assessment Scorecard (Step 3 Mandatory Evaluation)
+                    </h4>
+                    <div id="modal-assessment-scorecard-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- 4. Skill Gap & Readiness Analysis -->
                 <div>
                     <h4 class="hist-section-title">
                         <i class="fa-solid fa-gauge-simple-high text-amber"></i>
-                        2. How Much Gap is There? (Skill Gap &amp; Readiness Analysis)
+                        4. Skill Gap &amp; Readiness Analysis
                     </h4>
                     <div class="hist-gap-summary-card">
                         <div class="hist-gap-icon">
@@ -1572,6 +1631,47 @@
             document.getElementById('modal-resume-title').innerText = item.filename || 'Resume Analysis Breakdown';
             document.getElementById('modal-resume-meta').innerText = `Uploaded on ${item.created_at || 'Recently'} • ${Math.round(item.ats_score || 0)}% ATS Score`;
 
+            // Check assessment completion status
+            const isTestCompleted = Boolean(
+                item.test_completed || 
+                (item.mocktest_score && item.mocktest_score > 0) || 
+                (item.assessment_status === 'completed')
+            );
+
+            // Update modal download buttons status
+            if (modalDlBtn && modalTopDlBtn) {
+                if (isTestCompleted) {
+                    modalDlBtn.href = reportUrl;
+                    modalDlBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Download Verified Report (PDF)';
+                    modalDlBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+                    modalDlBtn.style.color = '#FFFFFF';
+                    modalDlBtn.style.borderColor = '#059669';
+
+                    modalTopDlBtn.href = reportUrl;
+                    modalTopDlBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)';
+                    modalTopDlBtn.style.background = '#059669';
+                    modalTopDlBtn.style.color = '#FFFFFF';
+                } else {
+                    modalDlBtn.href = '/?section=analyzer';
+                    modalDlBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Assessment Required to Unlock';
+                    modalDlBtn.style.background = '#FEF3C7';
+                    modalDlBtn.style.color = '#92400E';
+                    modalDlBtn.style.borderColor = '#FCD34D';
+
+                    modalTopDlBtn.href = '/?section=analyzer';
+                    modalTopDlBtn.innerHTML = '<i class="fa-solid fa-play"></i> Take Mandatory Mock Test';
+                    modalTopDlBtn.style.background = '#F59E0B';
+                    modalTopDlBtn.style.color = '#FFFFFF';
+                }
+            }
+
+            // 1. Header
+            const statusBadgeText = isTestCompleted 
+                ? `<span class="badge badge-success ml-2" style="font-size:0.75rem;"><i class="fa-solid fa-award"></i> Assessment Completed (${Math.round(item.mocktest_score || 0)}%)</span>` 
+                : `<span class="badge badge-warning ml-2" style="font-size:0.75rem;"><i class="fa-solid fa-clock"></i> Assessment Pending</span>`;
+            document.getElementById('modal-resume-title').innerText = item.filename || 'Resume Analysis Breakdown';
+            document.getElementById('modal-resume-meta').innerHTML = `Uploaded on ${item.created_at || 'Recently'} &bull; <strong>${Math.round(item.ats_score || 0)}% ATS Score</strong> ${statusBadgeText}`;
+
             // 2. Suitable Companies
             const compContainer = document.getElementById('modal-companies-list');
             compContainer.innerHTML = '';
@@ -1603,6 +1703,110 @@
                 });
             } else {
                 compContainer.innerHTML = '<p class="text-muted">No specific company match records stored for this resume.</p>';
+            }
+
+            // Step 2 Intelligence: Company Required Skills
+            const fullAn = item.full_analysis || {};
+            const csi = fullAn.company_skills_intelligence || {};
+            const matchedCs = csi.matched_company_skills || (item.skills ? item.skills.slice(0, 6) : []);
+            const missingCs = csi.missing_company_skills || (item.skill_gaps ? item.skill_gaps.slice(0, 4) : []);
+
+            const matchCsCount = document.getElementById('modal-matched-cs-count');
+            if (matchCsCount) matchCsCount.innerText = `${matchedCs.length} Matched`;
+            const matchCsBox = document.getElementById('modal-matched-cs-container');
+            if (matchCsBox) {
+                matchCsBox.innerHTML = '';
+                if (matchedCs.length > 0) {
+                    matchedCs.forEach(sk => {
+                        const span = document.createElement('span');
+                        span.className = 'badge badge-success';
+                        span.style.cssText = 'padding: 0.35rem 0.65rem; font-size: 0.78rem; font-weight: 700;';
+                        span.innerHTML = `<i class="fa-solid fa-check"></i> ${sk}`;
+                        matchCsBox.appendChild(span);
+                    });
+                } else {
+                    matchCsBox.innerHTML = '<span class="text-muted" style="font-size:0.8rem;">Core competencies aligned.</span>';
+                }
+            }
+
+            const missCsCount = document.getElementById('modal-missing-cs-count');
+            if (missCsCount) missCsCount.innerText = `${missingCs.length} Gaps`;
+            const missCsBox = document.getElementById('modal-missing-cs-container');
+            if (missCsBox) {
+                missCsBox.innerHTML = '';
+                if (missingCs.length > 0) {
+                    missingCs.forEach(sk => {
+                        const span = document.createElement('span');
+                        span.className = 'missing-pill';
+                        span.style.cssText = 'padding: 0.35rem 0.65rem; font-size: 0.78rem; font-weight: 700;';
+                        span.innerHTML = `<i class="fa-solid fa-circle-minus"></i> ${sk}`;
+                        missCsBox.appendChild(span);
+                    });
+                } else {
+                    missCsBox.innerHTML = '<span class="badge badge-success" style="font-size:0.8rem;"><i class="fa-solid fa-circle-check"></i> Complete Market Coverage</span>';
+                }
+            }
+
+            // Step 3 & 4 Practical Technical Assessment Scorecard
+            const scorecardContainer = document.getElementById('modal-assessment-scorecard-container');
+            if (scorecardContainer) {
+                if (isTestCompleted) {
+                    const mockData = item.mocktest_data || {};
+                    const totalQ = mockData.total_questions || 12;
+                    const correctQ = mockData.correct_count || 10;
+                    const accuracyPct = mockData.accuracy || Math.round((correctQ / totalQ) * 100);
+                    const timeS = mockData.time_taken_seconds || 480;
+                    const timeStr = `${Math.floor(timeS / 60)}m ${timeS % 60}s`;
+                    const breakdown = mockData.skill_breakdown || {};
+
+                    let breakdownHtml = '';
+                    if (Object.keys(breakdown).length > 0) {
+                        breakdownHtml = '<div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.6rem;">';
+                        for (const [skName, skStats] of Object.entries(breakdown)) {
+                            const acc = typeof skStats === 'object' ? skStats.accuracy : skStats;
+                            const badgeColor = acc >= 75 ? '#059669' : (acc >= 50 ? '#2563EB' : '#D97706');
+                            breakdownHtml += `<span style="background:#FFFFFF; border:1px solid #CBD5E1; border-radius:8px; padding:0.3rem 0.65rem; font-size:0.78rem;"><strong>${skName}:</strong> <span style="color:${badgeColor}; font-weight:800;">${acc}%</span></span>`;
+                        }
+                        breakdownHtml += '</div>';
+                    }
+
+                    scorecardContainer.innerHTML = `
+                        <div style="background:linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border:1px solid #C7D2FE; border-radius:14px; padding:1.25rem;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-bottom:0.75rem;">
+                                <div>
+                                    <span class="badge badge-primary" style="font-size:0.78rem;"><i class="fa-solid fa-code"></i> Adaptive Technical Assessment</span>
+                                    <h4 style="margin:0.35rem 0 0; font-size:1.1rem; font-weight:800; color:#1E1B4B;">Target Domain: ${item.best_role || 'Software Engineering'}</h4>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:0.65rem;">
+                                    <div style="background:#059669; color:#fff; border-radius:10px; padding:0.4rem 0.85rem; font-weight:800; font-size:1.1rem;">
+                                        ${Math.round(item.mocktest_score || 0)}%
+                                    </div>
+                                    <div style="font-size:0.82rem; color:#3730A3; font-weight:700;">
+                                        ${item.mocktest_rating || 'Placement Ready'}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:1.25rem; font-size:0.84rem; color:#312E81; flex-wrap:wrap; border-top:1px dashed #C7D2FE; padding-top:0.65rem;">
+                                <span><i class="fa-solid fa-circle-check text-emerald"></i> Correct: <strong>${correctQ} / ${totalQ}</strong> (${accuracyPct}%)</span>
+                                <span><i class="fa-solid fa-clock text-primary"></i> Duration: <strong>${timeStr}</strong></span>
+                                <span><i class="fa-solid fa-shield-check text-emerald"></i> Verified Candidate Submission</span>
+                            </div>
+                            ${breakdownHtml}
+                        </div>
+                    `;
+                } else {
+                    scorecardContainer.innerHTML = `
+                        <div style="background:#FFFBEB; border:1px solid #FDE68A; border-radius:14px; padding:1.25rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+                            <div>
+                                <h4 style="margin:0 0 0.25rem; font-size:1rem; font-weight:800; color:#92400E;"><i class="fa-solid fa-lock"></i> Mandatory Practical Assessment Pending</h4>
+                                <p style="margin:0; font-size:0.84rem; color:#B45309;">Candidate must complete the practical technical test generated from resume competencies to unlock the full evaluation report.</p>
+                            </div>
+                            <a href="/?section=analyzer" class="btn btn-primary" style="background:#D97706; border-color:#D97706; font-size:0.88rem; font-weight:700;">
+                                <i class="fa-solid fa-bolt"></i> Start Assessment Now
+                            </a>
+                        </div>
+                    `;
+                }
             }
 
             // 3. Skill Gap Analysis

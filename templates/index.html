@@ -878,21 +878,34 @@
             <!-- Analysis Results View -->
             <div id="analyzer-results" class="analyzer-results-wrapper" style="display:none;">
                 
-                <!-- Report Download Section Banner -->
-                <div class="card mb-4" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.25rem 1.75rem; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);">
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(37, 99, 235, 0.25); border: 1px solid rgba(59, 130, 246, 0.5); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #60A5FA; flex-shrink: 0;">
+                <!-- Report Download Section Banner (Step 3 / 4 Dynamic State) -->
+                <div class="card mb-4" id="analyzer-report-banner" style="background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.35rem 1.75rem; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; max-width: 680px;">
+                            <div id="analyzer-report-icon-box" style="width: 52px; height: 52px; border-radius: 14px; background: rgba(37, 99, 235, 0.25); border: 1px solid rgba(59, 130, 246, 0.5); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #60A5FA; flex-shrink: 0;">
                                 <i class="fa-solid fa-file-pdf"></i>
                             </div>
                             <div>
-                                <h4 style="margin: 0 0 0.25rem 0; font-size: 1.08rem; font-weight: 800; color: #FFFFFF;">Resume Performance &amp; ATS Evaluation Report</h4>
-                                <p style="margin: 0; font-size: 0.84rem; color: #94A3B8;">Download an official, print-ready PDF detailing your ATS compatibility score, 45-company match ratings, skill gaps, and custom action items.</p>
+                                <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.35rem; flex-wrap:wrap;">
+                                    <span id="analyzer-report-step-badge" class="badge" style="background:#FEF3C7; color:#92400E; font-weight:800; border:1px solid #FCD34D; font-size:0.75rem;">
+                                        <i class="fa-solid fa-lock"></i> Step 3: Mandatory Assessment Required
+                                    </span>
+                                    <span id="analyzer-report-score-pill" class="badge" style="display:none; background:#ECFDF5; color:#065F46; font-weight:800; border:1px solid #A7F3D0; font-size:0.75rem;">
+                                        <i class="fa-solid fa-award"></i> Verified Score: --
+                                    </span>
+                                </div>
+                                <h4 id="analyzer-report-title" style="margin: 0 0 0.35rem 0; font-size: 1.12rem; font-weight: 800; color: #FFFFFF;">Resume Performance &amp; Technical Audit Report</h4>
+                                <p id="analyzer-report-desc" style="margin: 0; font-size: 0.86rem; color: #94A3B8; line-height: 1.5;">To generate and download your verified single-page executive report, complete the practical 12-question technical assessment tailored to your resume skills and 45-company hiring criteria.</p>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-primary" id="btn-download-live-report" onclick="downloadCurrentResumeReport()" style="background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); padding: 0.75rem 1.5rem; font-size: 0.92rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 12px; box-shadow: 0 4px 14px rgba(37,99,235,0.4); cursor: pointer; white-space: nowrap;">
-                            <i class="fa-solid fa-file-arrow-down"></i> Download Performance Report (PDF)
-                        </button>
+                        <div id="analyzer-report-actions" style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-primary" id="btn-start-mandatory-assessment" onclick="launchTailoredMockTestFromResume()" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); padding: 0.75rem 1.4rem; font-size: 0.92rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 12px; box-shadow: 0 4px 14px rgba(16,185,129,0.35); cursor: pointer; white-space: nowrap;">
+                                <i class="fa-solid fa-bolt"></i> Take Mandatory Mock Test (12 Qs)
+                            </button>
+                            <button type="button" class="btn btn-outline" id="btn-download-live-report" onclick="downloadCurrentResumeReport()" style="padding: 0.75rem 1.25rem; font-size: 0.88rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.22); color: #E2E8F0; background: rgba(255,255,255,0.06); cursor: pointer; white-space: nowrap;">
+                                <i class="fa-solid fa-lock"></i> Report Locked
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -989,6 +1002,38 @@
                     <div class="skills-taxonomy-grid" id="skills-taxonomy-container"></div>
                 </div>
 
+                <!-- Step 2: Company Required Skills vs Candidate Resume Skills Alignment -->
+                <div class="card mt-4" id="company-skills-intel-card" style="display:none; background: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%); border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 16px -2px rgba(15,23,42,0.05);">
+                    <div class="card-header-flex mb-3">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem;">
+                                <span class="badge badge-primary" style="font-size:0.75rem; font-weight:800; background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE;"><i class="fa-solid fa-database"></i> Step 2 Intelligence</span>
+                                <h3 style="margin:0;"><i class="fa-solid fa-code-compare text-primary"></i> Company Required Skills vs. Resume Match</h3>
+                            </div>
+                            <p class="text-muted" style="margin:0; font-size:0.86rem;">Cross-referenced against required technical competencies from 45 target recruiter hiring benchmarks.</p>
+                        </div>
+                        <span class="badge badge-info" id="intel-skills-summary-badge">0 Recruiter Skills Evaluated</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
+                        <!-- Matched Skills -->
+                        <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 14px; padding: 1.25rem;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
+                                <strong style="color: #166534; font-size: 0.92rem;"><i class="fa-solid fa-circle-check"></i> Recruiter Demanded Skills in Your Resume</strong>
+                                <span class="badge badge-success" id="matched-company-skills-count">0 Matched</span>
+                            </div>
+                            <div class="skills-preview-tags" id="matched-company-skills-container" style="gap:0.4rem; display:flex; flex-wrap:wrap;"></div>
+                        </div>
+                        <!-- Missing Skills -->
+                        <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 14px; padding: 1.25rem;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem;">
+                                <strong style="color: #991B1B; font-size: 0.92rem;"><i class="fa-solid fa-triangle-exclamation"></i> Recruiter Skill Gaps (High Market Demand)</strong>
+                                <span class="badge badge-warning" id="missing-company-skills-count" style="background:#FEE2E2; color:#991B1B;">0 Deficits</span>
+                            </div>
+                            <div class="skills-preview-tags" id="missing-company-skills-container" style="gap:0.4rem; display:flex; flex-wrap:wrap;"></div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Row 2B: Extracted Projects & Quantifiable Impact Showcase -->
                 <div class="card mt-4" id="extracted-projects-card" style="display:none;">
                     <div class="card-header-flex">
@@ -1078,23 +1123,23 @@
                     </div>
                 </div>
 
-                <!-- Row 5: Tailored Skill & Certification Mock Test Callout -->
+                <!-- Row 5: Step 3 Mandatory Technical Mock Test Callout -->
                 <div class="card mt-4 tailored-mock-test-cta-card" id="resume-mock-test-cta-card">
                     <div class="mock-cta-flex">
                         <div class="mock-cta-badge-icon">
-                            <i class="fa-solid fa-graduation-cap"></i>
+                            <i class="fa-solid fa-bolt"></i>
                         </div>
                         <div class="mock-cta-info">
-                            <span class="badge badge-primary"><i class="fa-solid fa-sparkles"></i> Adaptive Skill Assessment</span>
-                            <h3 class="mt-2"><i class="fa-solid fa-bullseye text-primary"></i> Test Your Skills with a Personalized Mock Test</h3>
+                            <span class="badge badge-primary" style="background:#EEF2FF; color:#4338CA; border:1px solid #C7D2FE;"><i class="fa-solid fa-lock"></i> Step 3: Mandatory Practical Technical Assessment</span>
+                            <h3 class="mt-2"><i class="fa-solid fa-bullseye text-primary"></i> Complete Mock Test to Unlock Your Placement Report</h3>
                             <p class="text-muted mb-2">
-                                We've extracted your core technical skills and certifications. Take a live 10–15 question technical assessment tailored specifically to your profile to benchmark your placement readiness.
+                                Generated directly from your resume competencies and 45-company target recruiter requirements. Completing this 12-question assessment proves practical proficiency and generates your verified executive placement scorecard.
                             </p>
                             <div class="skills-preview-tags" id="resume-mock-skills-tags"></div>
                         </div>
                         <div class="mock-cta-btn-wrapper">
-                            <button class="btn btn-primary btn-lg" onclick="launchTailoredMockTestFromResume()" style="background: linear-gradient(135deg, #10B981, #059669); white-space:nowrap;">
-                                <i class="fa-solid fa-play"></i> Start Tailored Mock Test
+                            <button class="btn btn-primary btn-lg" onclick="launchTailoredMockTestFromResume()" style="background: linear-gradient(135deg, #10B981, #059669); white-space:nowrap; box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+                                <i class="fa-solid fa-play"></i> Start Mandatory Mock Test
                             </button>
                         </div>
                     </div>

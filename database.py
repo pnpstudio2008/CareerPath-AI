@@ -518,10 +518,18 @@ def ensure_resume_history_table():
                 career_recommendations_json TEXT DEFAULT '[]',
                 full_analysis_json TEXT DEFAULT '{}',
                 resume_fingerprint TEXT NOT NULL,
+                mocktest_score REAL DEFAULT NULL,
+                mocktest_rating TEXT DEFAULT NULL,
+                mocktest_data_json TEXT DEFAULT '{}',
+                test_completed BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
             """)
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_resume_hist_student ON student_resume_history(student_id)")
+            cursor.execute("ALTER TABLE student_resume_history ADD COLUMN IF NOT EXISTS mocktest_score REAL")
+            cursor.execute("ALTER TABLE student_resume_history ADD COLUMN IF NOT EXISTS mocktest_rating TEXT")
+            cursor.execute("ALTER TABLE student_resume_history ADD COLUMN IF NOT EXISTS mocktest_data_json TEXT DEFAULT '{}'")
+            cursor.execute("ALTER TABLE student_resume_history ADD COLUMN IF NOT EXISTS test_completed BOOLEAN DEFAULT FALSE")
         else:
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS student_resume_history (
@@ -539,10 +547,24 @@ def ensure_resume_history_table():
                 career_recommendations_json TEXT DEFAULT '[]',
                 full_analysis_json TEXT DEFAULT '{}',
                 resume_fingerprint TEXT NOT NULL,
+                mocktest_score REAL DEFAULT NULL,
+                mocktest_rating TEXT DEFAULT NULL,
+                mocktest_data_json TEXT DEFAULT '{}',
+                test_completed BOOLEAN DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
             """)
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_resume_hist_student ON student_resume_history(student_id)")
+            cursor.execute("PRAGMA table_info(student_resume_history)")
+            existing_cols = [c[1] for c in cursor.fetchall()]
+            if 'mocktest_score' not in existing_cols:
+                cursor.execute("ALTER TABLE student_resume_history ADD COLUMN mocktest_score REAL")
+            if 'mocktest_rating' not in existing_cols:
+                cursor.execute("ALTER TABLE student_resume_history ADD COLUMN mocktest_rating TEXT")
+            if 'mocktest_data_json' not in existing_cols:
+                cursor.execute("ALTER TABLE student_resume_history ADD COLUMN mocktest_data_json TEXT DEFAULT '{}'")
+            if 'test_completed' not in existing_cols:
+                cursor.execute("ALTER TABLE student_resume_history ADD COLUMN test_completed BOOLEAN DEFAULT 0")
         conn.commit()
     except Exception as e:
         print("[ensure_resume_history_table] Notice:", e)
@@ -2416,7 +2438,9 @@ def add_resume_analysis_record(student_id: int, filename: str, ats_score: float,
                                suitable_companies: list, best_role: str,
                                best_match_company: str, skill_gaps: list,
                                career_recommendations: list, full_analysis: dict,
-                               fingerprint: str) -> int:
+                               fingerprint: str, mocktest_score: float = None,
+                               mocktest_rating: str = None, mocktest_data: dict = None,
+                               test_completed: bool = False) -> int:
     """
     Saves or updates a resume analysis record for an ongoing student.
     A resume is recognized as distinct if its fingerprint (derived from achievements, skills, projects, ATS score) differs.
@@ -2439,6 +2463,7 @@ def add_resume_analysis_record(student_id: int, filename: str, ats_score: float,
         gaps_str = json.dumps(skill_gaps or [], default=str)
         recs_str = json.dumps(career_recommendations or [], default=str)
         full_analysis_str = json.dumps(full_analysis or {}, default=str)
+        mock_data_str = json.dumps(mocktest_data or {}, default=str)
 
         if existing:
             rec_id = existing["id"] if isinstance(existing, dict) else existing[0]
@@ -2447,12 +2472,14 @@ def add_resume_analysis_record(student_id: int, filename: str, ats_score: float,
                 SET filename = ?, ats_score = ?, skills_json = ?, achievements_json = ?,
                     projects_json = ?, suitable_companies_json = ?, best_role = ?,
                     best_match_company = ?, skill_gaps_json = ?, career_recommendations_json = ?,
-                    full_analysis_json = ?, created_at = CURRENT_TIMESTAMP
+                    full_analysis_json = ?, mocktest_score = ?, mocktest_rating = ?,
+                    mocktest_data_json = ?, test_completed = ?, created_at = CURRENT_TIMESTAMP
                 WHERE id = ?
             """, (
                 filename, float(ats_score), skills_str, achievements_str, projects_str,
                 companies_str, best_role, best_match_company, gaps_str, recs_str,
-                full_analysis_str, int(rec_id)
+                full_analysis_str, mocktest_score, mocktest_rating, mock_data_str,
+                bool(test_completed), int(rec_id)
             ))
             conn.commit()
             return int(rec_id)
@@ -2462,13 +2489,14 @@ def add_resume_analysis_record(student_id: int, filename: str, ats_score: float,
                     student_id, filename, ats_score, skills_json, achievements_json,
                     projects_json, suitable_companies_json, best_role, best_match_company,
                     skill_gaps_json, career_recommendations_json, full_analysis_json,
-                    resume_fingerprint
+                    resume_fingerprint, mocktest_score, mocktest_rating, mocktest_data_json, test_completed
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 int(student_id), filename, float(ats_score), skills_str, achievements_str,
                 projects_str, companies_str, best_role, best_match_company,
-                gaps_str, recs_str, full_analysis_str, str(fingerprint)
+                gaps_str, recs_str, full_analysis_str, str(fingerprint),
+                mocktest_score, mocktest_rating, mock_data_str, bool(test_completed)
             ))
             conn.commit()
             return cursor.lastrowid
@@ -2476,29 +2504,81 @@ def add_resume_analysis_record(student_id: int, filename: str, ats_score: float,
         conn.close()
 
 
-def get_student_resume_history(student_id: int) -> list:
+def update_resume_analysis_mocktest(record_id: int, mocktest_score: float, mocktest_rating: str,
+                                    mocktest_data: dict, student_id: int = None) -> bool:
+    """
+    Attaches completed mock test results to a student's resume analysis record.
+    If record_id is 0 or None, attaches to the latest resume record of student_id.
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        target_id = record_id
+        if not target_id or target_id <= 0:
+            if student_id:
+                cursor.execute("""
+                    SELECT id FROM student_resume_history 
+                    WHERE student_id = ? 
+                    ORDER BY id DESC LIMIT 1
+                """, (int(student_id),))
+                latest = cursor.fetchone()
+                if latest:
+                    target_id = latest["id"] if isinstance(latest, dict) else latest[0]
+
+        if not target_id:
+            return False
+
+        mock_data_str = json.dumps(mocktest_data or {}, default=str)
+        cursor.execute("""
+            UPDATE student_resume_history
+            SET mocktest_score = ?, mocktest_rating = ?, mocktest_data_json = ?, test_completed = TRUE
+            WHERE id = ?
+        """, (float(mocktest_score), str(mocktest_rating), mock_data_str, int(target_id)))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"[update_resume_analysis_mocktest error] {e}")
+        return False
+    finally:
+        conn.close()
+
+
+def get_student_resume_history(student_id) -> list:
     """Returns all analyzed resume records for the specified student, sorted latest first."""
     conn = get_db_connection()
     try:
         cursor = conn.cursor()
+        try:
+            s_id = int(student_id)
+        except (ValueError, TypeError):
+            # student_id might be a roll number string
+            cursor.execute("SELECT id FROM students WHERE roll_no = ?", (str(student_id),))
+            stu = cursor.fetchone()
+            if stu:
+                s_id = stu['id'] if isinstance(stu, dict) else stu[0]
+            else:
+                s_id = 0
         cursor.execute("""
             SELECT * FROM student_resume_history
             WHERE student_id = ?
             ORDER BY id DESC
-        """, (int(student_id),))
+        """, (s_id,))
         rows = cursor.fetchall()
         results = []
         for r in rows:
             row_dict = dict(r)
             for jf in ['skills_json', 'achievements_json', 'projects_json', 
                        'suitable_companies_json', 'skill_gaps_json', 
-                       'career_recommendations_json', 'full_analysis_json']:
+                       'career_recommendations_json', 'full_analysis_json', 'mocktest_data_json']:
                 raw = row_dict.get(jf)
                 clean_name = jf.replace('_json', '')
                 try:
-                    row_dict[clean_name] = json.loads(raw) if raw else ([] if not jf.endswith('analysis_json') else {})
+                    row_dict[clean_name] = json.loads(raw) if raw else ([] if not jf.endswith('analysis_json') and not jf.endswith('data_json') else {})
                 except Exception:
-                    row_dict[clean_name] = [] if not jf.endswith('analysis_json') else {}
+                    row_dict[clean_name] = [] if not jf.endswith('analysis_json') and not jf.endswith('data_json') else {}
+            has_test = bool(row_dict.get('test_completed') or (row_dict.get('mocktest_score') is not None))
+            row_dict['test_completed'] = has_test
+            row_dict['assessment_status'] = 'completed' if has_test else 'pending'
             results.append(row_dict)
         return results
     finally:
@@ -2520,17 +2600,19 @@ def get_student_resume_detail(record_id: int, student_id: int) -> dict:
         row_dict = dict(row)
         for jf in ['skills_json', 'achievements_json', 'projects_json', 
                    'suitable_companies_json', 'skill_gaps_json', 
-                   'career_recommendations_json', 'full_analysis_json']:
+                   'career_recommendations_json', 'full_analysis_json', 'mocktest_data_json']:
             raw = row_dict.get(jf)
             clean_name = jf.replace('_json', '')
             try:
-                row_dict[clean_name] = json.loads(raw) if raw else ([] if not jf.endswith('analysis_json') else {})
+                row_dict[clean_name] = json.loads(raw) if raw else ([] if not jf.endswith('analysis_json') and not jf.endswith('data_json') else {})
             except Exception:
-                row_dict[clean_name] = [] if not jf.endswith('analysis_json') else {}
+                row_dict[clean_name] = [] if not jf.endswith('analysis_json') and not jf.endswith('data_json') else {}
+        has_test = bool(row_dict.get('test_completed') or (row_dict.get('mocktest_score') is not None))
+        row_dict['test_completed'] = has_test
+        row_dict['assessment_status'] = 'completed' if has_test else 'pending'
         return row_dict
     finally:
         conn.close()
-
 
 def get_distinct_resume_count(student_id: int) -> int:
     """
@@ -2597,4 +2679,4 @@ def get_all_students_for_excel_report() -> list:
         conn.close()
 
 
-
+

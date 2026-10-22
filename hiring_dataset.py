@@ -231,13 +231,61 @@ def compare_resume_with_45_companies(resume_text: str, extracted_skills: Dict[st
     high_fit_companies = [c for c in company_matches if c["match_score"] >= 75.0]
     avg_score = round(sum(c["match_score"] for c in company_matches) / len(company_matches), 1) if company_matches else 0.0
 
+    # Aggregate required skills from top target companies (Step 2: Fetch & retrieve company required skills)
+    top_matches = company_matches[:6]
+    all_req_skills = []
+    seen_req = set()
+    matched_skills_set = set()
+    missing_skills_set = set()
+
+    for comp in top_matches:
+        for r_skill in comp.get("required_skills", []):
+            r_clean = r_skill.strip()
+            if r_clean and r_clean.lower() not in seen_req:
+                seen_req.add(r_clean.lower())
+                all_req_skills.append(r_clean)
+        for m_skill in comp.get("matched_skills", []):
+            matched_skills_set.add(m_skill.strip())
+        for mis_skill in comp.get("missing_skills", []):
+            missing_skills_set.add(mis_skill.strip())
+
+    # Build assessment target skills: combine candidate's top extracted skills + missing/required company skills
+    candidate_skills_list = []
+    seen_cand = set()
+    for cat, skl in extracted_skills.items():
+        for s in skl:
+            s_clean = s.strip()
+            if s_clean and s_clean.lower() not in seen_cand:
+                seen_cand.add(s_clean.lower())
+                candidate_skills_list.append(s_clean)
+
+    # Prioritize candidate skills matching company demands, then verified candidate skills, then missing skills
+    assessment_target_skills = []
+    seen_assess = set()
+    for s in list(matched_skills_set) + candidate_skills_list[:6] + list(missing_skills_set)[:4]:
+        if s and s.lower() not in seen_assess:
+            seen_assess.add(s.lower())
+            assessment_target_skills.append(s)
+
+    company_skills_intelligence = {
+        "target_companies_required_skills": all_req_skills,
+        "matched_company_skills": sorted(list(matched_skills_set)),
+        "missing_company_skills": sorted(list(missing_skills_set)),
+        "assessment_target_skills": assessment_target_skills[:12],
+        "total_skills_demanded": len(all_req_skills),
+        "matched_count": len(matched_skills_set),
+        "missing_count": len(missing_skills_set),
+        "readiness_ratio_pct": round((len(matched_skills_set) / max(1, len(all_req_skills))) * 100, 1)
+    }
+
     return {
-        "top_matches": company_matches[:6],
+        "top_matches": top_matches,
         "all_matches": company_matches,
         "total_companies_evaluated": len(company_matches),
         "best_match_company": company_matches[0] if company_matches else None,
         "high_fit_count": len(high_fit_companies),
-        "average_match_score": avg_score
+        "average_match_score": avg_score,
+        "company_skills_intelligence": company_skills_intelligence
     }
 
 

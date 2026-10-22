@@ -75,6 +75,7 @@ from database import (
     update_faculty_profile,
     update_alumni_account,
     add_resume_analysis_record,
+    update_resume_analysis_mocktest,
     get_student_resume_history,
     get_student_resume_detail,
     get_distinct_resume_count,
@@ -517,6 +518,20 @@ def analyze_resume():
         best_role = primary_role or best_comp_obj.get('role', 'Software Engineer')
         skill_gaps = role_missing_skills or best_comp_obj.get('missing_skills', [])
 
+        # Step 2: Fetch and retrieve skills from the required skills of companies with resume
+        comp_intel = dataset_matching.get('company_skills_intelligence', {})
+        assessment_skills = comp_intel.get('assessment_target_skills', [])
+        if not assessment_skills:
+            assessment_skills = list(set([s for cat in extracted_skills.values() for s in cat]))[:8]
+
+        # Step 3: Generate a mocktest which is mandatory to generate report
+        mandatory_test_questions = generate_tailored_mock_test(
+            skills=assessment_skills,
+            certifications=extracted_certifications,
+            target_role=best_role,
+            count=12
+        )
+
         # Persist ATS score and save resume analysis history to student record if logged in
         student_id = session.get('student_id')
         if not student_id and session.get('student_roll_no'):
@@ -576,6 +591,18 @@ def analyze_resume():
             except Exception as db_err:
                 print(f"[Resume History Sync Note] Could not save resume history: {db_err}")
 
+        # Store active resume test session to enforce assessment before report generation
+        session['active_resume_test'] = {
+            'resume_record_id': history_id,
+            'filename': filename,
+            'candidate_name': candidate_profile.get('name') or session.get('student_name') or 'Candidate',
+            'target_role': best_role,
+            'target_company': best_comp_name,
+            'skills': assessment_skills,
+            'test_completed': False
+        }
+        session['latest_resume_history_id'] = history_id
+
         return jsonify({
             "success": True,
             "is_resume": True,
@@ -598,7 +625,24 @@ def analyze_resume():
             "career_recommendations": career_recommendations,
             "interview_questions": interview_questions,
             "dataset_matching": dataset_matching,
+            "company_skills_intelligence": comp_intel,
             "cohort_benchmark": cohort_benchmark,
+            "mandatory_mocktest": {
+                "required": True,
+                "status": "pending",
+                "resume_record_id": history_id,
+                "target_role": best_role,
+                "target_company": best_comp_name,
+                "skills_to_test": assessment_skills,
+                "question_count": len(mandatory_test_questions),
+                "total_questions": len(mandatory_test_questions),
+                "questions": mandatory_test_questions
+            },
+            "report_status": {
+                "unlocked": False,
+                "status": "assessment_pending",
+                "message": "Mandatory technical assessment required to generate official report."
+            },
             "raw_text_preview": resume_text[:600] + ("..." if len(resume_text) > 600 else "")
         })
     except Exception as e:
@@ -899,6 +943,43 @@ def submit_mock_test():
         except Exception as e:
             print(f"[Quiz Tracking Note] Could not update student stats: {e}")
 
+    # Step 4: Link test results directly to the resume record (Resume Holder's test)
+    resume_record_id = data.get('resume_record_id') or session.get('active_resume_test', {}).get('resume_record_id') or session.get('latest_resume_history_id')
+    time_fmt = f"{time_taken_seconds // 60}m {time_taken_seconds % 60}s" if time_taken_seconds > 0 else "N/A"
+
+    mocktest_summary = {
+        "score_percentage": score_pct,
+        "rating": rating,
+        "rating_color": rating_color,
+        "badge": badge,
+        "total_questions": total_questions,
+        "attempted_count": attempted_count,
+        "correct_count": correct_count,
+        "time_taken_seconds": time_taken_seconds,
+        "time_taken_formatted": time_fmt,
+        "skill_breakdown": skill_breakdown,
+        "completed_at": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+
+    if resume_record_id or student_id:
+        try:
+            update_resume_analysis_mocktest(
+                record_id=int(resume_record_id) if resume_record_id else 0,
+                mocktest_score=score_pct,
+                mocktest_rating=rating,
+                mocktest_data=mocktest_summary,
+                student_id=int(student_id) if student_id else None
+            )
+        except Exception as _sync_err:
+            print(f"[Mocktest Sync Note] Could not attach test results to resume: {_sync_err}")
+
+    session['latest_mocktest_result'] = mocktest_summary
+    if 'active_resume_test' in session and isinstance(session['active_resume_test'], dict):
+        session['active_resume_test']['test_completed'] = True
+        session['active_resume_test']['mocktest_score'] = score_pct
+        session['active_resume_test']['mocktest_rating'] = rating
+        session['active_resume_test']['mocktest_data'] = mocktest_summary
+
     return jsonify({
         "success": True,
         "total_questions": total_questions,
@@ -908,9 +989,12 @@ def submit_mock_test():
         "rating": rating,
         "rating_color": rating_color,
         "badge": badge,
-        "time_taken_formatted": f"{time_taken_seconds // 60}m {time_taken_seconds % 60}s" if time_taken_seconds > 0 else "N/A",
+        "time_taken_formatted": time_fmt,
         "skill_breakdown": skill_breakdown,
-        "detailed_review": detailed_review
+        "detailed_review": detailed_review,
+        "report_unlocked": True,
+        "resume_record_id": resume_record_id,
+        "download_report_url": f"/api/student/resume-report/{resume_record_id}" if resume_record_id else "/api/resume/download-latest-report"
     })
 
 
@@ -1335,6 +1419,24 @@ def api_student_resume_report_download(record_id):
     if record_id > 0 and student_id:
         record = get_student_resume_detail(int(record_id), int(student_id))
 
+    # Step 3 & 4: Check if mock test has been completed for this resume
+    if record:
+        has_test = bool(record.get('test_completed') or record.get('mocktest_score') is not None)
+        if not has_test and session.get('latest_mocktest_result') and (session.get('latest_resume_history_id') == record_id or record_id == 0):
+            m_res = session.get('latest_mocktest_result', {})
+            record['mocktest_score'] = m_res.get('score_percentage')
+            record['mocktest_rating'] = m_res.get('rating')
+            record['mocktest_data'] = m_res
+            record['test_completed'] = True
+            has_test = True
+
+        if not has_test and not session.get('admin_logged_in'):
+            return jsonify({
+                "success": False,
+                "assessment_required": True,
+                "error": "Mandatory Assessment Incomplete: You must complete the adaptive technical mock test tailored to your resume before downloading your verified evaluation report."
+            }), 403
+
     # Fallback if record_id == 0 or record not found: construct baseline record from student's profile
     if not record:
         base_ats = float(student_db.get('ats_score', 82) or 82)
@@ -1462,6 +1564,24 @@ def api_resume_download_latest_report():
             if s_db:
                 student_info = s_db
 
+        # Step 3 & 4: Enforce mandatory assessment before generating latest report
+        has_test = bool(payload.get('test_completed') or payload.get('mocktest_score') is not None or session.get('latest_mocktest_result'))
+        if not has_test and not session.get('admin_logged_in'):
+            return jsonify({
+                "success": False,
+                "assessment_required": True,
+                "error": "Mandatory Assessment Incomplete: You must complete the adaptive technical mock test tailored to your resume before downloading your verified evaluation report."
+            }), 403
+
+        mock_data = payload.get('mocktest_data')
+        mock_score = payload.get('mocktest_score')
+        mock_rating = payload.get('mocktest_rating')
+        if mock_score is None and session.get('latest_mocktest_result'):
+            sess_m = session.get('latest_mocktest_result', {})
+            mock_score = sess_m.get('score_percentage')
+            mock_rating = sess_m.get('rating')
+            mock_data = sess_m
+
         record = {
             "id": payload.get('history_record_id', 0),
             "filename": payload.get('filename', 'Evaluated_Resume.pdf'),
@@ -1476,7 +1596,11 @@ def api_resume_download_latest_report():
             "best_match_company": payload.get('best_match_company', 'Top Tech Recruiters'),
             "skill_gaps": payload.get('skill_gaps', []),
             "career_recommendations": payload.get('career_recommendations', []),
-            "full_analysis": payload.get('full_analysis', {})
+            "full_analysis": payload.get('full_analysis', {}),
+            "mocktest_score": mock_score,
+            "mocktest_rating": mock_rating,
+            "mocktest_data": mock_data,
+            "test_completed": True
         }
 
         global generate_resume_pdf_report

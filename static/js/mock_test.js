@@ -132,10 +132,40 @@ function launchTailoredMockTestFromResume() {
     // 2. Refresh skills preview from analyzed state
     updateMockSkillsPreview();
 
-    // 3. Automatically initiate test generation
+    // 3. Automatically initiate test generation (using pre-generated assessment if available)
     setTimeout(() => {
-        generateAndStartMockTest();
+        if (window.currentResumeAnalysis && 
+            window.currentResumeAnalysis.mandatory_mocktest && 
+            window.currentResumeAnalysis.mandatory_mocktest.questions && 
+            window.currentResumeAnalysis.mandatory_mocktest.questions.length > 0) {
+            
+            startMandatoryPreGeneratedTest(window.currentResumeAnalysis.mandatory_mocktest);
+        } else {
+            generateAndStartMockTest();
+        }
     }, 400);
+}
+
+function startMandatoryPreGeneratedTest(mockData) {
+    document.getElementById('mocktest-config-wrapper').style.display = 'none';
+    document.getElementById('mocktest-loading').style.display = 'none';
+    document.getElementById('mocktest-scorecard-wrapper').style.display = 'none';
+
+    mockQuestions = mockData.questions;
+    mockTargetRole = mockData.target_role || 'Software Engineer';
+    currentMockIndex = 0;
+    userMockAnswers = {};
+    flaggedMockQuestions.clear();
+
+    mockTotalTime = mockQuestions.length * 60;
+    mockTimeRemaining = mockTotalTime;
+
+    document.getElementById('mocktest-active-wrapper').style.display = 'block';
+    startMockTimer();
+    renderMockQuestion(0);
+    renderMockPalette();
+
+    showToast(`🎯 Mandatory Assessment Started: ${mockQuestions.length} Questions (${mockTargetRole})`, 'success');
 }
 
 /**
@@ -464,9 +494,36 @@ async function submitMockTest() {
             return;
         }
 
+        // Update active resume analysis state to unlock report per Step 3 & 4
+        if (window.currentResumeAnalysis) {
+            window.currentResumeAnalysis.test_completed = true;
+            window.currentResumeAnalysis.mocktest_score = data.score_percentage;
+            window.currentResumeAnalysis.mocktest_rating = data.rating;
+            window.currentResumeAnalysis.mocktest_data = {
+                score: data.score_percentage,
+                rating: data.rating,
+                total_questions: data.total_questions,
+                correct_count: data.correct_count,
+                accuracy: data.accuracy || data.score_percentage,
+                role: mockTargetRole,
+                skills: mockActiveSkills,
+                skill_breakdown: data.skill_breakdown,
+                time_taken_seconds: timeSpent,
+                completed_at: new Date().toISOString()
+            };
+            if (!window.currentResumeAnalysis.report_status) {
+                window.currentResumeAnalysis.report_status = {};
+            }
+            window.currentResumeAnalysis.report_status.unlocked = true;
+
+            if (typeof updateReportBannerStatus === 'function') {
+                updateReportBannerStatus(window.currentResumeAnalysis);
+            }
+        }
+
         // Render comprehensive scorecard
         renderMockScorecard(data);
-        showToast(`🎉 Test Evaluated! Score: ${data.score_percentage}%`, 'success');
+        showToast(`🎉 Mandatory Assessment Evaluated! Score: ${data.score_percentage}% • Report Unlocked!`, 'success');
 
     } catch (err) {
         document.getElementById('mocktest-loading').style.display = 'none';
@@ -537,6 +594,24 @@ function renderMockScorecard(data) {
     });
 
     wrapper.innerHTML = `
+        <!-- Step 4: Official Report Unlocked Celebration Card -->
+        <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 100%); border: 2px solid #10B981; border-radius: 16px; margin: 1rem auto 1.5rem; max-width: 860px; box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.2);">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+                <div style="display:flex; align-items:center; gap:0.85rem;">
+                    <div style="width:48px; height:48px; border-radius:12px; background:#10B981; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">
+                        <i class="fa-solid fa-lock-open"></i>
+                    </div>
+                    <div>
+                        <h4 style="margin:0 0 0.2rem; color:#065F46; font-size:1.05rem; font-weight:800;">Step 4: Verified Performance Report Unlocked!</h4>
+                        <p style="margin:0; font-size:0.84rem; color:#047857;">Your practical technical assessment score (<strong>${data.score_percentage}% &bull; ${data.rating}</strong>) has been attached to your resume.</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="downloadCurrentResumeReport()" style="background:#059669; border-color:#059669; font-weight:700; padding:0.65rem 1.35rem; display:inline-flex; align-items:center; gap:0.5rem; border-radius:12px; box-shadow:0 4px 12px rgba(5,150,105,0.35); cursor:pointer;">
+                    <i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)
+                </button>
+            </div>
+        </div>
+
         <div class="scorecard-header text-center p-4">
             <span class="badge badge-primary font-bold"><i class="fa-solid fa-trophy"></i> Assessment Result</span>
             <div class="scorecard-score-circle mt-3" style="border-color: ${data.rating_color};">
@@ -584,11 +659,14 @@ function renderMockScorecard(data) {
         </div>
 
         <!-- Bottom Action Bar -->
-        <div class="scorecard-bottom-actions mt-4 p-4 text-center" style="border-top:1px solid var(--border-color);">
-            <button class="btn btn-outline btn-lg mr-2" onclick="retakeMockTest()">
-                <i class="fa-solid fa-arrows-rotate"></i> Retake / Generate New Test Set
+        <div class="scorecard-bottom-actions mt-4 p-4 text-center" style="border-top:1px solid var(--border-color); display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap;">
+            <button class="btn btn-primary btn-lg" onclick="downloadCurrentResumeReport()" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); border-color:#059669; font-weight:700;">
+                <i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)
             </button>
-            <button class="btn btn-primary btn-lg" onclick="navigateTo('analyzer')">
+            <button class="btn btn-outline btn-lg" onclick="retakeMockTest()">
+                <i class="fa-solid fa-arrows-rotate"></i> Retake Assessment
+            </button>
+            <button class="btn btn-secondary btn-lg" onclick="navigateTo('analyzer')">
                 <i class="fa-solid fa-file-invoice"></i> Back to Resume ATS
             </button>
         </div>

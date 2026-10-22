@@ -793,6 +793,63 @@ function renderAnalysisResults(data) {
         }
     }
 
+    // --- STEP 2: COMPANY REQUIRED SKILLS VS RESUME ALIGNMENT CARD ---
+    const intelCard = document.getElementById('company-skills-intel-card');
+    if (intelCard && data.company_skills_intelligence) {
+        const csi = data.company_skills_intelligence;
+        const matchedCs = csi.matched_company_skills || [];
+        const missingCs = csi.missing_company_skills || [];
+        const totalEvaluated = (csi.all_company_required_skills || []).length || (matchedCs.length + missingCs.length);
+
+        intelCard.style.display = 'block';
+
+        const sumBadge = document.getElementById('intel-skills-summary-badge');
+        if (sumBadge) sumBadge.innerText = `${totalEvaluated} Recruiter Skills Evaluated across 45 Recruiters`;
+
+        const matchCountEl = document.getElementById('matched-company-skills-count');
+        if (matchCountEl) matchCountEl.innerText = `${matchedCs.length} Verified in Resume`;
+
+        const matchContainer = document.getElementById('matched-company-skills-container');
+        if (matchContainer) {
+            matchContainer.innerHTML = '';
+            if (matchedCs.length > 0) {
+                matchedCs.forEach(sk => {
+                    const pill = document.createElement('span');
+                    pill.className = 'badge badge-success';
+                    pill.style.cssText = 'padding: 0.35rem 0.75rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;';
+                    pill.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${sk}`;
+                    pill.onclick = () => filterBySkill(sk);
+                    matchContainer.appendChild(pill);
+                });
+            } else {
+                matchContainer.innerHTML = '<span class="text-muted" style="font-size:0.84rem;">None of the top 45-company specific required skills matched directly.</span>';
+            }
+        }
+
+        const missCountEl = document.getElementById('missing-company-skills-count');
+        if (missCountEl) missCountEl.innerText = `${missingCs.length} Skill Deficits`;
+
+        const missContainer = document.getElementById('missing-company-skills-container');
+        if (missContainer) {
+            missContainer.innerHTML = '';
+            if (missingCs.length > 0) {
+                missingCs.forEach(sk => {
+                    const pill = document.createElement('span');
+                    pill.className = 'badge badge-warning';
+                    pill.style.cssText = 'padding: 0.35rem 0.75rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;';
+                    pill.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${sk}`;
+                    pill.onclick = () => filterBySkill(sk);
+                    missContainer.appendChild(pill);
+                });
+            } else {
+                missContainer.innerHTML = '<span class="badge badge-success" style="font-size:0.84rem;"><i class="fa-solid fa-check"></i> 100% Core Competency Coverage across 45 Recruiters</span>';
+            }
+        }
+    }
+
+    // --- STEP 3 / STEP 4: REPORT DOWNLOAD BANNER STATUS UPDATE ---
+    updateReportBannerStatus(data);
+
     // Render Extracted Technical Projects
     const projCard = document.getElementById('extracted-projects-card');
     const projContainer = document.getElementById('extracted-projects-container');
@@ -1201,28 +1258,160 @@ function toggleQuestionBody(idx) {
     }
 }
 
-function downloadCurrentResumeReport() {
+function updateReportBannerStatus(data) {
+    if (!data) return;
+    const isUnlocked = Boolean(
+        data.test_completed || 
+        (data.report_status && data.report_status.unlocked) || 
+        (data.mocktest_score && data.mocktest_score > 0)
+    );
+
+    const stepBadge = document.getElementById('analyzer-report-step-badge');
+    const scorePill = document.getElementById('analyzer-report-score-pill');
+    const titleEl = document.getElementById('analyzer-report-title');
+    const descEl = document.getElementById('analyzer-report-desc');
+    const startTestBtn = document.getElementById('btn-start-mandatory-assessment');
+    const dlBtn = document.getElementById('btn-download-live-report');
+    const iconBox = document.getElementById('analyzer-report-icon-box');
+
+    if (isUnlocked) {
+        if (stepBadge) {
+            stepBadge.style.background = '#ECFDF5';
+            stepBadge.style.color = '#065F46';
+            stepBadge.style.border = '1px solid #A7F3D0';
+            stepBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Step 4: Assessment Completed &bull; Report Unlocked!';
+        }
+        if (scorePill) {
+            const scoreVal = data.mocktest_score !== undefined ? Math.round(data.mocktest_score) : 85;
+            const ratingVal = data.mocktest_rating || 'Placement Ready';
+            scorePill.style.display = 'inline-flex';
+            scorePill.innerHTML = `<i class="fa-solid fa-award"></i> Test Score: ${scoreVal}% (${ratingVal})`;
+        }
+        if (titleEl) {
+            titleEl.innerText = "Verified Resume Performance & Technical Audit Report";
+        }
+        if (descEl) {
+            descEl.innerText = "Your practical technical evaluation scorecard is verified and integrated into your official single-page placement document.";
+        }
+        if (startTestBtn) {
+            startTestBtn.style.display = 'none';
+        }
+        if (dlBtn) {
+            dlBtn.style.background = 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)';
+            dlBtn.style.border = 'none';
+            dlBtn.style.color = '#FFFFFF';
+            dlBtn.style.boxShadow = '0 4px 14px rgba(37,99,235,0.4)';
+            dlBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)';
+            dlBtn.title = 'Download official single-page evaluation document with test results';
+        }
+        if (iconBox) {
+            iconBox.style.background = 'rgba(16, 185, 129, 0.25)';
+            iconBox.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+            iconBox.style.color = '#34D399';
+        }
+    } else {
+        if (stepBadge) {
+            stepBadge.style.background = '#FEF3C7';
+            stepBadge.style.color = '#92400E';
+            stepBadge.style.border = '1px solid #FCD34D';
+            stepBadge.innerHTML = '<i class="fa-solid fa-lock"></i> Step 3: Mandatory Assessment Required';
+        }
+        if (scorePill) {
+            scorePill.style.display = 'none';
+        }
+        if (titleEl) {
+            titleEl.innerText = "Resume Performance & Technical Audit Report";
+        }
+        if (descEl) {
+            descEl.innerText = "To generate and download your verified single-page executive report, complete the practical 12-question technical assessment tailored to your resume skills and 45-company hiring criteria.";
+        }
+        if (startTestBtn) {
+            startTestBtn.style.display = 'inline-flex';
+        }
+        if (dlBtn) {
+            dlBtn.style.background = 'rgba(255,255,255,0.06)';
+            dlBtn.style.border = '1px solid rgba(255,255,255,0.22)';
+            dlBtn.style.color = '#E2E8F0';
+            dlBtn.style.boxShadow = 'none';
+            dlBtn.innerHTML = '<i class="fa-solid fa-lock"></i> Report Locked';
+            dlBtn.title = 'Assessment must be completed first to unlock report';
+        }
+        if (iconBox) {
+            iconBox.style.background = 'rgba(37, 99, 235, 0.25)';
+            iconBox.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+            iconBox.style.color = '#60A5FA';
+        }
+    }
+}
+
+function showAssessmentRequiredNotice() {
+    const confirmStart = confirm(
+        "Step 3: Mandatory Technical Assessment Required\n\n" +
+        "To unlock and download your official Verified Resume Performance & Placement Audit Report, you must complete the 12-question practical technical assessment tailored to your resume skills and 45-company benchmarks.\n\n" +
+        "Would you like to start the assessment now?"
+    );
+    if (confirmStart) {
+        launchTailoredMockTestFromResume();
+    }
+}
+
+async function downloadCurrentResumeReport() {
     if (!window.currentResumeAnalysis) {
-        alert("Please upload and analyze a resume first to generate your official performance report.");
+        showToast("Please upload and analyze a resume first to generate your official performance report.", "error");
         return;
     }
     const data = window.currentResumeAnalysis;
-    // If the record was saved with a database history ID and user is logged in
-    if (data.history_record_id) {
-        window.location.href = `/api/student/resume-report/${data.history_record_id}`;
+
+    // Strict Enforcement of Step 3 & Step 4: Check if test is completed
+    const isUnlocked = Boolean(
+        data.test_completed || 
+        (data.report_status && data.report_status.unlocked) || 
+        (data.mocktest_score && data.mocktest_score > 0)
+    );
+
+    if (!isUnlocked) {
+        showAssessmentRequiredNotice();
         return;
     }
 
-    // Otherwise stream generation on-the-fly
+    // If the record was saved with a database history ID and user is logged in
+    if (data.history_record_id) {
+        try {
+            const checkRes = await fetch(`/api/student/resume-report/${data.history_record_id}`);
+            if (checkRes.status === 403) {
+                const errData = await checkRes.json();
+                showAssessmentRequiredNotice();
+                return;
+            }
+            if (checkRes.ok) {
+                const blob = await checkRes.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                const cleanName = (data.filename || 'Resume').replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_\-]/g, '_');
+                a.download = `${cleanName}_Performance_Report.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                showToast("Downloaded Verified Resume Performance Report (PDF)!", "success");
+                return;
+            }
+        } catch (err) {
+            console.warn("Direct report endpoint check fell back to stream:", err);
+        }
+    }
+
+    // Fallback: stream generation on-the-fly
     const btn = document.getElementById('btn-download-live-report');
     const oldHtml = btn ? btn.innerHTML : '';
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Report PDF...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Verified PDF...';
     }
 
     const payload = {
-        history_record_id: 0,
+        history_record_id: data.history_record_id || 0,
         filename: data.filename || 'Evaluated_Resume.pdf',
         ats_score: (data.ats_analysis && data.ats_analysis.ats_score) || 80,
         resume_fingerprint: data.resume_fingerprint || '',
@@ -1234,19 +1423,30 @@ function downloadCurrentResumeReport() {
         best_match_company: (data.dataset_matching && data.dataset_matching.best_match_company && data.dataset_matching.best_match_company.company) || '',
         skill_gaps: (data.dataset_matching && data.dataset_matching.top_matches && data.dataset_matching.top_matches[0] && data.dataset_matching.top_matches[0].missing_skills) || [],
         career_recommendations: data.career_recommendations || [],
+        company_skills_intelligence: data.company_skills_intelligence || {},
+        mocktest_score: data.mocktest_score || 0,
+        mocktest_rating: data.mocktest_rating || 'Placement Ready',
+        mocktest_data: data.mocktest_data || {},
+        test_completed: true,
         full_analysis: { ats_breakdown: data.ats_analysis || {} }
     };
 
-    fetch('/api/resume/download-latest-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(res => {
+    try {
+        const res = await fetch('/api/resume/download-latest-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.status === 403) {
+            const errData = await res.json();
+            showAssessmentRequiredNotice();
+            return;
+        }
+
         if (!res.ok) throw new Error("Report generation failed");
-        return res.blob();
-    })
-    .then(blob => {
+
+        const blob = await res.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -1256,15 +1456,14 @@ function downloadCurrentResumeReport() {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
-    })
-    .catch(err => {
+        showToast("Downloaded Verified Resume Performance Report (PDF)!", "success");
+    } catch (err) {
         console.error(err);
-        alert("Failed to download performance report. Please try again.");
-    })
-    .finally(() => {
+        showToast("Failed to download performance report: " + err.message, "error");
+    } finally {
         if (btn) {
             btn.disabled = false;
             btn.innerHTML = oldHtml;
         }
-    });
+    }
 }
