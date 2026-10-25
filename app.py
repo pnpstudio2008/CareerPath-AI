@@ -149,6 +149,10 @@ def security_shield_filter():
         if decoded_path == forbidden or decoded_path.startswith(forbidden + '/') or ('/' + forbidden.lstrip('/')) in decoded_path:
             return jsonify({"success": False, "error": "Access Denied: Protected system resource."}), 403
 
+    # Whitelist legitimate serverless gateway entrypoint routes (Vercel, Netlify)
+    if decoded_path in ('/api/index', '/api/index.py', '/api/app.py', '/.netlify/functions/app'):
+        return
+
     # 3. Block any request ending with forbidden source code extensions
     for ext in FORBIDDEN_EXTENSIONS:
         if decoded_path.endswith(ext) or (ext + '/') in decoded_path or (ext + '?') in decoded_path:
@@ -220,6 +224,8 @@ init_database()
 # ==========================================
 
 @app.route('/')
+@app.route('/api/index')
+@app.route('/api/index.py')
 def index():
     """
     Primary Landing Page:
