@@ -224,8 +224,6 @@ init_database()
 # ==========================================
 
 @app.route('/')
-@app.route('/api/index')
-@app.route('/api/index.py')
 def index():
     """
     Primary Landing Page:
