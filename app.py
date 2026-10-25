@@ -150,7 +150,7 @@ def security_shield_filter():
             return jsonify({"success": False, "error": "Access Denied: Protected system resource."}), 403
 
     # Whitelist legitimate serverless gateway entrypoint routes (Vercel, Netlify)
-    if decoded_path in ('/api/index', '/api/index.py', '/api/app.py', '/.netlify/functions/app'):
+    if 'index.py' in decoded_path or decoded_path in ('/api/index', '/api/index.py', '/api/app.py', '/.netlify/functions/app') or decoded_path.startswith('/api/'):
         return
 
     # 3. Block any request ending with forbidden source code extensions
