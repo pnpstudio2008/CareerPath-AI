@@ -1,0 +1,27 @@
+# Vercel Deployment Ignore
+.git
+.github
+__pycache__
+*.pyc
+*.pyo
+.env
+scratch
+scratch_previews
+scratch_previews_verified
+uploads
+career_companion.db
+careerpath.db
+database.db
+*.xlsx
+*.zip
+*.pdf
+test_*.py
+add_*.py
+fix_*.py
+update_*.py
+process_*.py
+patch_*.py
+redesign_*.py
+remove_*.py
+revert_*.py
+append_*.py
