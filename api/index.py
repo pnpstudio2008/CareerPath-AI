@@ -1,5 +1,6 @@
 import sys
 import os
+from urllib.parse import parse_qs, urlencode
 
 # Add root project directory to sys.path so app and all local modules can be imported
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,11 +22,20 @@ class VercelPathNormalizer:
         self.wsgi_app = wsgi_app
 
     def __call__(self, environ, start_response):
-        path = environ.get('PATH_INFO', '')
-        # Normalize serverless entrypoint rewrites to root path if requested
-        if path in ('/api/index', '/api/index.py', '/api/index/', '/api/index.py/'):
-            orig = environ.get('HTTP_X_FORWARDED_PATH') or environ.get('HTTP_X_REWRITE_PATH')
-            environ['PATH_INFO'] = orig if orig else '/'
+        qs = parse_qs(environ.get('QUERY_STRING', ''), keep_blank_values=True)
+        orig_path = None
+        if '__vercel_path' in qs:
+            orig_path = qs.pop('__vercel_path')[0]
+            environ['QUERY_STRING'] = urlencode(qs, doseq=True)
+
+        matched = environ.get('HTTP_X_MATCHED_PATH')
+        if matched and not matched.startswith('/api/index.py'):
+            environ['PATH_INFO'] = matched
+        elif orig_path:
+            environ['PATH_INFO'] = orig_path if orig_path.startswith('/') else f'/{orig_path}'
+        elif environ.get('PATH_INFO') in ('/api/index', '/api/index.py', '/api/index/', '/api/index.py/'):
+            environ['PATH_INFO'] = '/'
+
         return self.wsgi_app(environ, start_response)
 
 app.wsgi_app = VercelPathNormalizer(app.wsgi_app)
