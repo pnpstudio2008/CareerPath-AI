@@ -547,6 +547,7 @@ def init_database():
 
 
     # Clean slate: No dummy alumni mentor mapping
+    seed_industry_clusters(cursor)
 
     # Check if questions already seeded
     cursor.execute("SELECT COUNT(*) FROM mcq_questions")
@@ -717,6 +718,50 @@ def seed_all_data(cursor):
     # ==========================================
     seed_alumni_from_synthetic_dataset(cursor)
 
+
+
+
+def seed_industry_clusters(cursor):
+    """Seeds real placement companies from the 12 Industry Clusters document if empty."""
+    try:
+        cursor.execute("SELECT COUNT(*) FROM job_profiles")
+        row = cursor.fetchone()
+        count = row[0] if isinstance(row, (tuple, list)) else (row.get('count', 0) if isinstance(row, dict) else 0)
+        if count > 0:
+            return
+
+        json_path = os.path.join(os.path.dirname(__file__), 'data', 'industry_clusters', 'industry_clusters.json')
+        if not os.path.exists(json_path):
+            return
+
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        for cl in data.get('clusters', []):
+            cluster_code = cl.get('cluster_code', '')
+            technology = cl.get('technology', '')
+            role_title = cl.get('role_title', 'Software Engineer')
+            res_person = cl.get('resource_person', '')
+            ctc_range = f"₹{cl.get('ctc_range', '3.5 - 6.5 LPA')}"
+            location = cl.get('location', 'Vadodara / Ahmedabad')
+            req_skills = cl.get('required_skills', '')
+            category = cl.get('category', 'SDE')
+
+            for comp in cl.get('companies', []):
+                description = (
+                    f"Campus Placement Drive for {comp} under {cluster_code} ({technology}). "
+                    f"Faculty Resource Person: {res_person}. "
+                    f"Evaluation criteria require hands-on proficiency in: {req_skills}."
+                )
+                cursor.execute("""
+                    INSERT INTO job_profiles (company, role_title, experience_level, location, ctc_range, description, required_skills, category)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    comp, role_title, "Fresher", location[:95], ctc_range[:45], description, req_skills, category[:48]
+                ))
+        print(f"[Industry Clusters] Seeded real company offerings from 12 Industry Clusters!")
+    except Exception as e:
+        print(f"[Industry Clusters Seed Note]: {e}")
 
 def seed_alumni_from_synthetic_dataset(cursor):
     """

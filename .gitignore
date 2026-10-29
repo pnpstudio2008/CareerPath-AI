@@ -11,6 +11,10 @@ __pycache__/
 *.db-shm
 *.db-wal
 
+# Temporary Scratch & Previews
+scratch/
+docs/previews/
+
 # OS files
 Thumbs.db
 .DS_Store

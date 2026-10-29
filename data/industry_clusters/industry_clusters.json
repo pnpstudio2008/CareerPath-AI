@@ -1,0 +1,260 @@
+{
+  "title": "Industry Clusters - Technology-wise Company List",
+  "source_pdf": "industry_clusters_companies_by_technology.pdf",
+  "cluster_count": 12,
+  "unique_company_count": 44,
+  "total_cluster_job_profiles": 95,
+  "clusters": [
+    {
+      "cluster_id": 1,
+      "cluster_code": "CLUSTER 01",
+      "technology": ".NET, OOPs, C#; Software Testing (Automation/Manual)",
+      "category": ".NET & Software Testing",
+      "role_title": ".NET / C# Software Engineer",
+      "resource_person": "Mr. Akshar Muley",
+      "ctc_range": "3.5 - 6.5 LPA",
+      "location": "Vadodara / Ahmedabad / Hybrid",
+      "required_skills": ".NET, C#, OOP, C# Programming, Software Testing, Automation Testing, Manual Testing, SQL, Visual Studio",
+      "companies": [
+        "Civica",
+        "Natrix Software Pvt Ltd.",
+        "Xcellence-IT",
+        "Variance",
+        "Prudent Corporate Advisory Services Ltd",
+        "Matrix Comsec",
+        "Windowmaker Software",
+        "Cambay Consulting",
+        "WebzLabz PVT LTD",
+        "Proseon Tech",
+        "Webmobi Tech",
+        "Baroda Informatics"
+      ]
+    },
+    {
+      "cluster_id": 2,
+      "cluster_code": "CLUSTER 02",
+      "technology": "PHP",
+      "category": "PHP Web Development",
+      "role_title": "PHP Full Stack Developer",
+      "resource_person": "Ms. Twinkle Modi",
+      "ctc_range": "3.0 - 5.5 LPA",
+      "location": "Vadodara / Ahmedabad / Surat",
+      "required_skills": "PHP, Laravel, MySQL, HTML5, CSS3, JavaScript, REST APIs, Git, Apache",
+      "companies": [
+        "Webmobi Tech",
+        "Silversky",
+        "Unikwork Systems",
+        "Webential",
+        "MoonWeb Technologies"
+      ]
+    },
+    {
+      "cluster_id": 3,
+      "cluster_code": "CLUSTER 03",
+      "technology": "Java",
+      "category": "Java Development",
+      "role_title": "Java Enterprise Developer",
+      "resource_person": "Dr. Kalpana Metre",
+      "ctc_range": "4.0 - 7.5 LPA",
+      "location": "Vadodara / Ahmedabad / Mumbai",
+      "required_skills": "Java, Spring Boot, OOP, Data Structures, Algorithms, SQL, Hibernate, Microservices, REST APIs, Git",
+      "companies": [
+        "Axis Bank",
+        "Axelor",
+        "Bista Solutions",
+        "Effigo",
+        "Proseon Tech",
+        "Rishabh Software",
+        "Webmobi Tech",
+        "Baroda Informatics",
+        "Bespoke Solutions"
+      ]
+    },
+    {
+      "cluster_id": 4,
+      "cluster_code": "CLUSTER 04",
+      "technology": "JavaScript",
+      "category": "JavaScript & Frontend",
+      "role_title": "JavaScript Frontend Engineer",
+      "resource_person": "Ms. Madonna Lamin",
+      "ctc_range": "3.6 - 6.5 LPA",
+      "location": "Vadodara / Ahmedabad / Remote",
+      "required_skills": "JavaScript, React, Node.js, HTML5, CSS3, ES6+, TypeScript, REST APIs, Git, Webpack",
+      "companies": [
+        "Bespoke Solutions",
+        "Beyondata",
+        "Dots & Coms",
+        "Unikwork Systems",
+        "Webential",
+        "Sharedpro Technologies Pvt Ltd",
+        "MatlabInfotech",
+        "Prudent Corporate Advisory Services Ltd",
+        "CSC",
+        "Windowmaker Software",
+        "Cambay Consulting"
+      ]
+    },
+    {
+      "cluster_id": 5,
+      "cluster_code": "CLUSTER 05",
+      "technology": "SQL and NoSQL Databases",
+      "category": "Database & Data Engineering",
+      "role_title": "Database Engineer / DBA",
+      "resource_person": "Ms. Kinjal Gautam",
+      "ctc_range": "3.5 - 6.0 LPA",
+      "location": "Vadodara / Ahmedabad / Hybrid",
+      "required_skills": "SQL, MySQL, PostgreSQL, MongoDB, NoSQL, Database Design, Query Optimization, ETL, Indexing, RDBMS",
+      "companies": [
+        "Technologics Projects & R&D Lab",
+        "Jekson Vision",
+        "Prudent Corporate Advisory Services Ltd",
+        "Adroit Infosol",
+        "Techgrains Technologies Pvt. Ltd",
+        "WebzLabz PVT LTD"
+      ]
+    },
+    {
+      "cluster_id": 6,
+      "cluster_code": "CLUSTER 06",
+      "technology": "C/C++ Programming",
+      "category": "Systems & Embedded C/C++",
+      "role_title": "C/C++ Systems Engineer",
+      "resource_person": "Mr. Raju Nakum",
+      "ctc_range": "3.8 - 6.8 LPA",
+      "location": "Vadodara / Ahmedabad",
+      "required_skills": "C, C++, Data Structures, Algorithms, OOP, Memory Management, Linux, Multithreading, Socket Programming, Git",
+      "companies": [
+        "Matrix Comsec",
+        "Techgrains Technologies Pvt. Ltd",
+        "Dhyey Consultancy",
+        "Unikwork Systems",
+        "Engineering Technique",
+        "Keylogic Automation"
+      ]
+    },
+    {
+      "cluster_id": 7,
+      "cluster_code": "CLUSTER 07",
+      "technology": "Full Stack Development",
+      "category": "Full Stack Development",
+      "role_title": "Full Stack Web Developer (MERN / Python)",
+      "resource_person": "Ms. Madonna Lamin",
+      "ctc_range": "4.0 - 7.5 LPA",
+      "location": "Vadodara / Ahmedabad / Hybrid",
+      "required_skills": "Full Stack, React, Node.js, Python, MongoDB, Express, SQL, HTML5, CSS3, Git, REST APIs, Docker",
+      "companies": [
+        "Yudiz",
+        "Melzo",
+        "ShilpMIS Tech",
+        "Silversky",
+        "Webential",
+        "Technologics Projects & R&D Lab"
+      ]
+    },
+    {
+      "cluster_id": 8,
+      "cluster_code": "CLUSTER 08",
+      "technology": "Python and Machine Learning",
+      "category": "Python & AI / ML",
+      "role_title": "Python & AI/ML Engineer",
+      "resource_person": "Dr. Pradeep Laxkar; Ms. Shivangi Matieda",
+      "ctc_range": "4.5 - 8.5 LPA",
+      "location": "Vadodara / Ahmedabad / Remote",
+      "required_skills": "Python, Machine Learning, Deep Learning, Pandas, NumPy, Scikit-learn, SQL, Data Analysis, Git, TensorFlow",
+      "companies": [
+        "Proseon Tech",
+        "Webmobi Tech",
+        "Beyondata",
+        "Engineering Technique",
+        "Technologics Projects & R&D Lab",
+        "Variance",
+        "Streebo"
+      ]
+    },
+    {
+      "cluster_id": 9,
+      "cluster_code": "CLUSTER 09",
+      "technology": "Software Testing",
+      "category": "QA & Software Testing",
+      "role_title": "Quality Assurance & Automation Engineer",
+      "resource_person": "Mr. Akshar Muley",
+      "ctc_range": "3.2 - 5.5 LPA",
+      "location": "Vadodara / Ahmedabad / Hybrid",
+      "required_skills": "Software Testing, Selenium, Automation Testing, Manual Testing, Test Case Design, Java, Python, JIRA, Bug Tracking, API Testing",
+      "companies": [
+        "Synoverge Technologies Pvt. Ltd.",
+        "Melzo",
+        "ShilpMIS Tech",
+        "Xcellence-IT",
+        "StayinFront India Pvt. Ltd.",
+        "Civica",
+        "Sharedpro Technologies Pvt Ltd",
+        "Gohiltech"
+      ]
+    },
+    {
+      "cluster_id": 10,
+      "cluster_code": "CLUSTER 10",
+      "technology": "Mobile App Development - Android Programming",
+      "category": "Mobile App Development",
+      "role_title": "Android Mobile App Developer",
+      "resource_person": "Ms. Madonna Lamin; Mr. Akshar Muley",
+      "ctc_range": "3.5 - 6.5 LPA",
+      "location": "Vadodara / Ahmedabad / Hybrid",
+      "required_skills": "Android, Kotlin, Java, Mobile App Development, Android SDK, XML, REST APIs, SQLite, Git, Firebase",
+      "companies": [
+        "Rishabh Software",
+        "Webmobi Tech",
+        "Bespoke Solutions",
+        "Silversky",
+        "Baroda Informatics",
+        "Dots & Coms",
+        "Unikwork Systems",
+        "Natrix Software Pvt Ltd.",
+        "Variance",
+        "Prudent Corporate Advisory Services Ltd"
+      ]
+    },
+    {
+      "cluster_id": 11,
+      "cluster_code": "CLUSTER 11",
+      "technology": ".NET",
+      "category": ".NET Enterprise Solutions",
+      "role_title": ".NET Enterprise Solutions Developer",
+      "resource_person": "Mr. Akshar Muley; Mr. Neel Patel",
+      "ctc_range": "3.8 - 7.0 LPA",
+      "location": "Vadodara / Ahmedabad / Hybrid",
+      "required_skills": ".NET, C#, ASP.NET Core, SQL Server, Entity Framework, Web APIs, OOP, Azure, Git, Microservices",
+      "companies": [
+        "Civica",
+        "KYB-CONMAT PVT LTD",
+        "Natrix Software Pvt Ltd.",
+        "Netweb Software",
+        "Xcellence-IT",
+        "StayinFront India Pvt. Ltd.",
+        "Variance",
+        "Prudent Corporate Advisory Services Ltd",
+        "Matrix Comsec",
+        "Windowmaker Software",
+        "WebzLabz PVT LTD",
+        "Thinklets"
+      ]
+    },
+    {
+      "cluster_id": 12,
+      "cluster_code": "CLUSTER 12",
+      "technology": "UI/UX",
+      "category": "UI/UX Design",
+      "role_title": "UI/UX Designer & Product Specialist",
+      "resource_person": "Mr. Akshar Muley",
+      "ctc_range": "3.5 - 6.5 LPA",
+      "location": "Vadodara / Ahmedabad / Remote",
+      "required_skills": "UI/UX, Figma, Wireframing, Prototyping, User Research, HTML5, CSS3, Design Systems, Responsive Design, Adobe XD",
+      "companies": [
+        "Baroda Informatics",
+        "Dots & Coms",
+        "Yudiz"
+      ]
+    }
+  ]
+}
