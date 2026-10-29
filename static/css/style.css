@@ -5065,8 +5065,7 @@ p {
         display: none !important;
     }
     .analyzer-hero {
-        padding: 1.75rem 1.25rem;
-        border-radius: 20px;
+        display: none !important;
     }
     .analyzer-hero-title {
         font-size: 1.65rem;
@@ -5619,8 +5618,7 @@ p {
 
 @media (max-width: 768px) {
     .mocktest-hero {
-        padding: 1.75rem 1.25rem;
-        border-radius: 20px;
+        display: none !important;
     }
     .mocktest-hero-title {
         font-size: 1.65rem;
@@ -7585,6 +7583,9 @@ p {
 }
 
 @media (max-width: 768px) {
+    .alumni-hub-hero {
+        display: none !important;
+    }
     .alumni-hub-wrapper {
         padding: 1rem 0.5rem 2rem;
     }
@@ -7642,5 +7643,23 @@ p {
     }
     .user-company-name {
         font-size: 0.72rem;
+    }
+}
+
+
+/* ==========================================================================
+   MOBILE HERO DISPLAY POLICY
+   Hides promotional hero sections from inner pages and tabs on mobile screens (<= 768px).
+   The Home page hero (.saas-hero & .saas-dashboard-summary) is strictly kept intact.
+   ========================================================================== */
+@media (max-width: 768px) {
+    .analyzer-hero,
+    .prep-hero-banner,
+    .mocktest-hero,
+    .alumni-hub-hero,
+    .hist-hero-banner,
+    .dir-hero,
+    .admin-hero {
+        display: none !important;
     }
 }

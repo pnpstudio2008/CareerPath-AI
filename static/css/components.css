@@ -1606,9 +1606,7 @@
     }
     
     .prep-hero-banner {
-        padding: 1.35rem 1.15rem;
-        border-radius: 20px;
-        margin-bottom: 1.5rem;
+        display: none !important;
     }
     
     .prep-hero-title {
@@ -4924,3 +4922,10 @@
 
 
 
+
+
+@media (max-width: 768px) {
+    .prep-hero-banner {
+        display: none !important;
+    }
+}
