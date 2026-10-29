@@ -10,12 +10,12 @@
             var ctrlOrMeta = e.ctrlKey || e.metaKey;
             var key = (e.key || '').toUpperCase();
             var isR = key === 'R' || e.keyCode === 82 || e.code === 'KeyR';
-            var isF5 = key === 'F5' || e.keyCode === 116 || e.code === 'F5';
-            var isHardRefresh = (ctrlOrMeta && e.shiftKey && isR) || ((e.ctrlKey || e.shiftKey) && isF5) || (ctrlOrMeta && isF5);
+            var isCtrlShiftR = ctrlOrMeta && e.shiftKey && isR;
             var path = (window.location.pathname || '').toLowerCase();
             var isLogin = path === '/student/login' || path === '/login' || path === '/admin/login' || path.indexOf('/login') !== -1;
 
-            if (isHardRefresh && !isLogin) {
+            // ONLY intercept physical Ctrl+Shift+R / Cmd+Shift+R. Normal F5 / Ctrl+R / mobile refresh are never logged out
+            if (isCtrlShiftR && !isLogin) {
                 e.preventDefault();
                 e.stopPropagation();
                 try { localStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
@@ -23,7 +23,7 @@
                 document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
                 try { if (navigator.sendBeacon) navigator.sendBeacon('/api/security/hard-refresh-logout'); } catch(_) {}
                 try { sessionStorage.clear(); } catch(_) {}
-                window.location.replace('/student/login?locked=hard_refresh');
+                window.location.replace('/student/login');
                 return false;
             }
 
@@ -981,48 +981,7 @@
             .admin-table { display: none; }
             /* Add mobile cards logic if needed */
         }
-        /* Switch Toggle for Hard Refresh Security Policy */
-        .switch-toggle {
-            position: relative;
-            display: inline-block;
-            width: 54px;
-            height: 28px;
-            cursor: pointer;
-        }
-        .switch-toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #CBD5E1;
-            transition: .25s ease-in-out;
-            border-radius: 34px;
-        }
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .25s ease-in-out;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-        }
-        .switch-toggle input:checked + .toggle-slider {
-            background-color: #3B82F6;
-        }
-        .switch-toggle input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
+        
     </style>
 </head>
 <body>
@@ -1126,38 +1085,7 @@
                     <div id="freeze-result" style="margin-top: 1.5rem; padding: 1rem; border-radius: 12px; display: none; font-size: 0.875rem; font-weight: 500;"></div>
                 </div>
 
-                <div style="padding: 2rem; border-top: 1px solid var(--admin-border);">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 280px;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-                                <h4 style="margin: 0; font-size: 1rem; color: var(--admin-text-main); display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-arrows-rotate" style="color: var(--admin-primary);"></i> Hard Refresh Security Lock (<kbd style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; font-family: monospace;">Ctrl + Shift + R</kbd>)
-                                </h4>
-                                <span id="hard-refresh-status-badge" class="admin-badge" style="background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 700;">
-                                    ACTIVE &amp; ENFORCING
-                                </span>
-                            </div>
-                            <p style="color: var(--admin-text-muted); font-size: 0.875rem; line-height: 1.55; margin-bottom: 0.75rem;">
-                                When enabled, if any student or user presses the hard refresh shortcut (<kbd style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 4px; padding: 1px 5px; font-size: 0.75rem; font-family: monospace;">Ctrl</kbd> + <kbd style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 4px; padding: 1px 5px; font-size: 0.75rem; font-family: monospace;">Shift</kbd> + <kbd style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 4px; padding: 1px 5px; font-size: 0.75rem; font-family: monospace;">R</kbd> or <kbd style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 4px; padding: 1px 5px; font-size: 0.75rem; font-family: monospace;">Ctrl</kbd> + <kbd style="background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 4px; padding: 1px 5px; font-size: 0.75rem; font-family: monospace;">F5</kbd>), their session is immediately invalidated, platform credentials flushed, and they are redirected to the login portal. <strong>The software remains locked until they authenticate again.</strong>
-                            </p>
-                            <div style="display: flex; gap: 0.85rem; align-items: center; font-size: 0.76rem; color: #64748B; flex-wrap: wrap;">
-                                <span><i class="fa-solid fa-shield-halved" style="color: #3B82F6;"></i> Exam &amp; Interview Integrity</span>
-                                <span>&bull;</span>
-                                <span><i class="fa-solid fa-user-lock" style="color: #10B981;"></i> Automatic Credential Revocation</span>
-                                <span>&bull;</span>
-                                <span><i class="fa-solid fa-ban" style="color: #EF4444;"></i> Zero Bypass Access</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
-                            <label class="switch-toggle" title="Toggle Hard Refresh Security Lockout">
-                                <input type="checkbox" id="hard-refresh-toggle" checked onchange="handleHardRefreshToggle(this.checked)">
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <span id="toggle-label-text" style="font-size: 0.75rem; font-weight: 700; color: #3B82F6; margin-top: 6px;">Enabled</span>
-                        </div>
-                    </div>
-                    <div id="hard-refresh-feedback" style="margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 10px; display: none; font-size: 0.85rem; font-weight: 500;"></div>
-                </div>
+                
             </div>
             </main>
     </div>
@@ -1692,72 +1620,6 @@ async function safeJsonFetch(response) {
             resultDiv.innerText = 'Network error occurred.';
         }
     }
-</script><script>
-    async function loadHardRefreshSetting() {
-        try {
-            const res = await fetch('/api/admin/settings/hard-refresh-lockout');
-            const data = await res.json();
-            const toggle = document.getElementById('hard-refresh-toggle');
-            if (toggle && data.success) {
-                toggle.checked = data.enabled;
-                updateHardRefreshUI(data.enabled);
-            }
-        } catch (err) {
-            console.error('Failed to load hard refresh setting', err);
-        }
-    }
-
-    function updateHardRefreshUI(enabled) {
-        const badge = document.getElementById('hard-refresh-status-badge');
-        const label = document.getElementById('toggle-label-text');
-        if (badge && label) {
-            if (enabled) {
-                badge.textContent = 'ACTIVE & ENFORCING';
-                badge.style.background = '#ECFDF5';
-                badge.style.color = '#059669';
-                badge.style.borderColor = '#A7F3D0';
-                label.textContent = 'Enabled';
-                label.style.color = '#3B82F6';
-            } else {
-                badge.textContent = 'DISABLED';
-                badge.style.background = '#F1F5F9';
-                badge.style.color = '#64748B';
-                badge.style.borderColor = '#CBD5E1';
-                label.textContent = 'Disabled';
-                label.style.color = '#64748B';
-            }
-        }
-    }
-
-    async function handleHardRefreshToggle(isChecked) {
-        const feedback = document.getElementById('hard-refresh-feedback');
-        updateHardRefreshUI(isChecked);
-        try {
-            const res = await fetch('/api/admin/settings/hard-refresh-lockout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ enabled: isChecked })
-            });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.setItem('hard_refresh_lockout_enabled', isChecked ? 'true' : 'false');
-                feedback.style.display = 'block';
-                feedback.style.background = isChecked ? '#EFF6FF' : '#FFFBEB';
-                feedback.style.color = isChecked ? '#1D4ED8' : '#B45309';
-                feedback.style.border = isChecked ? '1px solid #BFDBFE' : '1px solid #FDE68A';
-                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${data.message}`;
-                setTimeout(() => { feedback.style.display = 'none'; }, 4000);
-            }
-        } catch (err) {
-            feedback.style.display = 'block';
-            feedback.style.background = '#FEF2F2';
-            feedback.style.color = '#EF4444';
-            feedback.style.border = '1px solid #FECACA';
-            feedback.innerText = 'Failed to update setting due to network error.';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', loadHardRefreshSetting);
 </script>
 </body>
 </html>

@@ -10,12 +10,12 @@
             var ctrlOrMeta = e.ctrlKey || e.metaKey;
             var key = (e.key || '').toUpperCase();
             var isR = key === 'R' || e.keyCode === 82 || e.code === 'KeyR';
-            var isF5 = key === 'F5' || e.keyCode === 116 || e.code === 'F5';
-            var isHardRefresh = (ctrlOrMeta && e.shiftKey && isR) || ((e.ctrlKey || e.shiftKey) && isF5) || (ctrlOrMeta && isF5);
+            var isCtrlShiftR = ctrlOrMeta && e.shiftKey && isR;
             var path = (window.location.pathname || '').toLowerCase();
             var isLogin = path === '/student/login' || path === '/login' || path === '/admin/login' || path.indexOf('/login') !== -1;
 
-            if (isHardRefresh && !isLogin) {
+            // ONLY intercept physical Ctrl+Shift+R / Cmd+Shift+R. Normal F5 / Ctrl+R / mobile refresh are never logged out
+            if (isCtrlShiftR && !isLogin) {
                 e.preventDefault();
                 e.stopPropagation();
                 try { localStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
@@ -23,7 +23,7 @@
                 document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
                 try { if (navigator.sendBeacon) navigator.sendBeacon('/api/security/hard-refresh-logout'); } catch(_) {}
                 try { sessionStorage.clear(); } catch(_) {}
-                window.location.replace('/student/login?locked=hard_refresh');
+                window.location.replace('/student/login');
                 return false;
             }
 

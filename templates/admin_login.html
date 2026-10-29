@@ -10,12 +10,12 @@
             var ctrlOrMeta = e.ctrlKey || e.metaKey;
             var key = (e.key || '').toUpperCase();
             var isR = key === 'R' || e.keyCode === 82 || e.code === 'KeyR';
-            var isF5 = key === 'F5' || e.keyCode === 116 || e.code === 'F5';
-            var isHardRefresh = (ctrlOrMeta && e.shiftKey && isR) || ((e.ctrlKey || e.shiftKey) && isF5) || (ctrlOrMeta && isF5);
+            var isCtrlShiftR = ctrlOrMeta && e.shiftKey && isR;
             var path = (window.location.pathname || '').toLowerCase();
             var isLogin = path === '/student/login' || path === '/login' || path === '/admin/login' || path.indexOf('/login') !== -1;
 
-            if (isHardRefresh && !isLogin) {
+            // ONLY intercept physical Ctrl+Shift+R / Cmd+Shift+R. Normal F5 / Ctrl+R / mobile refresh are never logged out
+            if (isCtrlShiftR && !isLogin) {
                 e.preventDefault();
                 e.stopPropagation();
                 try { localStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
@@ -23,7 +23,7 @@
                 document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
                 try { if (navigator.sendBeacon) navigator.sendBeacon('/api/security/hard-refresh-logout'); } catch(_) {}
                 try { sessionStorage.clear(); } catch(_) {}
-                window.location.replace('/student/login?locked=hard_refresh');
+                window.location.replace('/student/login');
                 return false;
             }
 
@@ -500,22 +500,7 @@
                 <img src="/static/images/logo.png" alt="AI Career Companion Logo" style="height: 64px; width: auto; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(99, 102, 241, 0.35));">
             </div>
 
-        <!-- Hard Refresh Security Alert Banner -->
-        <div id="hard-refresh-lockout-banner" style="display: none; margin-bottom: 1.25rem; background: linear-gradient(135deg, #FEF2F2 0%, #FFF1F2 100%); border: 1px solid #FECACA; border-left: 4px solid #EF4444; border-radius: 14px; padding: 0.9rem 1.1rem; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08);">
-            <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                <div style="width: 32px; height: 32px; border-radius: 50%; background: #FEE2E2; color: #EF4444; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.95rem;">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <div>
-                    <h4 style="margin: 0 0 0.25rem 0; font-size: 0.88rem; font-weight: 700; color: #991B1B;">
-                        Session Refreshed: Hard Refresh Detected (Ctrl + Shift + R)
-                    </h4>
-                    <p style="margin: 0; font-size: 0.78rem; color: #7F1D1D; line-height: 1.45;">
-                        A hard refresh was executed to load the latest software updates and clear cached data. For platform integrity, your session has been reset. <strong>Please log in with your credentials to open and continue using the software.</strong>
-                    </p>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- 1. TOP PORTAL NAVIGATION SWITCHER (STUDENT | ALUMNI | ADMIN) -->
         <nav class="portal-nav-switcher" aria-label="Portal Selection">
@@ -1194,12 +1179,7 @@ async function safeJsonFetch(response) {
             container.appendChild(toast);
             setTimeout(() => { toast.classList.add('hide'); setTimeout(() => toast.remove(), 400); }, 3500);
         }
-        document.addEventListener('DOMContentLoaded', function () {
-            if (window.location.search.includes('locked=hard_refresh') || (window.PlatformSecurity && window.PlatformSecurity.isLockoutActive())) {
-                const banner = document.getElementById('hard-refresh-lockout-banner');
-                if (banner) banner.style.display = 'block';
-            }
-        });
+
     </script>
 </body>
 </html>

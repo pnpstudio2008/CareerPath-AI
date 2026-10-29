@@ -183,23 +183,19 @@ def security_shield_filter():
             raw_path.startswith('/api/security/hard-refresh-logout')
         )
         if not auth_exempt:
+            # ONLY log out if hard_refresh_lockout was explicitly triggered via Ctrl+Shift+R shortcut
+            # Normal refreshes on mobile (pull-to-refresh) and desktop (F5/Ctrl+R/reload icon) work normally without logging out
             has_lock_cookie = request.cookies.get('hard_refresh_lockout') == '1'
-            is_browser_hard_reload = (
-                request.method == 'GET' and
-                request.accept_mimetypes.accept_html and
-                (request.headers.get('Pragma') == 'no-cache' or 'no-cache' in request.headers.get('Cache-Control', '')) and
-                bool(session.get('student_logged_in') or session.get('admin_logged_in') or session.get('alumni_logged_in'))
-            )
-            if has_lock_cookie or is_browser_hard_reload:
+            if has_lock_cookie:
                 session.clear()
                 if raw_path.startswith('/api/'):
                     resp = make_response(jsonify({
-                        "error": "Platform locked due to hard refresh policy. Please log in.",
-                        "redirect": "/student/login?locked=hard_refresh",
+                        "error": "Authentication required. Please log in.",
+                        "redirect": "/student/login",
                         "locked": True
                     }), 401)
                 else:
-                    resp = make_response(redirect('/student/login?locked=hard_refresh'))
+                    resp = make_response(redirect('/student/login'))
                 resp.set_cookie('hard_refresh_lockout', '1', max_age=86400, path='/', samesite='Lax')
                 return resp
 
@@ -3073,7 +3069,7 @@ def api_security_hard_refresh_logout():
             "success": True,
             "locked": True,
             "message": "Session invalidated due to hard refresh policy.",
-            "redirect_url": "/student/login?locked=hard_refresh"
+            "redirect_url": "/student/login"
         }))
         resp.set_cookie('hard_refresh_lockout', '1', max_age=86400, path='/', samesite='Lax')
         return resp

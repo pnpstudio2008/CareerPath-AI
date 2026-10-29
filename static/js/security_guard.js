@@ -46,7 +46,7 @@
 
     // IMMEDIATE LOCKOUT ENFORCEMENT: If locked out, prevent accessing the software until login
     if (!isAuthPage && isLockoutActive() && hardRefreshLockoutEnabled) {
-        window.location.replace('/student/login?locked=hard_refresh');
+        window.location.replace('/student/login');
         return;
     }
 
@@ -131,43 +131,37 @@
 
     // 2. DISABLE DEVELOPER KEYBOARD SHORTCUTS
     document.addEventListener('keydown', function (e) {
-        // HARD REFRESH SHORTCUT DETECTION (Ctrl+Shift+R / Cmd+Shift+R / Ctrl+F5 / Shift+F5)
+        // STRICT HARD REFRESH SHORTCUT DETECTION (Ctrl+Shift+R / Cmd+Shift+R ONLY)
+        // Normal refreshes (F5, Ctrl+R, reload icon, mobile pull-to-refresh) are NEVER intercepted or logged out
         const ctrlOrMeta = e.ctrlKey || e.metaKey;
         const key = (e.key || '').toUpperCase();
-        const isHardRefresh = 
-            (ctrlOrMeta && e.shiftKey && (key === 'R' || e.code === 'KeyR')) ||
-            ((e.ctrlKey || e.shiftKey) && (key === 'F5' || e.keyCode === 116)) ||
-            (ctrlOrMeta && (key === 'F5' || e.keyCode === 116));
+        const isR = key === 'R' || e.keyCode === 82 || e.code === 'KeyR';
+        const isCtrlShiftR = ctrlOrMeta && e.shiftKey && isR;
 
-        if (isHardRefresh) {
-            if (hardRefreshLockoutEnabled) {
-                e.preventDefault();
-                e.stopPropagation();
+        if (isCtrlShiftR && !isAuthPage) {
+            e.preventDefault();
+            e.stopPropagation();
 
-                // 1. Mark lockout indicators everywhere
-                localStorage.setItem('hard_refresh_lockout', 'true');
-                sessionStorage.setItem('hard_refresh_lockout', 'true');
-                document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
+            // 1. Mark lockout indicators
+            try { localStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
+            try { sessionStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
+            document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
 
-                // 2. Dispatch server logout beacon
-                try {
-                    if (navigator.sendBeacon) {
-                        navigator.sendBeacon('/api/security/hard-refresh-logout');
-                    } else {
-                        fetch('/api/security/hard-refresh-logout', { method: 'POST', keepalive: true });
-                    }
-                } catch (_) {}
+            // 2. Dispatch server logout beacon
+            try {
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon('/api/security/hard-refresh-logout');
+                } else {
+                    fetch('/api/security/hard-refresh-logout', { method: 'POST', keepalive: true });
+                }
+            } catch (_) {}
 
-                // 3. Clear session storage
-                try {
-                    sessionStorage.clear();
-                } catch (_) {}
+            // 3. Clear session storage
+            try { sessionStorage.clear(); } catch (_) {}
 
-                // 4. Alert user and redirect immediately to login portal
-                showSecurityToast('Hard refresh (Ctrl+Shift+R) detected. Session locked. Redirecting to login...');
-                window.location.replace('/student/login?locked=hard_refresh');
-                return false;
-            }
+            // 4. Redirect silently to login portal (no banners, no alerts)
+            window.location.replace('/student/login');
+            return false;
         }
 
         // F12 key
@@ -297,7 +291,7 @@
     // Back-Forward Cache (bfcache) lockout enforcement
     window.addEventListener('pageshow', function (event) {
         if (event.persisted && !isAuthPage && isLockoutActive() && hardRefreshLockoutEnabled) {
-            window.location.replace('/student/login?locked=hard_refresh');
+            window.location.replace('/student/login');
         }
     });
 
