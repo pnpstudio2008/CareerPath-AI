@@ -187,8 +187,7 @@ def security_shield_filter():
             is_browser_hard_reload = (
                 request.method == 'GET' and
                 request.accept_mimetypes.accept_html and
-                request.headers.get('Pragma') == 'no-cache' and
-                'no-cache' in request.headers.get('Cache-Control', '') and
+                (request.headers.get('Pragma') == 'no-cache' or 'no-cache' in request.headers.get('Cache-Control', '')) and
                 bool(session.get('student_logged_in') or session.get('admin_logged_in') or session.get('alumni_logged_in'))
             )
             if has_lock_cookie or is_browser_hard_reload:

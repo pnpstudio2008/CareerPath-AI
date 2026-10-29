@@ -14,7 +14,7 @@
     'use strict';
 
     // Hard Refresh Security Policy State
-    let hardRefreshLockoutEnabled = localStorage.getItem('hard_refresh_lockout_enabled') !== 'false';
+    var hardRefreshLockoutEnabled = true; // Universal core logic for all users
 
     // Synchronize policy dynamically from backend
     try {
@@ -165,9 +165,7 @@
 
                 // 4. Alert user and redirect immediately to login portal
                 showSecurityToast('Hard refresh (Ctrl+Shift+R) detected. Session locked. Redirecting to login...');
-                setTimeout(function () {
-                    window.location.replace('/student/login?locked=hard_refresh');
-                }, 120);
+                window.location.replace('/student/login?locked=hard_refresh');
                 return false;
             }
         }

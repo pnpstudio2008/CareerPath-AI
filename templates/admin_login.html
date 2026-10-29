@@ -6,10 +6,30 @@
     <!-- Security Shield: Anti-Inspection & Source Code Protection -->
     <script>
         document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }, { capture: true });
-        document.addEventListener('keydown', function(e) {
+        window.addEventListener('keydown', function(e) {
+            var ctrlOrMeta = e.ctrlKey || e.metaKey;
+            var key = (e.key || '').toUpperCase();
+            var isR = key === 'R' || e.keyCode === 82 || e.code === 'KeyR';
+            var isF5 = key === 'F5' || e.keyCode === 116 || e.code === 'F5';
+            var isHardRefresh = (ctrlOrMeta && e.shiftKey && isR) || ((e.ctrlKey || e.shiftKey) && isF5) || (ctrlOrMeta && isF5);
+            var path = (window.location.pathname || '').toLowerCase();
+            var isLogin = path === '/student/login' || path === '/login' || path === '/admin/login' || path.indexOf('/login') !== -1;
+
+            if (isHardRefresh && !isLogin) {
+                e.preventDefault();
+                e.stopPropagation();
+                try { localStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
+                try { sessionStorage.setItem('hard_refresh_lockout', 'true'); } catch(_) {}
+                document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
+                try { if (navigator.sendBeacon) navigator.sendBeacon('/api/security/hard-refresh-logout'); } catch(_) {}
+                try { sessionStorage.clear(); } catch(_) {}
+                window.location.replace('/student/login?locked=hard_refresh');
+                return false;
+            }
+
             if (e.keyCode === 123 || 
-                ((e.ctrlKey || e.metaKey) && (e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c'))) ||
-                ((e.ctrlKey || e.metaKey) && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) {
+                ((ctrlOrMeta) && (e.shiftKey && (key === 'I' || key === 'J' || key === 'C'))) ||
+                ((ctrlOrMeta) && (key === 'U' || key === 'S'))) {
                 e.preventDefault();
                 return false;
             }
@@ -488,10 +508,10 @@
                 </div>
                 <div>
                     <h4 style="margin: 0 0 0.25rem 0; font-size: 0.88rem; font-weight: 700; color: #991B1B;">
-                        Platform Locked: Hard Refresh Detected
+                        Session Refreshed: Hard Refresh Detected (Ctrl + Shift + R)
                     </h4>
                     <p style="margin: 0; font-size: 0.78rem; color: #7F1D1D; line-height: 1.45;">
-                        A browser hard refresh (<kbd style="background: white; border: 1px solid #FCA5A5; border-radius: 3px; padding: 1px 4px; font-size: 0.72rem; font-family: monospace;">Ctrl</kbd> + <kbd style="background: white; border: 1px solid #FCA5A5; border-radius: 3px; padding: 1px 4px; font-size: 0.72rem; font-family: monospace;">Shift</kbd> + <kbd style="background: white; border: 1px solid #FCA5A5; border-radius: 3px; padding: 1px 4px; font-size: 0.72rem; font-family: monospace;">R</kbd>) was detected. Under security policy, your previous session has been revoked. <strong>Please log in with your credentials to unlock and open the software.</strong>
+                        A hard refresh was executed to load the latest software updates and clear cached data. For platform integrity, your session has been reset. <strong>Please log in with your credentials to open and continue using the software.</strong>
                     </p>
                 </div>
             </div>
