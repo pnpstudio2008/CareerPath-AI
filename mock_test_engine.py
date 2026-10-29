@@ -593,3 +593,54 @@ def generate_tailored_mock_test(
         })
 
     return formatted_output
+
+
+def get_learn_anything_url(skill_name: str) -> str:
+    """
+    Returns direct interactive learning roadmap URL from learn-anything.xyz for the given skill.
+    Used in post-test evaluation and single-page executive reports.
+    """
+    slug_map = {
+        'python': 'https://learn-anything.xyz/python',
+        'java': 'https://learn-anything.xyz/java',
+        'c++': 'https://learn-anything.xyz/c-plus-plus',
+        'c#': 'https://learn-anything.xyz/csharp',
+        '.net': 'https://learn-anything.xyz/csharp',
+        'javascript': 'https://learn-anything.xyz/javascript',
+        'typescript': 'https://learn-anything.xyz/typescript',
+        'react': 'https://learn-anything.xyz/react',
+        'react.js': 'https://learn-anything.xyz/react',
+        'node.js': 'https://learn-anything.xyz/nodejs',
+        'sql': 'https://learn-anything.xyz/sql',
+        'mysql': 'https://learn-anything.xyz/mysql',
+        'postgresql': 'https://learn-anything.xyz/postgresql',
+        'mongodb': 'https://learn-anything.xyz/mongodb',
+        'database': 'https://learn-anything.xyz/databases',
+        'dbms': 'https://learn-anything.xyz/databases',
+        'dsa': 'https://learn-anything.xyz/data-structures',
+        'data structures': 'https://learn-anything.xyz/data-structures',
+        'algorithms': 'https://learn-anything.xyz/algorithms',
+        'machine learning': 'https://learn-anything.xyz/machine-learning',
+        'deep learning': 'https://learn-anything.xyz/deep-learning',
+        'data science': 'https://learn-anything.xyz/data-science',
+        'software testing': 'https://learn-anything.xyz/software-testing',
+        'testing': 'https://learn-anything.xyz/software-testing',
+        'android': 'https://learn-anything.xyz/android',
+        'kotlin': 'https://learn-anything.xyz/kotlin',
+        'docker': 'https://learn-anything.xyz/docker',
+        'kubernetes': 'https://learn-anything.xyz/kubernetes',
+        'git': 'https://learn-anything.xyz/git',
+        'cloud': 'https://learn-anything.xyz/cloud-computing',
+        'aws': 'https://learn-anything.xyz/aws',
+        'ui/ux': 'https://learn-anything.xyz/ui-design',
+        'php': 'https://learn-anything.xyz/php',
+        'html': 'https://learn-anything.xyz/html',
+        'css': 'https://learn-anything.xyz/css'
+    }
+    key = str(skill_name or '').lower().strip()
+    for k, url in slug_map.items():
+        if k == key or k in key or key in k:
+            return url
+    clean_slug = re.sub(r'[^a-zA-Z0-9]+', '-', key).strip('-')
+    return f"https://learn-anything.xyz/{clean_slug}" if clean_slug else "https://learn-anything.xyz/"
+

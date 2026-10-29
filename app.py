@@ -81,7 +81,7 @@ from database import (
     get_distinct_resume_count,
     get_all_students_for_excel_report
 )
-from mock_test_engine import generate_tailored_mock_test
+from mock_test_engine import generate_tailored_mock_test, get_learn_anything_url
 from sample_resumes import SAMPLE_RESUMES
 from hiring_dataset import (
     load_45_companies,
@@ -901,12 +901,69 @@ def submit_mock_test():
             "options": q.get('options', {})
         })
 
-    # Calculate skill percentages
+    # Calculate skill percentages & separate verified vs negative side skills
+    negative_skills = []
+    verified_skills = []
+
     for skill, stats in skill_breakdown.items():
-        stats["score_pct"] = int((stats["correct"] / max(1, stats["total"])) * 100)
-        stats["accuracy"] = stats["score_pct"]
+        acc = int((stats["correct"] / max(1, stats["total"])) * 100)
+        stats["score_pct"] = acc
+        stats["accuracy"] = acc
+        learn_url = get_learn_anything_url(skill)
+        stats["learn_url"] = learn_url
+
+        if acc < 60:
+            negative_skills.append({
+                "skill": skill,
+                "correct": stats["correct"],
+                "total": stats["total"],
+                "score_pct": acc,
+                "learn_url": learn_url,
+                "assessment": "Claimed in resume, but failed practical test validation (0 questions correct)" if stats["correct"] == 0 else f"Weak proficiency ({acc}%) in technical assessment"
+            })
+        else:
+            verified_skills.append({
+                "skill": skill,
+                "correct": stats["correct"],
+                "total": stats["total"],
+                "score_pct": acc,
+                "learn_url": learn_url
+            })
 
     score_pct = int((correct_count / max(1, total_questions)) * 100)
+
+    # 3-5 Step Growth & Placement Action Plan
+    neg_skill_names = [s["skill"] for s in negative_skills]
+    growth_plan = [
+        f"Correct Unverified Skills: Remediate {', '.join(neg_skill_names) if neg_skill_names else 'fundamental CS concepts'} where practical answers fell short, using interactive guides on learn-anything.xyz.",
+        "Demonstrate Hands-On Implementation: Build a portfolio repository on GitHub with unit tests addressing real-world problems in your target stack.",
+        "Target Verified Recruiter Clusters: Apply directly to campus recruiters hiring in your verified domain competencies.",
+        "Retake Technical Assessment: Elevate your hands-on accuracy across all tested skills above 85% to secure placement readiness."
+    ]
+
+    # Curated learning resources from learn-anything.xyz
+    learning_resources = []
+    seen_res = set()
+    for s_item in negative_skills:
+        s_name = s_item["skill"]
+        if s_name.lower() not in seen_res:
+            seen_res.add(s_name.lower())
+            learning_resources.append({
+                "skill": s_name,
+                "url": s_item["learn_url"],
+                "status": "Critical Gap / Needs Immediate Correction",
+                "badge_class": "badge-danger"
+            })
+    for s_item in verified_skills:
+        s_name = s_item["skill"]
+        if s_name.lower() not in seen_res:
+            seen_res.add(s_name.lower())
+            learning_resources.append({
+                "skill": s_name,
+                "url": s_item["learn_url"],
+                "status": "Verified Competency / Advanced Growth",
+                "badge_class": "badge-success"
+            })
 
     # Determine readiness rating
     if score_pct >= 85:
@@ -949,6 +1006,10 @@ def submit_mock_test():
         "time_taken_seconds": time_taken_seconds,
         "time_taken_formatted": time_fmt,
         "skill_breakdown": skill_breakdown,
+        "negative_skills": negative_skills,
+        "verified_skills": verified_skills,
+        "growth_plan": growth_plan,
+        "learning_resources": learning_resources,
         "completed_at": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
 
@@ -982,6 +1043,10 @@ def submit_mock_test():
         "badge": badge,
         "time_taken_formatted": time_fmt,
         "skill_breakdown": skill_breakdown,
+        "negative_skills": negative_skills,
+        "verified_skills": verified_skills,
+        "growth_plan": growth_plan,
+        "learning_resources": learning_resources,
         "detailed_review": detailed_review,
         "report_unlocked": True,
         "resume_record_id": resume_record_id,

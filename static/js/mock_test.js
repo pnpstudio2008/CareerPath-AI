@@ -541,24 +541,176 @@ function renderMockScorecard(data) {
 
     wrapper.style.display = 'block';
 
+    const resumeAts = window.currentResumeAnalysis?.ats_analysis?.ats_score 
+        ? Math.round(window.currentResumeAnalysis.ats_analysis.ats_score) 
+        : (data.resume_match_score || 80);
+    const mockScore = data.score_percentage || 0;
+    const combinedScore = Math.round((resumeAts + mockScore) / 2);
+
+    // 1. Skill by Skill Breakdown Cards
     let skillCardsHtml = '';
-    for (const [skill, stats] of Object.entries(data.skill_breakdown)) {
+    for (const [skill, stats] of Object.entries(data.skill_breakdown || {})) {
         const barColor = stats.score_pct >= 75 ? '#10B981' : stats.score_pct >= 50 ? '#F59E0B' : '#EF4444';
+        const learnUrl = stats.learn_url || `https://learn-anything.xyz/${encodeURIComponent(skill.toLowerCase())}`;
         skillCardsHtml += `
-            <div class="mock-skill-metric-card">
-                <div class="metric-top">
-                    <span class="skill-name font-bold">${skill}</span>
+            <div class="mock-skill-metric-card" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:1rem;">
+                <div class="metric-top" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="skill-name font-bold" style="color:var(--text-primary);">${skill}</span>
                     <span class="skill-score font-bold" style="color: ${barColor}">${stats.score_pct}% (${stats.correct}/${stats.total})</span>
                 </div>
-                <div class="mock-progress-bar-bg mt-2">
-                    <div class="mock-progress-bar-fill" style="width: ${stats.score_pct}%; background: ${barColor};"></div>
+                <div class="mock-progress-bar-bg mt-2" style="height:7px; background:var(--border-color); border-radius:4px; overflow:hidden;">
+                    <div class="mock-progress-bar-fill" style="width: ${stats.score_pct}%; height:100%; background: ${barColor};"></div>
+                </div>
+                <div class="mt-2 text-right">
+                    <a href="${learnUrl}" target="_blank" rel="noopener" style="font-size:0.75rem; color:#2563EB; font-weight:600; text-decoration:none;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Learn on learn-anything.xyz
+                    </a>
                 </div>
             </div>
         `;
     }
 
+    // 2. The Negative Side: Resume-Claimed Skills Unverified in Practical Test
+    const negSkills = data.negative_skills || [];
+    let negativeSideHtml = '';
+    if (negSkills.length > 0) {
+        negativeSideHtml = `
+            <div class="card p-4 mt-4" style="background:#FEF2F2; border:2px solid #F87171; border-radius:16px;">
+                <div style="display:flex; align-items:flex-start; gap:0.85rem;">
+                    <div style="width:44px; height:44px; border-radius:12px; background:#EF4444; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div style="flex:1;">
+                        <h4 style="margin:0 0 0.3rem; color:#991B1B; font-size:1.05rem; font-weight:800;">
+                            ⚠️ The Negative Side: Resume Claims Unverified in Practical Test
+                        </h4>
+                        <p style="margin:0 0 0.85rem; font-size:0.84rem; color:#7F1D1D; line-height:1.5;">
+                            <strong>Critical Recruiter Vulnerability Identified:</strong> You listed these technical competencies on your resume, but could not answer related questions in the practical assessment. Technical recruiters and interviewers probe into claimed CV skills; unverified claims lead to immediate interview elimination.
+                        </p>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.75rem;">
+                            ${negSkills.map(ns => `
+                                <div style="background:#fff; border:1px solid #FECACA; border-radius:10px; padding:0.75rem 0.95rem;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <strong style="color:#991B1B; font-size:0.9rem;">${ns.skill}</strong>
+                                        <span class="badge" style="background:#FEE2E2; color:#B91C1C; font-size:0.75rem; font-weight:700;">${ns.score_pct}% (${ns.correct}/${ns.total})</span>
+                                    </div>
+                                    <p style="margin:0.35rem 0 0.5rem; font-size:0.78rem; color:#64748B;">${ns.assessment}</p>
+                                    <a href="${ns.learn_url}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.35rem; font-size:0.76rem; color:#2563EB; font-weight:700; text-decoration:none;">
+                                        <i class="fa-solid fa-graduation-cap"></i> Remediate on learn-anything.xyz &rarr;
+                                    </a>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        negativeSideHtml = `
+            <div class="card p-3 mt-4" style="background:#F0FDF4; border:1.5px solid #86EFAC; border-radius:14px;">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <i class="fa-solid fa-shield-check text-success" style="font-size:1.4rem;"></i>
+                    <div>
+                        <strong style="color:#166534; font-size:0.92rem;">Zero Critical Vulnerabilities Detected</strong>
+                        <p style="margin:0; font-size:0.8rem; color:#15803D;">All skills claimed in your resume were successfully validated with passing scores in the technical examination.</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 3. Target Industry Cluster Companies to Approach
+    const topComps = window.currentResumeAnalysis?.dataset_matching?.top_matches || [];
+    let companiesHtml = '';
+    if (topComps.length > 0) {
+        companiesHtml = `
+            <div class="scorecard-companies-section mt-4 p-4" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:1rem;">
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem;"><i class="fa-solid fa-building-circle-check text-primary"></i> Target Campus Recruiters to Approach</h3>
+                        <p class="text-muted" style="margin:0.2rem 0 0; font-size:0.82rem;">Companies actively hiring freshers under your verified technology cluster:</p>
+                    </div>
+                    <span class="badge badge-primary font-bold">12 Technology Clusters</span>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:0.85rem;">
+                    ${topComps.slice(0, 4).map(c => `
+                        <div style="background:var(--bg-base); border:1px solid var(--border-color); border-radius:12px; padding:0.9rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h4 style="margin:0; font-size:0.95rem; font-weight:700;">${c.company}</h4>
+                                    <span style="font-size:0.78rem; color:var(--text-secondary);">${c.role}</span>
+                                </div>
+                                <span class="badge badge-success font-bold" style="font-size:0.75rem;">${c.match_score}% Match</span>
+                            </div>
+                            <div style="margin-top:0.6rem; display:flex; justify-content:space-between; align-items:center; font-size:0.78rem;">
+                                <span style="color:#059669; font-weight:600;"><i class="fa-solid fa-indian-rupee-sign"></i> ${c.indicative_ctc || '3.5 - 6.5 LPA'}</span>
+                                <span class="badge badge-outline" style="font-size:0.7rem;">${c.fit_tier || 'High Fit'}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // 4. 3-5 Step Growth & Placement Action Plan
+    const growthPlan = data.growth_plan || [
+        "Correct Unverified Skills: Focus immediate practice on skills where test accuracy was below passing threshold.",
+        "Demonstrate Hands-On Implementation: Build a portfolio repository on GitHub with unit tests proving competency.",
+        "Target Verified Recruiter Clusters: Apply directly to campus recruiters hiring in your verified domain.",
+        "Retake Technical Assessment: Elevate your hands-on accuracy across all tested skills above 85% to achieve Elite Placement Ready certification."
+    ];
+    const growthPlanHtml = `
+        <div class="scorecard-growth-section mt-4 p-4" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px;">
+            <h3 style="margin:0 0 0.4rem; font-size:1.05rem;"><i class="fa-solid fa-stairs text-primary"></i> 4-Step Strategic Placement Growth Plan</h3>
+            <p class="text-muted" style="margin:0 0 1rem; font-size:0.82rem;">Personalized roadmap to correct weaknesses and maximize recruitment conversion:</p>
+            <div style="display:flex; flex-direction:column; gap:0.65rem;">
+                ${growthPlan.map((step, idx) => `
+                    <div style="display:flex; align-items:flex-start; gap:0.75rem; background:var(--bg-base); border:1px solid var(--border-color); border-radius:10px; padding:0.75rem 1rem;">
+                        <span style="width:26px; height:26px; border-radius:50%; background:#2563EB; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.78rem; font-weight:800; flex-shrink:0;">${idx + 1}</span>
+                        <div style="font-size:0.83rem; line-height:1.45; color:var(--text-primary);">${step}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    // 5. Interactive Remediation Resources from learn-anything.xyz
+    const resources = data.learning_resources || [];
+    let resourcesHtml = '';
+    if (resources.length > 0) {
+        resourcesHtml = `
+            <div class="scorecard-resources-section mt-4 p-4" style="background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 100%); border:1.5px solid #BFDBFE; border-radius:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
+                    <div>
+                        <h3 style="margin:0; font-size:1.05rem; color:#1E40AF;"><i class="fa-solid fa-compass text-primary"></i> Interactive Learning Roadmaps (Powered by learn-anything.xyz)</h3>
+                        <p style="margin:0.2rem 0 0; font-size:0.82rem; color:#3B82F6;">Master lacking skills and advance your competencies with community-verified knowledge maps:</p>
+                    </div>
+                    <a href="https://learn-anything.xyz/" target="_blank" rel="noopener" class="badge badge-primary font-bold" style="padding:0.4rem 0.75rem; text-decoration:none;">Visit learn-anything.xyz &rarr;</a>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.75rem;">
+                    ${resources.slice(0, 6).map(res => `
+                        <div style="background:#fff; border:1px solid #DBEAFE; border-radius:12px; padding:0.85rem; display:flex; flex-direction:column; justify-content:space-between;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                                    <strong style="color:#0F172A; font-size:0.9rem;">${res.skill}</strong>
+                                    <span class="badge ${res.badge_class || 'badge-primary'}" style="font-size:0.68rem;">${res.status || 'Roadmap'}</span>
+                                </div>
+                                <p style="margin:0 0 0.65rem; font-size:0.76rem; color:#64748B;">Interactive topic tree, tutorials, and deep-dive conceptual guides.</p>
+                            </div>
+                            <a href="${res.url}" target="_blank" rel="noopener" class="btn btn-sm btn-outline" style="display:inline-flex; align-items:center; justify-content:center; gap:0.4rem; font-size:0.76rem; color:#1D4ED8; border-color:#93C5FD; text-decoration:none; font-weight:700;">
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Map on learn-anything.xyz
+                            </a>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    // 6. Question-by-Question Detailed Review
     let reviewHtml = '';
-    data.detailed_review.forEach((q, idx) => {
+    (data.detailed_review || []).forEach((q, idx) => {
         const statusBadge = q.is_correct 
             ? `<span class="badge badge-success"><i class="fa-solid fa-check"></i> Correct</span>`
             : q.is_attempted
@@ -577,7 +729,7 @@ function renderMockScorecard(data) {
                 </div>
                 <h4 class="mt-2 mb-3">${q.question}</h4>
                 <div class="review-options-grid">
-                    ${Object.entries(q.options).map(([k, v]) => `
+                    ${Object.entries(q.options || {}).map(([k, v]) => `
                         <div class="review-opt ${k === q.correct_option ? 'opt-correct' : (k === q.user_option && !q.is_correct ? 'opt-user-wrong' : '')}">
                             <strong>${k}.</strong> ${v}
                             ${k === q.correct_option ? ' <i class="fa-solid fa-check text-success"></i>' : ''}
@@ -595,7 +747,7 @@ function renderMockScorecard(data) {
 
     wrapper.innerHTML = `
         <!-- Step 4: Official Report Unlocked Celebration Card -->
-        <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 100%); border: 2px solid #10B981; border-radius: 16px; margin: 1rem auto 1.5rem; max-width: 860px; box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.2);">
+        <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 100%); border: 2px solid #10B981; border-radius: 16px; margin: 1rem auto 1.5rem; max-width: 900px; box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.2);">
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
                 <div style="display:flex; align-items:center; gap:0.85rem;">
                     <div style="width:48px; height:48px; border-radius:12px; background:#10B981; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">
@@ -603,7 +755,7 @@ function renderMockScorecard(data) {
                     </div>
                     <div>
                         <h4 style="margin:0 0 0.2rem; color:#065F46; font-size:1.05rem; font-weight:800;">Step 4: Verified Performance Report Unlocked!</h4>
-                        <p style="margin:0; font-size:0.84rem; color:#047857;">Your practical technical assessment score (<strong>${data.score_percentage}% &bull; ${data.rating}</strong>) has been attached to your resume.</p>
+                        <p style="margin:0; font-size:0.84rem; color:#047857;">Resume Match: <strong>${resumeAts}%</strong> &bull; Mock Test: <strong>${data.score_percentage}% (${data.rating})</strong> &bull; Score attached to resume.</p>
                     </div>
                 </div>
                 <button class="btn btn-primary" onclick="downloadCurrentResumeReport()" style="background:#059669; border-color:#059669; font-weight:700; padding:0.65rem 1.35rem; display:inline-flex; align-items:center; gap:0.5rem; border-radius:12px; box-shadow:0 4px 12px rgba(5,150,105,0.35); cursor:pointer;">
@@ -612,14 +764,35 @@ function renderMockScorecard(data) {
             </div>
         </div>
 
-        <div class="scorecard-header text-center p-4">
-            <span class="badge badge-primary font-bold"><i class="fa-solid fa-trophy"></i> Assessment Result</span>
-            <div class="scorecard-score-circle mt-3" style="border-color: ${data.rating_color};">
-                <div class="score-num" style="color: ${data.rating_color};">${data.score_percentage}%</div>
-                <div class="score-subtext">${data.correct_count} / ${data.total_questions} Correct</div>
+        <!-- Dual Gauge Scorecard Header -->
+        <div class="scorecard-header p-4" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px;">
+            <div style="display:flex; justify-content:center; align-items:center; gap:2.5rem; flex-wrap:wrap; text-align:center;">
+                <!-- Resume Match Gauge -->
+                <div>
+                    <span class="badge badge-secondary font-bold" style="font-size:0.75rem;"><i class="fa-solid fa-file-lines"></i> Resume Match</span>
+                    <div class="scorecard-score-circle mt-2" style="border-color: #2563EB; width:110px; height:110px; margin:0.5rem auto;">
+                        <div class="score-num" style="color: #2563EB; font-size:1.7rem;">${resumeAts}%</div>
+                        <div class="score-subtext" style="font-size:0.72rem;">ATS Match Index</div>
+                    </div>
+                </div>
+
+                <!-- Combined Badge -->
+                <div style="text-align:center;">
+                    <span class="badge badge-primary font-bold" style="padding:0.4rem 0.8rem; font-size:0.82rem;"><i class="fa-solid fa-award"></i> Combined Readiness</span>
+                    <h2 class="mt-2 mb-0" style="color: ${data.rating_color}; font-size:1.9rem; font-weight:800;">${combinedScore}%</h2>
+                    <p style="color: ${data.rating_color}; font-weight:700; font-size:0.92rem; margin:0.2rem 0;">${data.rating}</p>
+                    <p class="text-muted" style="font-size:0.8rem; margin:0;">${data.badge} &bull; Time: <strong>${data.time_taken_formatted}</strong></p>
+                </div>
+
+                <!-- Mock Test Result Gauge -->
+                <div>
+                    <span class="badge badge-secondary font-bold" style="font-size:0.75rem;"><i class="fa-solid fa-check-double"></i> Practical Test</span>
+                    <div class="scorecard-score-circle mt-2" style="border-color: ${data.rating_color}; width:110px; height:110px; margin:0.5rem auto;">
+                        <div class="score-num" style="color: ${data.rating_color}; font-size:1.7rem;">${data.score_percentage}%</div>
+                        <div class="score-subtext" style="font-size:0.72rem;">${data.correct_count} / ${data.total_questions} Correct</div>
+                    </div>
+                </div>
             </div>
-            <h2 class="mt-3 mb-1" style="color: ${data.rating_color};">${data.rating}</h2>
-            <p class="text-muted">${data.badge} &bull; Time Spent: <strong>${data.time_taken_formatted}</strong></p>
 
             <div class="scorecard-quick-stats-row mt-4">
                 <div class="quick-stat-box">
@@ -640,6 +813,18 @@ function renderMockScorecard(data) {
                 </div>
             </div>
         </div>
+
+        <!-- Target Companies to Approach -->
+        ${companiesHtml}
+
+        <!-- The Negative Side / Vulnerability Assessment -->
+        ${negativeSideHtml}
+
+        <!-- 4-Step Strategic Placement Growth Plan -->
+        ${growthPlanHtml}
+
+        <!-- Interactive Remediation Resources from learn-anything.xyz -->
+        ${resourcesHtml}
 
         <!-- Skill by Skill Breakdown -->
         <div class="scorecard-skills-section mt-4 p-4" style="background:var(--bg-base); border-radius:var(--radius-lg);">
