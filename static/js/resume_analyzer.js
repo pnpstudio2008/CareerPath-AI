@@ -163,7 +163,7 @@ class ResumeRevealController {
                 targetProgress: 88,
                 segments: [
                     { text: "Benchmarking profile against ", hl: false },
-                    { text: "45+ company recruitment filters & ATS standards", hl: true, hlType: "primary" },
+                    { text: "Campus recruitment filters & ATS standards", hl: true, hlType: "primary" },
                     { text: " in the placement dataset...", hl: false }
                 ]
             },
@@ -418,7 +418,7 @@ async function submitResumeAnalysis() {
         if (typeof updateMockSkillsPreview === 'function') {
             updateMockSkillsPreview();
         }
-        showToast('Resume verified & matched with 45-company dataset!', 'success');
+        showToast('Resume verified & analyzed successfully!', 'success');
 
     } catch (err) {
         if (activeRevealController) {
@@ -780,7 +780,7 @@ function renderAnalysisResults(data) {
                 pill.className = 'skill-pill';
                 pill.innerText = skill;
                 pill.setAttribute('data-skill', skill);
-                pill.setAttribute('title', `Click to filter 45-company matches for ${skill}`);
+                pill.setAttribute('title', `Click to filter recruiter matches for ${skill}`);
                 pill.onclick = (e) => {
                     e.stopPropagation();
                     filterBySkill(skill);
@@ -822,7 +822,7 @@ function renderAnalysisResults(data) {
                     matchContainer.appendChild(pill);
                 });
             } else {
-                matchContainer.innerHTML = '<span class="text-muted" style="font-size:0.84rem;">None of the top 45-company specific required skills matched directly.</span>';
+                matchContainer.innerHTML = '<span class="text-muted" style="font-size:0.84rem;">No target recruiter required skills matched directly.</span>';
             }
         }
 
@@ -931,7 +931,7 @@ function renderAnalysisResults(data) {
         
         if (headlineEl && subtextEl) {
             const topPct = Math.max(1, Math.round(100 - bm.percentile_rank));
-            headlineEl.innerHTML = `<i class="fa-solid fa-trophy text-amber"></i> Top <strong>${topPct}%</strong> Candidate in 45-Company Recruitment Cohort`;
+            headlineEl.innerHTML = `<i class="fa-solid fa-trophy text-amber"></i> Top <strong>${topPct}%</strong> Candidate in Placement Benchmark`;
             if (bm.similar_candidate) {
                 const sc = bm.similar_candidate;
                 subtextEl.innerHTML = `Your resume profile aligns with <strong>${sc.name}</strong> (${sc.degree}) who was hired at <strong>${sc.employer}</strong> for <em>${sc.job_title}</em> (~${sc.indicative_ctc_lpa} LPA).`;
@@ -1092,7 +1092,7 @@ function renderCompanyMatches(matches) {
 
     container.innerHTML = '';
     if (!matches || matches.length === 0) {
-        container.innerHTML = '<div class="text-center text-muted p-4" style="grid-column:1/-1;">No companies match the selected filter.</div>';
+        container.innerHTML = '<div class="text-center text-muted p-4" style="grid-column:1/-1; background: var(--bg-card); border-radius: 12px; border: 1px dashed var(--border-color);"><i class="fa-solid fa-building-circle-check text-primary" style="font-size: 1.8rem; margin-bottom: 8px; display: block;"></i><strong>Awaiting New Recruiter Profiles</strong><br><span style="font-size:0.85rem; color: var(--text-muted);">All dummy companies have been deleted. New companies will appear here once added.</span></div>';
         return;
     }
 
@@ -1167,7 +1167,7 @@ function filterBySkill(skillName) {
         targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    showToast(`Filtering 45-company recruiters for "${cleanSkill}"`, 'success');
+    showToast(`Filtering recruiters for "${cleanSkill}"`, 'success');
 }
 
 function clearSkillFilter() {
@@ -1323,7 +1323,7 @@ function updateReportBannerStatus(data) {
             titleEl.innerText = "Resume Performance & Technical Audit Report";
         }
         if (descEl) {
-            descEl.innerText = "To generate and download your verified single-page executive report, complete the practical 12-question technical assessment tailored to your resume skills and 45-company hiring criteria.";
+            descEl.innerText = "To generate and download your verified single-page executive report, complete the practical 12-question technical assessment tailored to your resume competencies and placement standards.";
         }
         if (startTestBtn) {
             startTestBtn.style.display = 'inline-flex';
@@ -1347,7 +1347,7 @@ function updateReportBannerStatus(data) {
 function showAssessmentRequiredNotice() {
     const confirmStart = confirm(
         "Step 3: Mandatory Technical Assessment Required\n\n" +
-        "To unlock and download your official Verified Resume Performance & Placement Audit Report, you must complete the 12-question practical technical assessment tailored to your resume skills and 45-company benchmarks.\n\n" +
+        "To unlock and download your official Verified Resume Performance & Placement Audit Report, you must complete the 12-question practical technical assessment tailored to your resume competencies and placement standards.\n\n" +
         "Would you like to start the assessment now?"
     );
     if (confirmStart) {

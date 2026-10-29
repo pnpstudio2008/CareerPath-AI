@@ -149,10 +149,6 @@ def security_shield_filter():
         if decoded_path == forbidden or decoded_path.startswith(forbidden + '/') or ('/' + forbidden.lstrip('/')) in decoded_path:
             return jsonify({"success": False, "error": "Access Denied: Protected system resource."}), 403
 
-    # Whitelist legitimate serverless gateway entrypoint routes (Vercel, Netlify)
-    if 'index.py' in decoded_path or decoded_path in ('/api/index', '/api/index.py', '/api/app.py', '/.netlify/functions/app') or decoded_path.startswith('/api/'):
-        return
-
     # 3. Block any request ending with forbidden source code extensions
     for ext in FORBIDDEN_EXTENSIONS:
         if decoded_path.endswith(ext) or (ext + '/') in decoded_path or (ext + '?') in decoded_path:
@@ -503,7 +499,7 @@ def analyze_resume():
 
         top_companies = dataset_matching.get('top_matches', [])
         best_comp_obj = dataset_matching.get('best_match_company') or (top_companies[0] if top_companies else {})
-        best_comp_name = best_comp_obj.get('company', 'Top Tech Recruiters')
+        best_comp_name = (best_comp_obj.get('company') if best_comp_obj else '') or 'Awaiting Recruiter Profiles'
 
         top_role_rec = career_recommendations[0] if (isinstance(career_recommendations, list) and career_recommendations) else {}
         primary_role = top_role_rec.get('role') if isinstance(top_role_rec, dict) else None

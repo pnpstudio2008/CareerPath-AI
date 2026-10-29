@@ -72,10 +72,7 @@ def generate_students_excel_report(students_data: list, base_url: str = None) ->
     """
     if not base_url:
         import os
-        vercel_url = os.environ.get('VERCEL_URL')
-        if vercel_url and not vercel_url.startswith('http'):
-            vercel_url = f"https://{vercel_url}"
-        base_url = os.environ.get('BASE_URL') or vercel_url or os.environ.get('RENDER_EXTERNAL_URL') or 'https://ai-career-companion.pnpstudio.in'
+        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'https://ai-career-companion.pnpstudio.in'
     if base_url.startswith('http://') and 'ai-career-companion.pnpstudio.in' in base_url:
         base_url = 'https://' + base_url[7:]
     base_url = base_url.rstrip('/')
@@ -342,10 +339,7 @@ def generate_students_csv_fallback(students_data: list, base_url: str = None) ->
     import csv
     if not base_url:
         import os
-        vercel_url = os.environ.get('VERCEL_URL')
-        if vercel_url and not vercel_url.startswith('http'):
-            vercel_url = f"https://{vercel_url}"
-        base_url = os.environ.get('BASE_URL') or vercel_url or os.environ.get('RENDER_EXTERNAL_URL') or 'https://ai-career-companion.pnpstudio.in'
+        base_url = os.environ.get('BASE_URL') or os.environ.get('RENDER_EXTERNAL_URL') or 'https://ai-career-companion.pnpstudio.in'
     if base_url.startswith('http://') and 'ai-career-companion.pnpstudio.in' in base_url:
         base_url = 'https://' + base_url[7:]
     base_url = base_url.rstrip('/')

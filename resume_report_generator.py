@@ -286,10 +286,10 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
 
     if comp_matches:
         for c in comp_matches[:3]:
-            c_name = c.get('company', 'Top Recruiter')
+            c_name = c.get('company', 'Target Recruiter')
             c_role = c.get('role', 'Software Engineer')
             c_score = f"{round(float(c.get('match_score', 80)), 1)}%"
-            c_ctc = c.get('indicative_ctc_range_lpa', '3.5 - 5.5 LPA')
+            c_ctc = c.get('indicative_ctc_range_lpa', 'Competitive')
             c_tier = c.get('fit_tier', 'Strong Match')
             comp_rows.append([
                 Paragraph(f"<b>{c_name}</b>", body_dark),
@@ -298,14 +298,22 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
                 Paragraph(c_ctc, body_dark),
                 Paragraph(f"<font color='#2563EB'>{c_tier}</font>", body_dark),
             ])
-    else:
-        best_comp = resume_record.get('best_match_company') or 'Tata Motors'
+    elif resume_record.get('best_match_company') and resume_record.get('best_match_company') not in ['Awaiting Placement Data', 'Top Tech Recruiters', '']:
+        best_comp = resume_record.get('best_match_company')
         comp_rows.append([
             Paragraph(f"<b>{best_comp}</b>", body_dark),
             Paragraph(best_role, body_dark),
             Paragraph(f"<font color='#059669'><b>{int(round(ats_score))}%</b></font>", body_dark),
-            Paragraph("3.5 - 6.5 LPA", body_dark),
-            Paragraph("<font color='#2563EB'>Strong Match</font>", body_dark)
+            Paragraph("Competitive", body_dark),
+            Paragraph("<font color='#2563EB'>Target Match</font>", body_dark)
+        ])
+    else:
+        comp_rows.append([
+            Paragraph("<b>Target Industry Role</b>", body_dark),
+            Paragraph(best_role, body_dark),
+            Paragraph(f"<font color='#059669'><b>{int(round(ats_score))}%</b></font>", body_dark),
+            Paragraph("Industry Benchmark", body_dark),
+            Paragraph("<font color='#2563EB'>Placement Ready</font>", body_dark)
         ])
 
     comp_table = Table(comp_rows, colWidths=[145, 165, 60, 104, 90])
@@ -353,7 +361,7 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     matched_cs_str = ", ".join(matched_cs[:8]) if matched_cs else "Core Stack Aligned"
     missing_cs_str = ", ".join(missing_cs[:6]) if missing_cs else "None identified (Complete Coverage)"
 
-    top_recruiter_name = comp_matches[0].get('company') if comp_matches else 'Target Recruiters'
+    top_recruiter_name = comp_matches[0].get('company') if comp_matches else 'Target Industry Recruiters'
 
     gap_content = [
         [
