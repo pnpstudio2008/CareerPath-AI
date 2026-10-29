@@ -7663,3 +7663,62 @@ p {
         display: none !important;
     }
 }
+
+
+/* ==========================================================================
+   MOCK ASSESSMENT STRICT LOCK & ALUMNI HUB TEST STYLES
+   ========================================================================== */
+.mocktest-locked-card {
+    background: #FFFFFF;
+    border: 1px dashed rgba(239, 68, 68, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .mocktest-locked-card {
+    background: #111827;
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.mocktest-locked-icon-wrap {
+    transition: transform 0.3s ease;
+}
+
+.mocktest-locked-card:hover .mocktest-locked-icon-wrap {
+    transform: scale(1.08);
+}
+
+.btn-alumni-test {
+    padding: 0.38rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+    color: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-alumni-test:hover {
+    background: linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+.alumni-test-modal-card {
+    border-radius: 16px;
+    background: #FFFFFF;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .alumni-test-modal-card {
+    background: #1E293B;
+    color: #F8FAFC;
+}

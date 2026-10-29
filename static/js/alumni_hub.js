@@ -517,9 +517,14 @@ function renderAlumniLeaderboard() {
                     </div>
                 </td>
                 <td style="text-align: right;">
-                    <button type="button" class="btn-view-profile" onclick="event.stopPropagation(); openAlumniDetail(${item.id})">
-                        View Profile
-                    </button>
+                    <div style="display:inline-flex; gap:0.4rem; justify-content:flex-end; align-items:center;">
+                        <button type="button" class="btn-view-profile" onclick="event.stopPropagation(); openAlumniDetail(${item.id})">
+                            View Profile
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary" onclick="event.stopPropagation(); startAlumniChallengeTest(${item.id})" style="padding:0.35rem 0.7rem; font-size:0.78rem; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; gap:0.35rem;">
+                            <i class="fa-solid fa-play" style="font-size:0.65rem;"></i> Take Test
+                        </button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -675,7 +680,7 @@ function openAlumniDetail(expId) {
         ` : ''}
 
         <div style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-            <button type="button" class="btn btn-primary" onclick="closeAlumniDetailModal(); startAlumniChallenge('${safeCompany}', '${safeRole}')">
+            <button type="button" class="btn btn-primary" onclick="closeAlumniDetailModal(); startAlumniChallengeTest(${exp.id})">
                 <i class="fa-solid fa-play"></i> Solve Their Exact Test
             </button>
             <span style="font-size:0.85rem; color:#64748B;"><i class="fa-solid fa-bolt text-amber"></i> Cleared with 100% Score</span>
@@ -811,3 +816,261 @@ async function upvoteExperience(expId, btn) {
         showToast('Upvote failed: ' + err.message, 'error');
     }
 }
+
+
+// ==============================================================================
+// ALUMNI CHALLENGE TEST ENGINE (Exclusively in Alumni Hub)
+// ==============================================================================
+let activeAlumniForTest = null;
+let alumniQuizQuestions = [];
+let alumniCurrentQIndex = 0;
+let alumniUserAnswers = {};
+let alumniTimerInterval = null;
+let alumniTimeRemaining = 600;
+
+window.closeAlumniChallengeModal = function(e) {
+    if (e && e.target && e.target.id !== 'alumni-challenge-test-modal' && !e.target.classList.contains('modal-close')) {
+        return;
+    }
+    if (alumniTimerInterval) clearInterval(alumniTimerInterval);
+    const modal = document.getElementById('alumni-challenge-test-modal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.startAlumniChallengeTest = function(alumniId) {
+    const list = window.AppState?.allAlumniExperiences || allEnrichedAlumni || BASE_MOCK_PERFORMERS;
+    const alumni = list.find(a => String(a.id) === String(alumniId)) || list[0];
+    if (!alumni) return;
+
+    activeAlumniForTest = alumni;
+
+    const modal = document.getElementById('alumni-challenge-test-modal');
+    const title = document.getElementById('alumni-test-modal-title');
+    const subtitle = document.getElementById('alumni-test-modal-subtitle');
+    const idleHeadline = document.getElementById('alumni-test-idle-headline');
+    const idleDesc = document.getElementById('alumni-test-idle-desc');
+
+    if (title) title.innerText = `${alumni.student_name}'s Benchmark Test`;
+    if (subtitle) subtitle.innerHTML = `<strong>${alumni.company}</strong> &bull; ${alumni.role} &bull; ₹${alumni.package_lpa || 'Competitive'} LPA &bull; <span style="color:#059669; font-weight:600;"><i class="fa-solid fa-crown"></i> 100% Senior Record</span>`;
+    if (idleHeadline) idleHeadline.innerText = `Ready to solve ${alumni.student_name}'s exact test?`;
+    if (idleDesc) idleDesc.innerText = `Test yourself against questions tailored to ${alumni.company}'s recruitment standards (${alumni.difficulty || 'Medium'} difficulty). Can you match their 100% benchmark?`;
+
+    // Show idle screen, hide active & results
+    document.getElementById('alumni-test-idle').style.display = 'block';
+    document.getElementById('alumni-test-active').style.display = 'none';
+    document.getElementById('alumni-test-results').style.display = 'none';
+
+    if (modal) modal.style.display = 'flex';
+};
+
+window.startAlumniActiveQuiz = async function() {
+    if (!activeAlumniForTest) return;
+    const alumni = activeAlumniForTest;
+
+    try {
+        const url = `/api/quiz/questions?company=${encodeURIComponent(alumni.company)}&difficulty=${encodeURIComponent(alumni.difficulty || 'all')}&limit=10`;
+        const res = await fetch(url);
+        const data = await safeJsonFetch(res);
+
+        if (!data.success || !data.questions || data.questions.length === 0) {
+            showToast('Unable to load questions for this test. Please try again.', 'error');
+            return;
+        }
+
+        alumniQuizQuestions = data.questions;
+        alumniCurrentQIndex = 0;
+        alumniUserAnswers = {};
+        alumniTimeRemaining = alumniQuizQuestions.length * 60;
+
+        document.getElementById('alumni-test-idle').style.display = 'none';
+        document.getElementById('alumni-test-results').style.display = 'none';
+        document.getElementById('alumni-test-active').style.display = 'block';
+
+        const totalCnt = document.getElementById('alumni-test-total-cnt');
+        if (totalCnt) totalCnt.innerText = alumniQuizQuestions.length;
+
+        startAlumniTimer();
+        renderAlumniQuestion(0);
+        renderAlumniIndicators();
+        showToast(`🎯 Test Started: 10 Questions (${alumni.company})`, 'info');
+
+    } catch (err) {
+        showToast('Error starting alumni test: ' + err.message, 'error');
+    }
+};
+
+function startAlumniTimer() {
+    if (alumniTimerInterval) clearInterval(alumniTimerInterval);
+    updateAlumniTimerDisplay();
+    alumniTimerInterval = setInterval(() => {
+        alumniTimeRemaining--;
+        updateAlumniTimerDisplay();
+        if (alumniTimeRemaining <= 0) {
+            clearInterval(alumniTimerInterval);
+            showToast('Time is up! Submitting answers automatically...', 'warning');
+            submitAlumniTest();
+        }
+    }, 1000);
+}
+
+function updateAlumniTimerDisplay() {
+    const el = document.getElementById('alumni-test-timer');
+    if (!el) return;
+    const mins = Math.floor(Math.max(0, alumniTimeRemaining) / 60);
+    const secs = Math.max(0, alumniTimeRemaining) % 60;
+    el.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function renderAlumniQuestion(index) {
+    if (index < 0 || index >= alumniQuizQuestions.length) return;
+    alumniCurrentQIndex = index;
+    const q = alumniQuizQuestions[index];
+
+    const curEl = document.getElementById('alumni-test-cur-idx');
+    const topicEl = document.getElementById('alumni-test-topic-badge');
+    const qTextEl = document.getElementById('alumni-test-question-text');
+    const optsContainer = document.getElementById('alumni-test-options-container');
+
+    if (curEl) curEl.innerText = index + 1;
+    if (topicEl) topicEl.innerText = q.topic || q.subject || 'Core CS';
+    if (qTextEl) qTextEl.innerText = q.question;
+
+    if (!optsContainer) return;
+    optsContainer.innerHTML = '';
+
+    const selected = alumniUserAnswers[q.id.toString()];
+    const options = [
+        { key: 'A', text: q.option_a },
+        { key: 'B', text: q.option_b },
+        { key: 'C', text: q.option_c },
+        { key: 'D', text: q.option_d }
+    ];
+
+    options.forEach(opt => {
+        if (!opt.text) return;
+        const isSel = selected === opt.key;
+        const card = document.createElement('div');
+        card.className = `mock-option-card ${isSel ? 'selected' : ''}`;
+        card.style.cssText = 'padding: 0.75rem 1rem; border: 1px solid ' + (isSel ? '#2563EB' : '#E2E8F0') + '; background:' + (isSel ? '#EFF6FF' : '#FFFFFF') + '; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;';
+        card.onclick = () => {
+            alumniUserAnswers[q.id.toString()] = opt.key;
+            renderAlumniQuestion(alumniCurrentQIndex);
+            renderAlumniIndicators();
+        };
+        card.innerHTML = `
+            <div style="width: 28px; height: 28px; border-radius: 6px; background: ` + (isSel ? '#2563EB' : '#F1F5F9') + `; color: ` + (isSel ? '#FFFFFF' : '#475569') + `; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">${opt.key}</div>
+            <div style="flex: 1; font-size: 0.92rem; color: var(--text-primary);">${opt.text}</div>
+            ${isSel ? '<i class="fa-solid fa-circle-check" style="color: #2563EB;"></i>' : ''}
+        `;
+        optsContainer.appendChild(card);
+    });
+
+    // Prev / Next / Submit buttons
+    const prevBtn = document.getElementById('alumni-test-btn-prev');
+    const nextBtn = document.getElementById('alumni-test-btn-next');
+    const submitBtn = document.getElementById('alumni-test-btn-submit');
+
+    if (prevBtn) prevBtn.disabled = (index === 0);
+    if (nextBtn) nextBtn.style.display = (index === alumniQuizQuestions.length - 1) ? 'none' : 'inline-flex';
+    if (submitBtn) submitBtn.style.display = (index === alumniQuizQuestions.length - 1) ? 'inline-flex' : 'none';
+}
+
+function renderAlumniIndicators() {
+    const container = document.getElementById('alumni-test-indicators');
+    if (!container) return;
+    container.innerHTML = '';
+    alumniQuizQuestions.forEach((q, idx) => {
+        const isCur = idx === alumniCurrentQIndex;
+        const isAns = Boolean(alumniUserAnswers[q.id.toString()]);
+        const pill = document.createElement('div');
+        pill.innerText = idx + 1;
+        pill.style.cssText = 'width: 24px; height: 24px; border-radius: 4px; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; ' +
+            (isCur ? 'border: 2px solid #2563EB; background: #DBEAFE; color: #1D4ED8;' : (isAns ? 'background: #10B981; color: #FFFFFF;' : 'background: #E2E8F0; color: #64748B;'));
+        pill.onclick = () => renderAlumniQuestion(idx);
+        container.appendChild(pill);
+    });
+}
+
+window.nextAlumniQuestion = function() {
+    if (alumniCurrentQIndex < alumniQuizQuestions.length - 1) {
+        renderAlumniQuestion(alumniCurrentQIndex + 1);
+    }
+};
+
+window.prevAlumniQuestion = function() {
+    if (alumniCurrentQIndex > 0) {
+        renderAlumniQuestion(alumniCurrentQIndex - 1);
+    }
+};
+
+window.submitAlumniTest = async function() {
+    if (alumniTimerInterval) clearInterval(alumniTimerInterval);
+    const alumni = activeAlumniForTest;
+
+    try {
+        const payload = { answers: alumniUserAnswers };
+        const res = await fetch('/api/quiz/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await safeJsonFetch(res);
+
+        if (!data.success) {
+            showToast('Error evaluating test answers.', 'error');
+            return;
+        }
+
+        document.getElementById('alumni-test-active').style.display = 'none';
+        document.getElementById('alumni-test-results').style.display = 'block';
+
+        const scorePct = data.score_percentage || 0;
+        const scoreEl = document.getElementById('alumni-test-res-score');
+        const fracEl = document.getElementById('alumni-test-res-fraction');
+        const headEl = document.getElementById('alumni-test-res-headline');
+        const compEl = document.getElementById('alumni-test-res-comparison');
+        const reviewEl = document.getElementById('alumni-test-res-review');
+
+        if (scoreEl) scoreEl.innerText = `${scorePct}%`;
+        if (fracEl) fracEl.innerText = `${data.correct_answers} / ${data.total_questions}`;
+
+        if (headEl) {
+            if (scorePct >= 90) headEl.innerHTML = '🎉 Outstanding Performance!';
+            else if (scorePct >= 70) headEl.innerHTML = '👍 Solid Placement Readiness!';
+            else headEl.innerHTML = '📚 Good Effort - Needs Practice!';
+        }
+
+        if (compEl && alumni) {
+            compEl.innerHTML = `
+                <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.75rem; text-align: left;">
+                    <strong>Benchmark:</strong> ${alumni.student_name} cleared this assessment with a <strong style="color:#059669;">100% Score</strong> to secure their <strong>₹${alumni.package_lpa || 'Competitive'} LPA</strong> offer at <strong>${alumni.company}</strong>.
+                    ${scorePct >= 100 ? '<div style="color:#059669; font-weight:700; margin-top:0.35rem;"><i class="fa-solid fa-crown"></i> Incredible! You matched their perfect score!</div>' : '<div style="color:#2563EB; margin-top:0.35rem;">Review the solutions below to master the edge cases they prepared.</div>'}
+                </div>
+            `;
+        }
+
+        if (reviewEl && data.detailed_results) {
+            reviewEl.innerHTML = data.detailed_results.map((q, idx) => {
+                const isCor = q.is_correct;
+                return `
+                    <div style="margin-bottom: 0.75rem; padding: 0.75rem; border-radius: 6px; background: ` + (isCor ? '#F0FDF4' : '#FEF2F2') + `; border: 1px solid ` + (isCor ? '#BBF7D0' : '#FECACA') + `;">
+                        <div style="font-weight: 600; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.35rem;">
+                            ${idx + 1}. ${q.question}
+                        </div>
+                        <div style="font-size: 0.82rem; margin-bottom: 0.25rem;">
+                            Your Answer: <strong>${q.user_answer || 'Unanswered'}</strong> &bull; Correct: <strong style="color:#059669;">${q.correct_answer}</strong>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #475569; line-height: 1.4;">
+                            <em>Explanation:</em> ${q.explanation}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        showToast(`Assessment Complete! Score: ${scorePct}%`, 'success');
+
+    } catch (err) {
+        showToast('Error evaluating test: ' + err.message, 'error');
+    }
+};

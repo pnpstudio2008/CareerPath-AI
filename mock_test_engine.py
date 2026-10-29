@@ -553,21 +553,24 @@ def generate_tailored_mock_test(
     if not matched_categories:
         matched_categories = {"dsa", "python", "javascript", "sql", "cloud"}
 
-    # 1. Gather skill-tailored questions
+    # 1. Gather skill-tailored questions strictly from matched categories
     for cat in matched_categories:
         if cat in SKILL_QUESTION_REPOSITORY:
             selected_pool.extend(SKILL_QUESTION_REPOSITORY[cat])
 
-    # 2. Fetch live online questions from internet (OpenTDB Computer Science)
-    online_count = min(5, max(3, count // 3))
-    online_qs = fetch_online_opentdb_questions(count=online_count)
-    selected_pool.extend(online_qs)
+    # 2. Only supplement if pool is smaller than requested question count
+    if len(selected_pool) < count:
+        needed = count - len(selected_pool)
+        online_qs = fetch_online_opentdb_questions(count=min(needed, 5))
+        selected_pool.extend(online_qs)
 
-    # 3. If pool is smaller than required count, add all remaining categories
-    for cat, qs in SKILL_QUESTION_REPOSITORY.items():
-        if len(selected_pool) >= count * 2:
-            break
-        selected_pool.extend(qs)
+    # 3. If still below required count, supplement with foundational CS pool
+    if len(selected_pool) < count:
+        for cat in ["dsa", "sql", "python"]:
+            if cat not in matched_categories and cat in SKILL_QUESTION_REPOSITORY:
+                selected_pool.extend(SKILL_QUESTION_REPOSITORY[cat])
+            if len(selected_pool) >= count:
+                break
 
     # 4. Filter by difficulty if requested
     if difficulty.lower() in ["easy", "medium", "hard"]:

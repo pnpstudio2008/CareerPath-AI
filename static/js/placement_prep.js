@@ -191,9 +191,11 @@ const TOP_SCORERS = [
     }
 ];
 
-// Initialize Top Scorers showcase from live Alumni Hub database & load Alumni practice questions
+// Placement Practice Initialization
 document.addEventListener('DOMContentLoaded', () => {
-    fetchAndRenderLiveTopScorers();
+    if (document.getElementById('top-scorers-grid')) {
+        fetchAndRenderLiveTopScorers();
+    }
     loadMainAlumniPracticeQuestions();
 });
 
@@ -387,35 +389,25 @@ function loadTopScorerChallengeFromDropdown() {
 // ==========================================
 
 async function startNewQuiz(presetScorer = null) {
-    const subject = document.getElementById('quiz-subject-select').value;
-    const company = document.getElementById('quiz-company-select').value;
-
-    // Determine top scorer to display
-    if (presetScorer) {
-        activeTopScorer = presetScorer;
-    } else {
-        // Find best match by company or subject
-        const match = TOP_SCORERS.find(s => s.companyFilter.toLowerCase() === company.toLowerCase() || s.subject.toLowerCase() === subject.toLowerCase());
-        activeTopScorer = match || TOP_SCORERS[0];
-    }
+    const subject = document.getElementById('quiz-subject-select')?.value || 'all';
+    const company = document.getElementById('quiz-company-select')?.value || 'all';
+    const difficulty = document.getElementById('quiz-difficulty-select')?.value || 'all';
+    const count = parseInt(document.getElementById('quiz-count-select')?.value || '10');
 
     try {
-        let apiUrl = `/api/quiz/questions?subject=${encodeURIComponent(subject)}&company=${encodeURIComponent(company)}&limit=10`;
-        if (presetScorer && presetScorer.name) {
-            apiUrl += `&alumni=${encodeURIComponent(presetScorer.name)}`;
-        }
+        let apiUrl = `/api/quiz/questions?subject=${encodeURIComponent(subject)}&company=${encodeURIComponent(company)}&difficulty=${encodeURIComponent(difficulty)}&limit=${count}`;
         const res = await fetch(apiUrl);
         const data = await safeJsonFetch(res);
 
-        if (!data.success || data.questions.length === 0) {
-            showToast('No questions found for the selected filter. Loading general practice bank.', 'info');
+        if (!data.success || !data.questions || data.questions.length === 0) {
+            showToast('No practice questions found matching your filter criteria. Try broader filters.', 'info');
             return;
         }
 
         quizQuestions = data.questions;
         currentQuestionIndex = 0;
         userAnswers = {};
-        secondsRemaining = 600;
+        secondsRemaining = quizQuestions.length * 60;
 
         const idlePrompt = document.getElementById('quiz-idle-prompt');
         if (idlePrompt) idlePrompt.style.display = 'none';
@@ -423,19 +415,23 @@ async function startNewQuiz(presetScorer = null) {
         document.getElementById('quiz-active-wrapper').style.display = 'block';
         document.getElementById('quiz-results-wrapper').style.display = 'none';
 
-        // Update Live Best Scorer Benchmark Banner
-        renderScorerLiveBanner(activeTopScorer);
+        const totalCntEl = document.getElementById('quiz-total-count');
+        if (totalCntEl) totalCntEl.innerText = quizQuestions.length;
+
+        // Hide alumni benchmark banner if present on practice page
+        const banner = document.getElementById('quiz-scorer-banner');
+        if (banner) banner.style.display = 'none';
 
         initQuizTimer();
         renderQuizIndicators();
         renderCurrentQuestion();
-        showToast(`Challenge initiated! Benchmark: ${activeTopScorer.name} (${activeTopScorer.score})`, 'info');
+        showToast(`🎯 Practice Assessment Started: ${quizQuestions.length} Questions (${Math.round(secondsRemaining/60)} Mins)`, 'success');
 
         // Smooth scroll to quiz interface
         document.getElementById('quiz-active-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     } catch (err) {
-        showToast('Error loading quiz questions: ' + err.message, 'error');
+        showToast('Error loading practice questions: ' + err.message, 'error');
     }
 }
 

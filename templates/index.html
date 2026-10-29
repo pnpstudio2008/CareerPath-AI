@@ -1263,34 +1263,6 @@
                 </div>
             </div>
 
-            <!-- Best Scorers' Benchmark Showcase (Hall of Fame) -->
-            <div class="card top-scorers-showcase">
-                <div class="tsh-header">
-                    <div class="tsh-top-row">
-                        <div class="tsh-left-group">
-                            <div class="tsh-crown-box"><i class="fa-solid fa-crown"></i></div>
-                            <div class="tsh-header-titles">
-                                <h3 class="tsh-title">Best Scorers' Challenge Tests</h3>
-                                <p class="tsh-subtitle">Practice with real test sets solved by our top placed alumni seniors.</p>
-                            </div>
-                        </div>
-                        <div class="tsh-header-actions">
-                            <div class="tsh-pill-tabs" role="tablist">
-                                <button type="button" class="tsh-tab-pill active" onclick="filterScorersTimeRange('all', this)">All</button>
-                                <button type="button" class="tsh-tab-pill" onclick="filterScorersTimeRange('month', this)">This Month</button>
-                                <button type="button" class="tsh-tab-pill" onclick="filterScorersTimeRange('semester', this)">This Semester</button>
-                            </div>
-                            <div class="tsh-benchmark-tag">
-                                <i class="fa-solid fa-chart-simple"></i> Top Benchmarks
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="top-scorers-grid" id="top-scorers-grid">
-                    <!-- Dynamic Top Scorer Cards populated by placement_prep.js -->
-                </div>
-            </div>
-
             <!-- Quiz Setup Bar -->
             <div class="card quiz-filter-card">
                 <div class="filter-row">
@@ -1323,14 +1295,22 @@
                     </div>
 
                     <div class="filter-col">
-                        <label class="form-label"><i class="fa-solid fa-trophy"></i> Best Scorer Preset</label>
-                        <select id="quiz-top-scorer-select" class="form-select" onchange="loadTopScorerChallengeFromDropdown()">
-                            <option value="">-- Custom Test (Standard) --</option>
-                            <option value="aarav">Aarav Sharma (Amazon SDE-1 - 100%)</option>
-                            <option value="sneha">Sneha Kulkarni (Google SWE - 100%)</option>
-                            <option value="priya">Priya Patel (Infosys SP - 100%)</option>
-                            <option value="rohan">Rohan Deshmukh (TCS Digital - 100%)</option>
-                            <option value="ananya">Ananya Gupta (Microsoft Cloud - 100%)</option>
+                        <label class="form-label"><i class="fa-solid fa-gauge-high"></i> Difficulty Level</label>
+                        <select id="quiz-difficulty-select" class="form-select">
+                            <option value="all" selected>All Levels (Mixed)</option>
+                            <option value="Easy">Foundation (Easy)</option>
+                            <option value="Medium">Interview Standard (Medium)</option>
+                            <option value="Hard">Advanced / High Bar (Hard)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-col">
+                        <label class="form-label"><i class="fa-solid fa-list-ol"></i> Question Count</label>
+                        <select id="quiz-count-select" class="form-select">
+                            <option value="5">5 Questions (Quick Warmup)</option>
+                            <option value="10" selected>10 Questions (Standard Practice)</option>
+                            <option value="15">15 Questions (Extended Test)</option>
+                            <option value="20">20 Questions (Full Marathon)</option>
                         </select>
                     </div>
 
@@ -1349,7 +1329,7 @@
                 </div>
                 <h3>Placement Practice & Mock Assessment</h3>
                 <p class="text-muted" style="max-width:540px; margin:0.5rem auto 1.5rem;">
-                    Configure your subject and target company above, or choose an alumni senior challenge from the Hall of Fame. Click the button below when you are ready to begin the timed test.
+                    Configure your subject, company domain, difficulty, and question count above. Click the button below when you are ready to begin your timed practice test.
                 </p>
                 <div>
                     <button class="btn btn-primary btn-lg" onclick="startNewQuiz()">
@@ -1823,12 +1803,12 @@
                     </p>
 
                     <div class="mocktest-hero-cta-group">
-                        <button type="button" class="btn-saas-primary" onclick="generateAndStartMockTest()">
+                        <button type="button" class="btn-saas-primary" onclick="handleHeroStartMockTest()">
                             <i class="fa-solid fa-play"></i>
                             <span>Start Adaptive Mock Test</span>
                             <i class="fa-solid fa-arrow-right btn-arrow-icon"></i>
                         </button>
-                        <button type="button" class="btn-saas-secondary" onclick="document.getElementById('mocktest-config-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' })">
+                        <button type="button" class="btn-saas-secondary" onclick="handleHeroConfigMockTest()">
                             <i class="fa-solid fa-sliders"></i>
                             <span>Configure Parameters</span>
                         </button>
@@ -1901,6 +1881,31 @@
                 </div>
             </div>
 
+            <!-- MOCK TEST LOCKED STATE (Strict Rule: Resume Analysis Required First) -->
+            <div id="mocktest-locked-wrapper" class="mocktest-main-card mocktest-locked-card" style="display: none; text-align: center; padding: 3.5rem 2rem;">
+                <div class="mocktest-locked-icon-wrap" style="width: 80px; height: 80px; margin: 0 auto 1.5rem; border-radius: 50%; background: rgba(239, 68, 68, 0.1); color: #EF4444; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; border: 2px solid rgba(239, 68, 68, 0.2);">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">
+                    Mock Assessment Locked: Resume Analysis Required
+                </h2>
+                <p style="max-width: 620px; margin: 0 auto 2rem; color: var(--text-secondary); line-height: 1.6; font-size: 1rem;">
+                    In accordance with assessment rules, technical mock tests are generated <strong>strictly and exclusively from the skills in your resume that match with hiring companies in our database</strong>.
+                    Please upload and analyze your resume first to unlock your personalized assessment.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <button type="button" class="btn-saas-primary" onclick="navigateTo('analyzer')" style="padding: 0.85rem 1.75rem; font-size: 1rem;">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Upload &amp; Analyze Resume</span>
+                        <i class="fa-solid fa-arrow-right btn-arrow-icon"></i>
+                    </button>
+                    <button type="button" class="btn-saas-secondary" onclick="navigateTo('home')" style="padding: 0.85rem 1.75rem; font-size: 1rem;">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Return to Dashboard</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- MAIN CONFIGURATION CARD -->
             <div id="mocktest-config-wrapper" class="mocktest-main-card">
                 <div class="m-card-header">
@@ -1929,7 +1934,7 @@
                                 <span class="m-step-number">1</span>
                                 <div>
                                     <h4>Target Skills / Technologies</h4>
-                                    <p>Select the skills you want to be tested on (auto-detected from your resume)</p>
+                                    <p>Skills matched between your resume and companies in the database (Strict Placement Rule)</p>
                                 </div>
                             </div>
                             <div class="m-step-content" id="mocktest-tags-container">
@@ -1938,28 +1943,7 @@
                             <!-- JS Will inject Add Custom Skill button here if needed -->
                         </div>
 
-                        <!-- STEP 3 (Upload Resume) -->
-                        <div class="m-step-group mt-5">
-                            <div class="m-step-header">
-                                <span class="m-step-number">3</span>
-                                <div>
-                                    <h4>Upload Resume (Optional)</h4>
-                                    <p>Upload your resume to get more personalized and relevant questions</p>
-                                </div>
-                            </div>
-                            <div class="m-step-content">
-                                <div class="m-mini-upload" onclick="navigateTo('analyzer')">
-                                    <div class="m-mini-upload-left">
-                                        <div class="m-mini-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
-                                        <div>
-                                            <strong>Drag & drop your resume PDF here</strong>
-                                            <span>or click to browse</span>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-outline btn-sm"><i class="fa-solid fa-rotate"></i> Re-scan / Update Resume</button>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
 
                     <!-- RIGHT COLUMN -->
@@ -2927,6 +2911,100 @@
             }
         });
     </script>
+
+
+    <!-- ALUMNI CHALLENGE TEST MODAL (Exclusively in Alumni Hub) -->
+    <div id="alumni-challenge-test-modal" class="modal-backdrop" style="display: none;" onclick="closeAlumniChallengeModal(event)">
+        <div class="modal-card alumni-test-modal-card" style="max-width: 780px; width: 92%; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation()">
+            <div class="modal-header alumni-test-modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #E2E8F0; padding: 1.25rem 1.5rem;">
+                <div class="alumni-test-header-left">
+                    <div style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 700; color: #2563EB; background: #EFF6FF; padding: 0.25rem 0.6rem; border-radius: 999px; margin-bottom: 0.25rem;">
+                        <i class="fa-solid fa-trophy"></i> Alumni Benchmark Test
+                    </div>
+                    <h3 id="alumni-test-modal-title" style="margin: 0.25rem 0 0 0; font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">Aarav Sharma's Challenge Test</h3>
+                    <div id="alumni-test-modal-subtitle" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;">
+                        Amazon SDE-1 &bull; ₹28.5 LPA Package &bull; Benchmark: 100%
+                    </div>
+                </div>
+                <button type="button" class="modal-close" onclick="closeAlumniChallengeModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748B;">&times;</button>
+            </div>
+            
+            <div class="modal-body alumni-test-modal-body" id="alumni-test-modal-body" style="padding: 1.5rem;">
+                <!-- Idle State / Ready Prompt -->
+                <div id="alumni-test-idle" style="text-align: center; padding: 2.5rem 1.5rem;">
+                    <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(59,130,246,0.1); color: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 1.25rem;">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <h4 id="alumni-test-idle-headline" style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">Ready to solve their exact test?</h4>
+                    <p id="alumni-test-idle-desc" style="max-width: 500px; margin: 0 auto 1.5rem; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.5;">
+                        This test contains placement questions tailored to the company domain, difficulty, and interview rounds cleared by this alumnus.
+                    </p>
+                    <div style="display: flex; justify-content: center; gap: 1rem;">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="startAlumniActiveQuiz()">
+                            <i class="fa-solid fa-play"></i> Start Timed Test (10 Questions &bull; 10 Mins)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Test State -->
+                <div id="alumni-test-active" style="display: none;">
+                    <div class="alumni-test-status-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; background: #F8FAFC; border-radius: 8px; margin-bottom: 1.25rem; border: 1px solid #E2E8F0;">
+                        <div>
+                            Question <strong id="alumni-test-cur-idx">1</strong> of <strong id="alumni-test-total-cnt">10</strong>
+                            <span class="badge badge-outline ml-2" id="alumni-test-topic-badge" style="margin-left: 0.5rem; font-size: 0.75rem;">DSA</span>
+                        </div>
+                        <div style="font-weight: 700; color: #EF4444; display: flex; align-items: center; gap: 0.35rem;">
+                            <i class="fa-regular fa-clock"></i> <span id="alumni-test-timer">10:00</span>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 1.05rem; font-weight: 600; line-height: 1.5; margin-bottom: 1.25rem; color: var(--text-primary);" id="alumni-test-question-text">
+                        Loading question...
+                    </div>
+
+                    <div id="alumni-test-options-container" style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;"></div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0; padding-top: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                        <button type="button" class="btn btn-outline btn-sm" id="alumni-test-btn-prev" onclick="prevAlumniQuestion()" disabled>
+                            <i class="fa-solid fa-arrow-left"></i> Previous
+                        </button>
+                        <div id="alumni-test-indicators" style="display: flex; gap: 0.35rem; flex-wrap: wrap;"></div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" class="btn btn-outline btn-sm" id="alumni-test-btn-next" onclick="nextAlumniQuestion()">
+                                Next <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" id="alumni-test-btn-submit" onclick="submitAlumniTest()" style="display: none;">
+                                <i class="fa-solid fa-check-double"></i> Submit Test
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results State -->
+                <div id="alumni-test-results" style="display: none; padding: 1rem 0;">
+                    <div style="text-align: center; margin-bottom: 1.5rem;">
+                        <div style="width: 86px; height: 86px; border-radius: 50%; margin: 0 auto 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #EEF2FF; border: 3px solid #6366F1;">
+                            <span id="alumni-test-res-score" style="font-size: 1.6rem; font-weight: 800; color: #4F46E5;">0%</span>
+                            <span id="alumni-test-res-fraction" style="font-size: 0.75rem; color: #64748B;">0 / 10</span>
+                        </div>
+                        <h4 id="alumni-test-res-headline" style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem;">Test Evaluated</h4>
+                        <div id="alumni-test-res-comparison" style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);"></div>
+                    </div>
+
+                    <div id="alumni-test-res-review" style="max-height: 280px; overflow-y: auto; padding-right: 0.5rem; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.75rem;"></div>
+
+                    <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 0.75rem;">
+                        <button type="button" class="btn btn-outline" onclick="startAlumniActiveQuiz()">
+                            <i class="fa-solid fa-rotate-right"></i> Retake Test
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="closeAlumniChallengeModal()">
+                            <i class="fa-solid fa-check"></i> Back to Alumni Hub
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

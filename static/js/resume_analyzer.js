@@ -412,6 +412,10 @@ async function submitResumeAnalysis() {
         window.AppState.analyzedSkills = data.extracted_skills;
         window.AppState.analyzedCertifications = data.extracted_certifications || [];
         window.AppState.generatedQuestions = data.interview_questions;
+        const matchedCompSkills = (data.company_skills_intelligence && Array.isArray(data.company_skills_intelligence.matched_company_skills))
+            ? data.company_skills_intelligence.matched_company_skills
+            : ((data.mandatory_mocktest && Array.isArray(data.mandatory_mocktest.skills_to_test)) ? data.mandatory_mocktest.skills_to_test : []);
+        window.AppState.matchedCompanySkills = matchedCompSkills;
 
         // Render results UI
         renderAnalysisResults(data);
@@ -431,6 +435,14 @@ async function submitResumeAnalysis() {
 
 function renderAnalysisResults(data) {
     window.currentResumeAnalysis = data;
+    if (!window.AppState) window.AppState = {};
+    const matchedCompSkills = (data.company_skills_intelligence && Array.isArray(data.company_skills_intelligence.matched_company_skills))
+        ? data.company_skills_intelligence.matched_company_skills
+        : ((data.mandatory_mocktest && Array.isArray(data.mandatory_mocktest.skills_to_test)) ? data.mandatory_mocktest.skills_to_test : []);
+    window.AppState.matchedCompanySkills = matchedCompSkills;
+    if (typeof updateMockSkillsPreview === 'function') {
+        updateMockSkillsPreview();
+    }
     const ats = data.ats_analysis || {};
     const resultsContainer = document.getElementById('analyzer-results');
     if (resultsContainer) resultsContainer.style.display = 'block';

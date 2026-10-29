@@ -74,8 +74,12 @@ function navigateTo(sectionId) {
 
     // Module-specific initializers when navigating
     if (sectionId === 'prep') {
-        if (typeof renderTopScorerCards === 'function') renderTopScorerCards();
-        // Do NOT autostart test - student initiates test manually
+        // Practice page: test is initiated by student using selected filters
+    }
+    if (sectionId === 'mocktest') {
+        if (typeof updateMockSkillsPreview === 'function') {
+            updateMockSkillsPreview();
+        }
     }
 }
 

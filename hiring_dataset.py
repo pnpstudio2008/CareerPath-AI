@@ -254,12 +254,18 @@ def compare_resume_with_45_companies(resume_text: str, extracted_skills: Dict[st
         for mis_skill in comp.get("missing_skills", []):
             missing_skills_set.add(mis_skill.strip())
 
-    assessment_target_skills = []
-    seen_assess = set()
-    for s in list(matched_skills_set) + candidate_skills_list[:6] + list(missing_skills_set)[:4]:
-        if s and s.lower() not in seen_assess:
-            seen_assess.add(s.lower())
-            assessment_target_skills.append(s)
+    # Also collect matched skills from all matching companies in company_matches
+    for comp in company_matches:
+        for m_skill in comp.get("matched_skills", []):
+            if m_skill and m_skill.strip():
+                matched_skills_set.add(m_skill.strip())
+
+    # STRICT RULE: Mock test questions must be strictly and exclusively based on the skills
+    # matched with companies in the database from the resume only.
+    assessment_target_skills = sorted(list(matched_skills_set))
+    if not assessment_target_skills:
+        # Fallback only if no candidate skill matched any company in database
+        assessment_target_skills = [s for s in candidate_skills_list if s][:8]
 
     company_skills_intelligence = {
         "target_companies_required_skills": all_req_skills,
