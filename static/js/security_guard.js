@@ -13,6 +13,53 @@
 (function () {
     'use strict';
 
+    // Hard Refresh Security Policy State
+    let hardRefreshLockoutEnabled = localStorage.getItem('hard_refresh_lockout_enabled') !== 'false';
+
+    // Synchronize policy dynamically from backend
+    try {
+        fetch('/api/security/policy')
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+                if (data && typeof data.hard_refresh_lockout === 'boolean') {
+                    hardRefreshLockoutEnabled = data.hard_refresh_lockout;
+                    localStorage.setItem('hard_refresh_lockout_enabled', data.hard_refresh_lockout ? 'true' : 'false');
+                }
+            })
+            .catch(function () {});
+    } catch (_) {}
+
+    function isLockoutActive() {
+        var localFlag = localStorage.getItem('hard_refresh_lockout') === 'true';
+        var sessionFlag = sessionStorage.getItem('hard_refresh_lockout') === 'true';
+        var cookieFlag = document.cookie.split(';').some(function (c) {
+            return c.trim().startsWith('hard_refresh_lockout=1');
+        });
+        return localFlag || sessionFlag || cookieFlag;
+    }
+
+    var currentPath = (window.location.pathname || '').toLowerCase();
+    var isAuthPage = currentPath === '/student/login' || 
+                     currentPath === '/login' || 
+                     currentPath === '/admin/login' || 
+                     currentPath.indexOf('/login') !== -1;
+
+    // IMMEDIATE LOCKOUT ENFORCEMENT: If locked out, prevent accessing the software until login
+    if (!isAuthPage && isLockoutActive() && hardRefreshLockoutEnabled) {
+        window.location.replace('/student/login?locked=hard_refresh');
+        return;
+    }
+
+    // Expose unlock helper for login callbacks
+    window.PlatformSecurity = {
+        unlockSession: function () {
+            localStorage.removeItem('hard_refresh_lockout');
+            sessionStorage.removeItem('hard_refresh_lockout');
+            document.cookie = 'hard_refresh_lockout=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+        },
+        isLockoutActive: isLockoutActive
+    };
+
     // Last toast notification timestamp to prevent alert flood
     let lastToastTime = 0;
 
@@ -84,6 +131,47 @@
 
     // 2. DISABLE DEVELOPER KEYBOARD SHORTCUTS
     document.addEventListener('keydown', function (e) {
+        // HARD REFRESH SHORTCUT DETECTION (Ctrl+Shift+R / Cmd+Shift+R / Ctrl+F5 / Shift+F5)
+        const ctrlOrMeta = e.ctrlKey || e.metaKey;
+        const key = (e.key || '').toUpperCase();
+        const isHardRefresh = 
+            (ctrlOrMeta && e.shiftKey && (key === 'R' || e.code === 'KeyR')) ||
+            ((e.ctrlKey || e.shiftKey) && (key === 'F5' || e.keyCode === 116)) ||
+            (ctrlOrMeta && (key === 'F5' || e.keyCode === 116));
+
+        if (isHardRefresh) {
+            if (hardRefreshLockoutEnabled) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // 1. Mark lockout indicators everywhere
+                localStorage.setItem('hard_refresh_lockout', 'true');
+                sessionStorage.setItem('hard_refresh_lockout', 'true');
+                document.cookie = 'hard_refresh_lockout=1; path=/; max-age=86400; SameSite=Lax';
+
+                // 2. Dispatch server logout beacon
+                try {
+                    if (navigator.sendBeacon) {
+                        navigator.sendBeacon('/api/security/hard-refresh-logout');
+                    } else {
+                        fetch('/api/security/hard-refresh-logout', { method: 'POST', keepalive: true });
+                    }
+                } catch (_) {}
+
+                // 3. Clear session storage
+                try {
+                    sessionStorage.clear();
+                } catch (_) {}
+
+                // 4. Alert user and redirect immediately to login portal
+                showSecurityToast('Hard refresh (Ctrl+Shift+R) detected. Session locked. Redirecting to login...');
+                setTimeout(function () {
+                    window.location.replace('/student/login?locked=hard_refresh');
+                }, 120);
+                return false;
+            }
+        }
+
         // F12 key
         if (e.keyCode === 123) {
             e.preventDefault();
@@ -207,6 +295,13 @@
         const shield = document.getElementById('security-tamper-shield');
         if (shield) shield.classList.remove('active');
     }
+
+    // Back-Forward Cache (bfcache) lockout enforcement
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted && !isAuthPage && isLockoutActive() && hardRefreshLockoutEnabled) {
+            window.location.replace('/student/login?locked=hard_refresh');
+        }
+    });
 
     // DevTools docked check disabled to avoid false positives on scaled or zoomed displays
     // Keyboard shortcuts (F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S) provide strict, non-intrusive protection

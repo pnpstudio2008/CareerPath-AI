@@ -346,9 +346,97 @@ def ensure_resume_history_table():
         conn.close()
 
 
+def ensure_system_settings_table():
+    """Creates system_settings table on both PostgreSQL and SQLite."""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        is_pg = getattr(conn, "_is_pg", False)
+        if is_pg:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS system_settings (
+                id SERIAL PRIMARY KEY,
+                setting_key VARCHAR(100) UNIQUE,
+                setting_value TEXT NOT NULL,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+            """)
+        else:
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS system_settings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                setting_key TEXT UNIQUE,
+                setting_value TEXT NOT NULL,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+            """)
+        conn.commit()
+    except Exception as e:
+        print("[ensure_system_settings_table] Notice:", e)
+    finally:
+        conn.close()
+
+
+def get_system_setting(key: str, default: str = None) -> str:
+    """Retrieves a system setting by key."""
+    try:
+        ensure_system_settings_table()
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT setting_value FROM system_settings WHERE setting_key = ?", (key,))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            val = row[0] if isinstance(row, (tuple, list)) else row.get('setting_value')
+            return str(val) if val is not None else default
+        return default
+    except Exception as e:
+        print(f"[get_system_setting] Notice: {e}")
+        return default
+
+
+def set_system_setting(key: str, value: str):
+    """Sets or updates a system setting by key."""
+    try:
+        ensure_system_settings_table()
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        is_pg = getattr(conn, "_is_pg", False)
+        if is_pg:
+            cursor.execute("""
+            INSERT INTO system_settings (setting_key, setting_value, updated_at)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value, updated_at = CURRENT_TIMESTAMP
+            """, (key, str(value)))
+        else:
+            cursor.execute("""
+            INSERT INTO system_settings (setting_key, setting_value, updated_at)
+            VALUES (?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT (setting_key) DO UPDATE SET setting_value = excluded.setting_value, updated_at = CURRENT_TIMESTAMP
+            """, (key, str(value)))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[set_system_setting] Notice: {e}")
+
+
+def is_hard_refresh_lockout_enabled() -> bool:
+    """Returns whether hard refresh session invalidation and lockout is enabled."""
+    val = get_system_setting('hard_refresh_lockout', 'true')
+    if val is None:
+        return True
+    return str(val).strip().lower() in ('true', '1', 'yes', 'enabled', 'on')
+
+
+def set_hard_refresh_lockout_enabled(enabled: bool):
+    """Enables or disables hard refresh session invalidation and lockout."""
+    set_system_setting('hard_refresh_lockout', 'true' if enabled else 'false')
+
+
 def init_database():
     ensure_faculty_profile_table()
     ensure_resume_history_table()
+    ensure_system_settings_table()
     conn = get_db_connection()
     if getattr(conn, "_is_pg", False):
         print("[Database] Connected to Supabase Cloud PostgreSQL (10,000+ Student Production Scale)")

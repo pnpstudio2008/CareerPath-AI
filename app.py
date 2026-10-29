@@ -10,7 +10,7 @@ import time
 import random
 import io
 import datetime
-from flask import Flask, request, jsonify, render_template, send_from_directory, session, redirect, url_for, send_file
+from flask import Flask, request, jsonify, render_template, send_from_directory, session, redirect, url_for, send_file, make_response
 from functools import wraps
 try:
     from resume_report_generator import generate_resume_pdf_report
@@ -73,6 +73,8 @@ from database import (
     get_db_connection,
     get_faculty_profile,
     update_faculty_profile,
+    is_hard_refresh_lockout_enabled,
+    set_hard_refresh_lockout_enabled,
     update_alumni_account,
     add_resume_analysis_record,
     update_resume_analysis_mocktest,
@@ -163,6 +165,45 @@ def security_shield_filter():
             if file_ext not in ALLOWED_STATIC_EXTENSIONS:
                 return jsonify({"success": False, "error": "Access Denied: File type not permitted in public assets."}), 403
 
+    # 5. Enforce Hard Refresh Session Invalidation & Lockout Policy
+    # If any user triggers hard refresh (Ctrl+Shift+R / Ctrl+F5), session is wiped and software is locked until login
+    if is_hard_refresh_lockout_enabled():
+        auth_exempt = (
+            raw_path.startswith('/static/') or
+            raw_path in ('/favicon.ico', '/robots.txt') or
+            raw_path in ('/student/login', '/login', '/alumni/login') or
+            (raw_path == '/admin' and not session.get('admin_logged_in')) or
+            raw_path.startswith('/api/student/login') or
+            raw_path.startswith('/api/student/verify-2fa') or
+            raw_path.startswith('/api/alumni/login') or
+            raw_path.startswith('/api/alumni/verify-2fa') or
+            raw_path.startswith('/api/admin/login') or
+            raw_path.startswith('/api/admin/verify-2fa') or
+            raw_path.startswith('/api/security/policy') or
+            raw_path.startswith('/api/security/hard-refresh-logout')
+        )
+        if not auth_exempt:
+            has_lock_cookie = request.cookies.get('hard_refresh_lockout') == '1'
+            is_browser_hard_reload = (
+                request.method == 'GET' and
+                request.accept_mimetypes.accept_html and
+                request.headers.get('Pragma') == 'no-cache' and
+                'no-cache' in request.headers.get('Cache-Control', '') and
+                bool(session.get('student_logged_in') or session.get('admin_logged_in') or session.get('alumni_logged_in'))
+            )
+            if has_lock_cookie or is_browser_hard_reload:
+                session.clear()
+                if raw_path.startswith('/api/'):
+                    resp = make_response(jsonify({
+                        "error": "Platform locked due to hard refresh policy. Please log in.",
+                        "redirect": "/student/login?locked=hard_refresh",
+                        "locked": True
+                    }), 401)
+                else:
+                    resp = make_response(redirect('/student/login?locked=hard_refresh'))
+                resp.set_cookie('hard_refresh_lockout', '1', max_age=86400, path='/', samesite='Lax')
+                return resp
+
 @app.after_request
 def apply_security_headers(response):
     """
@@ -178,7 +219,7 @@ def apply_security_headers(response):
     response.headers['Server'] = 'CloudGuard/4.2 (Anti-Inspection Active)'
 
     # Prevent disk caching for dynamic API responses and authenticated sessions
-    if request.path.startswith('/api/') or request.path.startswith('/admin') or request.path.startswith('/student'):
+    if request.path == '/' or request.path.startswith('/api/') or request.path.startswith('/admin') or request.path.startswith('/student') or request.path.startswith('/alumni') or request.path.startswith('/faculty'):
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'
         response.headers['Expires'] = '0'
@@ -1773,11 +1814,13 @@ def student_verify_2fa():
         session['student_name'] = student_name
         session['student_roll_no'] = student_enrollment
 
-        return jsonify({
+        resp = make_response(jsonify({
             "success": True,
             "message": f"2FA Verified! Welcome {student_name}.",
             "redirect_url": "/"
-        })
+        }))
+        resp.delete_cookie('hard_refresh_lockout', path='/')
+        return resp
     else:
         return jsonify({
             "success": False,
@@ -2068,11 +2111,13 @@ def alumni_verify_2fa():
         session['alumni_id'] = alumni_id
         session['alumni_name'] = alumni_name
 
-        return jsonify({
+        resp = make_response(jsonify({
             "success": True,
             "message": f"2FA Verified! Welcome {alumni_name}.",
             "redirect_url": "/alumni/profile"
-        })
+        }))
+        resp.delete_cookie('hard_refresh_lockout', path='/')
+        return resp
     else:
         return jsonify({
             "success": False,
@@ -2373,11 +2418,13 @@ def admin_verify_2fa():
         session['admin_user'] = fac_name
         session['faculty_name'] = fac_name
 
-        return jsonify({
+        resp = make_response(jsonify({
             "success": True,
             "message": "2FA Master Security Key Verified! Redirecting to Control Portal...",
             "redirect_url": "/admin"
-        })
+        }))
+        resp.delete_cookie('hard_refresh_lockout', path='/')
+        return resp
     else:
         return jsonify({
             "success": False,
@@ -3002,3 +3049,53 @@ if __name__ == '__main__':
     print("[URL]   http://127.0.0.1:5000")
     is_debug = os.environ.get('FLASK_DEBUG', 'False').lower() in ('true', '1', 't')
     app.run(host='0.0.0.0', port=5000, debug=is_debug)
+
+
+# ==========================================
+# HARD REFRESH SECURITY & LOCKOUT CONTROLS
+# ==========================================
+
+@app.route('/api/security/policy', methods=['GET'])
+def api_security_policy():
+    """Returns current client-side security policies."""
+    return jsonify({
+        "success": True,
+        "hard_refresh_lockout": is_hard_refresh_lockout_enabled(),
+        "anti_inspection": True
+    })
+
+
+@app.route('/api/security/hard-refresh-logout', methods=['POST', 'GET'])
+def api_security_hard_refresh_logout():
+    """Called on hard refresh shortcut (Ctrl+Shift+R) to immediately invalidate session and enforce lockout."""
+    if is_hard_refresh_lockout_enabled():
+        session.clear()
+        resp = make_response(jsonify({
+            "success": True,
+            "locked": True,
+            "message": "Session invalidated due to hard refresh policy.",
+            "redirect_url": "/student/login?locked=hard_refresh"
+        }))
+        resp.set_cookie('hard_refresh_lockout', '1', max_age=86400, path='/', samesite='Lax')
+        return resp
+    return jsonify({"success": False, "locked": False, "policy_disabled": True})
+
+
+@app.route('/api/admin/settings/hard-refresh-lockout', methods=['GET', 'POST'])
+def api_admin_settings_hard_refresh_lockout():
+    """Allows Faculty to view and toggle the Hard Refresh Lockout security policy."""
+    if request.method == 'POST':
+        if not session.get('admin_logged_in'):
+            return jsonify({"success": False, "error": "Faculty authorization required."}), 401
+        data = request.json or request.form.to_dict()
+        enabled = bool(data.get('enabled', True))
+        set_hard_refresh_lockout_enabled(enabled)
+        return jsonify({
+            "success": True,
+            "enabled": enabled,
+            "message": f"Hard Refresh Security Policy has been {'enabled and enforced' if enabled else 'disabled'} successfully."
+        })
+    return jsonify({
+        "success": True,
+        "enabled": is_hard_refresh_lockout_enabled()
+    })
