@@ -2319,28 +2319,37 @@ def update_resume_analysis_mocktest(record_id: int, mocktest_score: float, mockt
     try:
         cursor = conn.cursor()
         target_id = record_id
-        if not target_id or target_id <= 0:
-            if student_id:
-                cursor.execute("""
-                    SELECT id FROM student_resume_history 
-                    WHERE student_id = ? 
-                    ORDER BY id DESC LIMIT 1
-                """, (int(student_id),))
-                latest = cursor.fetchone()
-                if latest:
-                    target_id = latest["id"] if isinstance(latest, dict) else latest[0]
-
-        if not target_id:
-            return False
-
         mock_data_str = json.dumps(mocktest_data or {}, default=str)
-        cursor.execute("""
-            UPDATE student_resume_history
-            SET mocktest_score = ?, mocktest_rating = ?, mocktest_data_json = ?, test_completed = TRUE
-            WHERE id = ?
-        """, (float(mocktest_score), str(mocktest_rating), mock_data_str, int(target_id)))
+        updated = False
+
+        if target_id and int(target_id) > 0:
+            cursor.execute("""
+                UPDATE student_resume_history
+                SET mocktest_score = ?, mocktest_rating = ?, mocktest_data_json = ?, test_completed = TRUE
+                WHERE id = ?
+            """, (float(mocktest_score), str(mocktest_rating), mock_data_str, int(target_id)))
+            if cursor.rowcount and cursor.rowcount > 0:
+                updated = True
+
+        if not updated and student_id:
+            cursor.execute("""
+                SELECT id FROM student_resume_history 
+                WHERE student_id = ? 
+                ORDER BY created_at DESC, id DESC LIMIT 1
+            """, (int(student_id),))
+            latest = cursor.fetchone()
+            if latest:
+                fallback_id = latest["id"] if isinstance(latest, dict) else latest[0]
+                cursor.execute("""
+                    UPDATE student_resume_history
+                    SET mocktest_score = ?, mocktest_rating = ?, mocktest_data_json = ?, test_completed = TRUE
+                    WHERE id = ?
+                """, (float(mocktest_score), str(mocktest_rating), mock_data_str, int(fallback_id)))
+                if cursor.rowcount and cursor.rowcount > 0:
+                    updated = True
+
         conn.commit()
-        return True
+        return updated
     except Exception as e:
         print(f"[update_resume_analysis_mocktest error] {e}")
         return False

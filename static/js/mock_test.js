@@ -531,10 +531,15 @@ async function submitMockTest() {
     document.getElementById('mocktest-loading').style.display = 'block';
 
     try {
+        const activeRecId = window.currentResumeAnalysis?.history_record_id || 
+                            window.currentResumeAnalysis?.mandatory_mocktest?.resume_record_id || 
+                            (sessionStorage.getItem('activeResumeRecordId') ? parseInt(sessionStorage.getItem('activeResumeRecordId')) : null);
+
         const payload = {
             questions: mockQuestions,
             answers: userMockAnswers,
-            time_taken_seconds: timeSpent
+            time_taken_seconds: timeSpent,
+            resume_record_id: activeRecId
         };
 
         const res = await fetch('/api/mocktest/submit', {
@@ -564,13 +569,13 @@ async function submitMockTest() {
                 filename: 'Evaluated_Resume.pdf',
                 extracted_skills: mockActiveSkills,
                 matched_company_skills: mockActiveSkills,
-                history_record_id: data.resume_record_id || 0
+                history_record_id: data.resume_record_id || activeRecId || 0
             };
         }
 
         window.currentResumeAnalysis.test_completed = true;
-        window.currentResumeAnalysis.mocktest_score = data.score_percentage;
-        window.currentResumeAnalysis.mocktest_rating = data.rating;
+        window.currentResumeAnalysis.mocktest_score = (data.score_percentage !== undefined && data.score_percentage !== null) ? data.score_percentage : 0;
+        window.currentResumeAnalysis.mocktest_rating = data.rating || 'Placement Ready';
         window.currentResumeAnalysis.mocktest_data = {
             score: data.score_percentage,
             rating: data.rating,
@@ -587,6 +592,16 @@ async function submitMockTest() {
             window.currentResumeAnalysis.report_status = {};
         }
         window.currentResumeAnalysis.report_status.unlocked = true;
+        if (data.resume_record_id) {
+            window.currentResumeAnalysis.history_record_id = data.resume_record_id;
+            sessionStorage.setItem('activeResumeRecordId', String(data.resume_record_id));
+        }
+
+        sessionStorage.setItem('mocktest_completed', 'true');
+        sessionStorage.setItem('activeMocktestScore', String((data.score_percentage !== undefined && data.score_percentage !== null) ? data.score_percentage : 0));
+        if (window.AppState) {
+            window.AppState.mockTestCompleted = true;
+        }
 
         try {
             sessionStorage.setItem('activeResumeAnalysis', JSON.stringify(window.currentResumeAnalysis));

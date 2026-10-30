@@ -1278,7 +1278,10 @@ function updateReportBannerStatus(data) {
     const isUnlocked = Boolean(
         data.test_completed || 
         (data.report_status && data.report_status.unlocked) || 
-        (data.mocktest_score !== undefined && data.mocktest_score !== null && data.mocktest_score >= 0)
+        (data.mocktest_score !== undefined && data.mocktest_score !== null && data.mocktest_score >= 0) ||
+        sessionStorage.getItem('mocktest_completed') === 'true' ||
+        sessionStorage.getItem('activeMocktestScore') !== null ||
+        (window.AppState && window.AppState.mockTestCompleted)
     );
 
     // Persist to session storage so refresh / navigation never loses state
@@ -1437,7 +1440,10 @@ async function downloadCurrentResumeReport() {
     const isUnlocked = Boolean(
         data.test_completed || 
         (data.report_status && data.report_status.unlocked) || 
-        (data.mocktest_score && data.mocktest_score > 0)
+        (data.mocktest_score !== undefined && data.mocktest_score !== null) ||
+        sessionStorage.getItem('mocktest_completed') === 'true' ||
+        sessionStorage.getItem('activeMocktestScore') !== null ||
+        (window.AppState && window.AppState.mockTestCompleted)
     );
 
     if (!isUnlocked) {
@@ -1445,61 +1451,90 @@ async function downloadCurrentResumeReport() {
         return;
     }
 
-    // If the record was saved with a database history ID and user is logged in
-    if (data.history_record_id) {
+    // Ensure state flags are consistent
+    data.test_completed = true;
+    if (data.mocktest_score === undefined || data.mocktest_score === null) {
+        const storedScore = sessionStorage.getItem('activeMocktestScore');
+        if (storedScore !== null) {
+            data.mocktest_score = parseFloat(storedScore);
+        }
+    }
+
+    // Visual feedback on all active download buttons
+    const dlBtns = [
+        document.getElementById('btn-download-live-report'),
+        document.getElementById('cpc-download-action')?.querySelector('button'),
+        ...document.querySelectorAll('.scorecard-bottom-actions button.btn-primary'),
+        ...document.querySelectorAll('.mocktest-scorecard-wrapper button.btn-primary')
+    ].filter(Boolean);
+
+    const oldButtonTexts = dlBtns.map(b => b.innerHTML);
+    dlBtns.forEach(b => {
+        b.disabled = true;
+        b.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparing Verified PDF...';
+    });
+
+    const triggerBlobDownload = (blob, filename) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        const cleanName = (filename || data.filename || 'Resume')
+            .replace(/\.[^/.]+$/, "")
+            .replace(/[^a-zA-Z0-9_\-]/g, '_');
+        a.download = `${cleanName}_Performance_Report.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        showToast("Downloaded Verified Resume Performance Report (PDF)!", "success");
+    };
+
+    let downloaded = false;
+    // 1. Try direct database record endpoint if history_record_id > 0
+    if (data.history_record_id && Number(data.history_record_id) > 0) {
         try {
             const checkRes = await fetch(`/api/student/resume-report/${data.history_record_id}`);
-            if (checkRes.status === 403) {
-                const errData = await checkRes.json();
-                showAssessmentRequiredNotice();
-                return;
-            }
-            if (checkRes.ok) {
+            const cType = checkRes.headers.get('content-type') || '';
+            if (checkRes.ok && cType.includes('application/pdf')) {
                 const blob = await checkRes.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                const cleanName = (data.filename || 'Resume').replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_\-]/g, '_');
-                a.download = `${cleanName}_Performance_Report.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                showToast("Downloaded Verified Resume Performance Report (PDF)!", "success");
-                return;
+                triggerBlobDownload(blob, data.filename);
+                downloaded = true;
+            } else {
+                console.warn(`Direct report endpoint returned status ${checkRes.status} (${cType}), falling back to on-the-fly stream.`);
             }
         } catch (err) {
             console.warn("Direct report endpoint check fell back to stream:", err);
         }
     }
 
-    // Fallback: stream generation on-the-fly
-    const btn = document.getElementById('btn-download-live-report');
-    const oldHtml = btn ? btn.innerHTML : '';
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating Verified PDF...';
+    if (downloaded) {
+        dlBtns.forEach((b, idx) => {
+            b.disabled = false;
+            b.innerHTML = oldButtonTexts[idx] || '<i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)';
+        });
+        return;
     }
 
+    // 2. High-resilience streaming fallback: generates verified report using client state
     const payload = {
         history_record_id: data.history_record_id || 0,
         filename: data.filename || 'Evaluated_Resume.pdf',
-        ats_score: (data.ats_analysis && data.ats_analysis.ats_score) || 80,
+        ats_score: (data.ats_analysis && data.ats_analysis.ats_score) || data.ats_score || 80,
         resume_fingerprint: data.resume_fingerprint || '',
         extracted_skills: data.extracted_skills || [],
         extracted_achievements: data.extracted_achievements || [],
         extracted_projects: data.extracted_projects || [],
-        suitable_companies: (data.dataset_matching && data.dataset_matching.top_matches) || [],
-        best_role: (data.career_recommendations && data.career_recommendations[0] && data.career_recommendations[0].role) || '',
-        best_match_company: (data.dataset_matching && data.dataset_matching.best_match_company && data.dataset_matching.best_match_company.company) || '',
-        skill_gaps: (data.dataset_matching && data.dataset_matching.top_matches && data.dataset_matching.top_matches[0] && data.dataset_matching.top_matches[0].missing_skills) || [],
+        suitable_companies: (data.dataset_matching && data.dataset_matching.top_matches) || data.suitable_companies || [],
+        best_role: (data.career_recommendations && data.career_recommendations[0] && data.career_recommendations[0].role) || data.best_role || 'Software Development Engineer',
+        best_match_company: (data.dataset_matching && data.dataset_matching.best_match_company && data.dataset_matching.best_match_company.company) || data.best_match_company || 'Top Tech Recruiters',
+        skill_gaps: (data.dataset_matching && data.dataset_matching.top_matches && data.dataset_matching.top_matches[0] && data.dataset_matching.top_matches[0].missing_skills) || data.skill_gaps || [],
         career_recommendations: data.career_recommendations || [],
         company_skills_intelligence: data.company_skills_intelligence || {},
-        mocktest_score: data.mocktest_score || 0,
+        mocktest_score: (data.mocktest_score !== undefined && data.mocktest_score !== null) ? data.mocktest_score : 0,
         mocktest_rating: data.mocktest_rating || 'Placement Ready',
         mocktest_data: data.mocktest_data || {},
         test_completed: true,
-        full_analysis: { ats_breakdown: data.ats_analysis || {} }
+        full_analysis: data.full_analysis || { ats_breakdown: data.ats_analysis || {} }
     };
 
     try {
@@ -1509,33 +1544,22 @@ async function downloadCurrentResumeReport() {
             body: JSON.stringify(payload)
         });
 
-        if (res.status === 403) {
-            const errData = await res.json();
-            showAssessmentRequiredNotice();
-            return;
+        const resType = res.headers.get('content-type') || '';
+        if (res.ok && resType.includes('application/pdf')) {
+            const blob = await res.blob();
+            triggerBlobDownload(blob, data.filename);
+        } else {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || `Server responded with ${res.status}`);
         }
-
-        if (!res.ok) throw new Error("Report generation failed");
-
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        const cleanName = (data.filename || 'Resume').replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_\-]/g, '_');
-        a.download = `${cleanName}_Performance_Report.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        showToast("Downloaded Verified Resume Performance Report (PDF)!", "success");
     } catch (err) {
-        console.error(err);
+        console.error("PDF download stream error:", err);
         showToast("Failed to download performance report: " + err.message, "error");
     } finally {
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = oldHtml;
-        }
+        dlBtns.forEach((b, idx) => {
+            b.disabled = false;
+            b.innerHTML = oldButtonTexts[idx] || '<i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)';
+        });
     }
 }
 

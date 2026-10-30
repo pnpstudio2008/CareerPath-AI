@@ -1308,7 +1308,7 @@
 
                         <!-- ATS Score, Assessment Status Badge & Report Download -->
                         <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
-                            {% if r.test_completed or (r.mocktest_score and r.mocktest_score > 0) %}
+                            {% if r.test_completed or (r.mocktest_score is not none) %}
                             <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report-pill" download title="Download Official Verified PDF Performance Report">
                                 <i class="fa-solid fa-file-pdf"></i> Download Verified Report (PDF)
                             </a>
@@ -1396,7 +1396,7 @@
                         </div>
 
                         <div class="hist-footer-actions">
-                            {% if r.test_completed or (r.mocktest_score and r.mocktest_score > 0) %}
+                            {% if r.test_completed or (r.mocktest_score is not none) %}
                             <a href="/api/student/resume-report/{{ r.id }}" class="btn-download-report" download title="Download official verified performance report">
                                 <i class="fa-solid fa-file-pdf"></i> Download Verified Report (PDF)
                             </a>
