@@ -22,7 +22,7 @@ from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
 )
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.graphics.shapes import Drawing, Circle, String, Wedge
+from reportlab.graphics.shapes import Drawing, Circle, String
 from mock_test_engine import get_learn_anything_url
 
 
@@ -33,7 +33,7 @@ C_PRIMARY = colors.HexColor('#0F172A')       # Slate 900
 C_SECONDARY = colors.HexColor('#334155')     # Slate 700
 C_MUTED = colors.HexColor('#64748B')         # Slate 500
 C_BG_CARD = colors.HexColor('#F8FAFC')       # Slate 50
-C_BORDER = colors.HexColor('#E2E8F0')        # Slate 200
+C_BORDER = colors.HexColor('#CBD5E1')        # Slate 300
 C_EMERALD = colors.HexColor('#059669')      # Emerald 600
 C_EMERALD_BG = colors.HexColor('#ECFDF5')   # Emerald 50
 C_BLUE = colors.HexColor('#2563EB')         # Blue 600
@@ -46,16 +46,16 @@ C_ROSE_BORDER = colors.HexColor('#FECACA')  # Red 200
 
 
 def create_mini_gauge(score: float, label: str, tier_color: str, tier_bg: str) -> Drawing:
-    """Generates a compact vector circular gauge for key percentage metrics."""
-    d = Drawing(68, 54)
+    """Generates an elegant, balanced circular gauge with clear metrics."""
+    d = Drawing(84, 64)
     # Background circle ring
-    d.add(Circle(34, 28, 22, fillColor=colors.HexColor(tier_bg), strokeColor=colors.HexColor(tier_color), strokeWidth=1.8))
+    d.add(Circle(42, 34, 25, fillColor=colors.HexColor(tier_bg), strokeColor=colors.HexColor(tier_color), strokeWidth=2.2))
     # Inner white circle
-    d.add(Circle(34, 28, 17, fillColor=colors.white, strokeColor=colors.transparent))
+    d.add(Circle(42, 34, 19.5, fillColor=colors.white, strokeColor=colors.transparent))
     # Score number
-    d.add(String(34, 24, f"{int(round(score))}%", fontName="Helvetica-Bold", fontSize=9.5, textAnchor="middle", fillColor=colors.HexColor(tier_color)))
+    d.add(String(42, 29, f"{int(round(score))}%", fontName="Helvetica-Bold", fontSize=11.5, textAnchor="middle", fillColor=colors.HexColor(tier_color)))
     # Subtitle label below
-    d.add(String(34, 2, label, fontName="Helvetica-Bold", fontSize=6.2, textAnchor="middle", fillColor=C_SECONDARY))
+    d.add(String(42, 4, label, fontName="Helvetica-Bold", fontSize=7.0, textAnchor="middle", fillColor=C_SECONDARY))
     return d
 
 
@@ -73,8 +73,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     doc = SimpleDocTemplate(
         buffer,
         pagesize=letter,
-        leftMargin=24,
-        rightMargin=24,
+        leftMargin=26,
+        rightMargin=26,
         topMargin=18,
         bottomMargin=18
     )
@@ -84,63 +84,61 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     title_p = ParagraphStyle(
         'RTitle',
         fontName='Helvetica-Bold',
-        fontSize=11,
-        leading=13,
+        fontSize=12.5,
+        leading=16.0,
         textColor=colors.white
     )
     meta_p = ParagraphStyle(
         'RMeta',
         fontName='Helvetica',
-        fontSize=7.2,
-        leading=9.2,
+        fontSize=8.0,
+        leading=11.2,
         textColor=colors.HexColor('#E2E8F0'),
         alignment=2
     )
     sec_title = ParagraphStyle(
         'SecT',
         fontName='Helvetica-Bold',
-        fontSize=8.5,
-        leading=10.5,
+        fontSize=9.8,
+        leading=12.5,
         textColor=C_PRIMARY,
-        spaceBefore=1,
-        spaceAfter=1
+        spaceBefore=0,
+        spaceAfter=0
     )
     body_dark = ParagraphStyle(
         'BDark',
         fontName='Helvetica',
-        fontSize=7.4,
-        leading=9.8,
+        fontSize=8.0,
+        leading=11.5,
         textColor=C_SECONDARY
     )
     body_bold = ParagraphStyle(
         'BBold',
         fontName='Helvetica-Bold',
-        fontSize=7.4,
-        leading=9.8,
+        fontSize=8.0,
+        leading=11.5,
         textColor=C_PRIMARY
     )
     body_muted = ParagraphStyle(
         'BMuted',
         fontName='Helvetica',
-        fontSize=6.8,
-        leading=8.8,
+        fontSize=7.2,
+        leading=9.8,
         textColor=C_MUTED
     )
     bullet_p = ParagraphStyle(
         'BulletP',
         fontName='Helvetica',
-        fontSize=7.1,
-        leading=9.4,
-        textColor=C_SECONDARY,
-        leftIndent=10,
-        firstLineIndent=-10
+        fontSize=8.0,
+        leading=11.6,
+        textColor=C_SECONDARY
     )
 
     story = []
-    TOTAL_WIDTH = 564  # 612 - 48
+    TOTAL_WIDTH = 560  # 612 - 52 (26 margins on each side)
 
     # -------------------------------------------------------------
-    # 1. HEADER BANNER BLOCK (Deep Primary Blue)
+    # 1. HEADER BANNER BLOCK (Deep Primary Navy)
     # -------------------------------------------------------------
     candidate_name = student.get('name', 'Student Candidate') if isinstance(student, dict) else 'Student Candidate'
     roll_no = student.get('roll_no', 'N/A') if isinstance(student, dict) else 'N/A'
@@ -152,17 +150,17 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             Paragraph("<b>AI CAREER COMPANION &bull; OFFICIAL PLACEMENT AUDIT REPORT</b>", title_p),
             Paragraph(f"<b>Candidate:</b> {candidate_name} ({roll_no})<br/><b>Branch:</b> {branch} &bull; <b>Date:</b> {eval_date}", meta_p)
         ]
-    ], colWidths=[340, 224])
+    ], colWidths=[338, 222])
     header_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_PRIMARY),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(header_table)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
     # 2. DUAL SCORE OVERVIEW CARD (RESUME MATCH % + MOCK TEST RESULT %)
@@ -181,7 +179,7 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     ats_gauge = create_mini_gauge(ats_score, "RESUME MATCH", ats_tier_color, ats_tier_bg)
     test_gauge = create_mini_gauge(mock_score if has_test else 0, "MOCK TEST %", mock_tier_color, mock_tier_bg)
 
-    gauge_cell = Table([[ats_gauge, test_gauge]], colWidths=[70, 70])
+    gauge_cell = Table([[ats_gauge, test_gauge]], colWidths=[82, 82])
     gauge_cell.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -191,13 +189,8 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         ('RIGHTPADDING', (0, 0), (-1, -1), 0),
     ]))
 
-    gauge_box = [
-        gauge_cell,
-        Paragraph(f"<font color='{C_PRIMARY.hexval()}'><b>Combined Readiness: {int(round(composite_score))}%</b></font>", ParagraphStyle('CScore', fontName='Helvetica-Bold', fontSize=7.0, leading=8.5, alignment=1))
-    ]
-
     filename = str(resume_record.get('filename') or 'Resume.pdf')
-    best_role = str(resume_record.get('best_role') or resume_record.get('predicted_role') or 'Software Development Engineer')
+    best_role = str(resume_record.get('best_role') or resume_record.get('predicted_role') or 'Software Development Engineer (SDE)')
 
     # Unpack candidate skills
     skills_raw = resume_record.get('extracted_skills', resume_record.get('skills', [])) or []
@@ -235,31 +228,33 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     verification_status = "<font color='#059669'><b>&#10003; MOCK TEST VERIFIED &amp; COMPLETED</b></font>" if has_test else "<font color='#DC2626'><b>&#9888; Assessment Pending</b></font>"
 
     info_box = [
-        Paragraph(f"<b>Resume File:</b> <font color='#1E293B'>{filename}</font> &bull; <b>Status:</b> {verification_status}", body_dark),
-        Spacer(1, 2),
-        Paragraph(f"<b>Primary Role Match:</b> <font color='#1E40AF'><b>{best_role}</b></font> &bull; <b>Resume Match:</b> <b>{int(round(ats_score))}%</b> &bull; <b>Mock Test:</b> <b>{int(round(mock_score))}%</b>", body_dark),
-        Spacer(1, 2),
-        Paragraph(f"<b>Extracted Resume Skills ({len(skills_list)}):</b> <font color='#475569'>{skills_str}</font>", ParagraphStyle('SkP', fontName='Helvetica', fontSize=7.1, leading=9.2, textColor=C_SECONDARY))
+        Paragraph(f"<b>Resume File:</b> <font color='#1E293B'>{filename}</font> &nbsp;&bull;&nbsp; <b>Status:</b> {verification_status}", body_dark),
+        Spacer(1, 4),
+        Paragraph(f"<b>Primary Role Match:</b> <font color='#1E40AF'><b>{best_role}</b></font> &nbsp;&bull;&nbsp; <b>Resume Match:</b> <b>{int(round(ats_score))}%</b> &nbsp;&bull;&nbsp; <b>Mock Test:</b> <b>{int(round(mock_score))}%</b>", body_dark),
+        Spacer(1, 4),
+        Paragraph(f"<b>Extracted Resume Skills ({len(skills_list)}):</b> <font color='#475569'>{skills_str}</font>", ParagraphStyle('SkP', fontName='Helvetica', fontSize=7.8, leading=10.8, textColor=C_SECONDARY)),
+        Spacer(1, 3.5),
+        Paragraph(f"<b>Composite Institutional Readiness:</b> <font color='#059669'><b>{int(round(composite_score))}%</b></font> (Combined ATS Parsing + Hands-on Problem Solving)", body_muted)
     ]
 
-    overview_table = Table([[gauge_cell, info_box]], colWidths=[146, 418])
+    overview_table = Table([[gauge_cell, info_box]], colWidths=[170, 390])
     overview_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_CARD),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('TOPPADDING', (0, 0), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(overview_table)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
     # 3. SECTION 1: TARGET COMPANIES TO APPROACH & VERIFIED ASSETS
     # -------------------------------------------------------------
     story.append(Paragraph("<b>1. Target Recruiters to Approach (Industry Clusters) &amp; Verified Skills</b>", sec_title))
-    story.append(Spacer(1, 2))
+    story.append(Spacer(1, 4.5))
 
     comp_matches = resume_record.get('suitable_companies', []) or []
     if isinstance(comp_matches, str):
@@ -284,7 +279,7 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             c_role = c.get('role', 'Software Engineer')
             c_score = f"{round(float(c.get('match_score', 80)), 1)}%"
             c_ctc = str(c.get('indicative_ctc', c.get('indicative_ctc_range_lpa', '3.5 - 6.5 LPA')))
-            c_tier = c.get('fit_tier', 'High Fit')
+            c_tier = c.get('fit_tier', 'Moderate Fit')
             comp_rows.append([
                 Paragraph(f"<b>{c_name}</b>", body_dark),
                 Paragraph(c_role, body_dark),
@@ -310,25 +305,25 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             Paragraph("<font color='#2563EB'>Placement Ready</font>", body_dark)
         ])
 
-    comp_table = Table(comp_rows, colWidths=[150, 165, 55, 104, 90])
+    comp_table = Table(comp_rows, colWidths=[148, 164, 56, 102, 90])
     comp_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#F1F5F9')),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 5),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 5),
+        ('TOPPADDING', (0, 0), (-1, -1), 4.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4.5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 7),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 7),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(comp_table)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
     # 4. SECTION 2: THE NEGATIVE SIDE (RESUME CLAIMED VS TEST FAILED)
     # -------------------------------------------------------------
     story.append(Paragraph("<b>2. The Negative Side: Resume Claims Unverified in Practical Test</b>", sec_title))
-    story.append(Spacer(1, 2))
+    story.append(Spacer(1, 4.5))
 
     mock_data = resume_record.get('mocktest_data', {}) or {}
     if isinstance(mock_data, str):
@@ -387,18 +382,19 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
                     'assessment': 'High-demand industry competency missing from demonstrable test answers'
                 })
 
-    # Render Negative Side Alert Card
+    # Render Negative Side Alert Card with comfortable inter-line text gaps
     neg_items_str = []
     for neg in negative_skills[:4]:
-        neg_items_str.append(f"&bull; <b>{neg['skill']}</b>: {neg['score_pct']}% ({neg['correct']}/{neg['total']} Correct) &mdash; <font color='#B91C1C'>{neg['assessment']}</font>")
-    neg_body = "<br/>".join(neg_items_str) if neg_items_str else "No critical vulnerabilities identified. All tested skills verified above threshold."
+        neg_items_str.append(f"&bull;&nbsp; <b>{neg['skill']}</b>: <b>{neg['score_pct']}%</b> ({neg['correct']}/{neg['total']} Correct) &mdash; <font color='#B91C1C'>{neg['assessment']}</font>")
+    # Vertical gap between each negative skill bullet
+    neg_body = "<br/><font size='3.5'>&nbsp;</font><br/>".join(neg_items_str) if neg_items_str else "No critical vulnerabilities identified. All tested skills verified above threshold."
 
     neg_content = [
         [
-            Paragraph("<font color='#991B1B'><b>CRITICAL RECRUITER RISK: Resume vs Reality Discrepancy</b></font>", ParagraphStyle('NRH', fontName='Helvetica-Bold', fontSize=7.4, leading=9.2, textColor=C_ROSE))
+            Paragraph("<font color='#991B1B'><b>CRITICAL RECRUITER RISK: Resume vs Reality Discrepancy</b></font>", ParagraphStyle('NRH', fontName='Helvetica-Bold', fontSize=8.4, leading=10.8, textColor=C_ROSE))
         ],
         [
-            Paragraph(neg_body, ParagraphStyle('NRB', fontName='Helvetica', fontSize=7.0, leading=9.2, textColor=C_PRIMARY))
+            Paragraph(neg_body, ParagraphStyle('NRB', fontName='Helvetica', fontSize=7.8, leading=11.6, textColor=C_PRIMARY))
         ],
         [
             Paragraph(
@@ -412,19 +408,19 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
         ('BACKGROUND', (0, 0), (-1, -1), C_ROSE_BG),
         ('BOX', (0, 0), (-1, -1), 1, C_ROSE_BORDER),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#FCA5A5')),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-        ('LEFTPADDING', (0, 0), (-1, -1), 7),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 7),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 9),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 9),
     ]))
     story.append(neg_table)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
     # 5. SECTION 3: 3-5 STEP GROWTH & ACTION PLAN
     # -------------------------------------------------------------
     story.append(Paragraph("<b>3. 4-Step Strategic Growth &amp; Placement Action Plan</b>", sec_title))
-    story.append(Spacer(1, 2))
+    story.append(Spacer(1, 4.5))
 
     neg_names_str = ", ".join([n['skill'] for n in negative_skills[:2]]) if negative_skills else "core stack fundamentals"
     growth_steps = [
@@ -442,19 +438,20 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     growth_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_CARD),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('LEFTPADDING', (0, 0), (-1, -1), 6),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
+        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#EDF2F7')),
+        ('TOPPADDING', (0, 0), (-1, -1), 4.5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 4.5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 9),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 9),
     ]))
     story.append(growth_table)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
     # 6. SECTION 4: CURATED REMEDIATION RESOURCES (learn-anything.xyz)
     # -------------------------------------------------------------
     story.append(Paragraph("<b>4. Curated Remediation Resources (Powered by learn-anything.xyz)</b>", sec_title))
-    story.append(Spacer(1, 2))
+    story.append(Spacer(1, 4.5))
 
     # Collect learning links for all negative skills + top verified skills
     res_links = []
@@ -462,20 +459,21 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     for item in negative_skills + verified_skills:
         s_name = item['skill']
         url = item['learn_url']
-        if s_name.lower() not in seen_links and len(res_links) < 5:
+        if s_name.lower() not in seen_links and len(res_links) < 4:
             seen_links.add(s_name.lower())
             is_neg = any(n['skill'].lower() == s_name.lower() for n in negative_skills)
             status_tag = "<font color='#DC2626'><b>[Needs Correction]</b></font>" if is_neg else "<font color='#059669'><b>[Mastery Growth]</b></font>"
-            res_links.append(f"&bull; <b>{s_name}</b> {status_tag}: <link href='{url}'><u><font color='#2563EB'><b>{url}</b></font></u></link>")
+            res_links.append(f"&bull;&nbsp; <b>{s_name}</b> {status_tag}: &nbsp;<link href='{url}'><u><font color='#2563EB'><b>{url}</b></font></u></link>")
 
     if not res_links:
         res_links = [
-            "&bull; <b>Python</b>: <link href='https://learn-anything.xyz/python'><u><font color='#2563EB'><b>https://learn-anything.xyz/python</b></font></u></link>",
-            "&bull; <b>SQL & Databases</b>: <link href='https://learn-anything.xyz/sql'><u><font color='#2563EB'><b>https://learn-anything.xyz/sql</b></font></u></link>",
-            "&bull; <b>Data Structures</b>: <link href='https://learn-anything.xyz/data-structures'><u><font color='#2563EB'><b>https://learn-anything.xyz/data-structures</b></font></u></link>"
+            "&bull;&nbsp; <b>Python</b>: &nbsp;<link href='https://learn-anything.xyz/python'><u><font color='#2563EB'><b>https://learn-anything.xyz/python</b></font></u></link>",
+            "&bull;&nbsp; <b>SQL & Databases</b>: &nbsp;<link href='https://learn-anything.xyz/sql'><u><font color='#2563EB'><b>https://learn-anything.xyz/sql</b></font></u></link>",
+            "&bull;&nbsp; <b>Data Structures</b>: &nbsp;<link href='https://learn-anything.xyz/data-structures'><u><font color='#2563EB'><b>https://learn-anything.xyz/data-structures</b></font></u></link>"
         ]
 
-    res_body = "<br/>".join(res_links)
+    # Vertical gap between each resource link
+    res_body = "<br/><font size='3.5'>&nbsp;</font><br/>".join(res_links)
     res_content = [
         [
             Paragraph(
@@ -484,32 +482,33 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
             )
         ],
         [
-            Paragraph(res_body, ParagraphStyle('ResBody', fontName='Helvetica', fontSize=7.1, leading=9.6, textColor=C_PRIMARY))
+            Paragraph(res_body, ParagraphStyle('ResBody', fontName='Helvetica', fontSize=7.8, leading=11.6, textColor=C_PRIMARY))
         ]
     ]
     res_table = Table(res_content, colWidths=[TOTAL_WIDTH])
     res_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F8FAFC')),
         ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#CBD5E1')),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-        ('LEFTPADDING', (0, 0), (-1, -1), 7),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 7),
+        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E2E8F0')),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('LEFTPADDING', (0, 0), (-1, -1), 9),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 9),
     ]))
     story.append(res_table)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 10))
 
     # -------------------------------------------------------------
     # 7. INSTITUTIONAL AUDIT FOOTER
     # -------------------------------------------------------------
     footer_text = (
-        "<font size='6.8' color='#64748B'>"
+        "<font size='7.2' color='#64748B'>"
         "<b>AI Career Companion &bull; Verified Institutional Audit</b> &bull; Calibrated against 12 Industry Placement Clusters &bull; "
         "Designed &amp; Developed by <b>P&amp;P Studio</b> &bull; Faculty Placement Cell"
         "</font>"
     )
-    story.append(HRFlowable(width="100%", thickness=0.5, color=C_BORDER, spaceBefore=2, spaceAfter=2))
-    story.append(Paragraph(footer_text, ParagraphStyle('FP', fontName='Helvetica', fontSize=6.8, leading=8.5, alignment=1)))
+    story.append(HRFlowable(width="100%", thickness=0.75, color=C_BORDER, spaceBefore=0, spaceAfter=4))
+    story.append(Paragraph(footer_text, ParagraphStyle('FP', fontName='Helvetica', fontSize=7.2, leading=9.5, alignment=1)))
 
     doc.build(story)
     return buffer.getvalue()
