@@ -40,6 +40,16 @@ function isResumeAnalyzed() {
     if (window.currentResumeAnalysis && (window.currentResumeAnalysis.extracted_skills || window.currentResumeAnalysis.company_skills_intelligence)) {
         return true;
     }
+    try {
+        const cached = sessionStorage.getItem('activeResumeAnalysis');
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (parsed && (parsed.extracted_skills || parsed.company_skills_intelligence)) {
+                window.currentResumeAnalysis = parsed;
+                return true;
+            }
+        }
+    } catch (_) {}
     if (window.AppState && window.AppState.analyzedSkills && Object.keys(window.AppState.analyzedSkills).length > 0) {
         return true;
     }
@@ -543,30 +553,47 @@ async function submitMockTest() {
         }
 
         // Update active resume analysis state to unlock report per Step 3 & 4
-        if (window.currentResumeAnalysis) {
-            window.currentResumeAnalysis.test_completed = true;
-            window.currentResumeAnalysis.mocktest_score = data.score_percentage;
-            window.currentResumeAnalysis.mocktest_rating = data.rating;
-            window.currentResumeAnalysis.mocktest_data = {
-                score: data.score_percentage,
-                rating: data.rating,
-                total_questions: data.total_questions,
-                correct_count: data.correct_count,
-                accuracy: data.accuracy || data.score_percentage,
-                role: mockTargetRole,
-                skills: mockActiveSkills,
-                skill_breakdown: data.skill_breakdown,
-                time_taken_seconds: timeSpent,
-                completed_at: new Date().toISOString()
+        if (!window.currentResumeAnalysis) {
+            try {
+                const cached = sessionStorage.getItem('activeResumeAnalysis');
+                if (cached) window.currentResumeAnalysis = JSON.parse(cached);
+            } catch (_) {}
+        }
+        if (!window.currentResumeAnalysis) {
+            window.currentResumeAnalysis = {
+                filename: 'Evaluated_Resume.pdf',
+                extracted_skills: mockActiveSkills,
+                matched_company_skills: mockActiveSkills,
+                history_record_id: data.resume_record_id || 0
             };
-            if (!window.currentResumeAnalysis.report_status) {
-                window.currentResumeAnalysis.report_status = {};
-            }
-            window.currentResumeAnalysis.report_status.unlocked = true;
+        }
 
-            if (typeof updateReportBannerStatus === 'function') {
-                updateReportBannerStatus(window.currentResumeAnalysis);
-            }
+        window.currentResumeAnalysis.test_completed = true;
+        window.currentResumeAnalysis.mocktest_score = data.score_percentage;
+        window.currentResumeAnalysis.mocktest_rating = data.rating;
+        window.currentResumeAnalysis.mocktest_data = {
+            score: data.score_percentage,
+            rating: data.rating,
+            total_questions: data.total_questions,
+            correct_count: data.correct_count,
+            accuracy: data.accuracy || data.score_percentage,
+            role: mockTargetRole,
+            skills: mockActiveSkills,
+            skill_breakdown: data.skill_breakdown,
+            time_taken_seconds: timeSpent,
+            completed_at: new Date().toISOString()
+        };
+        if (!window.currentResumeAnalysis.report_status) {
+            window.currentResumeAnalysis.report_status = {};
+        }
+        window.currentResumeAnalysis.report_status.unlocked = true;
+
+        try {
+            sessionStorage.setItem('activeResumeAnalysis', JSON.stringify(window.currentResumeAnalysis));
+        } catch (_) {}
+
+        if (typeof updateReportBannerStatus === 'function') {
+            updateReportBannerStatus(window.currentResumeAnalysis);
         }
 
         // Render comprehensive scorecard
@@ -586,6 +613,12 @@ async function submitMockTest() {
 function renderMockScorecard(data) {
     const wrapper = document.getElementById('mocktest-scorecard-wrapper');
     if (!wrapper) return;
+
+    const heroEl = document.querySelector('.mocktest-hero');
+    if (heroEl) heroEl.style.display = 'none';
+
+    const cfgEl = document.getElementById('mocktest-config-wrapper');
+    if (cfgEl) cfgEl.style.display = 'none';
 
     wrapper.style.display = 'block';
 
@@ -856,7 +889,7 @@ function renderMockScorecard(data) {
                     <div class="stat-lbl">Skipped Questions</div>
                 </div>
                 <div class="quick-stat-box">
-                    <div class="stat-num text-primary">${Math.round((data.correct_count / max(1, data.attempted_count)) * 100)}%</div>
+                    <div class="stat-num text-primary">${Math.round((data.correct_count / Math.max(1, data.attempted_count || 1)) * 100)}%</div>
                     <div class="stat-lbl">Accuracy</div>
                 </div>
             </div>

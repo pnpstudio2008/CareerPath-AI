@@ -435,6 +435,9 @@ async function submitResumeAnalysis() {
 
 function renderAnalysisResults(data) {
     window.currentResumeAnalysis = data;
+    try {
+        sessionStorage.setItem('activeResumeAnalysis', JSON.stringify(data));
+    } catch (_) {}
     if (!window.AppState) window.AppState = {};
     const matchedCompSkills = (data.company_skills_intelligence && Array.isArray(data.company_skills_intelligence.matched_company_skills))
         ? data.company_skills_intelligence.matched_company_skills
@@ -1275,8 +1278,13 @@ function updateReportBannerStatus(data) {
     const isUnlocked = Boolean(
         data.test_completed || 
         (data.report_status && data.report_status.unlocked) || 
-        (data.mocktest_score && data.mocktest_score > 0)
+        (data.mocktest_score !== undefined && data.mocktest_score !== null && data.mocktest_score >= 0)
     );
+
+    // Persist to session storage so refresh / navigation never loses state
+    try {
+        sessionStorage.setItem('activeResumeAnalysis', JSON.stringify(data));
+    } catch (_) {}
 
     const stepBadge = document.getElementById('analyzer-report-step-badge');
     const scorePill = document.getElementById('analyzer-report-score-pill');
@@ -1285,6 +1293,16 @@ function updateReportBannerStatus(data) {
     const startTestBtn = document.getElementById('btn-start-mandatory-assessment');
     const dlBtn = document.getElementById('btn-download-live-report');
     const iconBox = document.getElementById('analyzer-report-icon-box');
+    const cpcAction = document.getElementById('cpc-download-action');
+
+    const bottomBanner = document.getElementById('analyzer-mocktest-bottom-banner');
+    const bottomIcon = document.getElementById('amb-bottom-icon');
+    const bottomTitle = document.getElementById('amb-bottom-title');
+    const bottomDesc = document.getElementById('amb-bottom-desc');
+    const bottomActions = document.getElementById('amb-bottom-actions');
+
+    const scoreVal = data.mocktest_score !== undefined && data.mocktest_score !== null ? Math.round(data.mocktest_score) : 85;
+    const ratingVal = data.mocktest_rating || 'Placement Ready';
 
     if (isUnlocked) {
         if (stepBadge) {
@@ -1294,8 +1312,6 @@ function updateReportBannerStatus(data) {
             stepBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Step 4: Assessment Completed &bull; Report Unlocked!';
         }
         if (scorePill) {
-            const scoreVal = data.mocktest_score !== undefined ? Math.round(data.mocktest_score) : 85;
-            const ratingVal = data.mocktest_rating || 'Placement Ready';
             scorePill.style.display = 'inline-flex';
             scorePill.innerHTML = `<i class="fa-solid fa-award"></i> Test Score: ${scoreVal}% (${ratingVal})`;
         }
@@ -1309,10 +1325,13 @@ function updateReportBannerStatus(data) {
             startTestBtn.style.display = 'none';
         }
         if (dlBtn) {
-            dlBtn.style.background = 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)';
+            dlBtn.style.display = 'inline-flex';
+            dlBtn.disabled = false;
+            dlBtn.className = 'btn btn-primary';
+            dlBtn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
             dlBtn.style.border = 'none';
             dlBtn.style.color = '#FFFFFF';
-            dlBtn.style.boxShadow = '0 4px 14px rgba(37,99,235,0.4)';
+            dlBtn.style.boxShadow = '0 4px 14px rgba(5,150,105,0.45)';
             dlBtn.innerHTML = '<i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)';
             dlBtn.title = 'Download official single-page evaluation document with test results';
         }
@@ -1320,6 +1339,17 @@ function updateReportBannerStatus(data) {
             iconBox.style.background = 'rgba(16, 185, 129, 0.25)';
             iconBox.style.borderColor = 'rgba(16, 185, 129, 0.5)';
             iconBox.style.color = '#34D399';
+        }
+        if (cpcAction) {
+            cpcAction.style.display = 'flex';
+        }
+        if (bottomBanner) {
+            if (bottomIcon) bottomIcon.innerHTML = '<i class="fa-solid fa-shield-halved" style="color:#10B981;"></i>';
+            if (bottomTitle) bottomTitle.innerText = "Technical Assessment Completed • Verified Report Unlocked!";
+            if (bottomDesc) bottomDesc.innerText = `Your practical examination score (${scoreVal}%) is certified and integrated into your official single-page executive PDF report.`;
+            if (bottomActions) {
+                bottomActions.innerHTML = `<button class="btn btn-primary" onclick="downloadCurrentResumeReport()" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); font-weight:700; padding:0.75rem 1.4rem; font-size:0.92rem; border-radius:12px; border:none; box-shadow:0 4px 14px rgba(5,150,105,0.35); cursor:pointer;"><i class="fa-solid fa-file-arrow-down"></i> Download Verified Report (PDF)</button>`;
+            }
         }
     } else {
         if (stepBadge) {
@@ -1341,6 +1371,8 @@ function updateReportBannerStatus(data) {
             startTestBtn.style.display = 'inline-flex';
         }
         if (dlBtn) {
+            dlBtn.style.display = 'inline-flex';
+            dlBtn.className = 'btn btn-outline';
             dlBtn.style.background = 'rgba(255,255,255,0.06)';
             dlBtn.style.border = '1px solid rgba(255,255,255,0.22)';
             dlBtn.style.color = '#E2E8F0';
@@ -1352,6 +1384,9 @@ function updateReportBannerStatus(data) {
             iconBox.style.background = 'rgba(37, 99, 235, 0.25)';
             iconBox.style.borderColor = 'rgba(59, 130, 246, 0.5)';
             iconBox.style.color = '#60A5FA';
+        }
+        if (cpcAction) {
+            cpcAction.style.display = 'none';
         }
     }
 }
@@ -1368,6 +1403,30 @@ function showAssessmentRequiredNotice() {
 }
 
 async function downloadCurrentResumeReport() {
+    if (!window.currentResumeAnalysis) {
+        try {
+            const cached = sessionStorage.getItem('activeResumeAnalysis');
+            if (cached) window.currentResumeAnalysis = JSON.parse(cached);
+        } catch(_) {}
+    }
+    if (!window.currentResumeAnalysis) {
+        try {
+            const res = await fetch('/api/resume/active-status');
+            if (res.ok) {
+                const s = await res.json();
+                if (s && s.active) {
+                    window.currentResumeAnalysis = (s.full_analysis && Object.keys(s.full_analysis).length > 0) ? s.full_analysis : {};
+                    window.currentResumeAnalysis.history_record_id = s.history_record_id;
+                    window.currentResumeAnalysis.filename = s.filename;
+                    window.currentResumeAnalysis.test_completed = s.test_completed;
+                    window.currentResumeAnalysis.mocktest_score = s.mocktest_score;
+                    window.currentResumeAnalysis.mocktest_rating = s.mocktest_rating;
+                    window.currentResumeAnalysis.mocktest_data = s.mocktest_data;
+                }
+            }
+        } catch(_) {}
+    }
+
     if (!window.currentResumeAnalysis) {
         showToast("Please upload and analyze a resume first to generate your official performance report.", "error");
         return;
@@ -1479,3 +1538,67 @@ async function downloadCurrentResumeReport() {
         }
     }
 }
+
+
+/**
+ * Synchronizes active resume status from sessionStorage or server endpoint /api/resume/active-status.
+ * Ensures the unlocked Download button is always visible on page reload and tab switches.
+ */
+window.syncActiveResumeStatus = async function() {
+    try {
+        if (!window.currentResumeAnalysis) {
+            const cached = sessionStorage.getItem('activeResumeAnalysis');
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached);
+                    window.currentResumeAnalysis = parsed;
+                    if (parsed.extracted_skills && (!window.AppState || !window.AppState.analyzedSkills)) {
+                        window.AppState = window.AppState || {};
+                        window.AppState.analyzedSkills = parsed.extracted_skills;
+                    }
+                    if (parsed.matched_company_skills && (!window.AppState || !window.AppState.matchedCompanySkills)) {
+                        window.AppState = window.AppState || {};
+                        window.AppState.matchedCompanySkills = parsed.matched_company_skills;
+                    }
+                    updateReportBannerStatus(parsed);
+                } catch(_) {}
+            }
+        }
+
+        const res = await fetch('/api/resume/active-status');
+        if (res.ok) {
+            const s = await res.json();
+            if (s && s.active) {
+                if (!window.currentResumeAnalysis) {
+                    window.currentResumeAnalysis = (s.full_analysis && Object.keys(s.full_analysis).length > 0) ? s.full_analysis : {};
+                }
+                window.currentResumeAnalysis.history_record_id = s.history_record_id || window.currentResumeAnalysis.history_record_id;
+                window.currentResumeAnalysis.filename = s.filename || window.currentResumeAnalysis.filename;
+                window.currentResumeAnalysis.test_completed = s.test_completed;
+                window.currentResumeAnalysis.mocktest_score = s.mocktest_score;
+                window.currentResumeAnalysis.mocktest_rating = s.mocktest_rating;
+                window.currentResumeAnalysis.mocktest_data = s.mocktest_data;
+                window.currentResumeAnalysis.matched_company_skills = s.matched_company_skills;
+                if (!window.currentResumeAnalysis.report_status) window.currentResumeAnalysis.report_status = {};
+                window.currentResumeAnalysis.report_status.unlocked = s.unlocked;
+
+                if (s.matched_company_skills && s.matched_company_skills.length > 0) {
+                    window.AppState = window.AppState || {};
+                    window.AppState.matchedCompanySkills = s.matched_company_skills;
+                }
+
+                try {
+                    sessionStorage.setItem('activeResumeAnalysis', JSON.stringify(window.currentResumeAnalysis));
+                } catch(_) {}
+
+                updateReportBannerStatus(window.currentResumeAnalysis);
+            }
+        }
+    } catch(err) {
+        console.warn("[syncActiveResumeStatus note]", err);
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    window.syncActiveResumeStatus();
+});

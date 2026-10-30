@@ -76,7 +76,15 @@ function navigateTo(sectionId) {
     if (sectionId === 'prep') {
         // Practice page: test is initiated by student using selected filters
     }
+    if (sectionId === 'analyzer') {
+        if (typeof window.syncActiveResumeStatus === 'function') {
+            window.syncActiveResumeStatus();
+        }
+    }
     if (sectionId === 'mocktest') {
+        if (typeof window.syncActiveResumeStatus === 'function') {
+            window.syncActiveResumeStatus();
+        }
         if (typeof updateMockSkillsPreview === 'function') {
             updateMockSkillsPreview();
         }

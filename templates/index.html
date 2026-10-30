@@ -951,6 +951,11 @@
                             <span class="cpc-score-lbl">Academic Score</span>
                             <span class="cpc-score-val" id="cpc-cgpa-val">--</span>
                         </div>
+                        <div id="cpc-download-action" style="display:none; align-items:center;">
+                            <button type="button" class="btn btn-primary" onclick="downloadCurrentResumeReport()" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); border:none; color:#FFFFFF; font-weight:700; padding:0.6rem 1.15rem; border-radius:12px; font-size:0.85rem; display:inline-flex; align-items:center; gap:0.45rem; box-shadow:0 4px 12px rgba(5,150,105,0.3); cursor:pointer;">
+                                <i class="fa-solid fa-file-arrow-down"></i> Download Report (PDF)
+                            </button>
+                        </div>
                     </div>
                     <!-- Contact & Digital Presence Strip -->
                     <div class="cpc-contact-strip" id="cpc-contact-strip">
@@ -1179,15 +1184,17 @@
             </div>
 
             <!-- Mock Test CTA Banner -->
-            <div class="analyzer-mocktest-banner">
-                <div class="amb-icon"><i class="fa-solid fa-bolt"></i></div>
-                <div class="amb-content">
-                    <h4>Ready to test your skills?</h4>
-                    <p>Take an adaptive mock test tailored to your resume's extracted skills and target companies.</p>
+            <div class="analyzer-mocktest-banner" id="analyzer-mocktest-bottom-banner">
+                <div class="amb-icon" id="amb-bottom-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="amb-content" id="amb-bottom-content">
+                    <h4 id="amb-bottom-title">Ready to test your skills?</h4>
+                    <p id="amb-bottom-desc">Take an adaptive mock test tailored to your resume's extracted skills and target companies.</p>
                 </div>
-                <button class="btn btn-primary" onclick="navigateTo('mocktest')">
-                    <i class="fa-solid fa-play"></i> Start Mock Test
-                </button>
+                <div id="amb-bottom-actions">
+                    <button class="btn btn-primary" id="amb-bottom-btn" onclick="navigateTo('mocktest')">
+                        <i class="fa-solid fa-play"></i> Start Mock Test
+                    </button>
+                </div>
             </div>
 
         </section>
