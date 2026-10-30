@@ -4210,17 +4210,16 @@
 
 /* Scorecard Styles */
 .scorecard-score-circle {
-    width: 140px;
-    height: 140px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
-    border: 8px solid #10B981;
+    border: 7px solid #10B981;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: var(--nm-flat-md);
-    border: 1px solid var(--border-subtle);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     background: var(--bg-surface);
 }
 
@@ -4491,9 +4490,14 @@
         width: 100%;
     }
 
+    .scorecard-gauges-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+    }
+
     .scorecard-score-circle {
-        width: 120px;
-        height: 120px;
+        width: 110px;
+        height: 110px;
         border-width: 6px;
     }
 

@@ -843,7 +843,7 @@ function renderMockScorecard(data) {
 
     wrapper.innerHTML = `
         <!-- Step 4: Official Report Unlocked Celebration Card -->
-        <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 100%); border: 2px solid #10B981; border-radius: 16px; margin: 1rem auto 1.5rem; max-width: 900px; box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.2);">
+        <div class="card p-3 mb-4" style="background: linear-gradient(135deg, #ECFDF5 0%, #EFF6FF 100%); border: 2px solid #10B981; border-radius: 16px; margin: 0 0 1.5rem; width: 100%; box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.2);">
             <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
                 <div style="display:flex; align-items:center; gap:0.85rem;">
                     <div style="width:48px; height:48px; border-radius:12px; background:#10B981; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0;">
@@ -861,36 +861,36 @@ function renderMockScorecard(data) {
         </div>
 
         <!-- Dual Gauge Scorecard Header -->
-        <div class="scorecard-header p-4" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px;">
-            <div style="display:flex; justify-content:center; align-items:center; gap:2.5rem; flex-wrap:wrap; text-align:center;">
+        <div class="scorecard-header p-4" style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:16px; width:100%;">
+            <div class="scorecard-gauges-grid" style="display:grid; grid-template-columns: 1fr 1.3fr 1fr; align-items:center; justify-items:center; gap:1.5rem; max-width:880px; margin:0 auto; text-align:center;">
                 <!-- Resume Match Gauge -->
-                <div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
                     <span class="badge badge-secondary font-bold" style="font-size:0.75rem;"><i class="fa-solid fa-file-lines"></i> Resume Match</span>
-                    <div class="scorecard-score-circle mt-2" style="border-color: #2563EB; width:110px; height:110px; margin:0.5rem auto;">
-                        <div class="score-num" style="color: #2563EB; font-size:1.7rem;">${resumeAts}%</div>
-                        <div class="score-subtext" style="font-size:0.72rem;">ATS Match Index</div>
+                    <div class="scorecard-score-circle mt-2" style="border: 7px solid #2563EB; width:115px; height:115px; margin:0.5rem auto; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:50%; background:var(--bg-surface); box-shadow:0 4px 14px rgba(37,99,235,0.15);">
+                        <div class="score-num" style="color: #2563EB; font-size:1.7rem; font-weight:800;">${resumeAts}%</div>
+                        <div class="score-subtext" style="font-size:0.72rem; color:var(--text-muted);">ATS Match Index</div>
                     </div>
                 </div>
 
                 <!-- Combined Badge -->
-                <div style="text-align:center;">
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
                     <span class="badge badge-primary font-bold" style="padding:0.4rem 0.8rem; font-size:0.82rem;"><i class="fa-solid fa-award"></i> Combined Readiness</span>
-                    <h2 class="mt-2 mb-0" style="color: ${data.rating_color}; font-size:1.9rem; font-weight:800;">${combinedScore}%</h2>
-                    <p style="color: ${data.rating_color}; font-weight:700; font-size:0.92rem; margin:0.2rem 0;">${data.rating}</p>
+                    <h2 class="mt-2 mb-0" style="color: ${data.rating_color}; font-size:2rem; font-weight:800; line-height:1.1;">${combinedScore}%</h2>
+                    <p style="color: ${data.rating_color}; font-weight:700; font-size:0.92rem; margin:0.25rem 0;">${data.rating}</p>
                     <p class="text-muted" style="font-size:0.8rem; margin:0;">${data.badge} &bull; Time: <strong>${data.time_taken_formatted}</strong></p>
                 </div>
 
                 <!-- Mock Test Result Gauge -->
-                <div>
+                <div style="display:flex; flex-direction:column; align-items:center;">
                     <span class="badge badge-secondary font-bold" style="font-size:0.75rem;"><i class="fa-solid fa-check-double"></i> Practical Test</span>
-                    <div class="scorecard-score-circle mt-2" style="border-color: ${data.rating_color}; width:110px; height:110px; margin:0.5rem auto;">
-                        <div class="score-num" style="color: ${data.rating_color}; font-size:1.7rem;">${data.score_percentage}%</div>
-                        <div class="score-subtext" style="font-size:0.72rem;">${data.correct_count} / ${data.total_questions} Correct</div>
+                    <div class="scorecard-score-circle mt-2" style="border: 7px solid ${data.rating_color}; width:115px; height:115px; margin:0.5rem auto; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:50%; background:var(--bg-surface); box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+                        <div class="score-num" style="color: ${data.rating_color}; font-size:1.7rem; font-weight:800;">${data.score_percentage}%</div>
+                        <div class="score-subtext" style="font-size:0.72rem; color:var(--text-muted);">${data.correct_count} / ${data.total_questions} Correct</div>
                     </div>
                 </div>
             </div>
 
-            <div class="scorecard-quick-stats-row mt-4">
+            <div class="scorecard-quick-stats-row mt-4" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; max-width:880px; margin:1.5rem auto 0;">
                 <div class="quick-stat-box">
                     <div class="stat-num text-success">${data.correct_count}</div>
                     <div class="stat-lbl">Correct Answers</div>

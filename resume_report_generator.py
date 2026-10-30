@@ -47,15 +47,15 @@ C_ROSE_BORDER = colors.HexColor('#FECACA')  # Red 200
 
 def create_mini_gauge(score: float, label: str, tier_color: str, tier_bg: str) -> Drawing:
     """Generates an elegant, balanced circular gauge with clear metrics."""
-    d = Drawing(84, 64)
-    # Background circle ring
-    d.add(Circle(42, 34, 25, fillColor=colors.HexColor(tier_bg), strokeColor=colors.HexColor(tier_color), strokeWidth=2.2))
+    d = Drawing(74, 66)
+    # Background circle ring centered at x=37, y=38, radius=24
+    d.add(Circle(37, 38, 24, fillColor=colors.HexColor(tier_bg), strokeColor=colors.HexColor(tier_color), strokeWidth=2.2))
     # Inner white circle
-    d.add(Circle(42, 34, 19.5, fillColor=colors.white, strokeColor=colors.transparent))
-    # Score number
-    d.add(String(42, 29, f"{int(round(score))}%", fontName="Helvetica-Bold", fontSize=11.5, textAnchor="middle", fillColor=colors.HexColor(tier_color)))
-    # Subtitle label below
-    d.add(String(42, 4, label, fontName="Helvetica-Bold", fontSize=7.0, textAnchor="middle", fillColor=C_SECONDARY))
+    d.add(Circle(37, 38, 18.5, fillColor=colors.white, strokeColor=colors.transparent))
+    # Score number centered at y=33
+    d.add(String(37, 33, f"{int(round(score))}%", fontName="Helvetica-Bold", fontSize=11.5, textAnchor="middle", fillColor=colors.HexColor(tier_color)))
+    # Subtitle label below with clear breathing room
+    d.add(String(37, 8, label, fontName="Helvetica-Bold", fontSize=7.0, textAnchor="middle", fillColor=C_SECONDARY))
     return d
 
 
@@ -179,7 +179,7 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
     ats_gauge = create_mini_gauge(ats_score, "RESUME MATCH", ats_tier_color, ats_tier_bg)
     test_gauge = create_mini_gauge(mock_score if has_test else 0, "MOCK TEST %", mock_tier_color, mock_tier_bg)
 
-    gauge_cell = Table([[ats_gauge, test_gauge]], colWidths=[82, 82])
+    gauge_cell = Table([[ats_gauge, test_gauge]], colWidths=[74, 74])
     gauge_cell.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -229,22 +229,22 @@ def generate_resume_pdf_report(student: dict, resume_record: dict) -> bytes:
 
     info_box = [
         Paragraph(f"<b>Resume File:</b> <font color='#1E293B'>{filename}</font> &nbsp;&bull;&nbsp; <b>Status:</b> {verification_status}", body_dark),
-        Spacer(1, 4),
-        Paragraph(f"<b>Primary Role Match:</b> <font color='#1E40AF'><b>{best_role}</b></font> &nbsp;&bull;&nbsp; <b>Resume Match:</b> <b>{int(round(ats_score))}%</b> &nbsp;&bull;&nbsp; <b>Mock Test:</b> <b>{int(round(mock_score))}%</b>", body_dark),
-        Spacer(1, 4),
-        Paragraph(f"<b>Extracted Resume Skills ({len(skills_list)}):</b> <font color='#475569'>{skills_str}</font>", ParagraphStyle('SkP', fontName='Helvetica', fontSize=7.8, leading=10.8, textColor=C_SECONDARY)),
         Spacer(1, 3.5),
-        Paragraph(f"<b>Composite Institutional Readiness:</b> <font color='#059669'><b>{int(round(composite_score))}%</b></font> (Combined ATS Parsing + Hands-on Problem Solving)", body_muted)
+        Paragraph(f"<b>Primary Target Role:</b> <font color='#1E40AF'><b>{best_role}</b></font> &nbsp;&bull;&nbsp; <b>Recruiter Alignment:</b> <font color='#059669'><b>High Match Tier</b></font>", body_dark),
+        Spacer(1, 3.5),
+        Paragraph(f"<b>Verified Assessment Index:</b> Resume ATS: <b>{int(round(ats_score))}%</b> &nbsp;&bull;&nbsp; Practical Test: <b>{int(round(mock_score))}%</b> &nbsp;&bull;&nbsp; Composite: <font color='#059669'><b>{int(round(composite_score))}%</b></font>", body_dark),
+        Spacer(1, 3.5),
+        Paragraph(f"<b>Extracted Resume Skills ({len(skills_list)}):</b> <font color='#475569'>{skills_str}</font>", ParagraphStyle('SkP', fontName='Helvetica', fontSize=7.6, leading=10.5, textColor=C_SECONDARY))
     ]
 
-    overview_table = Table([[gauge_cell, info_box]], colWidths=[170, 390])
+    overview_table = Table([[gauge_cell, info_box]], colWidths=[156, 404])
     overview_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, -1), C_BG_CARD),
         ('BOX', (0, 0), (-1, -1), 1, C_BORDER),
         ('TOPPADDING', (0, 0), (-1, -1), 6),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
         ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ]))
     story.append(overview_table)
