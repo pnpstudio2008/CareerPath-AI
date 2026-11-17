@@ -5641,7 +5641,10 @@ p {
         width: 200px;
         transform: rotate(2.5deg) translateY(-6px);
     }
-    .m-features-row { grid-template-columns: 1fr; }
+    .m-features-row,
+    .mocktest-features-row {
+        display: none !important;
+    }
     .m-mini-upload { flex-direction: column; align-items: stretch; gap: 1rem; text-align: center; }
     .m-mini-upload-left { flex-direction: column; }
 }
@@ -7665,7 +7668,9 @@ p {
     .dir-hero,
     .admin-hero,
     .stats-row,
-    .analyzer-stats-row {
+    .analyzer-stats-row,
+    .m-features-row,
+    .mocktest-features-row {
         display: none !important;
     }
 }
