@@ -151,113 +151,355 @@
         }
 
         @media (max-width: 768px) {
+            .navbar.saas-navbar {
+                padding: 0.65rem 0.85rem !important;
+            }
             .saas-nav-container {
-                flex-wrap: wrap !important;
-                padding: 0.5rem 1rem !important;
-                gap: 0.5rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 0 !important;
+                gap: 0.65rem !important;
+                width: 100% !important;
+            }
+            .nav-brand {
+                display: flex !important;
+                align-items: center !important;
+                gap: 0.65rem !important;
+                width: 100% !important;
+            }
+            .brand-logo-img {
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 10px !important;
+            }
+            .brand-text {
+                display: flex !important;
+                flex-direction: column !important;
+                min-width: 0 !important;
+            }
+            .brand-title {
+                font-size: 1.05rem !important;
+                font-weight: 800 !important;
+                color: #0F172A !important;
+                white-space: nowrap !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                line-height: 1.2 !important;
+            }
+            .brand-subtitle {
+                display: block !important;
+                font-size: 0.72rem !important;
+                color: #64748B !important;
+                font-weight: 600 !important;
             }
             .saas-nav-actions {
-                display: flex !important;
-                flex-wrap: wrap !important;
-                gap: 0.35rem !important;
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 0.4rem !important;
                 width: 100% !important;
-                justify-content: flex-start !important;
+                margin: 0 !important;
             }
             .saas-nav-actions .btn {
-                padding: 0.35rem 0.65rem !important;
-                font-size: 0.78rem !important;
-                flex: 1 1 auto !important;
-                text-align: center !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
                 justify-content: center !important;
+                height: 42px !important;
+                padding: 0.25rem 0.2rem !important;
+                font-size: 0.68rem !important;
+                font-weight: 700 !important;
+                border-radius: 10px !important;
+                text-decoration: none !important;
+                box-shadow: none !important;
+                border: 1px solid #E2E8F0 !important;
+                background: #FFFFFF !important;
+                color: #475569 !important;
+                transition: all 0.15s ease !important;
             }
+            .saas-nav-actions .btn i {
+                font-size: 0.88rem !important;
+                margin-bottom: 2px !important;
+            }
+            .saas-nav-actions .btn span {
+                display: block !important;
+                font-size: 0.68rem !important;
+                line-height: 1 !important;
+            }
+            .saas-nav-actions .btn.btn-primary {
+                background: #2563EB !important;
+                border-color: #2563EB !important;
+                color: #FFFFFF !important;
+                box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+            }
+            .saas-nav-actions .btn.btn-primary i {
+                color: #FFFFFF !important;
+            }
+            .saas-nav-actions .btn:hover {
+                background: #F1F5F9 !important;
+                color: #0F172A !important;
+            }
+            .saas-nav-actions .btn.btn-primary:hover {
+                background: #1D4ED8 !important;
+                color: #FFFFFF !important;
+            }
+
             .student-portal-header {
                 padding: 0.75rem 1rem;
             }
             .student-hero-card {
-                padding: 1.5rem 1rem !important;
+                padding: 1.35rem 1rem !important;
                 flex-direction: column !important;
                 align-items: center !important;
                 text-align: center !important;
+                background: linear-gradient(180deg, #F0FDF4 0%, #EFF6FF 100%) !important;
+                border: 1px solid rgba(16, 185, 129, 0.3) !important;
+                border-radius: 20px !important;
+                box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+                margin-top: 1rem !important;
+                gap: 1rem !important;
             }
             .student-hero-profile {
                 flex-direction: column !important;
                 align-items: center !important;
                 text-align: center !important;
-                gap: 0.85rem !important;
+                gap: 0.75rem !important;
                 width: 100% !important;
             }
+            .student-avatar-portal {
+                width: 72px !important;
+                height: 72px !important;
+                font-size: 1.8rem !important;
+                box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3) !important;
+                margin: 0 auto !important;
+            }
             .student-hero-profile h1 {
+                font-size: 1.45rem !important;
+                font-weight: 800 !important;
+                color: #0F172A !important;
+                margin: 0 !important;
+                text-align: center !important;
                 justify-content: center !important;
             }
+            #student-placement-badge {
+                margin: 0.35rem auto 0.65rem auto !important;
+                display: inline-flex !important;
+                font-size: 0.75rem !important;
+            }
             .student-info-meta {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 0.45rem !important;
+                width: 100% !important;
+                max-width: 440px !important;
+                margin: 0.5rem auto 0 auto !important;
+            }
+            .student-info-meta .meta-pill {
+                display: flex !important;
+                align-items: center !important;
                 justify-content: center !important;
+                padding: 0.45rem 0.5rem !important;
+                font-size: 0.74rem !important;
+                font-weight: 600 !important;
+                background: #FFFFFF !important;
+                border: 1px solid rgba(226, 232, 240, 0.95) !important;
+                border-radius: 10px !important;
+                color: #475569 !important;
+                box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03) !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
             }
             .student-hero-card > div:last-child {
                 width: 100% !important;
+                max-width: 440px !important;
+                margin: 0 auto !important;
             }
             .student-hero-card > div:last-child .btn {
                 width: 100% !important;
+                height: 44px !important;
+                font-size: 0.88rem !important;
+                font-weight: 700 !important;
+                border-radius: 12px !important;
                 justify-content: center !important;
+                box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
             }
             .portal-grid-2 {
-                grid-template-columns: 1fr;
-                gap: 1rem;
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+                margin-top: 1rem !important;
             }
             .kpi-grid {
+                display: grid !important;
                 grid-template-columns: 1fr 1fr !important;
-                gap: 0.75rem !important;
+                gap: 0.65rem !important;
+                margin-top: 1rem !important;
             }
             .kpi-card {
-                padding: 0.85rem !important;
-                gap: 0.65rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                min-height: 136px !important;
+                padding: 0.85rem 0.8rem !important;
+                background: #FFFFFF !important;
+                border: 1px solid #E2E8F0 !important;
+                border-radius: 14px !important;
+                box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+                box-sizing: border-box !important;
             }
-            .kpi-label {
-                font-size: 0.75rem !important;
+            .kpi-card .kpi-icon-wrap {
+                width: 36px !important;
+                height: 36px !important;
+                border-radius: 10px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 1rem !important;
+                margin-bottom: 0.35rem !important;
+                flex-shrink: 0 !important;
+            }
+            .kpi-card .kpi-info {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-end !important;
+                flex: 1 !important;
+            }
+            .kpi-card .kpi-label {
+                font-size: 0.74rem !important;
+                font-weight: 600 !important;
+                color: #64748B !important;
+                height: 2.5em !important;
+                line-height: 1.25 !important;
+                display: flex !important;
+                align-items: flex-end !important;
+                margin-bottom: 0.25rem !important;
                 word-break: break-word !important;
             }
-            .kpi-value {
-                font-size: 1.15rem !important;
+            .kpi-card .kpi-value {
+                font-size: 1.25rem !important;
+                font-weight: 800 !important;
+                color: #0F172A !important;
+                line-height: 1.15 !important;
+                margin: 0 !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            .card-header-flex {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.65rem !important;
+            }
+            .card-header-flex h3 {
+                font-size: 1.05rem !important;
+                font-weight: 800 !important;
+                margin: 0 !important;
+                color: #0F172A !important;
+                display: flex !important;
+                align-items: center !important;
+                gap: 0.45rem !important;
+            }
+            .card-header-flex > div {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+                gap: 0.5rem !important;
+            }
+            .btn-privacy-toggle {
+                padding: 0.35rem 0.75rem !important;
+                font-size: 0.75rem !important;
+            }
+            .student-card-details {
+                margin-top: 0.5rem !important;
+            }
+            .student-detail-row {
+                display: flex !important;
+                flex-direction: row !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 0.65rem 0 !important;
+                border-bottom: 1px solid #F1F5F9 !important;
+                font-size: 0.82rem !important;
+            }
+            .student-detail-row:last-child {
+                border-bottom: none !important;
+            }
+            .student-detail-row .detail-label {
+                font-size: 0.78rem !important;
+                font-weight: 600 !important;
+                color: #64748B !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 0.4rem !important;
+                flex-shrink: 0 !important;
+                max-width: 48% !important;
+            }
+            .student-detail-row .detail-val {
+                font-size: 0.82rem !important;
+                font-weight: 700 !important;
+                color: #0F172A !important;
+                text-align: right !important;
+                max-width: 52% !important;
+                word-break: break-all !important;
+                white-space: normal !important;
+            }
+
+            .filter-bar-card {
+                padding: 0.85rem !important;
+            }
+            .filter-controls-group {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 0.5rem !important;
+                width: 100% !important;
+            }
+            .filter-controls-group > div {
+                width: 100% !important;
+            }
+            .filter-select {
+                width: 100% !important;
+                padding: 0.5rem 0.6rem !important;
+                font-size: 0.8rem !important;
+            }
+            .filter-bar-card > div:last-child {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 0.5rem !important;
+                width: 100% !important;
+                margin-top: 0.5rem !important;
+            }
+            .filter-bar-card > div:last-child .btn {
+                width: 100% !important;
+                justify-content: center !important;
             }
         }
 
         @media (max-width: 480px) {
-            .brand-subtitle {
-                display: none !important;
-            }
             .student-main-container {
                 padding: 0.65rem !important;
             }
-            .kpi-grid {
-                grid-template-columns: 1fr 1fr !important;
-                gap: 0.6rem !important;
+            .student-hero-card {
+                padding: 1.15rem 0.85rem !important;
             }
             .kpi-card {
-                padding: 0.75rem !important;
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 0.45rem !important;
+                padding: 0.75rem 0.65rem !important;
+                min-height: 128px !important;
             }
-            .kpi-label {
+            .kpi-card .kpi-value {
+                font-size: 1.15rem !important;
+            }
+            .student-info-meta {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 0.35rem !important;
+            }
+            .student-info-meta .meta-pill {
                 font-size: 0.72rem !important;
-                line-height: 1.25 !important;
-                white-space: normal !important;
-                word-break: break-word !important;
-            }
-            .student-avatar-portal {
-                width: 68px;
-                height: 68px;
-                font-size: 1.7rem;
-            }
-            .student-hero-profile h1 {
-                font-size: 1.35rem !important;
-            }
-            .meta-pill {
-                font-size: 0.74rem;
-                padding: 0.2rem 0.55rem;
-            }
-            .saas-nav-actions .btn {
-                font-size: 0.72rem !important;
-                padding: 0.3rem 0.45rem !important;
+                padding: 0.4rem 0.35rem !important;
             }
         }
 
@@ -508,35 +750,24 @@
         }
 
         @media (max-width: 480px) {
-            .filter-bar-card {
-                padding: 0.85rem;
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-controls-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .filter-controls-group > div {
-                width: 100%;
-            }
-            .filter-select {
-                width: 100%;
-            }
             .question-card {
-                padding: 1rem;
+                padding: 0.95rem !important;
+                border-radius: 14px !important;
             }
             .question-title {
-                font-size: 0.95rem;
+                font-size: 0.92rem !important;
+                line-height: 1.45 !important;
+                margin-bottom: 0.85rem !important;
             }
             .option-btn {
-                padding: 0.75rem 0.85rem;
-                font-size: 0.84rem;
+                padding: 0.65rem 0.75rem !important;
+                font-size: 0.82rem !important;
+                min-height: 42px !important;
             }
             .question-meta-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.45rem !important;
             }
         }
 
@@ -597,12 +828,12 @@
                     <i class="fa-solid fa-globe"></i> <span>Platform</span>
                 </a>
                 <a href="/student/history" class="btn btn-outline btn-sm" title="Resume Analysis History">
-                    <i class="fa-solid fa-clock-rotate-left"></i> <span>Resume History</span>
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>History</span>
                 </a>
-                <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()">
-                    <i class="fa-solid fa-user-pen"></i> <span>Edit Profile</span>
+                <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()" title="Edit Profile">
+                    <i class="fa-solid fa-user-pen"></i> <span>Profile</span>
                 </button>
-                <button class="btn btn-outline btn-sm" onclick="studentLogout()">
+                <button class="btn btn-outline btn-sm" onclick="studentLogout()" title="Logout">
                     <i class="fa-solid fa-right-from-bracket"></i> <span>Logout</span>
                 </button>
             </div>
@@ -615,17 +846,23 @@
         <!-- Welcome / Profile Banner -->
         <div class="student-hero-card">
             <div class="student-hero-profile">
-                <div class="student-avatar-portal" id="student-avatar">ST</div>
+                <div class="student-avatar-portal" id="student-avatar">{{ student.initials if student and student.initials else 'ST' }}</div>
                 <div>
                     <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;" id="student-name">Loading Student...</h1>
-                        <span class="badge badge-success" id="student-placement-badge">Actively Preparing</span>
+                        <h1 style="font-size:1.75rem; font-weight:800; margin:0;" id="student-name">{{ student.name if student and student.name else 'Student' }}</h1>
+                        {% if student and student.placement_status == 'Placed' %}
+                        <span class="badge badge-success" id="student-placement-badge"><i class="fa-solid fa-check-circle"></i> Placed at {{ student.placed_company or 'Dream Tech' }} (₹{{ (student.package_lpa or 0)|round(1) }} LPA)</span>
+                        {% elif student and student.placement_status in ['Interviewing', 'In Progress'] %}
+                        <span class="badge badge-warning" id="student-placement-badge"><i class="fa-solid fa-spinner fa-spin"></i> Interviewing</span>
+                        {% else %}
+                        <span class="badge badge-info" id="student-placement-badge"><i class="fa-solid fa-bolt"></i> Actively Preparing</span>
+                        {% endif %}
                     </div>
                     <div class="student-info-meta">
-                        <span class="meta-pill"><i class="fa-solid fa-id-card text-primary"></i> <span id="student-roll">--</span></span>
-                        <span class="meta-pill"><i class="fa-solid fa-building-columns text-emerald"></i> <span id="student-dept">--</span></span>
-                        <span class="meta-pill"><i class="fa-solid fa-users-rectangle text-purple"></i> <span id="student-section">--</span></span>
-                        <span class="meta-pill"><i class="fa-solid fa-calendar text-warning"></i> Class of <span id="student-batch">--</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-id-card text-primary"></i> <span id="student-roll">{{ student.roll_no if student and student.roll_no else '--' }}</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-building-columns text-emerald"></i> <span id="student-dept">{{ (student.branch or student.department) if student and (student.branch or student.department) else 'Computer Science & Engineering' }}</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-users-rectangle text-purple"></i> <span id="student-section">{{ student.section if student and student.section else 'Section A' }}</span></span>
+                        <span class="meta-pill"><i class="fa-solid fa-calendar text-warning"></i> Class of <span id="student-batch">{{ student.batch_year if student and student.batch_year else '2025' }}</span></span>
                     </div>
                 </div>
             </div>
@@ -645,7 +882,7 @@
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Resume ATS Score</span>
-                    <h2 class="kpi-value" id="student-ats-score">--%</h2>
+                    <h2 class="kpi-value" id="student-ats-score">{{ ((student.ats_score or 75.0)|round(1)) if student else '75.0' }}%</h2>
                 </div>
             </div>
 
@@ -655,7 +892,7 @@
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Practice Tests Completed</span>
-                    <h2 class="kpi-value" id="student-quizzes-count">0</h2>
+                    <h2 class="kpi-value" id="student-quizzes-count">{{ (student.quizzes_completed or 0) if student else 0 }}</h2>
                 </div>
             </div>
 
@@ -665,7 +902,7 @@
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Target Career Track</span>
-                    <h2 class="kpi-value" style="font-size:1.15rem;" id="student-target-comp">General</h2>
+                    <h2 class="kpi-value" style="font-size:1.15rem;" id="student-target-comp">{{ (student.target_company or 'General') if student else 'General' }}</h2>
                 </div>
             </div>
 
@@ -675,7 +912,7 @@
                 </div>
                 <div class="kpi-info">
                     <span class="kpi-label">Readiness Status</span>
-                    <h2 class="kpi-value" style="font-size:1.15rem;" id="student-readiness-val">In Progress</h2>
+                    <h2 class="kpi-value" style="font-size:1.15rem;" id="student-readiness-val">{{ (student.readiness_status or 'In Progress') if student else 'In Progress' }}</h2>
                 </div>
             </div>
         </div>
@@ -686,43 +923,43 @@
             <div class="card">
                 <div class="card-header-flex mb-3">
                     <h3><i class="fa-solid fa-address-card text-primary"></i> Personal Profile &amp; Academic Record</h3>
-                    <div style="display:flex; align-items:center; gap:0.65rem; flex-wrap:wrap;">
+                    <div>
                         <button type="button" class="btn-privacy-toggle" id="btn-toggle-profile-mask" onclick="toggleProfilePrivacyView()" title="Click to view full personal details">
                             <i class="fa-solid fa-eye" id="privacy-eye-icon"></i>
                             <span id="privacy-eye-text">View Details</span>
                         </button>
-                        <span class="badge badge-info">Verified Student</span>
+                        <span class="badge badge-info"><i class="fa-solid fa-shield-halved"></i> Verified Student</span>
                     </div>
                 </div>
 
                 <div class="student-card-details mt-2">
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
+                    <div class="student-detail-row">
                         <span class="detail-label"><i class="fa-solid fa-user"></i> Full Name</span>
-                        <span class="detail-val" id="det-name">--</span>
+                        <span class="detail-val hash-masked" id="det-name">••••••••••••</span>
                     </div>
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
-                        <span class="detail-label"><i class="fa-solid fa-id-card"></i> Enrollment / Roll Number</span>
-                        <span class="detail-val" id="det-roll">--</span>
+                    <div class="student-detail-row">
+                        <span class="detail-label"><i class="fa-solid fa-id-card"></i> Enrollment / Roll</span>
+                        <span class="detail-val hash-masked" id="det-roll">••••••••</span>
                     </div>
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
+                    <div class="student-detail-row">
                         <span class="detail-label"><i class="fa-solid fa-envelope"></i> Email Address</span>
-                        <span class="detail-val" id="det-email">--</span>
+                        <span class="detail-val hash-masked" id="det-email">••••••••••••••••</span>
                     </div>
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
+                    <div class="student-detail-row">
                         <span class="detail-label"><i class="fa-solid fa-phone"></i> Contact Phone</span>
-                        <span class="detail-val" id="det-phone">--</span>
+                        <span class="detail-val hash-masked" id="det-phone">••••••••••</span>
                     </div>
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
+                    <div class="student-detail-row">
                         <span class="detail-label"><i class="fa-solid fa-building-columns"></i> Department</span>
-                        <span class="detail-val" id="det-dept">--</span>
+                        <span class="detail-val hash-masked" id="det-dept">••••••••••••••••••••</span>
                     </div>
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
+                    <div class="student-detail-row">
                         <span class="detail-label"><i class="fa-solid fa-users-rectangle"></i> CSE / IT Section</span>
-                        <span class="detail-val" id="det-section">Section A</span>
+                        <span class="detail-val hash-masked" id="det-section">••••••••</span>
                     </div>
-                    <div class="student-detail-row" style="padding:0.5rem 0;">
+                    <div class="student-detail-row">
                         <span class="detail-label"><i class="fa-solid fa-briefcase"></i> Placement Status</span>
-                        <span class="detail-val" id="det-placement">Not Placed</span>
+                        <span class="detail-val hash-masked" id="det-placement">••••••••••••</span>
                     </div>
                 </div>
             </div>
@@ -933,11 +1170,27 @@ async function safeJsonFetch(response) {
 }
 </script>
 <script>
-        let currentStudent = null;
+        let currentStudent = {{ student_json|safe if student_json else 'null' }};
+
+        let isProfileDetailsRevealed = false;
+        let studentDetailValues = {
+            name: currentStudent ? (currentStudent.name || '--') : '--',
+            roll: currentStudent ? (currentStudent.roll_no || '--') : '--',
+            email: currentStudent ? (currentStudent.email || '--') : '--',
+            phone: currentStudent ? (currentStudent.phone || 'Not Provided') : 'Not Provided',
+            dept: currentStudent ? (currentStudent.branch || currentStudent.department || 'Computer Science & Engineering') : '--',
+            section: currentStudent ? (currentStudent.section || 'Section A') : 'Section A',
+            placement: currentStudent ? ((currentStudent.placement_status || 'Not Placed') + (currentStudent.placed_company ? (' (' + currentStudent.placed_company + ')') : '')) : 'Not Placed'
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetchStudentProfile();
-            loadStudentAlumniQuestions();
+            if (currentStudent) {
+                renderStudentProfile(currentStudent);
+            } else {
+                fetchStudentProfile();
+            }
+            // Defer loading placement questions slightly so the dashboard is 100% painted instantly
+            setTimeout(loadStudentAlumniQuestions, 60);
         });
 
         async function fetchStudentProfile() {
@@ -958,17 +1211,6 @@ async function safeJsonFetch(response) {
                 showToast('Error loading profile: ' + err.message, 'error');
             }
         }
-
-        let isProfileDetailsRevealed = false;
-        let studentDetailValues = {
-            name: '--',
-            roll: '--',
-            email: '--',
-            phone: '--',
-            dept: '--',
-            section: '--',
-            placement: '--'
-        };
 
         function toggleProfilePrivacyView() {
             isProfileDetailsRevealed = !isProfileDetailsRevealed;
@@ -1020,20 +1262,26 @@ async function safeJsonFetch(response) {
         function renderStudentProfile(s) {
             if (!s) return;
             const nameStr = s.name || 'Student';
-            const initials = nameStr.split(' ').filter(w => w).map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'ST';
-            document.getElementById('student-avatar').textContent = initials;
-            document.getElementById('student-name').textContent = nameStr;
-            document.getElementById('student-roll').textContent = s.roll_no || '--';
-            document.getElementById('student-dept').textContent = s.branch || s.department || 'Computer Science';
-            document.getElementById('student-section').textContent = s.section || 'Section A';
-            document.getElementById('student-batch').textContent = s.batch_year || '2025';
+            const initials = s.initials || nameStr.split(' ').filter(w => w).map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'ST';
+            const avatarEl = document.getElementById('student-avatar');
+            if (avatarEl) avatarEl.textContent = initials;
+            const nameEl = document.getElementById('student-name');
+            if (nameEl) nameEl.textContent = nameStr;
+            const rollEl = document.getElementById('student-roll');
+            if (rollEl) rollEl.textContent = s.roll_no || '--';
+            const deptEl = document.getElementById('student-dept');
+            if (deptEl) deptEl.textContent = s.branch || s.department || 'Computer Science & Engineering';
+            const secEl = document.getElementById('student-section');
+            if (secEl) secEl.textContent = s.section || 'Section A';
+            const batchEl = document.getElementById('student-batch');
+            if (batchEl) batchEl.textContent = s.batch_year || '2025';
 
             const badge = document.getElementById('student-placement-badge');
             if (badge) {
                 if (s.placement_status === 'Placed') {
                     badge.className = 'badge badge-success';
                     const pkg = parseFloat(s.package_lpa || 0) || 0;
-                    badge.innerHTML = `<i class="fa-solid fa-check-circle"></i> Placed at ${s.placed_company || 'Dream Tech'} (₹${pkg} LPA)`;
+                    badge.innerHTML = `<i class="fa-solid fa-check-circle"></i> Placed at ${s.placed_company || 'Dream Tech'} (₹${pkg.toFixed(1)} LPA)`;
                 } else if (s.placement_status === 'Interviewing' || s.placement_status === 'In Progress') {
                     badge.className = 'badge badge-warning';
                     badge.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Interviewing`;
@@ -1045,10 +1293,14 @@ async function safeJsonFetch(response) {
 
             const atsNum = parseFloat(s.ats_score);
             const displayAts = (!isNaN(atsNum) && atsNum > 0) ? atsNum.toFixed(1) : '75.0';
-            document.getElementById('student-ats-score').textContent = displayAts + '%';
-            document.getElementById('student-quizzes-count').textContent = s.quizzes_completed || 0;
-            document.getElementById('student-target-comp').textContent = s.target_company || 'General';
-            document.getElementById('student-readiness-val').textContent = s.readiness_status || 'In Progress';
+            const atsEl = document.getElementById('student-ats-score');
+            if (atsEl) atsEl.textContent = displayAts + '%';
+            const qcEl = document.getElementById('student-quizzes-count');
+            if (qcEl) qcEl.textContent = s.quizzes_completed || 0;
+            const tcEl = document.getElementById('student-target-comp');
+            if (tcEl) tcEl.textContent = s.target_company || 'General';
+            const rsEl = document.getElementById('student-readiness-val');
+            if (rsEl) rsEl.textContent = s.readiness_status || 'In Progress';
 
             // Store details & apply privacy Hash View
             studentDetailValues = {
@@ -1056,7 +1308,7 @@ async function safeJsonFetch(response) {
                 roll: s.roll_no || '--',
                 email: s.email || '--',
                 phone: s.phone || 'Not Provided',
-                dept: s.branch || s.department || 'Computer Science',
+                dept: s.branch || s.department || 'Computer Science & Engineering',
                 section: s.section || 'Section A',
                 placement: (s.placement_status || 'Not Placed') + (s.placed_company ? ` (${s.placed_company})` : '')
             };

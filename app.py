@@ -1399,7 +1399,22 @@ def student_profile_page():
         session.pop('student_logged_in', None)
         session.pop('student_id', None)
         return redirect('/student/login')
-    return render_template('student_profile.html', student=student)
+    
+    from decimal import Decimal
+    student_clean = {}
+    for k, v in student.items():
+        if isinstance(v, Decimal):
+            student_clean[k] = float(v)
+        elif hasattr(v, 'isoformat'):
+            student_clean[k] = v.isoformat()
+        else:
+            student_clean[k] = v
+    student_clean.pop('password', None)
+    
+    words = [w for w in student_clean.get('name', '').split() if w]
+    student_clean['initials'] = ''.join([w[0] for w in words])[:2].upper() if words else 'ST'
+    
+    return render_template('student_profile.html', student=student_clean, student_json=json.dumps(student_clean))
 
 
 @app.route('/student/history', methods=['GET'])
