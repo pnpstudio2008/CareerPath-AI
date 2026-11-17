@@ -5021,7 +5021,11 @@ p {
 }
 
 @media (max-width: 768px) {
-    .stats-row { grid-template-columns: 1fr; }
+    .stats-row,
+    .analyzer-stats-row,
+    #analyzer-section .stats-row {
+        display: none !important;
+    }
     .upload-panel {
         padding: 1.25rem 1rem !important;
         width: 100% !important;
@@ -7659,7 +7663,9 @@ p {
     .alumni-hub-hero,
     .hist-hero-banner,
     .dir-hero,
-    .admin-hero {
+    .admin-hero,
+    .stats-row,
+    .analyzer-stats-row {
         display: none !important;
     }
 }
